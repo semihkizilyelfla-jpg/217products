@@ -199,7 +199,7 @@ section { padding: clamp(70px, 10vh, 130px) var(--pad); }
 .cards {
   margin-top: 48px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: clamp(24px, 4vw, 56px);
 }
 .card {
@@ -307,12 +307,28 @@ footer { padding: clamp(70px, 10vh, 130px) var(--pad) 0; overflow: hidden; }
 .copyright { padding: 56px 0 0; font-weight: 600; font-size: 12px; letter-spacing: 0.14em; }
 
 /* ---------- responsive ---------- */
+@media (pointer: coarse) {
+  .site-head nav a, .lang-toggle { padding: 12px 18px; }
+}
+
 @media (max-width: 800px) {
-  .site-head nav a { display: none; }
   .sticker { position: static; display: inline-block; margin: 24px 12px 0 0; animation: none; }
   .st-1 { transform: rotate(2deg); }
   .st-2 { transform: rotate(-2deg); }
   .shout-row { grid-template-columns: 40px 1fr; }
+}
+
+@media (max-width: 700px) {
+  .site-head nav a { display: none; }
+}
+
+@media (max-width: 480px) {
+  .hero { padding-bottom: 44px; }
+  .hero-sub { margin-top: 24px; }
+  .mail { padding: 12px 16px; box-shadow: 6px 6px 0 var(--ink); }
+  .card { box-shadow: 7px 7px 0 var(--ink); }
+  .card:hover { box-shadow: 10px 10px 0 var(--ink); }
+  .foot-links { gap: 16px; }
 }
 
 /* ---------- reduced motion ---------- */
