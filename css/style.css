@@ -126,11 +126,10 @@ section[id], footer[id] { scroll-margin-top: 90px; }
 .hero h1 .ln-word {
   display: block;
   font-size: clamp(22px, 4.2vw, 78px);
-  letter-spacing: 0.03em;
   margin: 0 0 0.14em -0.55em;
-  -webkit-text-stroke: 2.5px var(--ink);
+  -webkit-text-stroke: 1.75px var(--ink);
   color: var(--paper);
-  text-shadow: 0.05em 0.05em 0 var(--ink);
+  text-shadow: 0.04em 0.04em 0 var(--ink);
 }
 /* browsers without text-stroke would show paper-on-yellow: fall back to solid ink */
 @supports not (-webkit-text-stroke: 1px black) {
