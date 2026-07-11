@@ -131,13 +131,6 @@ section[id], footer[id] { scroll-margin-top: 90px; }
   color: var(--paper);
   text-shadow: 0.05em 0.05em 0 var(--ink);
 }
-/* every other letter flips to the 7's treatment: solid ink, paper shadow */
-.hero h1 .ln-word em {
-  font-style: normal;
-  color: var(--ink);
-  -webkit-text-stroke: 0;
-  text-shadow: 0.05em 0.05em 0 var(--paper);
-}
 /* browsers without text-stroke would show paper-on-yellow: fall back to solid ink */
 @supports not (-webkit-text-stroke: 1px black) {
   .hero h1 .ln-num,
