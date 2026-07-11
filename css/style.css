@@ -122,17 +122,20 @@ section[id], footer[id] { scroll-margin-top: 90px; }
   -webkit-text-stroke: 0;
   text-shadow: 0.04em 0.04em 0 var(--paper);
 }
-/* PRODUCTS tucks in small at the bottom-right of the 7 */
+/* PRODUCTS tucks in at the bottom-right of the 7, same outline style as 217 */
 .hero h1 .ln-word {
   display: block;
-  font-size: clamp(17px, 3vw, 52px);
-  letter-spacing: 0.05em;
-  margin: 0 0 0.18em 0.5em;
-  color: var(--ink);
+  font-size: clamp(22px, 4.2vw, 78px);
+  letter-spacing: 0.03em;
+  margin: 0 0 0.14em 0.18em;
+  -webkit-text-stroke: 2.5px var(--ink);
+  color: var(--paper);
+  text-shadow: 0.05em 0.05em 0 var(--ink);
 }
 /* browsers without text-stroke would show paper-on-yellow: fall back to solid ink */
 @supports not (-webkit-text-stroke: 1px black) {
-  .hero h1 .ln-num { color: var(--ink); text-shadow: 0.04em 0.04em 0 var(--paper); }
+  .hero h1 .ln-num,
+  .hero h1 .ln-word { color: var(--ink); text-shadow: 0.04em 0.04em 0 var(--paper); }
 }
 .hero-sub {
   margin-top: 36px;
