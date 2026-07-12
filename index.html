@@ -117,10 +117,10 @@
       <p class="eyebrow rise">開花 · IN BLOOM</p>
       <div class="product">
         <figure class="product-art rise" data-parallax="0.12">
-          <svg class="osnote-svg" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OSNote — the real floating handwriting toolbar over a page on a tablet, annotated by a stylus in hand">
+          <svg class="osnote-svg" viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="OSNote — the real app icon and floating toolbar over a page on a tablet, annotated by a stylus in hand">
             <defs>
-              <linearGradient id="os-bezel" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#31353d"/><stop offset="0.5" stop-color="#22262c"/><stop offset="1" stop-color="#15181c"/>
+              <linearGradient id="os-bezel" x1="0" y1="0" x2="0.3" y2="1">
+                <stop offset="0" stop-color="#3a332b"/><stop offset="0.5" stop-color="#231d17"/><stop offset="1" stop-color="#14100c"/>
               </linearGradient>
               <linearGradient id="os-screen" x1="0" y1="0" x2="0.4" y2="1">
                 <stop offset="0" stop-color="#FEFCF7"/><stop offset="1" stop-color="#F7F1E6"/>
@@ -128,9 +128,12 @@
               <linearGradient id="os-gold" x1="0" y1="0" x2="1" y2="0">
                 <stop offset="0" stop-color="#B8860B"/><stop offset="1" stop-color="#DAA520"/>
               </linearGradient>
-              <linearGradient id="os-penbody" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stop-color="#3A3A3C"/><stop offset="0.5" stop-color="#5A5A5C"/><stop offset="1" stop-color="#3A3A3C"/>
+              <linearGradient id="os-silver" x1="0.15" y1="0" x2="0.85" y2="1">
+                <stop offset="0" stop-color="#fbfcfd"/><stop offset="0.4" stop-color="#cdd2d8"/><stop offset="0.6" stop-color="#eef1f4"/><stop offset="1" stop-color="#9aa1ab"/>
               </linearGradient>
+              <radialGradient id="os-icbg" cx="0.42" cy="0.34" r="0.85">
+                <stop offset="0" stop-color="#333333"/><stop offset="0.6" stop-color="#131313"/><stop offset="1" stop-color="#050505"/>
+              </radialGradient>
               <linearGradient id="os-stylus" x1="0" y1="0" x2="1" y2="0.3">
                 <stop offset="0" stop-color="#8b9099"/><stop offset="0.5" stop-color="#e7e9ec"/><stop offset="1" stop-color="#6d727a"/>
               </linearGradient>
@@ -141,19 +144,32 @@
                 <stop offset="0" stop-color="#1E1A16" stop-opacity="0.28"/><stop offset="1" stop-color="#1E1A16" stop-opacity="0"/>
               </radialGradient>
               <filter id="os-ink" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="0.5"/></filter>
-              <clipPath id="os-iconRound"><rect x="204" y="140" width="48" height="48" rx="13"/></clipPath>
-              <marker id="os-arrow" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto"><path d="M1 1 L10 6 L1 11 L4 6 Z" fill="#E24B26"/></marker>
+
+              <!-- === OSNote app icon (nib + crescent), drawn 1:1 from the current mark, 100×100 tile === -->
+              <g id="os-appicon">
+                <rect x="0" y="0" width="100" height="100" rx="23" fill="url(#os-icbg)"/>
+                <rect x="0.6" y="0.6" width="98.8" height="98.8" rx="22.4" fill="none" stroke="#3d3d3d" stroke-width="1.2"/>
+                <!-- crescent open to the right -->
+                <path d="M64 19 A39 39 0 1 0 67 87" fill="none" stroke="url(#os-silver)" stroke-width="6.4" stroke-linecap="round"/>
+                <!-- nib body, tip up -->
+                <path d="M50 15 Q53 15 54 19 L70 49 Q72 52 70 55 L53 82 Q51 85 50 85 Q49 85 47 82 L30 55 Q28 52 30 49 L46 19 Q47 15 50 15 Z" fill="url(#os-silver)"/>
+                <rect x="43" y="80" width="14" height="13" rx="3" fill="url(#os-silver)"/>
+                <!-- breather hole + slit (dark) -->
+                <circle cx="50" cy="54" r="4.6" fill="#111"/>
+                <line x1="50" y1="49" x2="50" y2="23" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+              </g>
             </defs>
 
-            <ellipse cx="605" cy="790" rx="430" ry="46" fill="url(#os-gshadow)"/>
+            <ellipse cx="605" cy="792" rx="430" ry="46" fill="url(#os-gshadow)"/>
 
+            <!-- ================= TABLET (warm sumi frame, on theme) ================= -->
             <g>
               <rect x="150" y="92" width="906" height="676" rx="38" fill="url(#os-bezel)"/>
-              <rect x="150.5" y="92.5" width="905" height="675" rx="37.5" fill="none" stroke="#C39A46" stroke-opacity="0.35" stroke-width="1"/>
+              <rect x="150.5" y="92.5" width="905" height="675" rx="37.5" fill="none" stroke="#C39A46" stroke-opacity="0.45" stroke-width="1.2"/>
               <rect x="182" y="124" width="842" height="612" rx="15" fill="url(#os-screen)"/>
 
-              <rect x="204" y="140" width="48" height="48" rx="13" fill="#F3ECDC"/>
-              <image href="assets/osnote-icon.png" x="204" y="140" width="48" height="48" clip-path="url(#os-iconRound)"/>
+              <!-- app top bar -->
+              <use href="#os-appicon" transform="translate(204,140) scale(0.48)"/>
               <text x="266" y="172" font-family="'Shippori Mincho',Georgia,serif" font-size="27" font-weight="700" fill="#1E1A16">OSNote</text>
               <rect x="470" y="147" width="330" height="36" rx="18" fill="#EFE7D8"/>
               <circle cx="491" cy="164" r="6.5" fill="none" stroke="#a99e88" stroke-width="2"/>
@@ -162,6 +178,7 @@
               <circle cx="982" cy="164" r="3.4" fill="#c8bda6"/><circle cx="968" cy="164" r="3.4" fill="#c8bda6"/><circle cx="996" cy="164" r="3.4" fill="#c8bda6"/>
               <line x1="204" y1="205" x2="1002" y2="205" stroke="#E6DCC9" stroke-width="1.5"/>
 
+              <!-- faux article / page (Latin) -->
               <text x="206" y="256" font-family="'Shippori Mincho',Georgia,serif" font-size="34" font-weight="700" fill="#26221c">The web, annotated.</text>
               <g fill="#DED3BE">
                 <rect x="206" y="286" width="470" height="10" rx="5"/>
@@ -179,72 +196,88 @@
                 <rect x="206" y="498" width="330" height="10" rx="5"/>
               </g>
 
+              <!-- handwritten annotation (vermilion) -->
               <g fill="none" stroke="#E24B26" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" filter="url(#os-ink)">
                 <path d="M206 268 q60 -7 120 -1 q70 6 132 -2 q60 -6 118 0"/>
                 <path d="M198 372 q-14 20 6 34 q40 20 150 16 q70 -3 66 -26 q-3 -22 -78 -26 q-96 -6 -150 6 q-14 3 -6 12"/>
                 <path d="M470 470 q60 24 138 6" marker-end="url(#os-arrow)"/>
                 <path d="M636 452 q10 -16 22 -6 q8 8 -2 16 q-12 8 -2 18 q10 8 26 2" stroke-width="4"/>
               </g>
+              <marker id="os-arrow" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto"><path d="M1 1 L10 6 L1 11 L4 6 Z" fill="#E24B26"/></marker>
 
-              <!-- REAL OSNote toolbar, 1:1 from PremiumToolbar.kt -->
-              <g transform="translate(324,616) scale(0.92)">
-                <rect x="0" y="0" width="600" height="100" rx="24" fill="#1C1C1E"/>
-                <rect x="0.5" y="0.5" width="599" height="99" rx="23.5" fill="none" stroke="#ffffff" stroke-opacity="0.06"/>
-                <g transform="translate(52,50)">
-                  <path d="M-4 8 v-14 a2.4 2.4 0 0 1 4.8 0 v10 M0.8 4 v-16 a2.4 2.4 0 0 1 4.8 0 v14 M5.6 4 v-13 a2.4 2.4 0 0 1 4.8 0 v13 M-8.8 8 v-9 a2.4 2.4 0 0 1 4.8 0 v9 M-8.8 8 c0 8 3 12 9 12 h4 c6 0 8-5 8-11" fill="none" stroke="#8E8E93" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- ================= REAL OSNote TOOLBAR (1:1 from the screenshot) ================= -->
+              <g transform="translate(278,632) scale(0.86)">
+                <rect x="0" y="0" width="666" height="92" rx="46" fill="#6d727b"/>
+                <rect x="1" y="1" width="664" height="90" rx="45" fill="none" stroke="#ffffff" stroke-opacity="0.10"/>
+
+                <!-- crown (premium) -->
+                <g transform="translate(46,46)" fill="#EBA93A">
+                  <path d="M-13 8 L-15 -6 L-6 1 L0 -8 L6 1 L15 -6 L13 8 Z"/>
+                  <rect x="-13" y="8" width="26" height="4" rx="2"/>
                 </g>
-                <rect x="94" y="24" width="2" height="52" rx="1" fill="#3A3A3C"/>
-                <g transform="translate(117,28)">
-                  <circle cx="11" cy="3.5" r="6.2" fill="url(#os-penbody)"/>
-                  <rect x="4.8" y="3.5" width="12.3" height="24.2" rx="1.5" fill="url(#os-penbody)"/>
-                  <rect x="14.3" y="4.4" width="2.6" height="15.4" rx="1" fill="url(#os-gold)"/>
-                  <rect x="5.5" y="27.7" width="11" height="6.6" rx="2" fill="#33333a"/>
-                  <path d="M5.5 34.3 L16.5 34.3 L12.1 40.5 L9.9 40.5 Z" fill="#3d3d40"/>
-                  <line x1="11" y1="40.5" x2="11" y2="43.6" stroke="#E53935" stroke-width="2.6" stroke-linecap="round"/>
+                <!-- hand (muted) -->
+                <g transform="translate(96,46)">
+                  <path d="M-4 8 v-14 a2.4 2.4 0 0 1 4.8 0 v10 M0.8 4 v-16 a2.4 2.4 0 0 1 4.8 0 v14 M5.6 4 v-13 a2.4 2.4 0 0 1 4.8 0 v13 M-8.8 8 v-9 a2.4 2.4 0 0 1 4.8 0 v9 M-8.8 8 c0 8 3 12 9 12 h4 c6 0 8-5 8-11" fill="none" stroke="#c2c7cf" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
                 </g>
-                <rect x="116" y="80" width="24" height="4" rx="2" fill="#007AFF"/>
-                <g transform="translate(167,28)">
-                  <rect x="4" y="0.9" width="14" height="6.2" rx="2.5" fill="#6E6E73"/>
-                  <rect x="3.3" y="7" width="15.4" height="22" rx="1.4" fill="#6E6E73"/>
-                  <rect x="4.8" y="12.3" width="12.3" height="7.9" rx="1" fill="#ffffff" fill-opacity="0.25"/>
-                  <path d="M3.3 29 L18.7 29 L15.4 36 L6.6 36 Z" fill="#6E6E73"/>
-                  <rect x="6.6" y="36" width="8.8" height="7" rx="1" fill="#6E6E73" fill-opacity="0.85"/>
+                <rect x="132" y="24" width="2.4" height="44" rx="1.2" fill="#E0A94E"/>
+
+                <!-- pen (selected, gold ring) -->
+                <circle cx="176" cy="46" r="26" fill="#7b8089"/>
+                <circle cx="176" cy="46" r="26" fill="none" stroke="#EBA93A" stroke-width="3"/>
+                <g transform="translate(176,46)" fill="#eef1f4">
+                  <path d="M0 -15 Q1.6 -15 2.2 -13 L9 0.5 Q10 2 9 3.5 L2.4 15 Q1 17 0 17 Q-1 17 -2.4 15 L-9 3.5 Q-10 2 -9 0.5 L-2.2 -13 Q-1.6 -15 0 -15 Z"/>
+                  <circle cx="0" cy="1.5" r="2.2" fill="#7b8089"/>
+                  <line x1="0" y1="-0.7" x2="0" y2="-12" stroke="#7b8089" stroke-width="1.6" stroke-linecap="round"/>
                 </g>
-                <g transform="translate(215,28)">
-                  <rect x="3.3" y="6.6" width="15.4" height="24.2" rx="2.2" fill="#F5F5F5"/>
-                  <rect x="3.3" y="11" width="15.4" height="6.6" rx="1" fill="#1976D2"/>
-                  <rect x="3.3" y="26.4" width="15.4" height="5.3" rx="1.5" fill="#cfcfcf"/>
-                  <circle cx="6.6" cy="35.2" r="1" fill="#E0E0E0"/><circle cx="11" cy="37.4" r="0.8" fill="#E0E0E0"/><circle cx="15.4" cy="34.3" r="0.9" fill="#E0E0E0"/>
+
+                <!-- eraser -->
+                <g transform="translate(226,46)" fill="none" stroke="#eef1f4" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round">
+                  <path d="M-11 9 L1 -11 Q2 -13 4 -12 L13 -6 Q15 -5 14 -3 L2 17 Z" fill="#eef1f4" fill-opacity="0.08"/>
+                  <line x1="-4.5" y1="-1.5" x2="8.5" y2="6"/>
                 </g>
-                <rect x="258" y="24" width="2" height="52" rx="1" fill="#3A3A3C"/>
+                <!-- shapes (muted) -->
+                <g transform="translate(274,46)" fill="none" stroke="#aeb4bc" stroke-width="2.4" stroke-linejoin="round">
+                  <rect x="-11" y="-11" width="15" height="15" rx="3"/>
+                  <rect x="-3" y="-3" width="15" height="15" rx="3" fill="#6d727b"/>
+                </g>
+                <rect x="308" y="24" width="2.4" height="44" rx="1.2" fill="#E0A94E"/>
+
+                <!-- colors (exact from screenshot) -->
                 <g>
-                  <circle cx="292" cy="36" r="13" fill="#1A1A1A" stroke="#3A3A3C"/>
-                  <circle cx="324" cy="36" r="13" fill="#E53935" stroke="#3A3A3C"/>
-                  <circle cx="356" cy="36" r="13" fill="#FF9800" stroke="#3A3A3C"/>
-                  <circle cx="292" cy="66" r="13" fill="#FFEB3B" stroke="#3A3A3C"/>
-                  <circle cx="324" cy="66" r="13" fill="#4CAF50" stroke="#3A3A3C"/>
-                  <circle cx="356" cy="66" r="13" fill="#2196F3" stroke="#3A3A3C"/>
+                  <circle cx="344" cy="30" r="15" fill="#141414"/><circle cx="344" cy="30" r="15" fill="none" stroke="#ffffff" stroke-width="2.6"/>
+                  <circle cx="382" cy="30" r="15" fill="#E5322A" stroke="#5a5f68" stroke-width="1"/>
+                  <circle cx="420" cy="30" r="15" fill="#2F6BFF" stroke="#5a5f68" stroke-width="1"/>
+                  <circle cx="344" cy="62" r="15" fill="#37A24A" stroke="#5a5f68" stroke-width="1"/>
+                  <circle cx="382" cy="62" r="15" fill="#CE2E90" stroke="#5a5f68" stroke-width="1"/>
+                  <circle cx="420" cy="62" r="15" fill="#F2B22E" stroke="#5a5f68" stroke-width="1"/>
                 </g>
-                <rect x="384" y="24" width="2" height="52" rx="1" fill="#3A3A3C"/>
-                <g transform="translate(414,50)" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round">
-                  <rect x="-9" y="-12" width="18" height="24" rx="2"/>
-                  <line x1="-5" y1="-5" x2="5" y2="-5" stroke-opacity="0.6"/><line x1="-5" y1="0" x2="5" y2="0" stroke-opacity="0.6"/><line x1="-5" y1="5" x2="5" y2="5" stroke-opacity="0.6"/>
+                <rect x="456" y="24" width="2.4" height="44" rx="1.2" fill="#E0A94E"/>
+
+                <!-- page settings -->
+                <g transform="translate(494,46)" fill="none" stroke="#eef1f4" stroke-width="2" stroke-linecap="round">
+                  <rect x="-10" y="-13" width="20" height="26" rx="3"/>
+                  <line x1="-5" y1="-5" x2="5" y2="-5"/><line x1="-5" y1="1" x2="5" y2="1"/><line x1="-5" y1="7" x2="5" y2="7"/>
                 </g>
-                <g transform="translate(468,50)">
-                  <rect x="-27" y="-24" width="54" height="48" rx="10" fill="#3A1A1A"/>
-                  <path d="M0 -13 v9 M-6.5 -11 a9 9 0 1 0 13 0" fill="none" stroke="#FF4444" stroke-width="2.4" stroke-linecap="round"/>
-                  <text x="0" y="15" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" font-weight="800" fill="#FF4444">OFF</text>
+
+                <!-- OFF -->
+                <g transform="translate(548,46)">
+                  <rect x="-26" y="-24" width="52" height="48" rx="12" fill="#3E1516"/>
+                  <path d="M0 -13 v9 M-6.5 -11 a9 9 0 1 0 13 0" fill="none" stroke="#E5433A" stroke-width="2.6" stroke-linecap="round"/>
+                  <text x="0" y="16" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" font-weight="800" fill="#E5433A">OFF</text>
                 </g>
-                <circle cx="524" cy="50" r="20" fill="#2C2C2E"/>
-                <g transform="translate(524,50)" stroke="#AAAAAA" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M-6 -8 L0 -2 L6 -8 M-6 8 L0 2 L6 8"/>
+
+                <!-- collapse -->
+                <circle cx="600" cy="46" r="22" fill="#4b5059"/>
+                <g transform="translate(600,46)" stroke="#d3d7dd" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M-7 -3 L0 -10 L7 -3 M-7 10 L0 3 L7 10"/>
                 </g>
-                <circle cx="570" cy="50" r="20" fill="#2C2C2E"/>
-                <g fill="#ffffff"><circle cx="561" cy="50" r="2.4"/><circle cx="570" cy="50" r="2.4"/><circle cx="579" cy="50" r="2.4"/></g>
+                <!-- more -->
+                <circle cx="644" cy="46" r="22" fill="#4b5059"/>
+                <g fill="#d3d7dd"><circle cx="634" cy="46" r="2.6"/><circle cx="644" cy="46" r="2.6"/><circle cx="654" cy="46" r="2.6"/></g>
               </g>
             </g>
 
-            <!-- stylus + hand (sumi line-art) -->
+            <!-- ================= STYLUS + HAND (sumi line-art, on theme) ================= -->
             <g transform="rotate(30.4 800 597.5)">
               <rect x="568" y="584.5" width="464" height="26" rx="13" fill="url(#os-stylus)"/>
               <rect x="568" y="584.5" width="464" height="26" rx="13" fill="none" stroke="#5c616a" stroke-opacity="0.5"/>
@@ -262,9 +295,10 @@
               <path d="M150 76 Q176 92 205 96" fill="none" stroke-width="3"/>
             </g>
 
-            <g transform="translate(1044,150)">
-              <rect x="-2" y="-2" width="52" height="52" rx="9" fill="#E24B26"/>
-              <text x="24" y="34" text-anchor="middle" font-family="'Shippori Mincho',serif" font-size="30" font-weight="700" fill="#F3ECDC">芽</text>
+            <!-- 217 studio seal (Latin) -->
+            <g transform="translate(1040,150)">
+              <rect x="-2" y="-2" width="56" height="52" rx="9" fill="#E24B26"/>
+              <text x="26" y="33" text-anchor="middle" font-family="Manrope,system-ui,sans-serif" font-size="24" font-weight="800" letter-spacing="-0.5" fill="#F3ECDC">217</text>
             </g>
           </svg>
           <span class="frame-seal" aria-hidden="true">壱</span>
