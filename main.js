@@ -73,12 +73,18 @@
       .to(".pl-mount", { autoAlpha: 1, yPercent: 0, duration: 1.5 }, 0)
       .to(".pl-fore",  { autoAlpha: 1, yPercent: 0, duration: 1.5 }, 0.12);
 
+    gsap.set(".head-1", { autoAlpha: 1 });
+    gsap.set([".head-2", ".head-3"], { autoAlpha: 0 });
     gsap.timeline({
       defaults: { ease: "power2.out", duration: 1 },
-      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=150%", pin: true, scrub: 0.7, anticipatePin: 1 }
+      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=160%", pin: true, scrub: 0.7, anticipatePin: 1 }
     })
-      .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 0.2)      /* scene 2 · sky */
-      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.5);  /* scene 3 · torii */
+      .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 0.2)         /* scene 2 · sky */
+      .to(".head-1",   { autoAlpha: 0, duration: 0.45 }, 0.55)  /* headline 1 → 2 */
+      .to(".head-2",   { autoAlpha: 1, duration: 0.45 }, 0.72)
+      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.5)      /* scene 3 · torii */
+      .to(".head-2",   { autoAlpha: 0, duration: 0.45 }, 1.85)  /* headline 2 → 3 */
+      .to(".head-3",   { autoAlpha: 1, duration: 0.45 }, 2.02);
 
     /* light mouse parallax (desktop only) */
     if (matchMedia("(pointer: fine)").matches) {
