@@ -7,6 +7,20 @@
   "use strict";
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* ---------- mobile nav (hamburger) — runs regardless of GSAP ---------- */
+  (function () {
+    var t = document.getElementById("navToggle"), n = document.getElementById("navLinks");
+    if (!t || !n) return;
+    function close() { n.classList.remove("open"); t.classList.remove("is-open"); t.setAttribute("aria-expanded", "false"); }
+    t.addEventListener("click", function () {
+      var open = n.classList.toggle("open");
+      t.classList.toggle("is-open", open);
+      t.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    [].forEach.call(n.querySelectorAll("a"), function (a) { a.addEventListener("click", close); });
+    addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+  })();
+
   /* split brighten paragraphs into words */
   var brightenEls = [].slice.call(document.querySelectorAll("[data-brighten]"));
   brightenEls.forEach(function (el) {
@@ -79,12 +93,14 @@
       defaults: { ease: "power2.out", duration: 1 },
       scrollTrigger: { trigger: ".hero", start: "top top", end: "+=160%", pin: true, scrub: 0.7, anticipatePin: 1 }
     })
-      .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 0.2)         /* scene 2 · sky */
-      .to(".head-1",   { autoAlpha: 0, duration: 0.45 }, 0.55)  /* headline 1 → 2 */
-      .to(".head-2",   { autoAlpha: 1, duration: 0.45 }, 0.72)
-      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.5)      /* scene 3 · torii */
-      .to(".head-2",   { autoAlpha: 0, duration: 0.45 }, 1.85)  /* headline 2 → 3 */
-      .to(".head-3",   { autoAlpha: 1, duration: 0.45 }, 2.02);
+      /* scene 2 (sky) + headline 1→2 share the same 0.2–1.2 window */
+      .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 0.2)
+      .to(".head-1",   { autoAlpha: 0, duration: 0.6 }, 0.25)
+      .to(".head-2",   { autoAlpha: 1, duration: 0.6 }, 0.55)
+      /* scene 3 (torii) + headline 2→3 share the same 1.5–2.5 window */
+      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.5)
+      .to(".head-2",   { autoAlpha: 0, duration: 0.6 }, 1.55)
+      .to(".head-3",   { autoAlpha: 1, duration: 0.6 }, 1.85);
 
     /* light mouse parallax (desktop only) */
     if (matchMedia("(pointer: fine)").matches) {
