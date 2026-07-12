@@ -12,8 +12,8 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20fill='%23F3ECDC'/%3E%3Ctext%20x='32'%20y='46'%20font-family='Georgia,serif'%20font-size='34'%20font-weight='700'%20text-anchor='middle'%20fill='%231A1714'%3E217%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="sakura.css?v=5">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="sakura.css?v=6">
 </head>
 <body>
 
@@ -25,55 +25,68 @@
     </a>
     <nav class="nav-links">
       <a href="#products">Products</a>
+      <a href="#craft">Craft</a>
       <a href="#studio">Studio</a>
       <a href="#process">Process</a>
-      <a href="mailto:destek217product@gmail.com">Contact</a>
+      <a class="nav-cta" href="mailto:destek217product@gmail.com">Say hello</a>
       <a class="nav-alt" href="/">the yellow side ↗</a>
     </nav>
   </header>
 
   <main>
 
-    <!-- 1 · HERO -->
+    <!-- 1 · HERO (3D parallax) -->
     <section class="hero">
-      <p class="kicker rise">独立 · INDEPENDENT PRODUCT STUDIO</p>
-      <h1 class="rise">We plant ideas.<br>We grow <em>products</em>.</h1>
-      <p class="hero-sub rise">217 Products is a small, independent studio in Ankara. We shape a few honest products and tend them for the long run.</p>
-      <div class="hero-cta rise">
-        <a class="btn primary" href="#products">See what we grow</a>
-        <a class="btn quiet" href="#studio">Our story</a>
+      <div class="hero-scene" id="scene" aria-hidden="true">
+        <img class="pl pl-bg" data-depth="0.12" src="assets/hero-main.webp" alt="" width="1920" height="1072" fetchpriority="high">
+        <div class="hero-scrim"></div>
+        <img class="pl pl-mist" data-depth="0.34" src="assets/cloud-ink.webp" alt="" width="1376" height="662">
+        <img class="pl pl-branch pl-branch-l" data-depth="1.0" src="assets/branch.webp" alt="" width="684" height="555">
+        <img class="pl pl-branch pl-branch-r" data-depth="1.25" src="assets/branch.webp" alt="" width="684" height="555">
       </div>
-      <figure class="hero-art rise">
-        <img src="assets/hero-scene.webp" alt="A vermilion torii gate on gentle green hills under a bright sky" width="1600" height="893" fetchpriority="high">
-        <span class="seal" aria-hidden="true">217</span>
-      </figure>
-      <span class="scroll-cue rise" aria-hidden="true">scroll</span>
+      <aside class="tate tate-l" aria-hidden="true">独立の製品工房</aside>
+      <aside class="tate tate-r" aria-hidden="true">二一七 · 217</aside>
+      <div class="hero-content" data-depth="0.45">
+        <p class="kicker rise">独立 · INDEPENDENT PRODUCT STUDIO</p>
+        <h1 class="rise">We plant ideas.<br>We grow <em>products</em>.</h1>
+        <p class="hero-sub rise">A small, independent studio in Ankara. We shape a few honest products — and tend them for the long run.</p>
+        <div class="hero-cta rise">
+          <a class="btn primary" href="#products">Explore our craft</a>
+          <a class="btn quiet" href="#studio">Our story</a>
+        </div>
+      </div>
+      <span class="scroll-cue rise" aria-hidden="true"><i></i>scroll</span>
     </section>
 
-    <!-- 2 · STATEMENT -->
+    <!-- 2 · MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-row" id="marqRow">
+        <span>独立 · INDEPENDENT</span><span class="dot">✦</span><span>職人 · CRAFT</span><span class="dot">✦</span><span>製品 · PRODUCTS</span><span class="dot">✦</span><span>長期 · LONG-TERM</span><span class="dot">✦</span><span>誠実 · HONEST</span><span class="dot">✦</span>
+        <span>独立 · INDEPENDENT</span><span class="dot">✦</span><span>職人 · CRAFT</span><span class="dot">✦</span><span>製品 · PRODUCTS</span><span class="dot">✦</span><span>長期 · LONG-TERM</span><span class="dot">✦</span><span>誠実 · HONEST</span><span class="dot">✦</span>
+      </div>
+    </div>
+
+    <!-- 3 · MANIFESTO -->
     <section class="statement">
+      <span class="section-seal" aria-hidden="true">志</span>
       <p class="eyebrow rise">仕事 · WHAT WE DO</p>
-      <h2 class="display rise">Design it.<br>Build it. Grow it.</h2>
+      <h2 class="display rise">Design it.<br>Build it. <span class="gold">Grow it.</span></h2>
       <p class="brighten" data-brighten>We build a small family of products with a track record we care about more than being loud. Every idea is planted, pruned hard, and only released once it truly opens.</p>
     </section>
 
-    <!-- 3 · PINNED CENTERPIECE -->
+    <!-- 4 · PINNED CENTERPIECE -->
     <section class="hub" id="hub">
       <div class="hub-pin">
+        <img class="hub-mist" src="assets/cloud-ink.webp" alt="" aria-hidden="true" width="1376" height="662">
         <div class="hub-stage" aria-hidden="true">
           <svg class="hub-ribbons" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
             <path class="ribbon" id="ribbonA" d="M500,500 C380,560 300,660 250,740" />
             <path class="ribbon" id="ribbonB" d="M500,500 C630,450 730,380 780,300" />
+            <path class="ribbon ribbon-gold" id="ribbonC" d="M500,500 C560,640 640,720 720,770" />
           </svg>
-
           <svg class="hub-enso" viewBox="0 0 400 400" aria-hidden="true">
-            <path class="enso-path" d="M210,58
-              C110,52 54,140 56,214
-              C58,300 138,352 214,344
-              C298,336 350,262 338,190
-              C328,128 276,86 214,92" />
+            <path class="enso-path" d="M210,58 C110,52 54,140 56,214 C58,300 138,352 214,344 C298,336 350,262 338,190 C328,128 276,86 214,92" />
           </svg>
-
           <div class="hub-core">
             <img class="hub-mark" src="assets/logo-mark.svg" alt="" width="360" height="360">
             <svg class="hub-ring" viewBox="0 0 300 300">
@@ -81,21 +94,21 @@
               <text><textPath href="#ringpath" startOffset="0">217 PRODUCTS · INDEPENDENT PRODUCT STUDIO · ANKARA · </textPath></text>
             </svg>
           </div>
-
           <div class="hub-seal seal-osnote"><span>OSNote</span></div>
           <div class="hub-seal seal-next"><span>次 · Next</span></div>
+          <div class="hub-seal seal-idea"><span>芽 · Ideas</span></div>
         </div>
         <p class="hub-caption rise">One hand, one brush —<br>every product drawn with care.</p>
       </div>
     </section>
 
-    <!-- 4 · PRODUCTS -->
+    <!-- 5 · PRODUCTS -->
     <section class="products" id="products">
       <p class="eyebrow rise">開花 · IN BLOOM</p>
       <div class="product">
-        <figure class="product-art rise">
-          <img src="assets/osnote-scene.webp" alt="A calligraphy brush writing over a floating page of notes" width="1200" height="896">
-          <span class="seal seal-red" aria-hidden="true">01</span>
+        <figure class="product-art rise" data-parallax="0.12">
+          <img src="assets/osnote-rich.webp" alt="A calligraphy brush writing glowing ink over a scroll of notes" width="1200" height="896">
+          <span class="frame-seal" aria-hidden="true">壱</span>
         </figure>
         <div class="product-body">
           <h3 class="display rise">OSNote</h3>
@@ -113,7 +126,19 @@
       <p class="growing rise"><span class="growing-mark" aria-hidden="true">芽</span>Something new is quietly growing.</p>
     </section>
 
-    <!-- 5 · STUDIO / VALUES -->
+    <!-- 6 · CRAFT (immersive parallax) -->
+    <section class="craft" id="craft">
+      <div class="craft-bg" data-parallax="0.2" aria-hidden="true">
+        <img src="assets/zen.webp" alt="" width="1400" height="781">
+      </div>
+      <div class="craft-inner">
+        <p class="eyebrow rise">職人 · THE LONG WAY</p>
+        <h2 class="display rise">We tend a small<br>garden of products.</h2>
+        <p class="craft-lead rise">Nothing here is rushed. We plant carefully, prune often, and stay long after the launch — because the products we make are the ones we live with.</p>
+      </div>
+    </section>
+
+    <!-- 7 · STUDIO / VALUES -->
     <section class="studio" id="studio">
       <p class="eyebrow rise">姿勢 · HOW WE WORK</p>
       <h2 class="display rise">We are not an agency.</h2>
@@ -137,7 +162,7 @@
       </div>
     </section>
 
-    <!-- 6 · PROCESS -->
+    <!-- 8 · PROCESS -->
     <section class="process" id="process">
       <p class="eyebrow rise">道 · HOW IT GROWS</p>
       <h2 class="display rise">From seed to season.</h2>
@@ -149,8 +174,17 @@
       </ol>
     </section>
 
-    <!-- 7 · FINAL -->
+    <!-- 9 · STATS -->
+    <section class="stats">
+      <div class="stat rise"><span class="stat-n">01</span><span class="stat-l">product live</span></div>
+      <div class="stat rise"><span class="stat-n">∞</span><span class="stat-l">ideas growing</span></div>
+      <div class="stat rise"><span class="stat-n">2026</span><span class="stat-l">est. in Ankara</span></div>
+      <div class="stat rise"><span class="stat-n">1</span><span class="stat-l">studio, no clients</span></div>
+    </section>
+
+    <!-- 10 · FINAL -->
     <section class="final">
+      <img class="final-branch" src="assets/branch.webp" alt="" aria-hidden="true" data-parallax="0.16" width="684" height="555">
       <h2 class="display big rise">The next product is<br>already growing.</h2>
       <div class="cta rise">
         <a class="btn primary" href="#products">Explore our products</a>
@@ -174,6 +208,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.25/dist/lenis.min.js" integrity="sha384-ClD7pCgIUz5M81HT8aZmMxCsWmfsycmBiwL5gy1pUbdWHvICIbea22N9sTtAFotA" crossorigin="anonymous"></script>
-  <script src="sakura.js?v=4"></script>
+  <script src="sakura.js?v=6"></script>
 </body>
 </html>
