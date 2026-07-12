@@ -5,27 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="theme-color" content="#09090D">
+  <meta name="theme-color" content="#F3ECDC">
   <meta name="robots" content="noindex">
-  <title>217 Products — The studio behind the products.</title>
-  <meta name="description" content="217 Products is an independent product studio. Ideas take root. Products bloom.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20fill='%2309090D'/%3E%3Ctext%20x='32'%20y='45'%20font-family='Arial,sans-serif'%20font-size='27'%20font-weight='800'%20text-anchor='middle'%20fill='%23F4A6C1'%3E217%3C/text%3E%3C/svg%3E">
+  <title>217 Products — Independent Product Studio</title>
+  <meta name="description" content="217 Products is an independent product studio. We plant ideas, and grow them into products people keep.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20fill='%23F3ECDC'/%3E%3Ctext%20x='32'%20y='46'%20font-family='Georgia,serif'%20font-size='34'%20font-weight='700'%20text-anchor='middle'%20fill='%231A1714'%3E217%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="sakura.css?v=3">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="sakura.css?v=5">
 </head>
 <body>
 
   <canvas class="petals" id="petals" aria-hidden="true"></canvas>
 
   <header class="nav">
-    <a class="brand" href="/">217&nbsp;PRODUCTS</a>
+    <a class="brand" href="/" aria-label="217 Products home">
+      <img class="brand-mark" src="assets/logo-mark.svg" alt="217 Products" width="60" height="60">
+    </a>
     <nav class="nav-links">
       <a href="#products">Products</a>
       <a href="#studio">Studio</a>
+      <a href="#process">Process</a>
       <a href="mailto:destek217product@gmail.com">Contact</a>
-      <a class="nav-yellow" href="/">the yellow side ↗</a>
+      <a class="nav-alt" href="/">the yellow side ↗</a>
     </nav>
   </header>
 
@@ -33,17 +36,25 @@
 
     <!-- 1 · HERO -->
     <section class="hero">
-      <p class="kicker rise">INDEPENDENT PRODUCT STUDIO</p>
-      <h1 class="rise">The studio behind<br>the products.</h1>
-      <p class="hero-sub rise">217 Products is an independent studio. We plant ideas, and grow them into products people keep.</p>
-      <a class="btn primary rise" href="#studio"><span class="tri">▶</span> Discover the studio</a>
+      <p class="kicker rise">独立 · INDEPENDENT PRODUCT STUDIO</p>
+      <h1 class="rise">We plant ideas.<br>We grow <em>products</em>.</h1>
+      <p class="hero-sub rise">217 Products is a small, independent studio in Ankara. We shape a few honest products and tend them for the long run.</p>
+      <div class="hero-cta rise">
+        <a class="btn primary" href="#products">See what we grow</a>
+        <a class="btn quiet" href="#studio">Our story</a>
+      </div>
+      <figure class="hero-art rise">
+        <img src="assets/hero-scene.webp" alt="A vermilion torii gate on gentle green hills under a bright sky" width="1600" height="893" fetchpriority="high">
+        <span class="seal" aria-hidden="true">217</span>
+      </figure>
+      <span class="scroll-cue rise" aria-hidden="true">scroll</span>
     </section>
 
-    <!-- 2 · WHAT WE DO -->
+    <!-- 2 · STATEMENT -->
     <section class="statement">
-      <p class="eyebrow rise">WHAT WE DO</p>
-      <h2 class="big rise">Design it. Build it.<br>Grow it.</h2>
-      <p class="brighten" data-brighten>We build and grow a small family of products, with a track record we care about more than we care about being loud. Every product starts as an idea, gets pruned hard, and only ships once it opens properly.</p>
+      <p class="eyebrow rise">仕事 · WHAT WE DO</p>
+      <h2 class="display rise">Design it.<br>Build it. Grow it.</h2>
+      <p class="brighten" data-brighten>We build a small family of products with a track record we care about more than being loud. Every idea is planted, pruned hard, and only released once it truly opens.</p>
     </section>
 
     <!-- 3 · PINNED CENTERPIECE -->
@@ -51,49 +62,43 @@
       <div class="hub-pin">
         <div class="hub-stage" aria-hidden="true">
           <svg class="hub-ribbons" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
-            <defs>
-              <linearGradient id="rib1" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#F4A6C1"/><stop offset="0.5" stop-color="#EFA44F"/><stop offset="1" stop-color="#8B6BD6"/>
-              </linearGradient>
-              <linearGradient id="rib2" x1="1" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#FFE1EA"/><stop offset="0.5" stop-color="#F4A6C1"/><stop offset="1" stop-color="#EFA44F"/>
-              </linearGradient>
-            </defs>
-            <path class="ribbon" id="ribbonA" d="M500,500 C360,560 250,640 200,720" stroke="url(#rib1)"/>
-            <path class="ribbon" id="ribbonB" d="M500,500 C640,440 760,360 820,300" stroke="url(#rib2)"/>
+            <path class="ribbon" id="ribbonA" d="M500,500 C380,560 300,660 250,740" />
+            <path class="ribbon" id="ribbonB" d="M500,500 C630,450 730,380 780,300" />
+          </svg>
+
+          <svg class="hub-enso" viewBox="0 0 400 400" aria-hidden="true">
+            <path class="enso-path" d="M210,58
+              C110,52 54,140 56,214
+              C58,300 138,352 214,344
+              C298,336 350,262 338,190
+              C328,128 276,86 214,92" />
           </svg>
 
           <div class="hub-core">
-            <span class="hub-glow"></span>
-            <img class="hub-emblem" src="assets/emblem.webp" alt="" width="720" height="720" fetchpriority="high">
+            <img class="hub-mark" src="assets/logo-mark.svg" alt="" width="360" height="360">
             <svg class="hub-ring" viewBox="0 0 300 300">
-              <defs><path id="ringpath" d="M150,150 m-116,0 a116,116 0 1,1 232,0 a116,116 0 1,1 -232,0"/></defs>
-              <text><textPath href="#ringpath" startOffset="0">217 PRODUCTS · INDEPENDENT PRODUCT STUDIO · IDEAS TAKE ROOT · PRODUCTS BLOOM · </textPath></text>
+              <defs><path id="ringpath" d="M150,150 m-124,0 a124,124 0 1,1 248,0 a124,124 0 1,1 -248,0"/></defs>
+              <text><textPath href="#ringpath" startOffset="0">217 PRODUCTS · INDEPENDENT PRODUCT STUDIO · ANKARA · </textPath></text>
             </svg>
           </div>
 
-          <div class="hub-card card-osnote">
-            <img src="assets/icon-osnote.webp" alt="" width="420" height="420">
-            <span>OSNote</span>
-          </div>
-          <div class="hub-card card-sprout">
-            <img src="assets/icon-sprout.webp" alt="" width="420" height="420">
-            <span>Growing</span>
-          </div>
+          <div class="hub-seal seal-osnote"><span>OSNote</span></div>
+          <div class="hub-seal seal-next"><span>次 · Next</span></div>
         </div>
-        <p class="hub-caption rise">We build products with care behind them —<br>one root system, many blossoms.</p>
+        <p class="hub-caption rise">One hand, one brush —<br>every product drawn with care.</p>
       </div>
     </section>
 
     <!-- 4 · PRODUCTS -->
     <section class="products" id="products">
-      <p class="eyebrow rise">IN BLOOM</p>
+      <p class="eyebrow rise">開花 · IN BLOOM</p>
       <div class="product">
-        <div class="product-media rise">
-          <img src="assets/icon-osnote.webp" alt="OSNote app icon" width="420" height="420">
-        </div>
+        <figure class="product-art rise">
+          <img src="assets/osnote-scene.webp" alt="A calligraphy brush writing over a floating page of notes" width="1200" height="896">
+          <span class="seal seal-red" aria-hidden="true">01</span>
+        </figure>
         <div class="product-body">
-          <h3 class="rise">OSNote</h3>
+          <h3 class="display rise">OSNote</h3>
           <p class="product-sub rise">Write over anything. A powerful handwriting layer for Android.</p>
           <ul class="features">
             <li class="rise">Write over any app</li>
@@ -102,59 +107,73 @@
             <li class="rise">Notebook mode</li>
             <li class="rise">Export to PDF and PNG</li>
           </ul>
-          <a class="btn ghost rise" href="https://play.google.com/store" target="_blank" rel="noopener noreferrer">View on Google Play ↗</a>
+          <a class="btn primary rise" href="https://play.google.com/store" target="_blank" rel="noopener noreferrer">View on Google Play ↗</a>
         </div>
       </div>
-      <div class="growing rise">
-        <img src="assets/icon-sprout.webp" alt="" width="420" height="420" aria-hidden="true">
-        <p>Something new is growing.</p>
-      </div>
+      <p class="growing rise"><span class="growing-mark" aria-hidden="true">芽</span>Something new is quietly growing.</p>
     </section>
 
     <!-- 5 · STUDIO / VALUES -->
     <section class="studio" id="studio">
-      <p class="eyebrow rise">HOW WE WORK</p>
-      <h2 class="big rise">We are not an agency.</h2>
+      <p class="eyebrow rise">姿勢 · HOW WE WORK</p>
+      <h2 class="display rise">We are not an agency.</h2>
       <p class="brighten" data-brighten>We build our own products and we live with them for the long run. No clients, no briefs — we answer to the product, and to the people who use it.</p>
       <div class="values">
         <article class="value rise">
-          <span class="value-n">01</span>
+          <span class="value-seal">一</span>
           <h4>Independent</h4>
-          <p>No clients, no briefs. We take the initiative and answer to the product itself.</p>
+          <p>No clients, no briefs. We take the initiative and answer to the work itself.</p>
         </article>
         <article class="value rise">
-          <span class="value-n">02</span>
+          <span class="value-seal">二</span>
           <h4>Focused</h4>
           <p>A few things done properly, instead of many things done fast.</p>
         </article>
         <article class="value rise">
-          <span class="value-n">03</span>
+          <span class="value-seal">三</span>
           <h4>Long-term</h4>
           <p>We keep tending what we plant, season after season.</p>
         </article>
       </div>
     </section>
 
-    <!-- 6 · FINAL -->
+    <!-- 6 · PROCESS -->
+    <section class="process" id="process">
+      <p class="eyebrow rise">道 · HOW IT GROWS</p>
+      <h2 class="display rise">From seed to season.</h2>
+      <ol class="steps">
+        <li class="rise"><span class="step-n">01</span><span class="step-t">Discover</span><span class="step-d">Find the one problem worth solving.</span></li>
+        <li class="rise"><span class="step-n">02</span><span class="step-t">Design</span><span class="step-d">Shape it until it feels obvious.</span></li>
+        <li class="rise"><span class="step-n">03</span><span class="step-t">Build</span><span class="step-d">Engineer it to be quiet and reliable.</span></li>
+        <li class="rise"><span class="step-n">04</span><span class="step-t">Grow</span><span class="step-d">Release, listen, and keep watering.</span></li>
+      </ol>
+    </section>
+
+    <!-- 7 · FINAL -->
     <section class="final">
-      <h2 class="big rise">The next product is<br>already growing.</h2>
+      <h2 class="display big rise">The next product is<br>already growing.</h2>
       <div class="cta rise">
         <a class="btn primary" href="#products">Explore our products</a>
-        <a class="btn ghost" href="mailto:destek217product@gmail.com">Contact</a>
+        <a class="btn quiet" href="mailto:destek217product@gmail.com">Say hello</a>
       </div>
-      <footer class="foot">
-        <span class="rise">217 Products</span>
-        <span class="rise">Independent Product Studio</span>
-        <span class="rise">Ankara, Türkiye</span>
-        <span class="rise">© 2026</span>
-      </footer>
     </section>
+
+    <!-- FOOTER -->
+    <footer class="foot">
+      <img class="foot-logo" src="assets/logo-full.svg" alt="217 Products" width="300" height="300">
+      <div class="foot-meta">
+        <span>Independent Product Studio</span>
+        <span>Ankara, Türkiye</span>
+        <a href="mailto:destek217product@gmail.com">destek217product@gmail.com</a>
+        <span>© 2026 217 Products</span>
+      </div>
+    </footer>
 
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.25/dist/lenis.min.js" integrity="sha384-ClD7pCgIUz5M81HT8aZmMxCsWmfsycmBiwL5gy1pUbdWHvICIbea22N9sTtAFotA" crossorigin="anonymous"></script>
-  <script src="sakura.js?v=1"></script>
+  <script src="sakura.js?v=4"></script>
 </body>
 </html>
