@@ -84,36 +84,37 @@
       scrollTrigger: { trigger: el, start: "top 82%", end: "bottom 58%", scrub: true } });
   });
 
-  /* ---------- hero scroll-assemble (photo builds element by element) ---------- */
-  var scene = document.getElementById("scene");
-  gsap.set(".pl-sky", { autoAlpha: 0 });
-  gsap.set(".pl-mount", { autoAlpha: 0, yPercent: 15 });
-  gsap.set(".pl-fore", { autoAlpha: 0, yPercent: 22 });
-  gsap.set(".pl-torii", { autoAlpha: 0, yPercent: -16 });
+  /* ---------- hero scroll-assemble (photo builds element by element) ----------
+     Three evenly-paced steps: 1) landscape (mountains + foreground together),
+     2) sky, 3) torii. Equal durations + equal gaps so no element rushes in. */
+  gsap.set(".pl-sky", { autoAlpha: 0, scale: 1.05 });
+  gsap.set(".pl-mount", { autoAlpha: 0, yPercent: 14, force3D: true });
+  gsap.set(".pl-fore", { autoAlpha: 0, yPercent: 20, force3D: true });
+  gsap.set(".pl-torii", { autoAlpha: 0, yPercent: -14, force3D: true });
 
   gsap.timeline({
-    scrollTrigger: { trigger: ".hero", start: "top top", end: "+=230%", pin: true, scrub: 0.5, anticipatePin: 1 }
+    defaults: { ease: "power2.out", duration: 1 },
+    scrollTrigger: { trigger: ".hero", start: "top top", end: "+=210%", pin: true, scrub: 0.6, anticipatePin: 1 }
   })
-    .to(".pl-mount", { autoAlpha: 1, yPercent: 0, ease: "power2.out", duration: 0.22 }, 0.06)   /* 1 · mountains */
-    .to(".pl-sky",   { autoAlpha: 1, ease: "power2.out", duration: 0.22 }, 0.30)                 /* 2 · sky */
-    .to(".pl-fore",  { autoAlpha: 1, yPercent: 0, ease: "power2.out", duration: 0.22 }, 0.52)    /* 3 · path + foreground */
-    .to(".pl-torii", { autoAlpha: 1, yPercent: 0, ease: "power2.out", duration: 0.26 }, 0.74);   /* 4 · torii */
+    .to([".pl-mount", ".pl-fore"], { autoAlpha: 1, yPercent: 0 }, 0.2)   /* 1 · landscape */
+    .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 1.5)                     /* 2 · sky */
+    .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 2.8);                /* 3 · torii */
 
-  /* light mouse parallax on the assembled layers */
+  /* light mouse parallax on the assembled layers (no heavy scene tilt) */
   if (matchMedia("(pointer: fine)").matches) {
     var setters = gsap.utils.toArray(".hero-scene .pl").map(function (el) {
       var d = parseFloat(el.dataset.depth) || 0.2;
-      return { x: gsap.quickTo(el, "x", { duration: 0.9, ease: "power3.out" }),
-               y: gsap.quickTo(el, "y", { duration: 0.9, ease: "power3.out" }), d: d };
+      return { x: gsap.quickTo(el, "x", { duration: 1.0, ease: "power3.out" }),
+               y: gsap.quickTo(el, "y", { duration: 1.0, ease: "power3.out" }), d: d };
     });
-    var rotY = gsap.quickTo(scene, "rotationY", { duration: 1.0, ease: "power3.out" });
-    var rotX = gsap.quickTo(scene, "rotationX", { duration: 1.0, ease: "power3.out" });
     addEventListener("mousemove", function (e) {
       var nx = (e.clientX / innerWidth) * 2 - 1, ny = (e.clientY / innerHeight) * 2 - 1;
-      setters.forEach(function (s) { s.x(nx * -18 * s.d); s.y(ny * -11 * s.d); });
-      rotY(nx * 3.0); rotX(-ny * 2.0);
+      setters.forEach(function (s) { s.x(nx * -15 * s.d); s.y(ny * -9 * s.d); });
     });
   }
+
+  /* recalc the pin after big hero layers finish loading (kills layout shift) */
+  addEventListener("load", function () { ScrollTrigger.refresh(); });
 
   /* ---------- section parallax ---------- */
   gsap.utils.toArray("[data-parallax]").forEach(function (el) {
