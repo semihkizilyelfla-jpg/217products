@@ -84,19 +84,24 @@
       scrollTrigger: { trigger: el, start: "top 82%", end: "bottom 58%", scrub: true } });
   });
 
-  /* ---------- hero 3D parallax ---------- */
+  /* ---------- hero scroll-assemble (photo builds element by element) ---------- */
   var scene = document.getElementById("scene");
-  var depthEls = gsap.utils.toArray(".hero [data-depth]");
-  depthEls.forEach(function (el) {
-    var d = parseFloat(el.dataset.depth) || 0.2;
-    gsap.to(el, { yPercent: -14 * d * 5, ease: "none",
-      scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
-  });
-  gsap.to(".pl-bg", { scale: 1.16, ease: "none",
-    scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+  gsap.set(".pl-sky", { autoAlpha: 0 });
+  gsap.set(".pl-mount", { autoAlpha: 0, yPercent: 15 });
+  gsap.set(".pl-fore", { autoAlpha: 0, yPercent: 22 });
+  gsap.set(".pl-torii", { autoAlpha: 0, yPercent: -16 });
 
+  gsap.timeline({
+    scrollTrigger: { trigger: ".hero", start: "top top", end: "+=230%", pin: true, scrub: 0.5, anticipatePin: 1 }
+  })
+    .to(".pl-mount", { autoAlpha: 1, yPercent: 0, ease: "power2.out", duration: 0.22 }, 0.06)   /* 1 · mountains */
+    .to(".pl-sky",   { autoAlpha: 1, ease: "power2.out", duration: 0.22 }, 0.30)                 /* 2 · sky */
+    .to(".pl-fore",  { autoAlpha: 1, yPercent: 0, ease: "power2.out", duration: 0.22 }, 0.52)    /* 3 · path + foreground */
+    .to(".pl-torii", { autoAlpha: 1, yPercent: 0, ease: "power2.out", duration: 0.26 }, 0.74);   /* 4 · torii */
+
+  /* light mouse parallax on the assembled layers */
   if (matchMedia("(pointer: fine)").matches) {
-    var setters = depthEls.map(function (el) {
+    var setters = gsap.utils.toArray(".hero-scene .pl").map(function (el) {
       var d = parseFloat(el.dataset.depth) || 0.2;
       return { x: gsap.quickTo(el, "x", { duration: 0.9, ease: "power3.out" }),
                y: gsap.quickTo(el, "y", { duration: 0.9, ease: "power3.out" }), d: d };
@@ -105,8 +110,8 @@
     var rotX = gsap.quickTo(scene, "rotationX", { duration: 1.0, ease: "power3.out" });
     addEventListener("mousemove", function (e) {
       var nx = (e.clientX / innerWidth) * 2 - 1, ny = (e.clientY / innerHeight) * 2 - 1;
-      setters.forEach(function (s) { s.x(nx * -20 * s.d); s.y(ny * -12 * s.d); });
-      rotY(nx * 3.2); rotX(-ny * 2.2);
+      setters.forEach(function (s) { s.x(nx * -18 * s.d); s.y(ny * -11 * s.d); });
+      rotY(nx * 3.0); rotX(-ny * 2.0);
     });
   }
 
