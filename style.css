@@ -193,6 +193,7 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .product { margin-top: 52px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(40px, 6vw, 96px); align-items: center; }
 .product-art { position: relative; padding: 12px; background: #fff; border-radius: 4px; box-shadow: 0 30px 70px rgba(30,26,22,0.16), 0 0 0 1px var(--gold), 0 0 0 8px rgba(195,154,70,0.12); }
 .product-art img { border-radius: 2px; }
+.osnote-svg { display: block; width: 100%; height: auto; border-radius: 2px; }
 .frame-seal, .section-seal.s2 { position: absolute; }
 .frame-seal {
   right: -20px; bottom: -20px; width: 60px; height: 60px; display: grid; place-items: center;
