@@ -1,0 +1,265 @@
+/* ============================================================
+   217 Products — sakura experiment
+   Night blooms into day as you scroll. Pure sakura palette:
+   indigo night, dawn haze, paper day, sumi ink, blossom pink.
+   Type: Noto Serif JP display + Noto Sans JP body.
+   ============================================================ */
+
+:root {
+  --night: #0e0f1e;
+  --ink: #241f26;
+  --pink: #f7a8b8;
+  --rose: #e86a8a;
+  --cream: #f5efe6;
+  --paper: #fbf6f0;
+  --pad: clamp(20px, 5vw, 72px);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+body {
+  font-family: "Noto Sans JP", system-ui, sans-serif;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--night);
+  overflow-x: hidden;
+}
+
+::selection { background: var(--rose); color: var(--paper); }
+a { color: inherit; text-decoration: none; }
+:focus-visible { outline: 2px solid var(--rose); outline-offset: 4px; }
+
+/* ---------- sky: night -> dawn -> day, scrubbed by scroll ---------- */
+.sky { position: fixed; inset: 0; z-index: -1; }
+.sky-layer { position: absolute; inset: 0; }
+.sky-night { background: linear-gradient(180deg, #0b0c18 0%, #141530 60%, #251b3e 100%); }
+.sky-dawn { background: linear-gradient(180deg, #3a2a52 0%, #b0779c 45%, #f3c3c9 100%); opacity: 0; }
+.sky-day { background: linear-gradient(180deg, #fbe9ec 0%, #fbf6f0 55%); opacity: 0; }
+
+/* ---------- drifting petals ---------- */
+#petalCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* ---------- header ---------- */
+.top {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px var(--pad);
+  z-index: 10;
+  color: var(--cream);
+  mix-blend-mode: difference;
+}
+.brand {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.34em;
+}
+.back { font-size: 12px; letter-spacing: 0.14em; opacity: 0.75; transition: opacity 0.25s; }
+.back:hover { opacity: 1; }
+
+/* ---------- hero (night) ---------- */
+.hero {
+  position: relative;
+  height: 100svh;
+  min-height: 560px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.hero-art { position: absolute; inset: 0; }
+.hero-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 72%, transparent 100%);
+}
+.hero-copy { position: relative; text-align: center; color: var(--cream); }
+.hero h1 {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 500;
+  font-size: clamp(96px, 20vw, 300px);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-shadow: 0 4px 60px rgba(11, 12, 24, 0.8);
+}
+.hero-sub {
+  margin-top: 14px;
+  font-size: clamp(11px, 1.4vw, 15px);
+  font-weight: 400;
+  letter-spacing: 0.52em;
+  text-indent: 0.52em;
+  color: var(--pink);
+}
+.vlabel {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--pad) / 2);
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  font-size: 12px;
+  letter-spacing: 0.4em;
+  color: rgba(245, 239, 230, 0.55);
+}
+.corner-hint {
+  position: absolute;
+  bottom: 26px;
+  left: var(--pad);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  color: rgba(245, 239, 230, 0.6);
+}
+
+/* ---------- shared section shell ---------- */
+section, .foot { padding: clamp(110px, 16vh, 200px) var(--pad); position: relative; }
+.micro {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.38em;
+  color: var(--rose);
+}
+
+/* ---------- manifesto (dawn) ---------- */
+.manifesto { max-width: 1100px; color: var(--cream); }
+.manifesto h2 {
+  margin-top: 30px;
+  font-family: "Noto Serif JP", serif;
+  font-weight: 500;
+  font-size: clamp(26px, 3.6vw, 52px);
+  line-height: 1.4;
+  max-width: 22ch;
+}
+.manifesto .note { margin-top: 26px; font-size: 15px; opacity: 0.75; max-width: 40ch; }
+.branch-top {
+  position: absolute;
+  top: -40px;
+  right: -90px;
+  width: min(42vw, 560px);
+  transform: scaleX(-1) rotate(8deg);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* ---------- work (day) ---------- */
+.work { color: var(--ink); }
+.grove {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  gap: clamp(24px, 4vw, 64px);
+  max-width: 1100px;
+}
+.tree-card {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(36, 31, 38, 0.1);
+  border-radius: 4px;
+  padding: clamp(28px, 3.5vw, 48px);
+  backdrop-filter: blur(4px);
+}
+.tree-card h3 {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 600;
+  font-size: clamp(26px, 3vw, 38px);
+  margin-top: 20px;
+}
+.tree-card p { margin-top: 12px; font-size: 15px; color: rgba(36, 31, 38, 0.75); max-width: 34ch; }
+
+.flower { width: 72px; height: 72px; }
+.flower .petals ellipse { fill: var(--pink); transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); transform-origin: 50px 50px; transform-box: view-box; }
+.flower .heart { fill: var(--rose); }
+.flower.open .petals ellipse { transform: scale(1); }
+.flower.bud .petals ellipse { transform: scale(0.24); }
+.flower.bud .heart { fill: var(--pink); }
+.tree-card:hover .flower.open .petals ellipse { transform: scale(1.08) rotate(6deg); }
+.tree-card:hover .flower.bud .petals ellipse { transform: scale(0.38); }
+
+.twig-link {
+  display: inline-block;
+  margin-top: 24px;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  border-bottom: 1px solid var(--rose);
+  padding-bottom: 3px;
+  transition: color 0.25s;
+}
+.twig-link:hover { color: var(--rose); }
+.twig-note {
+  display: inline-block;
+  margin-top: 24px;
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  color: var(--rose);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 6px 16px;
+}
+
+/* ---------- principles (day) ---------- */
+.principles { color: var(--ink); }
+.creed { margin-top: 40px; list-style: none; max-width: 720px; }
+.creed li {
+  font-family: "Noto Serif JP", serif;
+  font-weight: 500;
+  font-size: clamp(19px, 2.2vw, 28px);
+  line-height: 1.5;
+  padding: 26px 0;
+  border-bottom: 1px solid rgba(36, 31, 38, 0.14);
+}
+.creed li:first-child { border-top: 1px solid rgba(36, 31, 38, 0.14); }
+
+/* ---------- footer (dusk again) ---------- */
+.foot { color: var(--ink); overflow: hidden; }
+.mail {
+  display: inline-block;
+  margin-top: 26px;
+  font-family: "Noto Serif JP", serif;
+  font-weight: 600;
+  font-size: clamp(20px, 3.2vw, 42px);
+  border-bottom: 2px solid var(--rose);
+  padding-bottom: 6px;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  transition: color 0.25s;
+}
+.mail:hover { color: var(--rose); }
+.foot-note { margin-top: 40px; font-size: 12px; letter-spacing: 0.16em; color: rgba(36, 31, 38, 0.55); }
+.watermark {
+  position: absolute;
+  right: -0.06em;
+  bottom: -0.24em;
+  font-family: "Noto Serif JP", serif;
+  font-size: clamp(200px, 34vw, 520px);
+  line-height: 1;
+  color: rgba(232, 106, 138, 0.1);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 720px) {
+  .vlabel { display: none; }
+  .branch-top { width: 70vw; right: -80px; top: -20px; opacity: 0.55; }
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  #petalCanvas { display: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

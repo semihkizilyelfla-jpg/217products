@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="theme-color" content="#0e0f1e">
+  <meta name="robots" content="noindex">
+  <title>217 Products — Sakura</title>
+  <meta name="description" content="A sakura-themed experiment by 217 Products. Apps that bloom.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20fill='%230e0f1e'/%3E%3Ctext%20x='32'%20y='45'%20font-family='Arial,sans-serif'%20font-size='28'%20font-weight='900'%20text-anchor='middle'%20fill='%23f7a8b8'%3E217%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="sakura.css?v=1">
+</head>
+<body>
+
+  <div class="sky" aria-hidden="true">
+    <div class="sky-layer sky-night"></div>
+    <div class="sky-layer sky-dawn"></div>
+    <div class="sky-layer sky-day"></div>
+  </div>
+
+  <canvas id="petalCanvas" aria-hidden="true"></canvas>
+
+  <header class="top">
+    <a class="brand" href="/">217 PRODUCTS</a>
+    <a class="back" href="/">← the yellow side</a>
+  </header>
+
+  <main>
+
+    <section class="hero">
+      <picture class="hero-art" aria-hidden="true">
+        <source media="(max-width: 720px)" srcset="assets/hero-yozakura-mobile.webp">
+        <img src="assets/hero-yozakura.webp" alt="" fetchpriority="high">
+      </picture>
+      <span class="vlabel" aria-hidden="true">夜桜 — YOZAKURA</span>
+      <div class="hero-copy">
+        <h1>217</h1>
+        <p class="hero-sub">APPS THAT BLOOM</p>
+      </div>
+      <p class="corner-hint">scroll — the night will pass</p>
+    </section>
+
+    <section class="manifesto">
+      <img class="branch branch-top" src="assets/branch-ink.png" alt="" aria-hidden="true">
+      <p class="micro reveal">THE ORCHARD · 庭</p>
+      <h2 class="reveal">We tend a small orchard. Every app starts as a bud, gets pruned hard, and only ships once it opens properly.</h2>
+      <p class="note reveal">Nothing here grows in a hurry. That's the point.</p>
+    </section>
+
+    <section class="work">
+      <p class="micro reveal">IN BLOOM · 開花</p>
+      <div class="grove">
+
+        <article class="tree-card reveal">
+          <svg class="flower open" viewBox="0 0 100 100" aria-hidden="true">
+            <g class="petals">
+              <g><ellipse cx="50" cy="28" rx="13" ry="20"/></g>
+              <g transform="rotate(72 50 50)"><ellipse cx="50" cy="28" rx="13" ry="20"/></g>
+              <g transform="rotate(144 50 50)"><ellipse cx="50" cy="28" rx="13" ry="20"/></g>
+              <g transform="rotate(216 50 50)"><ellipse cx="50" cy="28" rx="13" ry="20"/></g>
+              <g transform="rotate(288 50 50)"><ellipse cx="50" cy="28" rx="13" ry="20"/></g>
+            </g>
+            <circle class="heart" cx="50" cy="50" r="7"/>
+          </svg>
+          <h3>OSNote</h3>
+          <p>In bloom. Draw on top of any app — circle it, scribble it, save it.</p>
+          <a class="twig-link" href="https://semihkizilyelfla-jpg.github.io/" target="_blank" rel="noopener noreferrer">visit the blossom ↗</a>
+        </article>
+
+        <article class="tree-card reveal">
+          <svg class="flower bud" viewBox="0 0 100 100" aria-hidden="true">
+            <g class="petals">
+              <g><ellipse cx="50" cy="28" rx="13" ry="20"/></g>
+              <g transform="rotate(72 50 50)"><ellipse cx="50" cy="28" rx="13" ry="20"/></g>
+              <g transform="rotate(144 50 50)"><ellipse cx="50" cy="28" rx="13" ry="20"/></g>
+              <g transform="rotate(216 50 50)"><ellipse cx="50" cy="28" rx="13" ry="20"/></g>
+              <g transform="rotate(288 50 50)"><ellipse cx="50" cy="28" rx="13" ry="20"/></g>
+            </g>
+            <circle class="heart" cx="50" cy="50" r="7"/>
+          </svg>
+          <h3>Next app</h3>
+          <p>A bud on the branch. It opens when it's ready — not before.</p>
+          <span class="twig-note">budding</span>
+        </article>
+
+      </div>
+    </section>
+
+    <section class="principles">
+      <p class="micro reveal">HOW WE GROW · 育</p>
+      <ul class="creed">
+        <li class="reveal">One branch, one blossom — every app does a single job.</li>
+        <li class="reveal">Prune more than you plant.</li>
+        <li class="reveal">Let it open in its own season, then keep watering.</li>
+      </ul>
+    </section>
+
+    <footer class="foot">
+      <p class="micro reveal">PLANT SOMETHING WITH US · 話</p>
+      <a class="mail reveal" href="mailto:destek217product@gmail.com">destek217product@gmail.com</a>
+      <p class="foot-note reveal">© 2026 217 Products — a sakura experiment</p>
+      <span class="watermark" aria-hidden="true">桜</span>
+    </footer>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.25/dist/lenis.min.js" integrity="sha384-ClD7pCgIUz5M81HT8aZmMxCsWmfsycmBiwL5gy1pUbdWHvICIbea22N9sTtAFotA" crossorigin="anonymous"></script>
+  <script src="sakura.js?v=1"></script>
+</body>
+</html>
