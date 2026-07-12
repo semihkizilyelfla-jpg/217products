@@ -13,11 +13,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="sakura.css?v=8">
+  <link rel="stylesheet" href="sakura.css?v=9">
 </head>
 <body>
 
-  <canvas class="petals" id="petals" aria-hidden="true"></canvas>
 
   <header class="nav">
     <a class="brand" href="/" aria-label="217 Products home">
@@ -38,10 +37,10 @@
     <!-- 1 · HERO (3D parallax) -->
     <section class="hero">
       <div class="hero-scene" id="scene" aria-hidden="true">
-        <img class="pl pl-sky" data-depth="0.08" src="assets/hero-sky.webp?u=1" alt="" width="1376" height="768" fetchpriority="high">
-        <img class="pl pl-mount" data-depth="0.18" src="assets/hero-mount.webp?u=1" alt="" width="1376" height="768">
-        <img class="pl pl-torii" data-depth="0.32" src="assets/hero-torii.webp?u=1" alt="" width="1376" height="768">
-        <img class="pl pl-fore" data-depth="0.52" src="assets/hero-fore.webp?u=1" alt="" width="1376" height="768">
+        <img decoding="async" class="pl pl-sky" data-depth="0.08" src="assets/hero-sky.webp?u=2" alt="" width="1376" height="768" fetchpriority="high">
+        <img decoding="async" class="pl pl-mount" data-depth="0.18" src="assets/hero-mount.webp?u=2" alt="" width="1376" height="768">
+        <img decoding="async" class="pl pl-torii" data-depth="0.32" src="assets/hero-torii.webp?u=2" alt="" width="1376" height="768">
+        <img decoding="async" class="pl pl-fore" data-depth="0.52" src="assets/hero-fore.webp?u=2" alt="" width="1376" height="768">
         <div class="hero-scrim"></div>
       </div>
       <aside class="tate tate-l" aria-hidden="true">独立の製品工房</aside>
@@ -77,7 +76,7 @@
     <!-- 4 · PINNED CENTERPIECE -->
     <section class="hub" id="hub">
       <div class="hub-pin">
-        <img class="hub-mist" src="assets/cloud-ink.webp" alt="" aria-hidden="true" width="1376" height="662">
+        <img class="hub-mist" loading="lazy" decoding="async" src="assets/cloud-ink.webp?u=2" alt="" aria-hidden="true" width="1376" height="662">
         <div class="hub-stage" aria-hidden="true">
           <svg class="hub-ribbons" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
             <path class="ribbon" id="ribbonA" d="M500,500 C380,560 300,660 250,740" />
@@ -107,7 +106,7 @@
       <p class="eyebrow rise">開花 · IN BLOOM</p>
       <div class="product">
         <figure class="product-art rise" data-parallax="0.12">
-          <img src="assets/osnote-rich.webp?u=1" alt="A calligraphy brush writing glowing ink over a scroll of notes" width="1200" height="896">
+          <img loading="lazy" decoding="async" src="assets/osnote-rich.webp?u=2" alt="A calligraphy brush writing glowing ink over a scroll of notes" width="1200" height="896">
           <span class="frame-seal" aria-hidden="true">壱</span>
         </figure>
         <div class="product-body">
@@ -129,7 +128,7 @@
     <!-- 6 · CRAFT (immersive parallax) -->
     <section class="craft" id="craft">
       <div class="craft-bg" data-parallax="0.2" aria-hidden="true">
-        <img src="assets/zen.webp?u=1" alt="" width="1400" height="781">
+        <img loading="lazy" decoding="async" src="assets/zen.webp?u=2" alt="" width="1400" height="781">
       </div>
       <div class="craft-inner">
         <p class="eyebrow rise">職人 · THE LONG WAY</p>
@@ -184,7 +183,7 @@
 
     <!-- 10 · FINAL -->
     <section class="final">
-      <img class="final-branch" src="assets/branch.webp" alt="" aria-hidden="true" data-parallax="0.16" width="684" height="555">
+      <img class="final-branch" loading="lazy" decoding="async" src="assets/branch.webp" alt="" aria-hidden="true" data-parallax="0.16" width="684" height="555">
       <h2 class="display big rise">The next product is<br>already growing.</h2>
       <div class="cta rise">
         <a class="btn primary" href="#products">Explore our products</a>
@@ -208,6 +207,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.25/dist/lenis.min.js" integrity="sha384-ClD7pCgIUz5M81HT8aZmMxCsWmfsycmBiwL5gy1pUbdWHvICIbea22N9sTtAFotA" crossorigin="anonymous"></script>
-  <script src="sakura.js?v=8"></script>
+  <script src="sakura.js?v=9"></script>
 </body>
 </html>

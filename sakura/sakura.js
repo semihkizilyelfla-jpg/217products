@@ -7,39 +7,6 @@
   "use strict";
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---------- ambient petals ---------- */
-  function startPetals() {
-    var canvas = document.getElementById("petals");
-    if (!canvas) return;
-    var ctx = canvas.getContext("2d");
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var COLORS = ["#E4A28C", "#C39A46", "#AFBF95", "#E2B24B"];
-    var petals = [];
-    function resize() { canvas.width = innerWidth * dpr; canvas.height = innerHeight * dpr; }
-    resize(); addEventListener("resize", resize);
-    var COUNT = innerWidth < 720 ? 8 : 16;
-    function spawn(any) {
-      return { color: COLORS[(Math.random()*COLORS.length)|0], x: Math.random()*canvas.width,
-        y: any ? Math.random()*canvas.height : -30*dpr, vy: (0.2+Math.random()*0.5)*dpr,
-        size: (3.5+Math.random()*6)*dpr, rot: Math.random()*Math.PI*2, vr: (Math.random()-0.5)*0.02,
-        phase: Math.random()*Math.PI*2, sway: 0.3+Math.random()*0.5, squish: 0.55+Math.random()*0.3,
-        alpha: 0.14+Math.random()*0.22 };
-    }
-    for (var i=0;i<COUNT;i++) petals.push(spawn(true));
-    function draw(p){ var s=p.size; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.scale(1,p.squish);
-      ctx.beginPath(); ctx.moveTo(0,-s); ctx.bezierCurveTo(s*0.9,-s*0.5,s*0.7,s*0.6,0,s);
-      ctx.bezierCurveTo(-s*0.7,s*0.6,-s*0.9,-s*0.5,0,-s); ctx.closePath();
-      ctx.fillStyle=p.color; ctx.globalAlpha=p.alpha; ctx.fill(); ctx.restore(); }
-    var t=0;
-    function tick(){ requestAnimationFrame(tick); if(document.hidden) return; t+=0.016;
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      for(var i=0;i<petals.length;i++){ var p=petals[i]; p.y+=p.vy;
-        p.x+=Math.sin(t*p.sway+p.phase)*0.4*dpr; p.rot+=p.vr;
-        if(p.y>canvas.height+40*dpr) petals[i]=spawn(false); draw(p); } }
-    tick();
-  }
-  if (!reduced) startPetals();
-
   /* split brighten paragraphs into words */
   var brightenEls = [].slice.call(document.querySelectorAll("[data-brighten]"));
   brightenEls.forEach(function (el) {
