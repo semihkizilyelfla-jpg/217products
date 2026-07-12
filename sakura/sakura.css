@@ -257,3 +257,57 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   .brighten .w { color: var(--ink); }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* ============================================================
+   cross-browser + responsive hardening
+   ============================================================ */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html, body { max-width: 100%; overflow-x: hidden; }
+.nav { -webkit-backdrop-filter: blur(4px); }
+.hub-seal { -webkit-backdrop-filter: blur(2px); }
+
+/* small-viewport-unit fallback (older iOS / Android) */
+@supports not (height: 100svh) {
+  .hero { min-height: 100vh; }
+  .hub-pin { height: 100vh; }
+  .craft { min-height: 92vh; }
+  .final { min-height: 88vh; }
+}
+
+/* ---------- tablets & phones (touch: hub is a normal section) ---------- */
+@media (max-width: 820px) {
+  .hero { padding-top: clamp(104px, 15vh, 150px); }
+  /* portrait crop that keeps the torii + valley in frame */
+  .hero-scene .pl { object-position: 32% 46%; }
+  .hub { padding: 0; }
+  .hub-pin { height: auto; min-height: 86svh; padding: clamp(90px,13vh,150px) var(--pad); gap: clamp(26px,5vh,52px); }
+  .section-seal { font-size: clamp(80px, 22vw, 180px); }
+}
+@supports not (height: 86svh) { @media (max-width: 820px) { .hub-pin { min-height: 640px; } } }
+
+/* ---------- phones ---------- */
+@media (max-width: 600px) {
+  .hero h1 { font-size: clamp(33px, 11.4vw, 54px); line-height: 1.03; max-width: 100%; }
+  .hero-sub { font-size: 15px; max-width: 32ch; }
+  .hero-cta { gap: 10px; }
+  .btn { padding: 12px 20px; font-size: 13px; }
+  .statement .display, .studio .display, .process .display, .craft .display { font-size: clamp(33px, 9.2vw, 54px); }
+  .final .display.big { font-size: clamp(37px, 10.6vw, 58px); }
+  .brighten { font-size: clamp(20px, 5.8vw, 29px); max-width: 100%; }
+  .product h3 { font-size: clamp(42px, 12.6vw, 68px); }
+  .hub-stage { width: min(90vw, 66vh, 440px); }
+  .marquee-row span { font-size: 15px; }
+  .marquee-row { gap: 20px; }
+  .stats { grid-template-columns: 1fr 1fr; gap: 32px 18px; }
+  .values { gap: 22px; }
+  .steps li { grid-template-columns: 46px 1fr; }
+  .foot-logo { width: 128px; }
+  .growing { flex-direction: column; gap: 12px; }
+}
+
+/* ---------- very small ---------- */
+@media (max-width: 380px) {
+  :root { --pad: 18px; }
+  .hero h1 { font-size: 32px; }
+  .brand-mark { width: 46px; height: 46px; }
+}

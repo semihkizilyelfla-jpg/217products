@@ -51,40 +51,54 @@
       scrollTrigger: { trigger: el, start: "top 82%", end: "bottom 58%", scrub: true } });
   });
 
-  /* ---------- hero scroll-assemble (photo builds element by element) ----------
-     Three evenly-paced steps: 1) landscape (mountains + foreground together),
-     2) sky, 3) torii. Equal durations + equal gaps so no element rushes in. */
-  gsap.set(".pl-sky", { autoAlpha: 0, scale: 1.05 });
-  gsap.set(".pl-mount", { autoAlpha: 0, yPercent: 14, force3D: true });
-  gsap.set(".pl-fore", { autoAlpha: 0, yPercent: 20, force3D: true });
-  gsap.set(".pl-torii", { autoAlpha: 0, yPercent: -14, force3D: true });
+  /* ---------- hero: scene 1 loads with the site; sky + torii assemble on scroll ----------
+     Scene 1 (the landscape) fades in on load with the copy, so the site never
+     opens blank. Scrolling then builds scene 2 (sky) and scene 3 (torii),
+     evenly paced. Reduced pin distance keeps the first scroll gentle. */
+  var isTouch = matchMedia("(max-width: 820px)").matches;
+  gsap.set(".pl-mount", { autoAlpha: 0, yPercent: 8, force3D: true });
+  gsap.set(".pl-fore",  { autoAlpha: 0, yPercent: 12, force3D: true });
+  gsap.set(".pl-sky",   { autoAlpha: 0, scale: 1.06, force3D: true });
+  gsap.set(".pl-torii", { autoAlpha: 0, yPercent: -12, force3D: true });
 
-  gsap.timeline({
-    defaults: { ease: "power2.out", duration: 1 },
-    scrollTrigger: { trigger: ".hero", start: "top top", end: "+=210%", pin: true, scrub: 0.6, anticipatePin: 1 }
-  })
-    .to([".pl-mount", ".pl-fore"], { autoAlpha: 1, yPercent: 0 }, 0.2)   /* 1 · landscape */
-    .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 1.5)                     /* 2 · sky */
-    .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 2.8);                /* 3 · torii */
+  if (isTouch) {
+    /* mobile/tablet: reveal the whole scene on load, no pin — consistent on every device */
+    gsap.to(".pl-mount", { autoAlpha: 1, yPercent: 0, duration: 1.2, ease: "power2.out", delay: 0.12 });
+    gsap.to(".pl-fore",  { autoAlpha: 1, yPercent: 0, duration: 1.2, ease: "power2.out", delay: 0.24 });
+    gsap.to(".pl-sky",   { autoAlpha: 1, scale: 1,    duration: 1.2, ease: "power2.out", delay: 0.40 });
+    gsap.to(".pl-torii", { autoAlpha: 1, yPercent: 0, duration: 1.2, ease: "power2.out", delay: 0.55 });
+  } else {
+    /* desktop: scene 1 (landscape) on load, then sky + torii assemble on scroll */
+    gsap.timeline({ defaults: { ease: "power3.out" }, delay: 0.1 })
+      .to(".pl-mount", { autoAlpha: 1, yPercent: 0, duration: 1.5 }, 0)
+      .to(".pl-fore",  { autoAlpha: 1, yPercent: 0, duration: 1.5 }, 0.12);
 
-  /* light mouse parallax on the assembled layers (no heavy scene tilt) */
-  if (matchMedia("(pointer: fine)").matches) {
-    var setters = gsap.utils.toArray(".hero-scene .pl").map(function (el) {
-      var d = parseFloat(el.dataset.depth) || 0.2;
-      return { x: gsap.quickTo(el, "x", { duration: 1.0, ease: "power3.out" }),
-               y: gsap.quickTo(el, "y", { duration: 1.0, ease: "power3.out" }), d: d };
-    });
-    addEventListener("mousemove", function (e) {
-      var nx = (e.clientX / innerWidth) * 2 - 1, ny = (e.clientY / innerHeight) * 2 - 1;
-      setters.forEach(function (s) { s.x(nx * -15 * s.d); s.y(ny * -9 * s.d); });
-    });
+    gsap.timeline({
+      defaults: { ease: "power2.out", duration: 1 },
+      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=150%", pin: true, scrub: 0.7, anticipatePin: 1 }
+    })
+      .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 0.2)      /* scene 2 · sky */
+      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.5);  /* scene 3 · torii */
+
+    /* light mouse parallax (desktop only) */
+    if (matchMedia("(pointer: fine)").matches) {
+      var setters = gsap.utils.toArray(".hero-scene .pl").map(function (el) {
+        var d = parseFloat(el.dataset.depth) || 0.2;
+        return { x: gsap.quickTo(el, "x", { duration: 1.0, ease: "power3.out" }),
+                 y: gsap.quickTo(el, "y", { duration: 1.0, ease: "power3.out" }), d: d };
+      });
+      addEventListener("mousemove", function (e) {
+        var nx = (e.clientX / innerWidth) * 2 - 1, ny = (e.clientY / innerHeight) * 2 - 1;
+        setters.forEach(function (s) { s.x(nx * -15 * s.d); s.y(ny * -9 * s.d); });
+      });
+    }
   }
 
-  /* recalc the pin after big hero layers finish loading (kills layout shift) */
+  /* recalc pins after big hero layers finish loading (kills layout shift) */
   addEventListener("load", function () { ScrollTrigger.refresh(); });
 
-  /* ---------- section parallax ---------- */
-  gsap.utils.toArray("[data-parallax]").forEach(function (el) {
+  /* ---------- section parallax (desktop only) ---------- */
+  if (!isTouch) gsap.utils.toArray("[data-parallax]").forEach(function (el) {
     var f = parseFloat(el.dataset.parallax) || 0.12;
     gsap.fromTo(el, { yPercent: -f * 100 }, { yPercent: f * 100, ease: "none",
       scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: true } });
@@ -100,18 +114,28 @@
   if (enso) { var el0 = enso.getTotalLength(); enso.style.strokeDasharray = el0; enso.style.strokeDashoffset = el0; }
   ribbons.forEach(function (p) { var len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len; });
   gsap.set(".hub-core", { xPercent: -50, yPercent: -50, scale: 0.72, autoAlpha: 0.3 });
-  gsap.set(".hub-seal", { autoAlpha: 0, scale: 0.6, y: 22 });
+  gsap.set(".hub-seal", { autoAlpha: 0, scale: 0.6 });
   gsap.set(".hub-caption", { autoAlpha: 0, y: 26 });
 
-  var hubTl = gsap.timeline({
-    scrollTrigger: { trigger: ".hub", start: "top top", end: "+=170%", pin: ".hub-pin", scrub: 0.6, anticipatePin: 1 }
-  });
-  hubTl
-    .to(enso, { strokeDashoffset: 0, duration: 0.5, ease: "power1.inOut" }, 0)
-    .to(".hub-core", { scale: 1, autoAlpha: 1, duration: 0.4, ease: "power2.out" }, 0.26)
-    .to(ribbons, { strokeDashoffset: 0, duration: 0.5, stagger: 0.1, ease: "power1.inOut" }, 0.46)
-    .to(".hub-seal", { autoAlpha: 1, scale: 1, y: 0, duration: 0.4, stagger: 0.12, ease: "back.out(1.5)" }, 0.62)
-    .to(".hub-caption", { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.85);
+  function buildHub(tl) {
+    return tl
+      .to(enso, { strokeDashoffset: 0, ease: "power1.inOut" }, 0)
+      .to(".hub-core", { scale: 1, autoAlpha: 1, ease: "power2.out" }, 0.4)
+      .to(ribbons, { strokeDashoffset: 0, stagger: 0.12, ease: "power1.inOut" }, 0.72)
+      .to(".hub-seal", { autoAlpha: 1, scale: 1, stagger: 0.14, ease: "back.out(1.5)" }, 1.02)
+      .to(".hub-caption", { autoAlpha: 1, y: 0, ease: "power2.out" }, 1.42);
+  }
+  if (isTouch) {
+    /* mobile: draw the medallion once as it enters — no pin */
+    ScrollTrigger.create({ trigger: ".hub", start: "top 68%", once: true, onEnter: function () {
+      buildHub(gsap.timeline({ defaults: { duration: 0.7 } }));
+    }});
+  } else {
+    buildHub(gsap.timeline({
+      defaults: { duration: 0.5 },
+      scrollTrigger: { trigger: ".hub", start: "top top", end: "+=170%", pin: ".hub-pin", scrub: 0.6, anticipatePin: 1 }
+    }));
+  }
 
   gsap.to(".seal-osnote", { y: 10, duration: 3.4, repeat: -1, yoyo: true, ease: "sine.inOut" });
   gsap.to(".seal-next", { y: -10, duration: 3.8, repeat: -1, yoyo: true, ease: "sine.inOut" });
