@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=23">
+  <link rel="stylesheet" href="style.css?v=24">
 </head>
 <body>
 
@@ -86,26 +86,26 @@
 
     <!-- 4 · GLOBE — our reach (auto-rotate + drag) -->
     <section class="hub" id="hub">
-      <div class="hub-pin">
+      <div class="hub-grid">
+        <div class="reach-panel">
           <p class="hub-eyebrow eyebrow">世界 · OUR REACH</p>
+          <img class="reach-logo" src="assets/logo-full.svg" alt="217 Products" width="220" height="220">
+          <ul class="reach-steps">
+            <li class="rstep rstep-1"><span class="rnum">1</span><img class="rarrow" src="assets/reach-arrow-straight.webp?u=1" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="rtext">Rooted in Ankara</span></li>
+            <li class="rstep rstep-2"><span class="rnum">2</span><img class="rarrow" src="assets/reach-arrow-straight.webp?u=1" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="rtext">Reaching the world</span></li>
+            <li class="rstep rstep-3"><span class="rnum">3</span><img class="rarrow" src="assets/reach-arrow-straight.webp?u=1" alt="" aria-hidden="true" loading="lazy" decoding="async"><span class="rtext">Growing every season</span></li>
+          </ul>
+          <p class="reach-foot">From one small studio, growing <span class="gold">outward</span>.</p>
+        </div>
+        <div class="hub-divider" aria-hidden="true"><img class="hub-column" src="assets/hub-column.webp?u=1" alt="" loading="lazy" decoding="async"></div>
+        <div class="globe-panel">
           <div class="globe-stage">
-            <img class="globe-halo" src="assets/globe-halo.webp?u=3" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="globe-halo" src="assets/globe-halo.webp?u=4" alt="" aria-hidden="true" loading="lazy" decoding="async">
             <div id="globe3d" class="globe-canvas" role="img" aria-label="A rotating sumi-e ink globe of the world — drag to spin it">
               <img class="globe-fallback" src="assets/globe.webp?u=1" alt="" width="760" height="760" loading="lazy" decoding="async">
             </div>
-            <img class="reach-arrow ra-1" src="assets/reach-arrow.webp?u=1" alt="" aria-hidden="true" loading="lazy" decoding="async">
-            <img class="reach-arrow ra-2" src="assets/reach-arrow.webp?u=1" alt="" aria-hidden="true" loading="lazy" decoding="async">
-            <img class="reach-arrow ra-3" src="assets/reach-arrow.webp?u=1" alt="" aria-hidden="true" loading="lazy" decoding="async">
-            <span class="reach-label rl-1">Rooted in Ankara</span>
-            <span class="reach-label rl-2">Reaching the world</span>
-            <span class="reach-label rl-3">Growing every season</span>
           </div>
-          <ul class="reach-list" aria-hidden="true">
-            <li class="rli rli-1">Rooted in Ankara</li>
-            <li class="rli rli-2">Reaching the world</li>
-            <li class="rli rli-3">Growing every season</li>
-          </ul>
-          <p class="hub-caption">From one small studio,<br>growing <span class="gold">outward</span>.</p>
+        </div>
       </div>
     </section>
 
@@ -217,6 +217,6 @@
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.25/dist/lenis.min.js" integrity="sha384-ClD7pCgIUz5M81HT8aZmMxCsWmfsycmBiwL5gy1pUbdWHvICIbea22N9sTtAFotA" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
   <script src="globe3d.js?v=5"></script>
-  <script src="main.js?v=18"></script>
+  <script src="main.js?v=19"></script>
 </body>
 </html>

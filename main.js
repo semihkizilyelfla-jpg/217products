@@ -133,18 +133,18 @@
   /* ---------- globe reach callouts: revealed once, staggered, as the section enters ----------
      The globe itself just auto-rotates (and can be dragged) — no scroll pinning. */
   var hub = document.querySelector(".hub");
-  var globeStage = document.querySelector(".globe-stage");
-  if (hub && globeStage) {
+  var reachSteps = document.querySelector(".reach-steps");
+  if (hub && reachSteps) {
     hub.classList.add("js-hub");
     function setReach(n) {
-      globeStage.classList.toggle("on1", n >= 1);
-      globeStage.classList.toggle("on2", n >= 2);
-      globeStage.classList.toggle("on3", n >= 3);
+      reachSteps.classList.toggle("on1", n >= 1);
+      reachSteps.classList.toggle("on2", n >= 2);
+      reachSteps.classList.toggle("on3", n >= 3);
     }
-    ScrollTrigger.create({ trigger: ".hub", start: "top 64%", once: true, onEnter: function () {
+    ScrollTrigger.create({ trigger: ".hub", start: "top 62%", once: true, onEnter: function () {
       setReach(1);
-      gsap.delayedCall(0.45, function () { setReach(2); });
-      gsap.delayedCall(0.90, function () { setReach(3); });
+      gsap.delayedCall(0.35, function () { setReach(2); });
+      gsap.delayedCall(0.70, function () { setReach(3); });
     }});
   }
 
