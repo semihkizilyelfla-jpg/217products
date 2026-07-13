@@ -10,6 +10,8 @@
   <title>217 Products — Independent Product Studio</title>
   <meta name="description" content="217 Products is an independent product studio. We plant ideas, and grow them into products people keep.">
   <link rel="canonical" href="https://217products.com/">
+  <link rel="alternate" hreflang="en" href="https://217products.com/">
+  <link rel="alternate" hreflang="tr" href="https://217products.com/index-tr.html">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://217products.com/">
   <meta property="og:title" content="217 Products — Independent Product Studio">
@@ -20,7 +22,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=26">
+  <link rel="preload" as="image" href="assets/hero-mount.webp?u=2" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/hero-sky.webp?u=2">
+  <link rel="stylesheet" href="style.css?v=37">
 </head>
 <body>
 
@@ -36,6 +40,7 @@
       <a href="#studio">Studio</a>
       <a href="#process">Process</a>
       <a class="nav-cta" href="mailto:destek217product@gmail.com">Say hello</a>
+      <a class="nav-alt" href="index-tr.html" hreflang="tr" lang="tr" aria-label="Türkçe">TR</a>
     </nav>
   </header>
 
@@ -45,7 +50,7 @@
     <section class="hero">
       <div class="hero-scene" id="scene" aria-hidden="true">
         <img decoding="async" class="pl pl-sky" data-depth="0.08" src="assets/hero-sky.webp?u=2" alt="" width="1376" height="768" fetchpriority="high">
-        <img decoding="async" class="pl pl-mount" data-depth="0.18" src="assets/hero-mount.webp?u=2" alt="" width="1376" height="768">
+        <img decoding="async" class="pl pl-mount" data-depth="0.18" src="assets/hero-mount.webp?u=2" alt="" width="1376" height="768" fetchpriority="high">
         <img decoding="async" class="pl pl-torii" data-depth="0.32" src="assets/hero-torii.webp?u=2" alt="" width="1376" height="768">
         <img decoding="async" class="pl pl-fore" data-depth="0.52" src="assets/hero-fore.webp?u=2" alt="" width="1376" height="768">
         <div class="hero-scrim"></div>
@@ -59,7 +64,7 @@
           <div class="head head-2" aria-hidden="true">A few things,<br>made <em>properly</em>.</div>
           <div class="head head-3" aria-hidden="true">Grown slowly,<br>built to <em>last</em>.</div>
         </div>
-        <p class="hero-sub rise">A small, independent studio in Ankara. We make a few honest products and look after them for the long haul.</p>
+        <p class="hero-sub rise">We're a small, independent studio in Ankara. We build a few honest apps and stick with them for the long haul.</p>
         <div class="hero-cta rise">
           <a class="btn primary" href="#products">Explore our craft</a>
           <a class="btn quiet" href="#studio">Our story</a>
@@ -81,26 +86,26 @@
       <span class="section-seal" aria-hidden="true">志</span>
       <p class="eyebrow rise">仕事 · WHAT WE DO</p>
       <h2 class="display rise">Design it.<br>Build it. <span class="gold">Grow it.</span></h2>
-      <p class="brighten" data-brighten>We make a small family of products, and we care more about them being good than loud. Most ideas get cut. The ones that ship are the ones we kept coming back to.</p>
+      <p class="brighten" data-brighten>We keep a small family of products, and we'd rather they be good than loud. Most of our ideas never make it out the door. The ones that ship are the ones we couldn't stop thinking about.</p>
     </section>
 
     <!-- 4 · GLOBE — our reach (auto-rotate + drag) -->
     <section class="hub" id="hub">
+      <div class="reach-bg" aria-hidden="true"></div>
       <div class="hub-grid">
         <div class="reach-panel">
           <p class="hub-eyebrow eyebrow">世界 · OUR REACH</p>
           <img class="reach-logo" src="assets/logo-full.svg" alt="217 Products" width="220" height="220">
           <ul class="reach-steps">
-            <li class="rstep rstep-1"><img class="rmark" src="assets/rmark-1.webp?u=1" alt="Step 1" decoding="async"><span class="rtext">Rooted in Ankara</span></li>
-            <li class="rstep rstep-2"><img class="rmark" src="assets/rmark-2.webp?u=1" alt="Step 2" decoding="async"><span class="rtext">Reaching the world</span></li>
-            <li class="rstep rstep-3"><img class="rmark" src="assets/rmark-3.webp?u=1" alt="Step 3" decoding="async"><span class="rtext">Growing every season</span></li>
+            <li class="rstep rstep-1"><img class="rnum" src="assets/rnum-1.webp" alt="Step 1" decoding="async"><img class="rarrow" src="assets/rarrow.webp" alt="" aria-hidden="true" decoding="async"><span class="rtext">Rooted in Ankara</span></li>
+            <li class="rstep rstep-2"><img class="rnum" src="assets/rnum-2.webp" alt="Step 2" decoding="async"><img class="rarrow" src="assets/rarrow.webp" alt="" aria-hidden="true" decoding="async"><span class="rtext">Reaching the world</span></li>
+            <li class="rstep rstep-3"><img class="rnum" src="assets/rnum-3.webp" alt="Step 3" decoding="async"><img class="rarrow" src="assets/rarrow.webp" alt="" aria-hidden="true" decoding="async"><span class="rtext">Growing every season</span></li>
           </ul>
           <p class="reach-foot">From one small studio, growing <span class="gold">outward</span>.</p>
         </div>
-        <div class="hub-divider" aria-hidden="true"><img class="hub-column" src="assets/hub-column.webp?u=2" alt="" decoding="async"></div>
         <div class="globe-panel">
           <div class="globe-stage">
-            <img class="globe-halo" src="assets/globe-halo.webp?u=5" alt="" aria-hidden="true" decoding="async">
+            <img class="globe-ring" src="assets/reach-ring.webp?u=2" alt="" aria-hidden="true" decoding="async">
             <div id="globe3d" class="globe-canvas" role="img" aria-label="A rotating sumi-e ink globe of the world — drag to spin it">
               <img class="globe-fallback" src="assets/globe.webp?u=1" alt="" width="760" height="760" loading="lazy" decoding="async">
             </div>
@@ -119,7 +124,7 @@
         </figure>
         <div class="product-body">
           <h3 class="display rise">OSNote</h3>
-          <p class="product-sub rise">Write over anything. A powerful handwriting layer for Android.</p>
+          <p class="product-sub rise">Write over anything on your screen — a handwriting layer for Android that stays out of your way.</p>
           <ul class="features">
             <li class="rise">Write over any app</li>
             <li class="rise">Floating handwriting toolbar</li>
@@ -141,7 +146,7 @@
       <div class="craft-inner">
         <p class="eyebrow rise">職人 · THE LONG WAY</p>
         <h2 class="display rise">We tend a small<br>garden of products.</h2>
-        <p class="craft-lead rise">Nothing here is rushed. We start small, cut a lot, and stay around long after launch — these are products we use ourselves.</p>
+        <p class="craft-lead rise">Nothing here gets rushed. We start small, throw a lot away, and stay long after launch — because these are apps we use ourselves, every day.</p>
       </div>
     </section>
 
@@ -149,12 +154,12 @@
     <section class="studio" id="studio">
       <p class="eyebrow rise">姿勢 · HOW WE WORK</p>
       <h2 class="display rise">We are not an agency.</h2>
-      <p class="brighten" data-brighten>We build our own products and we live with them for the long run. No clients, no briefs — we answer to the product, and to the people who use it.</p>
+      <p class="brighten" data-brighten>We build our own products and live with them for years, not sprints. No clients, no briefs — we only answer to the work, and to the people who use it.</p>
       <div class="values">
         <article class="value rise">
           <span class="value-seal">一</span>
           <h4>Independent</h4>
-          <p>No clients, no briefs. We take the initiative and answer to the work itself.</p>
+          <p>No clients, no briefs. We decide what's worth building, and the work is our only boss.</p>
         </article>
         <article class="value rise">
           <span class="value-seal">二</span>
@@ -164,7 +169,7 @@
         <article class="value rise">
           <span class="value-seal">三</span>
           <h4>Long-term</h4>
-          <p>We stick with what we ship, and keep making it better.</p>
+          <p>We stay with what we ship and keep making it better, update after update.</p>
         </article>
       </div>
     </section>
@@ -176,8 +181,8 @@
       <ol class="steps">
         <li class="rise"><span class="step-n">01</span><span class="step-t">Discover</span><span class="step-d">Find the one problem worth solving.</span></li>
         <li class="rise"><span class="step-n">02</span><span class="step-t">Design</span><span class="step-d">Shape it until it feels obvious.</span></li>
-        <li class="rise"><span class="step-n">03</span><span class="step-t">Build</span><span class="step-d">Engineer it to be quiet and reliable.</span></li>
-        <li class="rise"><span class="step-n">04</span><span class="step-t">Grow</span><span class="step-d">Release, listen, and keep improving.</span></li>
+        <li class="rise"><span class="step-n">03</span><span class="step-t">Build</span><span class="step-d">Build it to be fast, quiet, and reliable.</span></li>
+        <li class="rise"><span class="step-n">04</span><span class="step-t">Grow</span><span class="step-d">Ship it, listen closely, and keep making it better.</span></li>
       </ol>
     </section>
 
