@@ -171,23 +171,23 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 /* left panel — logo + numbered reach steps */
 .reach-panel { justify-self: end; max-width: 440px; display: flex; flex-direction: column; gap: clamp(20px, 3.2vh, 38px); }
 .reach-logo { width: clamp(150px, 15vw, 208px); height: auto; }
-.reach-steps { list-style: none; display: flex; flex-direction: column; gap: clamp(15px, 2.6vh, 28px); }
-.rstep { display: flex; align-items: center; gap: clamp(12px, 1.4vw, 20px); }
-.rnum { font-family: "Shippori Mincho", Georgia, serif; font-weight: 800; font-size: clamp(30px, 3.4vw, 46px); line-height: 1; color: var(--gold-deep); }
-.rarrow { width: clamp(46px, 5vw, 76px); height: auto; flex: none; }
+.reach-steps { list-style: none; display: flex; flex-direction: column; gap: clamp(16px, 2.8vh, 30px); }
+/* fixed mark column keeps the text baseline aligned across all three rows */
+.rstep { display: grid; grid-template-columns: clamp(120px, 13vw, 176px) 1fr; align-items: center; gap: clamp(14px, 1.6vw, 24px); }
+.rmark { width: 100%; height: auto; display: block; }
 .rtext { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: clamp(16px, 1.7vw, 22px); color: var(--ink); }
 .reach-foot { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(15px, 1.5vw, 19px); color: var(--ink-2); }
 
-/* center divider column (HGF) */
+/* center divider — bold black-and-white sumi column (HGF) */
 .hub-divider { align-self: stretch; display: flex; align-items: center; justify-content: center; }
-.hub-column { height: min(76vh, 640px); width: auto; max-width: none; object-fit: contain; }
+.hub-column { height: min(78vh, 680px); width: auto; max-width: none; object-fit: contain; }
 
 /* right panel — enlarged globe */
 .globe-panel { justify-self: start; }
 .globe-stage { position: relative; width: min(46vw, 62vh, 560px); aspect-ratio: 1; }
 .globe-halo { /* HGF sumi ink-wash halo behind the globe */
   position: absolute; z-index: 0; top: 50%; left: 50%; width: 152%; height: 152%; max-width: none;
-  transform: translate(-50%, -50%); pointer-events: none; opacity: 0.82;
+  transform: translate(-50%, -50%); pointer-events: none; opacity: 0.95;
 }
 .globe-stage::before { /* soft contact shadow under the globe */
   content: ""; position: absolute; z-index: 0; left: 50%; top: 86%; width: 52%; height: 8%;
@@ -333,7 +333,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .brighten { font-size: clamp(20px, 5.8vw, 29px); max-width: 100%; }
   .product h3 { font-size: clamp(42px, 12.6vw, 68px); }
   .globe-stage { width: min(76vw, 44vh, 340px); }
-  .rnum { font-size: 34px; }
+  .rstep { grid-template-columns: 118px 1fr; gap: 14px; }
   .rtext { font-size: 17px; }
   .marquee-row span { font-size: 15px; }
   .marquee-row { gap: 20px; }
