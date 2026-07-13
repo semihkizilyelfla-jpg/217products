@@ -130,38 +130,42 @@
   var marq = document.getElementById("marqRow");
   if (marq) gsap.to(marq, { xPercent: -50, duration: 26, ease: "none", repeat: -1 });
 
-  /* ---------- pinned medallion ---------- */
-  var enso = document.querySelector(".enso-path");
-  var ribbons = gsap.utils.toArray(".ribbon");
-  if (enso) { var el0 = enso.getTotalLength(); enso.style.strokeDasharray = el0; enso.style.strokeDashoffset = el0; }
-  ribbons.forEach(function (p) { var len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len; });
-  gsap.set(".hub-core", { xPercent: -50, yPercent: -50, scale: 0.72, autoAlpha: 0.3 });
-  gsap.set(".hub-seal", { autoAlpha: 0, scale: 0.6 });
-  gsap.set(".hub-caption", { autoAlpha: 0, y: 26 });
-
-  function buildHub(tl) {
-    return tl
-      .to(enso, { strokeDashoffset: 0, ease: "power1.inOut" }, 0)
-      .to(".hub-core", { scale: 1, autoAlpha: 1, ease: "power2.out" }, 0.4)
-      .to(ribbons, { strokeDashoffset: 0, stagger: 0.12, ease: "power1.inOut" }, 0.72)
-      .to(".hub-seal", { autoAlpha: 1, scale: 1, stagger: 0.14, ease: "back.out(1.5)" }, 1.02)
-      .to(".hub-caption", { autoAlpha: 1, y: 0, ease: "power2.out" }, 1.42);
+  /* ---------- pinned globe: quick spin + one outward arrow per scroll step ----------
+     Sticky globe over a tall track; the track's scroll progress is split into 3 steps.
+     Entering each step spins the globe once and reveals the next reach arrow. */
+  var hub = document.querySelector(".hub");
+  var globeStage = document.querySelector(".globe-stage");
+  if (hub && globeStage) {
+    hub.classList.add("js-hub");
+    function spinGlobe() { if (window.OSGlobe && window.OSGlobe.spin) window.OSGlobe.spin(); }
+    function setReach(n) {
+      globeStage.classList.toggle("on1", n >= 1);
+      globeStage.classList.toggle("on2", n >= 2);
+      globeStage.classList.toggle("on3", n >= 3);
+    }
+    var curStep = -1;
+    function toStep(n) {
+      if (n === curStep) return;
+      var increasing = n > curStep;
+      curStep = n; setReach(n);
+      if (increasing && n > 0) spinGlobe();
+    }
+    if (isTouch) {
+      /* mobile: no pin — spin once and stagger the arrows in as the section enters */
+      ScrollTrigger.create({ trigger: ".hub", start: "top 60%", once: true, onEnter: function () {
+        spinGlobe(); setReach(1);
+        gsap.delayedCall(0.55, function () { setReach(2); });
+        gsap.delayedCall(1.05, function () { setReach(3); });
+      }});
+    } else {
+      /* desktop: pin the globe; each third of the scroll spins it and reveals one arrow */
+      ScrollTrigger.create({
+        trigger: ".hub", start: "top top", end: "+=260%", pin: ".hub-pin", anticipatePin: 1,
+        onUpdate: function (self) { toStep(Math.min(3, Math.floor(self.progress * 3 + 0.0001) + 1)); },
+        onLeaveBack: function () { toStep(0); }
+      });
+    }
   }
-  if (isTouch) {
-    /* mobile: draw the medallion once as it enters — no pin */
-    ScrollTrigger.create({ trigger: ".hub", start: "top 68%", once: true, onEnter: function () {
-      buildHub(gsap.timeline({ defaults: { duration: 0.7 } }));
-    }});
-  } else {
-    buildHub(gsap.timeline({
-      defaults: { duration: 0.5 },
-      scrollTrigger: { trigger: ".hub", start: "top top", end: "+=170%", pin: ".hub-pin", scrub: 0.6, anticipatePin: 1 }
-    }));
-  }
-
-  gsap.to(".seal-osnote", { y: 10, duration: 3.4, repeat: -1, yoyo: true, ease: "sine.inOut" });
-  gsap.to(".seal-next", { y: -10, duration: 3.8, repeat: -1, yoyo: true, ease: "sine.inOut" });
-  gsap.to(".seal-idea", { y: 8, duration: 4.2, repeat: -1, yoyo: true, ease: "sine.inOut" });
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () { ScrollTrigger.refresh(); });

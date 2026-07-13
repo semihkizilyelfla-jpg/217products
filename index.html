@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=15">
+  <link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
 
@@ -84,31 +84,37 @@
       <p class="brighten" data-brighten>We make a small family of products, and we care more about them being good than loud. Most ideas get cut. The ones that ship are the ones we kept coming back to.</p>
     </section>
 
-    <!-- 4 · PINNED CENTERPIECE -->
+    <!-- 4 · PINNED GLOBE — our reach -->
     <section class="hub" id="hub">
       <div class="hub-pin">
-        <img class="hub-mist" loading="lazy" decoding="async" src="assets/cloud-ink.webp?u=2" alt="" aria-hidden="true" width="1376" height="662">
-        <div class="hub-stage" aria-hidden="true">
-          <svg class="hub-ribbons" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
-            <path class="ribbon" id="ribbonA" d="M500,500 C380,560 300,660 250,740" />
-            <path class="ribbon" id="ribbonB" d="M500,500 C630,450 730,380 780,300" />
-            <path class="ribbon ribbon-gold" id="ribbonC" d="M500,500 C560,640 640,720 720,770" />
-          </svg>
-          <svg class="hub-enso" viewBox="0 0 400 400" aria-hidden="true">
-            <path class="enso-path" d="M210,58 C110,52 54,140 56,214 C58,300 138,352 214,344 C298,336 350,262 338,190 C328,128 276,86 214,92" />
-          </svg>
-          <div class="hub-core">
-            <img class="hub-mark" src="assets/logo-mark.svg" alt="" width="360" height="360">
-            <svg class="hub-ring" viewBox="0 0 300 300">
-              <defs><path id="ringpath" d="M150,150 m-124,0 a124,124 0 1,1 248,0 a124,124 0 1,1 -248,0"/></defs>
-              <text><textPath href="#ringpath" startOffset="0">217 PRODUCTS · INDEPENDENT PRODUCT STUDIO · ANKARA · </textPath></text>
+          <p class="hub-eyebrow eyebrow">世界 · OUR REACH</p>
+          <div class="globe-stage">
+            <div id="globe3d" class="globe-canvas" role="img" aria-label="A slowly rotating sumi-e ink globe of the world">
+              <img class="globe-fallback" src="assets/globe.webp?u=1" alt="" width="760" height="760" loading="lazy" decoding="async">
+            </div>
+            <svg class="reach-lines" viewBox="0 0 100 100" aria-hidden="true">
+              <defs>
+                <marker id="reachHead" markerWidth="6" markerHeight="6" refX="3.6" refY="3" orient="auto" markerUnits="userSpaceOnUse">
+                  <path d="M1 1 L4.2 3 L1 5" fill="none" stroke="#A67C2E" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+                </marker>
+              </defs>
+              <line class="reach-shaft rs-1" x1="87" y1="24" x2="104" y2="14" marker-end="url(#reachHead)"/>
+              <line class="reach-shaft rs-2" x1="95" y1="50" x2="105" y2="50" marker-end="url(#reachHead)"/>
+              <line class="reach-shaft rs-3" x1="87" y1="76" x2="104" y2="86" marker-end="url(#reachHead)"/>
+              <circle class="reach-dot rd-1" cx="87" cy="24" r="1.5"/>
+              <circle class="reach-dot rd-2" cx="95" cy="50" r="1.5"/>
+              <circle class="reach-dot rd-3" cx="87" cy="76" r="1.5"/>
             </svg>
+            <span class="reach-label rl-1">Rooted in Ankara</span>
+            <span class="reach-label rl-2">Reaching the world</span>
+            <span class="reach-label rl-3">Growing every season</span>
           </div>
-          <div class="hub-seal seal-osnote"><span>OSNote</span></div>
-          <div class="hub-seal seal-next"><span>次 · Next</span></div>
-          <div class="hub-seal seal-idea"><span>芽 · Ideas</span></div>
-        </div>
-        <p class="hub-caption rise">A small team,<br>every detail by hand.</p>
+          <ul class="reach-list" aria-hidden="true">
+            <li class="rli rli-1">Rooted in Ankara</li>
+            <li class="rli rli-2">Reaching the world</li>
+            <li class="rli rli-3">Growing every season</li>
+          </ul>
+          <p class="hub-caption">From one small studio,<br>growing <span class="gold">outward</span>.</p>
       </div>
     </section>
 
@@ -218,6 +224,8 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.25/dist/lenis.min.js" integrity="sha384-ClD7pCgIUz5M81HT8aZmMxCsWmfsycmBiwL5gy1pUbdWHvICIbea22N9sTtAFotA" crossorigin="anonymous"></script>
-  <script src="main.js?v=13"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
+  <script src="globe3d.js?v=4"></script>
+  <script src="main.js?v=17"></script>
 </body>
 </html>
