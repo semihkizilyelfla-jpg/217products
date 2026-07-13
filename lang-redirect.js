@@ -3,6 +3,11 @@
    choice via the EN/TR switch is remembered so the visitor is never bounced. */
 (function () {
   "use strict";
+
+  /* Mark JS as available on <html> from the very first paint, so reveal styles
+     can hide entrance elements up front (no "flash then hide" on load). */
+  document.documentElement.className += " js";
+
   var KEY = "lang217";
 
   /* Remember the visitor's explicit choice whenever they use the language switch.

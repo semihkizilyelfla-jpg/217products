@@ -32,7 +32,14 @@
     });
   });
 
-  if (reduced || !window.gsap || !window.ScrollTrigger) return;
+  /* No animation path (reduced-motion or GSAP unavailable): reveal any entrance
+     elements the CSS hid up front, so content is never stuck invisible. */
+  if (reduced || !window.gsap || !window.ScrollTrigger) {
+    [].forEach.call(document.querySelectorAll(".rise"), function (el) {
+      el.style.opacity = "1"; el.style.transform = "none";
+    });
+    return;
+  }
   gsap.registerPlugin(ScrollTrigger);
 
   var lenis = null;
