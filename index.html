@@ -20,7 +20,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=19">
+  <link rel="stylesheet" href="style.css?v=23">
 </head>
 <body>
 
@@ -84,27 +84,18 @@
       <p class="brighten" data-brighten>We make a small family of products, and we care more about them being good than loud. Most ideas get cut. The ones that ship are the ones we kept coming back to.</p>
     </section>
 
-    <!-- 4 · PINNED GLOBE — our reach -->
+    <!-- 4 · GLOBE — our reach (auto-rotate + drag) -->
     <section class="hub" id="hub">
       <div class="hub-pin">
           <p class="hub-eyebrow eyebrow">世界 · OUR REACH</p>
           <div class="globe-stage">
-            <div id="globe3d" class="globe-canvas" role="img" aria-label="A slowly rotating sumi-e ink globe of the world">
+            <img class="globe-halo" src="assets/globe-halo.webp?u=3" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <div id="globe3d" class="globe-canvas" role="img" aria-label="A rotating sumi-e ink globe of the world — drag to spin it">
               <img class="globe-fallback" src="assets/globe.webp?u=1" alt="" width="760" height="760" loading="lazy" decoding="async">
             </div>
-            <svg class="reach-lines" viewBox="0 0 100 100" aria-hidden="true">
-              <defs>
-                <marker id="reachHead" markerWidth="6" markerHeight="6" refX="3.6" refY="3" orient="auto" markerUnits="userSpaceOnUse">
-                  <path d="M1 1 L4.2 3 L1 5" fill="none" stroke="#A67C2E" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/>
-                </marker>
-              </defs>
-              <line class="reach-shaft rs-1" x1="87" y1="24" x2="104" y2="14" marker-end="url(#reachHead)"/>
-              <line class="reach-shaft rs-2" x1="95" y1="50" x2="105" y2="50" marker-end="url(#reachHead)"/>
-              <line class="reach-shaft rs-3" x1="87" y1="76" x2="104" y2="86" marker-end="url(#reachHead)"/>
-              <circle class="reach-dot rd-1" cx="87" cy="24" r="1.5"/>
-              <circle class="reach-dot rd-2" cx="95" cy="50" r="1.5"/>
-              <circle class="reach-dot rd-3" cx="87" cy="76" r="1.5"/>
-            </svg>
+            <img class="reach-arrow ra-1" src="assets/reach-arrow.webp?u=1" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="reach-arrow ra-2" src="assets/reach-arrow.webp?u=1" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="reach-arrow ra-3" src="assets/reach-arrow.webp?u=1" alt="" aria-hidden="true" loading="lazy" decoding="async">
             <span class="reach-label rl-1">Rooted in Ankara</span>
             <span class="reach-label rl-2">Reaching the world</span>
             <span class="reach-label rl-3">Growing every season</span>
@@ -225,7 +216,7 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.25/dist/lenis.min.js" integrity="sha384-ClD7pCgIUz5M81HT8aZmMxCsWmfsycmBiwL5gy1pUbdWHvICIbea22N9sTtAFotA" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js" integrity="sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O" crossorigin="anonymous"></script>
-  <script src="globe3d.js?v=4"></script>
-  <script src="main.js?v=17"></script>
+  <script src="globe3d.js?v=5"></script>
+  <script src="main.js?v=18"></script>
 </body>
 </html>

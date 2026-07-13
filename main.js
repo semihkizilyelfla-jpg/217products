@@ -130,41 +130,22 @@
   var marq = document.getElementById("marqRow");
   if (marq) gsap.to(marq, { xPercent: -50, duration: 26, ease: "none", repeat: -1 });
 
-  /* ---------- pinned globe: quick spin + one outward arrow per scroll step ----------
-     Sticky globe over a tall track; the track's scroll progress is split into 3 steps.
-     Entering each step spins the globe once and reveals the next reach arrow. */
+  /* ---------- globe reach callouts: revealed once, staggered, as the section enters ----------
+     The globe itself just auto-rotates (and can be dragged) — no scroll pinning. */
   var hub = document.querySelector(".hub");
   var globeStage = document.querySelector(".globe-stage");
   if (hub && globeStage) {
     hub.classList.add("js-hub");
-    function spinGlobe() { if (window.OSGlobe && window.OSGlobe.spin) window.OSGlobe.spin(); }
     function setReach(n) {
       globeStage.classList.toggle("on1", n >= 1);
       globeStage.classList.toggle("on2", n >= 2);
       globeStage.classList.toggle("on3", n >= 3);
     }
-    var curStep = -1;
-    function toStep(n) {
-      if (n === curStep) return;
-      var increasing = n > curStep;
-      curStep = n; setReach(n);
-      if (increasing && n > 0) spinGlobe();
-    }
-    if (isTouch) {
-      /* mobile: no pin — spin once and stagger the arrows in as the section enters */
-      ScrollTrigger.create({ trigger: ".hub", start: "top 60%", once: true, onEnter: function () {
-        spinGlobe(); setReach(1);
-        gsap.delayedCall(0.55, function () { setReach(2); });
-        gsap.delayedCall(1.05, function () { setReach(3); });
-      }});
-    } else {
-      /* desktop: pin the globe; each third of the scroll spins it and reveals one arrow */
-      ScrollTrigger.create({
-        trigger: ".hub", start: "top top", end: "+=260%", pin: ".hub-pin", anticipatePin: 1,
-        onUpdate: function (self) { toStep(Math.min(3, Math.floor(self.progress * 3 + 0.0001) + 1)); },
-        onLeaveBack: function () { toStep(0); }
-      });
-    }
+    ScrollTrigger.create({ trigger: ".hub", start: "top 64%", once: true, onEnter: function () {
+      setReach(1);
+      gsap.delayedCall(0.45, function () { setReach(2); });
+      gsap.delayedCall(0.90, function () { setReach(3); });
+    }});
   }
 
   if (document.fonts && document.fonts.ready) {

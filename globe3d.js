@@ -1,7 +1,7 @@
 /* 217 Products — real-time 3D sumi-e globe (Three.js, UMD global).
-   A textured sphere with a warm ink-wash world map, a thin gold equator
-   band, soft warm lighting and a slow idle rotation. Each scroll step calls
-   OSGlobe.spin() for a quick eased spin burst. Renders only while in view. */
+   A textured sphere with a warm ink-wash world map and a soft gold fresnel
+   rim. It rotates on its own and can be grabbed and spun with the pointer
+   (mouse / pen — touch is left to scroll the page). Renders only in view. */
 (function () {
   "use strict";
   var mount = document.getElementById("globe3d");
@@ -20,18 +20,17 @@
   renderer.setSize(box(), box());
   mount.appendChild(renderer.domElement);
   mount.classList.add("gl-ok");
+  renderer.domElement.style.cursor = "grab";
+  renderer.domElement.style.touchAction = "pan-y"; /* let vertical scroll pass through on touch */
 
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
   camera.position.set(0, 0, 4.3);
 
   var tilt = new THREE.Group();
-  tilt.rotation.set(0.34, 0, 0.06);
+  tilt.rotation.set(0.32, 0, 0.05);
   scene.add(tilt);
 
-  /* unlit material shows the washi/ink texture at true colour (no PBR
-     darkening); roundness reads from the spherical projection, the curved
-     gold band, the fresnel rim and the rotation. */
   var globe = new THREE.Mesh(
     new THREE.SphereGeometry(1, 128, 128),
     new THREE.MeshBasicMaterial({ color: 0xf3ecdc })
@@ -61,27 +60,6 @@
   );
   scene.add(rim);
 
-  /* thin gold equator band — stays put while the globe turns inside it */
-  var band = new THREE.Mesh(
-    new THREE.TorusGeometry(1.055, 0.004, 16, 240),
-    new THREE.MeshBasicMaterial({ color: 0xc39a46, transparent: true, opacity: 0.9 })
-  );
-  band.rotation.x = Math.PI / 2;
-  tilt.add(band);
-
-  var state = { vel: reduced ? 0 : 0.0015 };
-  var idle = state.vel;
-  var inView = false, running = false;
-
-  function renderOnce() { renderer.render(scene, camera); }
-  function loop() {
-    if (!inView || reduced) { running = false; return; }
-    globe.rotation.y += state.vel;
-    renderer.render(scene, camera);
-    requestAnimationFrame(loop);
-  }
-  function start() { if (running || reduced || !inView) return; running = true; requestAnimationFrame(loop); }
-
   new THREE.TextureLoader().load("assets/globe-map.webp?u=1", function (tex) {
     if ("colorSpace" in tex) tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
@@ -89,32 +67,71 @@
     globe.material.map = tex;
     globe.material.color.set(0xffffff);
     globe.material.needsUpdate = true;
-    renderOnce();
+    renderer.render(scene, camera);
   });
 
+  /* ---------- motion: continuous idle spin + pointer drag ---------- */
+  var AUTO = reduced ? 0 : 0.0016;
+  var velY = AUTO, velX = 0;          /* momentum while free-spinning */
+  var dragging = false, lastX = 0, lastY = 0, resumeAt = 0;
+  var inView = false, running = false;
+
+  function clampTilt() { globe.rotation.x = Math.max(-0.9, Math.min(0.9, globe.rotation.x)); }
+
+  function loop(ts) {
+    if (!inView) { running = false; return; }
+    if (!dragging) {
+      globe.rotation.y += velY;
+      globe.rotation.x += velX;
+      clampTilt();
+      /* ease residual drag momentum back toward the gentle idle spin */
+      if (ts > resumeAt) {
+        velY += (AUTO - velY) * 0.03;
+        velX += (0 - velX) * 0.06;
+      }
+    }
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  }
+  function start() { if (running || !inView) return; running = true; requestAnimationFrame(loop); }
+
+  var el = renderer.domElement;
+  el.addEventListener("pointerdown", function (e) {
+    if (e.pointerType === "touch") return;       /* leave touch to page scroll */
+    dragging = true; lastX = e.clientX; lastY = e.clientY;
+    el.style.cursor = "grabbing";
+    try { el.setPointerCapture(e.pointerId); } catch (_) {}
+    start();
+  });
+  el.addEventListener("pointermove", function (e) {
+    if (!dragging) return;
+    var dx = e.clientX - lastX, dy = e.clientY - lastY;
+    lastX = e.clientX; lastY = e.clientY;
+    globe.rotation.y += dx * 0.006;
+    globe.rotation.x += dy * 0.006;
+    clampTilt();
+    velY = dx * 0.006; velX = dy * 0.006;        /* carry momentum on release */
+  });
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false; el.style.cursor = "grab";
+    resumeAt = (e && e.timeStamp || 0) + 900;    /* free-spin briefly, then ease back */
+    try { el.releasePointerCapture(e.pointerId); } catch (_) {}
+  }
+  el.addEventListener("pointerup", endDrag);
+  el.addEventListener("pointercancel", endDrag);
+  el.addEventListener("pointerleave", endDrag);
+
   var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      inView = e.isIntersecting;
-      if (inView) { renderOnce(); start(); }
-    });
+    entries.forEach(function (e) { inView = e.isIntersecting; if (inView) { renderer.render(scene, camera); start(); } });
   }, { threshold: 0.01 });
   io.observe(mount);
 
   var rt;
   window.addEventListener("resize", function () {
     clearTimeout(rt);
-    rt = setTimeout(function () {
-      var s = box(); renderer.setSize(s, s); camera.updateProjectionMatrix(); renderOnce();
-    }, 150);
+    rt = setTimeout(function () { var s = box(); renderer.setSize(s, s); camera.updateProjectionMatrix(); renderer.render(scene, camera); }, 150);
   });
 
-  window.OSGlobe = {
-    spin: function () {
-      if (reduced || !window.gsap) return;
-      start();
-      window.gsap.fromTo(state, { vel: 0.30 }, { vel: idle, duration: 1.15, ease: "power3.out", overwrite: true });
-    }
-  };
-
-  renderOnce();
+  renderer.render(scene, camera);
 })();

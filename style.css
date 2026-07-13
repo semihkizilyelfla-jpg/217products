@@ -168,38 +168,41 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .hub-eyebrow { position: relative; z-index: 3; }
 
 .globe-stage { position: relative; width: min(72vw, 52vh, 468px); aspect-ratio: 1; }
-.globe-stage::after { /* soft warm depth glow behind the globe */
-  content: ""; position: absolute; inset: -8%; z-index: 0; pointer-events: none;
-  background: radial-gradient(circle at 50% 47%, rgba(195,154,70,0.16), rgba(226,75,38,0.05) 42%, transparent 66%);
+.globe-halo { /* HGF sumi ink-wash halo behind the globe, separates it from the page */
+  position: absolute; z-index: 0; top: 49%; left: 50%; width: 156%; height: 156%; max-width: none;
+  transform: translate(-50%, -50%); pointer-events: none; opacity: 0.6;
 }
 .globe-stage::before { /* soft contact shadow under the globe */
-  content: ""; position: absolute; z-index: 0; left: 50%; top: 84%; width: 54%; height: 8%;
+  content: ""; position: absolute; z-index: 0; left: 50%; top: 84%; width: 52%; height: 8%;
   transform: translateX(-50%); pointer-events: none;
-  background: radial-gradient(closest-side, rgba(30,26,22,0.20), transparent 78%);
+  background: radial-gradient(closest-side, rgba(30,26,22,0.18), transparent 78%);
 }
 .globe-canvas { position: relative; z-index: 1; width: 100%; height: 100%; }
 .globe-canvas canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; }
 .globe-fallback { width: 100%; height: 100%; filter: drop-shadow(0 26px 54px rgba(30,26,22,0.18)); }
 .globe-canvas.gl-ok .globe-fallback { display: none; }
 
-/* reach arrows overflow the stage into the surrounding space */
-.reach-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 4; }
-.reach-shaft { fill: none; stroke: var(--gold-deep); stroke-width: 0.62; stroke-linecap: round; stroke-dasharray: 34; }
-.reach-dot { fill: var(--vermilion); }
+/* HGF brush-stroke reach arrows + labels (overflow the stage) */
+.reach-arrow {
+  position: absolute; z-index: 4; width: 32%; height: auto; pointer-events: none;
+  transform-origin: left center; filter: drop-shadow(0 3px 6px rgba(30,26,22,0.14));
+}
+.ra-1 { left: 86%; top: 19%; transform: rotate(-13deg); }
+.ra-2 { left: 89%; top: 50%; transform: rotate(0deg); }
+.ra-3 { left: 86%; top: 81%; transform: rotate(13deg); }
 .reach-label {
   position: absolute; z-index: 5; white-space: nowrap;
   font-family: "Shippori Mincho", Georgia, serif; font-weight: 700;
   font-size: clamp(13px, 1.5vw, 19px); color: var(--ink); text-shadow: 0 1px 2px rgba(243,236,220,0.9);
 }
-.rl-1 { left: 107%; top: 13%; transform: translateY(-50%); }
-.rl-2 { left: 108%; top: 50%; transform: translateY(-50%); }
-.rl-3 { left: 107%; top: 87%; transform: translateY(-50%); }
+.rl-1 { left: 122%; top: 13%; transform: translateY(-50%); }
+.rl-2 { left: 124%; top: 50%; transform: translateY(-50%); }
+.rl-3 { left: 122%; top: 87%; transform: translateY(-50%); }
 
-/* JS-driven reveal — hidden only while the stepper is active (no-JS shows all) */
-.js-hub .reach-shaft { stroke-dashoffset: 34; opacity: 0; transition: stroke-dashoffset 0.62s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease; }
-.js-hub .reach-dot, .js-hub .reach-label { opacity: 0; transition: opacity 0.5s ease 0.16s; }
-.js-hub .globe-stage.on1 .rs-1, .js-hub .globe-stage.on2 .rs-2, .js-hub .globe-stage.on3 .rs-3 { stroke-dashoffset: 0; opacity: 1; }
-.js-hub .globe-stage.on1 .rd-1, .js-hub .globe-stage.on2 .rd-2, .js-hub .globe-stage.on3 .rd-3,
+/* JS-driven reveal — brush arrows paint in tail→tip; labels fade (no-JS shows all) */
+.js-hub .reach-arrow { opacity: 0; clip-path: inset(0 100% 0 0); transition: opacity 0.4s ease, clip-path 0.72s cubic-bezier(0.22, 1, 0.36, 1); }
+.js-hub .reach-label { opacity: 0; transition: opacity 0.5s ease 0.22s; }
+.js-hub .globe-stage.on1 .ra-1, .js-hub .globe-stage.on2 .ra-2, .js-hub .globe-stage.on3 .ra-3 { opacity: 1; clip-path: inset(0 0 0 0); }
 .js-hub .globe-stage.on1 .rl-1, .js-hub .globe-stage.on2 .rl-2, .js-hub .globe-stage.on3 .rl-3 { opacity: 1; }
 
 /* mobile stacked list (shown only on narrow screens) */
@@ -332,7 +335,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .product h3 { font-size: clamp(42px, 12.6vw, 68px); }
   /* phone: hide side arrows; show the reach as a centered stacked list */
   .globe-stage { width: min(62vw, 40vh, 300px); }
-  .reach-lines, .reach-label { display: none; }
+  .reach-arrow, .reach-label { display: none; }
   .reach-list { display: flex; flex-direction: column; gap: 13px; align-items: flex-start; margin-top: 2px; }
   .reach-list .rli { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: 16px; color: var(--ink); position: relative; padding-left: 24px; }
   .reach-list .rli::before { content: ""; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 9px; height: 9px; border-radius: 50%; background: var(--vermilion); }
