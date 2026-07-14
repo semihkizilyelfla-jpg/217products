@@ -82,29 +82,41 @@
   gsap.set(".pl-sky",   { autoAlpha: 0, scale: 1.06, force3D: true });
   gsap.set(".pl-torii", { autoAlpha: 0, yPercent: -12, force3D: true });
 
-  if (isTouch) {
-    /* mobile/tablet: reveal the whole scene on load, no pin — consistent on every device */
-    gsap.to(".pl-mount", { autoAlpha: 1, yPercent: 0, duration: 1.2, ease: "power2.out", delay: 0.12 });
-    gsap.to(".pl-fore",  { autoAlpha: 1, yPercent: 0, duration: 1.2, ease: "power2.out", delay: 0.24 });
-    gsap.to(".pl-sky",   { autoAlpha: 1, scale: 1,    duration: 1.2, ease: "power2.out", delay: 0.40 });
-    gsap.to(".pl-torii", { autoAlpha: 1, yPercent: 0, duration: 1.2, ease: "power2.out", delay: 0.55 });
-  } else {
-    /* desktop: scene 1 (landscape) on load, then sky + torii assemble on scroll */
-    gsap.timeline({ defaults: { ease: "power3.out" }, delay: 0.1 })
-      .to(".pl-mount", { autoAlpha: 1, yPercent: 0, duration: 1.5 }, 0)
-      .to(".pl-fore",  { autoAlpha: 1, yPercent: 0, duration: 1.5 }, 0.12);
+  /* Reveal the on-load scene layers only AFTER their images have decoded, so the
+     hero never shows a slow, half-loaded "assembling" fade. Quick fade → the hero
+     reads as "already there", not "still loading". */
+  function revealScene() {
+    if (revealScene.done) return; revealScene.done = true;
+    if (isTouch) {
+      gsap.to(".pl-mount", { autoAlpha: 1, yPercent: 0, duration: 0.7, ease: "power2.out" });
+      gsap.to(".pl-fore",  { autoAlpha: 1, yPercent: 0, duration: 0.7, ease: "power2.out", delay: 0.07 });
+      gsap.to(".pl-sky",   { autoAlpha: 1, scale: 1,    duration: 0.7, ease: "power2.out", delay: 0.14 });
+      gsap.to(".pl-torii", { autoAlpha: 1, yPercent: 0, duration: 0.7, ease: "power2.out", delay: 0.21 });
+    } else {
+      gsap.timeline({ defaults: { ease: "power3.out" } })
+        .to(".pl-mount", { autoAlpha: 1, yPercent: 0, duration: 0.7 }, 0)
+        .to(".pl-fore",  { autoAlpha: 1, yPercent: 0, duration: 0.7 }, 0.08);
+    }
+  }
+  (function () {
+    var imgs = [].slice.call(document.querySelectorAll(".pl-mount, .pl-fore"));
+    Promise.all(imgs.map(function (im) {
+      return (im.decode ? im.decode() : Promise.reject()).catch(function () { return null; });
+    })).then(revealScene);
+    setTimeout(revealScene, 1600); /* failsafe if decode stalls */
+  })();
 
+  if (!isTouch) {
+    /* desktop: sky + torii assemble on scroll; headlines swap in the pinned timeline */
     gsap.set(".head-1", { autoAlpha: 1 });
     gsap.set([".head-2", ".head-3"], { autoAlpha: 0 });
     gsap.timeline({
       defaults: { ease: "power2.out", duration: 1 },
       scrollTrigger: { trigger: ".hero", start: "top top", end: "+=160%", pin: true, scrub: 0.7, anticipatePin: 1 }
     })
-      /* scene 2 (sky) + headline 1→2 share the same 0.2–1.2 window */
       .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 0.2)
       .to(".head-1",   { autoAlpha: 0, duration: 0.6 }, 0.25)
       .to(".head-2",   { autoAlpha: 1, duration: 0.6 }, 0.55)
-      /* scene 3 (torii) + headline 2→3 share the same 1.5–2.5 window */
       .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.5)
       .to(".head-2",   { autoAlpha: 0, duration: 0.6 }, 1.55)
       .to(".head-3",   { autoAlpha: 1, duration: 0.6 }, 1.85);
@@ -158,4 +170,15 @@
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
   }
+
+  /* Absolute failsafe: nothing in the hero stays invisible past ~2.6s, whatever
+     happens with GSAP timing, decode, or an initially-hidden tab. Plain inline
+     styles — no dependency on the animation ticker. */
+  setTimeout(function () {
+    document.querySelectorAll(".hero .rise, .hero-scene .pl").forEach(function (el) {
+      if (parseFloat(getComputedStyle(el).opacity) < 0.05) {
+        el.style.opacity = "1"; el.style.visibility = "visible"; el.style.transform = "none";
+      }
+    });
+  }, 2600);
 })();
