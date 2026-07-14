@@ -42,26 +42,6 @@ body {
   .js .rise { opacity: 0; }
   .js .brighten { color: var(--ink-dim); }
 }
-
-/* ---------- intro curtain (brief branded load cover) ---------- */
-#intro { display: none; }
-html.js #intro {
-  position: fixed; inset: 0; z-index: 9999;
-  display: grid; place-items: center;
-  background: var(--paper);
-  transition: opacity 0.55s ease;
-}
-.intro-logo {
-  width: clamp(62px, 11vw, 88px); height: auto;
-  opacity: 0; transform: translateY(10px) scale(0.96);
-  animation: introIn 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
-}
-@keyframes introIn { to { opacity: 1; transform: none; } }
-#intro.intro--out { opacity: 0; pointer-events: none; }
-@media (prefers-reduced-motion: reduce) {
-  .intro-logo { animation: none; opacity: 1; transform: none; }
-  html.js #intro { transition-duration: 0.25s; }
-}
 ::selection { background: var(--vermilion); color: var(--paper); }
 a { color: inherit; text-decoration: none; }
 :focus-visible { outline: 2px solid var(--vermilion); outline-offset: 4px; border-radius: 2px; }
@@ -130,6 +110,12 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .pl-sky, .pl-mount, .pl-torii, .pl-fore {
   inset: 0; width: 100%; height: 100%;
   object-fit: cover; object-position: center 46%;
+}
+/* Desktop: sky + torii stay hidden until the pinned scroll assembles them.
+   Gated in CSS (before GSAP runs) so they never flash visible on first paint;
+   scene 1 (mountains + foreground) stays fully visible the whole time. */
+@media (min-width: 821px) {
+  .js .pl-sky, .js .pl-torii { opacity: 0; }
 }
 .hero-scrim {
   position: absolute; inset: 0; z-index: 1;

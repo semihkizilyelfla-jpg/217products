@@ -38,6 +38,10 @@
     [].forEach.call(document.querySelectorAll(".rise"), function (el) {
       el.style.opacity = "1"; el.style.transform = "none";
     });
+    /* no scroll-assembly available → make sure sky + torii show too */
+    [].forEach.call(document.querySelectorAll(".pl-sky, .pl-torii"), function (el) {
+      el.style.opacity = "1";
+    });
     return;
   }
   gsap.registerPlugin(ScrollTrigger);
@@ -77,37 +81,17 @@
      opens blank. Scrolling then builds scene 2 (sky) and scene 3 (torii),
      evenly paced. Reduced pin distance keeps the first scroll gentle. */
   var isTouch = matchMedia("(max-width: 820px)").matches;
-  gsap.set(".pl-mount", { autoAlpha: 0, yPercent: 8, force3D: true });
-  gsap.set(".pl-fore",  { autoAlpha: 0, yPercent: 12, force3D: true });
-  gsap.set(".pl-sky",   { autoAlpha: 0, scale: 1.06, force3D: true });
-  gsap.set(".pl-torii", { autoAlpha: 0, yPercent: -12, force3D: true });
-
-  /* Reveal the on-load scene layers only AFTER their images have decoded, so the
-     hero never shows a slow, half-loaded "assembling" fade. Quick fade → the hero
-     reads as "already there", not "still loading". */
-  function revealScene() {
-    if (revealScene.done) return; revealScene.done = true;
-    if (isTouch) {
-      gsap.to(".pl-mount", { autoAlpha: 1, yPercent: 0, duration: 0.7, ease: "power2.out" });
-      gsap.to(".pl-fore",  { autoAlpha: 1, yPercent: 0, duration: 0.7, ease: "power2.out", delay: 0.07 });
-      gsap.to(".pl-sky",   { autoAlpha: 1, scale: 1,    duration: 0.7, ease: "power2.out", delay: 0.14 });
-      gsap.to(".pl-torii", { autoAlpha: 1, yPercent: 0, duration: 0.7, ease: "power2.out", delay: 0.21 });
-    } else {
-      gsap.timeline({ defaults: { ease: "power3.out" } })
-        .to(".pl-mount", { autoAlpha: 1, yPercent: 0, duration: 0.7 }, 0)
-        .to(".pl-fore",  { autoAlpha: 1, yPercent: 0, duration: 0.7 }, 0.08);
-    }
-  }
-  (function () {
-    var imgs = [].slice.call(document.querySelectorAll(".pl-mount, .pl-fore"));
-    Promise.all(imgs.map(function (im) {
-      return (im.decode ? im.decode() : Promise.reject()).catch(function () { return null; });
-    })).then(revealScene);
-    setTimeout(revealScene, 1600); /* failsafe if decode stalls */
-  })();
-
+  /* Scene 1 (mountains + foreground) is painted from the first frame via CSS and is
+     never hidden — the hero opens as a finished image, with no half-loaded
+     "assembling" flash. Sky + torii start hidden on desktop (gated in CSS, so they
+     never flash in either) and materialise on scroll. On touch there is no pin, so
+     all four layers simply show. */
   if (!isTouch) {
-    /* desktop: sky + torii assemble on scroll; headlines swap in the pinned timeline */
+    /* desktop: give sky + torii their pre-assembly transform (opacity:0 comes from
+       CSS); the pinned timeline below fades and settles them on scroll. */
+    gsap.set(".pl-sky",   { scale: 1.06, force3D: true });
+    gsap.set(".pl-torii", { yPercent: -12, force3D: true });
+
     gsap.set(".head-1", { autoAlpha: 1 });
     gsap.set([".head-2", ".head-3"], { autoAlpha: 0 });
     gsap.timeline({
@@ -175,7 +159,7 @@
      happens with GSAP timing, decode, or an initially-hidden tab. Plain inline
      styles — no dependency on the animation ticker. */
   setTimeout(function () {
-    document.querySelectorAll(".hero .rise, .hero-scene .pl").forEach(function (el) {
+    document.querySelectorAll(".hero .rise").forEach(function (el) {
       if (parseFloat(getComputedStyle(el).opacity) < 0.05) {
         el.style.opacity = "1"; el.style.visibility = "visible"; el.style.transform = "none";
       }
