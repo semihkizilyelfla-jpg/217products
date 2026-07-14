@@ -57,7 +57,7 @@
   /* ---------- rise reveals ---------- */
   gsap.set(".rise", { autoAlpha: 0, y: 26 });
   var heroRise = gsap.utils.toArray(".hero .rise");
-  gsap.to(heroRise, { autoAlpha: 1, y: 0, duration: 1.1, stagger: 0.12, ease: "power2.out", delay: 0.15,
+  gsap.to(heroRise, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.08, ease: "power2.out", delay: 0.1,
     onComplete: function(){ heroRise.forEach(settle); } });
   gsap.utils.toArray(".rise").forEach(function (el) {
     if (el.closest(".hero") || el.closest(".hub")) return;
