@@ -1,7 +1,8 @@
 /* 217 Products — real-time 3D sumi-e globe (Three.js, UMD global).
    A textured sphere with a warm ink-wash world map and a soft gold fresnel
-   rim. It rotates on its own and can be grabbed and spun with the pointer
-   (mouse / pen — touch is left to scroll the page). Renders only in view. */
+   rim. It rotates on its own and can be grabbed and spun with any pointer —
+   mouse, pen or touch (horizontal swipes spin it, vertical swipes keep
+   scrolling the page). Renders only in view. */
 (function () {
   "use strict";
   var mount = document.getElementById("globe3d");
@@ -101,7 +102,9 @@
 
   var el = renderer.domElement;
   el.addEventListener("pointerdown", function (e) {
-    if (e.pointerType === "touch") return;       /* leave touch to page scroll */
+    /* touch spins too: touch-action pan-y hands VERTICAL swipes to the page
+       (the browser fires pointercancel when it claims the scroll, which ends
+       the drag) while HORIZONTAL swipes stay here and spin the globe */
     dragging = true; lastX = e.clientX; lastY = e.clientY;
     el.style.cursor = "grabbing";
     try { el.setPointerCapture(e.pointerId); } catch (_) {}

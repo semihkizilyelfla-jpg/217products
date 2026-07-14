@@ -52,7 +52,7 @@
 
   var lenis = null;
   if (window.Lenis) {
-    lenis = new Lenis({ lerp: 0.09 });
+    lenis = new Lenis({ lerp: 0.12 }); /* tighter, more responsive glide */
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
@@ -102,22 +102,22 @@
      all four layers simply show. */
   if (!isTouch) {
     /* desktop: give sky + torii their pre-assembly transform (opacity:0 comes from
-       CSS); the pinned timeline below fades and settles them on scroll. */
+       CSS); the pinned timeline below fades and settles them on scroll.
+       Short, nimble pin (+=100%): sky settles first, then the torii lands as the
+       headline hands over — opening line → closing line. */
     gsap.set(".pl-sky",   { scale: 1.06, force3D: true });
     gsap.set(".pl-torii", { yPercent: -12, force3D: true });
 
     gsap.set(".head-1", { autoAlpha: 1 });
-    gsap.set([".head-2", ".head-3"], { autoAlpha: 0 });
+    gsap.set(".head-3", { autoAlpha: 0 });
     gsap.timeline({
       defaults: { ease: "power2.out", duration: 1 },
-      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=160%", pin: true, scrub: 0.7, anticipatePin: 1 }
+      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=100%", pin: true, scrub: 0.7, anticipatePin: 1 }
     })
-      .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 0.2)
-      .to(".head-1",   { autoAlpha: 0, duration: 0.6 }, 0.25)
-      .to(".head-2",   { autoAlpha: 1, duration: 0.6 }, 0.55)
-      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.5)
-      .to(".head-2",   { autoAlpha: 0, duration: 0.6 }, 1.55)
-      .to(".head-3",   { autoAlpha: 1, duration: 0.6 }, 1.85);
+      .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 0)
+      .to(".head-1",   { autoAlpha: 0, duration: 0.5 }, 0.9)
+      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.0)
+      .to(".head-3",   { autoAlpha: 1, duration: 0.5 }, 1.25);
 
     /* light mouse parallax (desktop only) */
     if (matchMedia("(pointer: fine)").matches) {
@@ -131,6 +131,17 @@
         setters.forEach(function (s) { s.x(nx * -15 * s.d); s.y(ny * -9 * s.d); });
       });
     }
+  }
+
+  if (isTouch) {
+    /* phones: no pin — instead the layers drift at their own depths as the
+       hero scrolls away, so the scene keeps its dimensionality on touch too.
+       Transform-only, scrubbed, cheap. The bottom scrim fade masks the edges. */
+    gsap.utils.toArray(".hero-scene .pl").forEach(function (el) {
+      var d = parseFloat(el.dataset.depth) || 0.2;
+      gsap.to(el, { yPercent: -(d * 22), ease: "none", force3D: true,
+        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+    });
   }
 
   /* recalc pins after big hero layers finish loading (kills layout shift) */
