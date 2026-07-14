@@ -34,10 +34,11 @@ body {
   overflow-x: hidden; -webkit-font-smoothing: antialiased;
 }
 
-/* First-load smoothing: with JS present, entrance elements start hidden so they
-   don't flash in before the reveal animation (this also masks the webfont swap,
-   since the headings stay hidden until fonts are ready). No-JS keeps everything
-   visible; reduced-motion skips the hiding entirely. */
+/* First-load smoothing: below-fold entrance elements start hidden (with JS) so
+   they don't flash in before their scroll reveal. The HERO is deliberately NOT
+   gated here — its entrance is a pure CSS animation further down, which plays
+   with the very first paint and never waits on a CDN script. Reduced-motion
+   skips the hiding entirely. */
 @media (prefers-reduced-motion: no-preference) {
   .js .rise { opacity: 0; }
   .js .brighten { color: var(--ink-dim); }
@@ -88,7 +89,6 @@ main { position: relative; z-index: 2; }
 section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .eyebrow, .kicker { font-size: 11px; font-weight: 700; letter-spacing: 0.36em; color: var(--accent-ink); }
 .big { font-size: clamp(44px, 8.4vw, 128px); }
-.rise { will-change: transform, opacity; }
 
 .tate {
   position: absolute; top: 18vh; z-index: 4;
@@ -138,6 +138,26 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   pointer-events: none;
 }
 .kicker { margin-bottom: 26px; }
+
+/* ---------- hero entrance — pure CSS, plays with the first paint ----------
+   No script dependency: the page opens composed, like a title card settling.
+   fill-mode:both also overrides the .js .rise gate above, and the global
+   reduced-motion rule collapses it to an instant reveal. */
+@keyframes heroRise {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes cueIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.hero .rise { animation: heroRise 0.95s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.hero .kicker.rise { animation-delay: 0.05s; }
+.hero .hero-heads.rise { animation-delay: 0.14s; }
+.hero .hero-sub.rise { animation-delay: 0.28s; }
+.hero .hero-cta.rise { animation-delay: 0.4s; }
+.hero .scroll-cue.rise { animation-name: cueIn; animation-delay: 0.62s; }
+
 .hero-heads { display: grid; position: relative; }
 .hero-heads .head {
   grid-area: 1 / 1; margin: 0;
@@ -342,6 +362,12 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .hero { padding-top: clamp(104px, 15vh, 150px); }
   /* portrait crop that keeps the torii + valley in frame */
   .hero-scene .pl { object-position: 32% 46%; }
+  /* backdrop blur is expensive on phone GPUs — swap it for a slightly
+     stronger wash so scrolling the hero stays 60fps */
+  .hero-content::before {
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    background: radial-gradient(64% 64% at 50% 49%, rgba(243,236,220,0.93), rgba(243,236,220,0.74) 42%, rgba(243,236,220,0.28) 66%, transparent 84%);
+  }
   .section-seal { font-size: clamp(80px, 22vw, 180px); }
   /* hub stacks: content, then globe; the vertical column divider is hidden */
   .hub-grid { grid-template-columns: 1fr; justify-items: center; gap: clamp(34px, 6vh, 60px); min-height: auto; }

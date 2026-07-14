@@ -42,6 +42,10 @@
     [].forEach.call(document.querySelectorAll(".pl-sky, .pl-torii"), function (el) {
       el.style.opacity = "1";
     });
+    /* word-brighten scrub won't run → give the words full ink */
+    [].forEach.call(document.querySelectorAll(".brighten .w"), function (el) {
+      el.style.color = "var(--ink)";
+    });
     return;
   }
   gsap.registerPlugin(ScrollTrigger);
@@ -53,18 +57,28 @@
     gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
   }
+
+  /* in-page anchors glide with Lenis instead of teleporting */
+  [].forEach.call(document.querySelectorAll('a[href^="#"]'), function (a) {
+    a.addEventListener("click", function (e) {
+      var target = document.querySelector(a.getAttribute("href"));
+      if (!target) return;
+      e.preventDefault();
+      if (lenis) lenis.scrollTo(target, { duration: 1.35, easing: function (t) { return 1 - Math.pow(1 - t, 4); } });
+      else target.scrollIntoView({ behavior: "smooth" });
+    });
+  });
   function settle(el){ el.style.willChange = "auto"; }
 
   /* flipped decorative images owned by GSAP */
   gsap.set(".pl-branch-r, .final-branch", { scaleX: -1 });
 
-  /* ---------- rise reveals ---------- */
-  gsap.set(".rise", { autoAlpha: 0, y: 26 });
-  var heroRise = gsap.utils.toArray(".hero .rise");
-  gsap.to(heroRise, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.08, ease: "power2.out", delay: 0.1,
-    onComplete: function(){ heroRise.forEach(settle); } });
-  gsap.utils.toArray(".rise").forEach(function (el) {
-    if (el.closest(".hero") || el.closest(".hub")) return;
+  /* ---------- rise reveals ----------
+     The hero entrance is pure CSS (it starts with the first paint, before any
+     CDN script arrives) — GSAP only drives the below-fold, scroll-gated reveals. */
+  var belowRise = gsap.utils.toArray(".rise").filter(function (el) { return !el.closest(".hero"); });
+  gsap.set(belowRise, { autoAlpha: 0, y: 26 });
+  belowRise.forEach(function (el) {
     gsap.to(el, { autoAlpha: 1, y: 0, duration: 0.9, ease: "power2.out",
       scrollTrigger: { trigger: el, start: "top 88%", once: true }, onComplete: function(){ settle(el); } });
   });

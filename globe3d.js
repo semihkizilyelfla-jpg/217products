@@ -6,6 +6,10 @@
   "use strict";
   var mount = document.getElementById("globe3d");
   if (!mount || !window.THREE) return;
+
+  /* Heavy WebGL setup is deferred until the section approaches the viewport,
+     so it never competes with the hero's first paint (biggest win on phones). */
+  function init() {
   var THREE = window.THREE;
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -134,4 +138,12 @@
   });
 
   renderer.render(scene, camera);
+  }
+
+  if ("IntersectionObserver" in window) {
+    var boot = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) { boot.disconnect(); init(); }
+    }, { rootMargin: "600px 0px" });
+    boot.observe(mount);
+  } else { init(); }
 })();
