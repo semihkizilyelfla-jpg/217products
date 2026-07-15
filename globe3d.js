@@ -41,6 +41,8 @@
     new THREE.MeshBasicMaterial({ color: 0xf3ecdc })
   );
   tilt.add(globe);
+  globe.rotation.y = -1.9; /* open on a land-dense hemisphere, not the empty Pacific */
+  window.__setGY = function (v) { globe.rotation.y = v; renderer.render(scene, camera); return v; };
 
   /* gold fresnel rim — defines the sphere silhouette against the cream page */
   var rim = new THREE.Mesh(
