@@ -38,10 +38,6 @@
     [].forEach.call(document.querySelectorAll(".rise"), function (el) {
       el.style.opacity = "1"; el.style.transform = "none";
     });
-    /* no scroll-assembly available → make sure sky + torii show too */
-    [].forEach.call(document.querySelectorAll(".pl-sky, .pl-torii"), function (el) {
-      el.style.opacity = "1";
-    });
     /* word-brighten scrub won't run → give the words full ink */
     [].forEach.call(document.querySelectorAll(".brighten .w"), function (el) {
       el.style.color = "var(--ink)";
@@ -95,30 +91,20 @@
      opens blank. Scrolling then builds scene 2 (sky) and scene 3 (torii),
      evenly paced. Reduced pin distance keeps the first scroll gentle. */
   var isTouch = matchMedia("(max-width: 820px)").matches;
-  /* Scene 1 (mountains + foreground) is painted from the first frame via CSS and is
-     never hidden — the hero opens as a finished image, with no half-loaded
-     "assembling" flash. Sky + torii start hidden on desktop (gated in CSS, so they
-     never flash in either) and materialise on scroll. On touch there is no pin, so
-     all four layers simply show. */
+  /* ---------- hero scroll: composed scene, depth-parallax exit ----------
+     No pin, no scroll-hijack: the full landscape stands complete from the
+     first frame, and scrolling simply carries it away — each layer at its
+     own depth, the copy drifting ahead and softening. 1:1 with the finger;
+     the bottom scrim fade masks the layers' trailing edges. */
+  gsap.utils.toArray(".hero-scene .pl").forEach(function (el) {
+    var d = parseFloat(el.dataset.depth) || 0.2;
+    gsap.to(el, { yPercent: -(d * 26), ease: "none", force3D: true,
+      scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+  });
+  gsap.to(".hero-content", { yPercent: -16, autoAlpha: 0, ease: "none",
+    scrollTrigger: { trigger: ".hero", start: "top top", end: "62% top", scrub: true } });
+
   if (!isTouch) {
-    /* desktop: give sky + torii their pre-assembly transform (opacity:0 comes from
-       CSS); the pinned timeline below fades and settles them on scroll.
-       Short, nimble pin (+=100%): sky settles first, then the torii lands as the
-       headline hands over — opening line → closing line. */
-    gsap.set(".pl-sky",   { scale: 1.06, force3D: true });
-    gsap.set(".pl-torii", { yPercent: -12, force3D: true });
-
-    gsap.set(".head-1", { autoAlpha: 1 });
-    gsap.set(".head-3", { autoAlpha: 0 });
-    gsap.timeline({
-      defaults: { ease: "power2.out", duration: 1 },
-      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=100%", pin: true, scrub: 0.7, anticipatePin: 1 }
-    })
-      .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 0)
-      .to(".head-1",   { autoAlpha: 0, duration: 0.5 }, 0.9)
-      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.0)
-      .to(".head-3",   { autoAlpha: 1, duration: 0.5 }, 1.25);
-
     /* light mouse parallax (desktop only) */
     if (matchMedia("(pointer: fine)").matches) {
       var setters = gsap.utils.toArray(".hero-scene .pl").map(function (el) {
@@ -133,18 +119,7 @@
     }
   }
 
-  if (isTouch) {
-    /* phones: no pin — instead the layers drift at their own depths as the
-       hero scrolls away, so the scene keeps its dimensionality on touch too.
-       Transform-only, scrubbed, cheap. The bottom scrim fade masks the edges. */
-    gsap.utils.toArray(".hero-scene .pl").forEach(function (el) {
-      var d = parseFloat(el.dataset.depth) || 0.2;
-      gsap.to(el, { yPercent: -(d * 22), ease: "none", force3D: true,
-        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
-    });
-  }
-
-  /* recalc pins after big hero layers finish loading (kills layout shift) */
+  /* recalc triggers after big hero layers finish loading (kills layout shift) */
   addEventListener("load", function () { ScrollTrigger.refresh(); });
 
   /* ---------- section parallax (desktop only) ---------- */
