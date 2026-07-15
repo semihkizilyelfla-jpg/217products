@@ -106,7 +106,33 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   text-align: center; overflow: hidden;
 }
 .hero-scene { position: absolute; inset: 0; }
+/* Painterly stand-in: a 1.5KB blurred wash of the landscape painted from the
+   very first frame, so the scene is never "blank, then POP". The real layers
+   fade in over it as each one finishes decoding, like ink sharpening. */
+.hero-scene::before {
+  content: ""; position: absolute; inset: -36px; z-index: 0;
+  background: var(--paper) url("data:image/png;base64,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") center / cover no-repeat;
+  filter: blur(22px); transform: translateZ(0);
+}
 .pl { position: absolute; will-change: transform, opacity; }
+/* each layer fades in the moment it finishes decoding (class from lang-redirect.js);
+   cached repeat visits skip all of this and paint instantly */
+@keyframes plFade { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: no-preference) {
+  .img-wait .pl-mount, .img-wait .pl-fore { opacity: 0; }
+  .pl-mount.pl-in { animation: plFade 0.55s ease-out both; }
+  .pl-fore.pl-in  { animation: plFade 0.55s ease-out 0.08s both; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 820px) {
+  .img-wait .pl-sky, .img-wait .pl-torii { opacity: 0; }
+  .pl-sky.pl-in   { animation: plFade 0.55s ease-out 0.16s both; }
+  .pl-torii.pl-in { animation: plFade 0.55s ease-out 0.24s both; }
+}
+/* the whole scene settles from a gentle zoom as the page opens */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-scene { animation: sceneSettle 1.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
+}
+@keyframes sceneSettle { from { transform: scale(1.035); } to { transform: scale(1); } }
 .pl-sky, .pl-mount, .pl-torii, .pl-fore {
   inset: 0; width: 100%; height: 100%;
   object-fit: cover; object-position: center 46%;
@@ -157,6 +183,16 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .hero .hero-sub.rise { animation-delay: 0.28s; }
 .hero .hero-cta.rise { animation-delay: 0.4s; }
 .hero .scroll-cue.rise { animation-name: cueIn; animation-delay: 0.62s; }
+/* hold the big serif's entrance until its webfont is ready (max 700ms via
+   lang-redirect.js) so the headline never swaps typefaces mid-animation */
+@media (prefers-reduced-motion: no-preference) {
+  .fonts-wait .hero-heads.rise { animation-play-state: paused; }
+}
+/* nav glides down with the page open */
+@media (prefers-reduced-motion: no-preference) {
+  .nav { animation: navIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+}
+@keyframes navIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
 .hero-heads { display: grid; position: relative; }
 .hero-heads .head {
