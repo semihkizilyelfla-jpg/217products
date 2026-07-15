@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://217products.com/sitemap.xml

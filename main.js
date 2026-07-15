@@ -168,9 +168,13 @@
       scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: true } });
   });
 
-  /* ---------- marquee ---------- */
+  /* ---------- marquee (paused while off-screen to save compositing) ---------- */
   var marq = document.getElementById("marqRow");
-  if (marq) gsap.to(marq, { xPercent: -50, duration: 26, ease: "none", repeat: -1 });
+  if (marq) {
+    var marqTween = gsap.to(marq, { xPercent: -50, duration: 26, ease: "none", repeat: -1 });
+    ScrollTrigger.create({ trigger: ".marquee", start: "top bottom", end: "bottom top",
+      onToggle: function (self) { self.isActive ? marqTween.play() : marqTween.pause(); } });
+  }
 
   /* ---------- globe reach callouts: revealed once, staggered, as the section enters ----------
      The globe itself just auto-rotates (and can be dragged) — no scroll pinning. */
