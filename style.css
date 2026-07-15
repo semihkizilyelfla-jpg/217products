@@ -330,6 +330,8 @@ html:not(.img-wait) .hero-scene::before { display: none; }
   background: var(--vermilion); color: #fff; border-radius: 10px; transform: rotate(-6deg);
   font-family: "Shippori Mincho", serif; font-weight: 700; font-size: 24px; box-shadow: 0 10px 26px rgba(226,75,38,0.4);
 }
+/* keep the corner seal from poking past the viewport edge on narrow phones */
+@media (max-width: 600px) { .frame-seal { right: -6px; bottom: -6px; width: 48px; height: 48px; font-size: 20px; } }
 .product h3 { font-size: clamp(46px, 6.5vw, 92px); line-height: 1; }
 .product-sub { margin-top: 16px; font-size: clamp(16px, 1.8vw, 21px); color: var(--ink-2); max-width: 30ch; }
 .features { list-style: none; margin-top: 30px; }
