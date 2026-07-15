@@ -111,7 +111,7 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    fade in over it as each one finishes decoding, like ink sharpening. */
 .hero-scene::before {
   content: ""; position: absolute; inset: -36px; z-index: 0;
-  background: var(--paper) url("data:image/png;base64,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") center / cover no-repeat;
+  background: var(--paper) url("data:image/png;base64,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") center / cover no-repeat;
   filter: blur(22px); transform: translateZ(0);
 }
 .pl { position: absolute; will-change: transform, opacity; }
@@ -119,9 +119,12 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    cached repeat visits skip all of this and paint instantly */
 @keyframes plFade { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: no-preference) {
-  .img-wait .pl { opacity: 0; }
+  .img-wait .pl-mount, .img-wait .pl-fore { opacity: 0; }
   .pl-mount.pl-in { animation: plFade 0.55s ease-out both; }
   .pl-fore.pl-in  { animation: plFade 0.55s ease-out 0.08s both; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 820px) {
+  .img-wait .pl-sky, .img-wait .pl-torii { opacity: 0; }
   .pl-sky.pl-in   { animation: plFade 0.55s ease-out 0.16s both; }
   .pl-torii.pl-in { animation: plFade 0.55s ease-out 0.24s both; }
 }
@@ -133,6 +136,12 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .pl-sky, .pl-mount, .pl-torii, .pl-fore {
   inset: 0; width: 100%; height: 100%;
   object-fit: cover; object-position: center 46%;
+}
+/* Desktop: sky + torii stay hidden until the pinned scroll assembles them.
+   Gated in CSS (before GSAP runs) so they never flash visible on first paint;
+   scene 1 (mountains + foreground) stays fully visible the whole time. */
+@media (min-width: 821px) {
+  .js .pl-sky, .js .pl-torii { opacity: 0; }
 }
 .hero-scrim {
   position: absolute; inset: 0; z-index: 1;
