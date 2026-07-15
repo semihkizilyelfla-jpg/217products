@@ -11,11 +11,18 @@
   var de = document.documentElement;
   de.className += " js img-wait fonts-wait";
 
-  /* Webfont hold: the big serif headline waits (max 700ms) for its font so it
-     never swaps typefaces mid-entrance. */
+  /* Webfont hold: the whole hero entrance waits for the two hero typefaces
+     (headline serif + body sans) so nothing animates in a fallback and then
+     reshapes. Released as soon as they're ready; hard cap so it never stalls. */
   function fontsGo() { de.classList.remove("fonts-wait"); }
-  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(fontsGo); }
-  setTimeout(fontsGo, 700);
+  if (document.fonts && document.fonts.load) {
+    Promise.all([
+      document.fonts.load('800 1em "Shippori Mincho"'),
+      document.fonts.load('400 1em "Manrope"'),
+      document.fonts.load('700 1em "Manrope"')
+    ]).then(fontsGo, fontsGo);
+  } else { fontsGo(); }
+  setTimeout(fontsGo, 900);
 
   /* Image choreography: each hero layer fades in the moment it decodes; a
      cached repeat visit paints instantly with no fade at all. Hard cap 2s. */

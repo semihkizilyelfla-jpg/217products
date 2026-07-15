@@ -197,10 +197,13 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .hero .hero-sub.rise { animation-delay: 0.46s; }
 .hero .hero-cta.rise { animation-delay: 0.64s; }
 .hero .scroll-cue.rise { animation-name: cueIn; animation-delay: 0.92s; }
-/* hold the big serif's entrance until its webfont is ready (max 700ms via
-   lang-redirect.js) so the headline never swaps typefaces mid-animation */
+/* Hold the WHOLE hero entrance until the hero webfonts are ready (max ~900ms
+   via lang-redirect.js). If only the headline waited, the kicker/sub/buttons
+   would animate in the fallback font and then reshape when Manrope arrives —
+   that mid-animation reflow reads as the entrance "playing twice". Gating the
+   whole group means it plays exactly once, in the final typefaces. */
 @media (prefers-reduced-motion: no-preference) {
-  .fonts-wait .hero-heads.rise { animation-play-state: paused; }
+  .fonts-wait .hero .rise { animation-play-state: paused; }
 }
 /* nav glides down with the page open */
 @media (prefers-reduced-motion: no-preference) {
