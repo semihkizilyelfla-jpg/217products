@@ -18,7 +18,8 @@
   try {
     renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
   } catch (e) { return; } /* no WebGL — the fallback image stays visible */
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  var isSmall = window.matchMedia("(max-width: 820px)").matches;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isSmall ? 1.5 : 2));
   if ("outputColorSpace" in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
   if ("toneMapping" in renderer) renderer.toneMapping = THREE.NoToneMapping;
   function box() { return Math.max(1, Math.min(mount.clientWidth, mount.clientHeight)); }
@@ -37,7 +38,7 @@
   scene.add(tilt);
 
   var globe = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 128, 128),
+    new THREE.SphereGeometry(1, 64, 48),
     new THREE.MeshBasicMaterial({ color: 0xf3ecdc })
   );
   tilt.add(globe);
@@ -45,7 +46,7 @@
 
   /* gold fresnel rim — defines the sphere silhouette against the cream page */
   var rim = new THREE.Mesh(
-    new THREE.SphereGeometry(1.02, 96, 96),
+    new THREE.SphereGeometry(1.02, 48, 32),
     new THREE.ShaderMaterial({
       uniforms: {
         uColor: { value: new THREE.Color(0xc39a46) },
@@ -70,7 +71,7 @@
      reads as a 3D globe even when a mostly-ocean, light hemisphere faces us,
      instead of vanishing into the cream page. */
   var limb = new THREE.Mesh(
-    new THREE.SphereGeometry(1.004, 96, 96),
+    new THREE.SphereGeometry(1.004, 48, 32),
     new THREE.ShaderMaterial({
       uniforms: {
         uColor: { value: new THREE.Color(0x2b2219) },
@@ -109,6 +110,7 @@
 
   function clampTilt() { globe.rotation.x = Math.max(-0.9, Math.min(0.9, globe.rotation.x)); }
 
+  var rframe = 0;
   function loop(ts) {
     if (!inView) { running = false; return; }
     if (!dragging) {
@@ -121,7 +123,11 @@
         velX += (0 - velX) * 0.06;
       }
     }
-    renderer.render(scene, camera);
+    /* Full frame-rate while dragging or momentum is settling; the gentle idle
+       spin only needs ~30fps, so render every other frame — halves GPU work
+       (a big win on phones) with no visible change to the slow rotation. */
+    var busy = dragging || Math.abs(velY - AUTO) > 0.0004 || Math.abs(velX) > 0.0004;
+    if (busy || (rframe++ & 1) === 0) renderer.render(scene, camera);
     requestAnimationFrame(loop);
   }
   function start() { if (running || !inView) return; running = true; requestAnimationFrame(loop); }
