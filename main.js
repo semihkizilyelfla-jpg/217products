@@ -79,7 +79,7 @@
   var belowRise = gsap.utils.toArray(".rise").filter(function (el) { return !el.closest(".hero"); });
   gsap.set(belowRise, { autoAlpha: 0, y: 26 });
   belowRise.forEach(function (el) {
-    gsap.to(el, { autoAlpha: 1, y: 0, duration: 0.9, ease: "power2.out",
+    gsap.to(el, { autoAlpha: 1, y: 0, duration: 1.2, ease: "power3.out",
       scrollTrigger: { trigger: el, start: "top 88%", once: true }, onComplete: function(){ settle(el); } });
   });
 
@@ -176,8 +176,8 @@
     }
     ScrollTrigger.create({ trigger: ".hub", start: "top 62%", once: true, onEnter: function () {
       setReach(1);
-      gsap.delayedCall(0.35, function () { setReach(2); });
-      gsap.delayedCall(0.70, function () { setReach(3); });
+      gsap.delayedCall(0.5, function () { setReach(2); });
+      gsap.delayedCall(1.0, function () { setReach(3); });
     }});
   }
 
