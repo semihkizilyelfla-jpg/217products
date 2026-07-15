@@ -196,12 +196,9 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    and re-parenting restarts any running CSS animation on its descendants — that
    restart was making the copy animate in a second time ("twice on open"). Starting
    the entrance after the wrap is in place means it plays exactly once. */
-.hero.hero-in .rise { animation: heroRise 1.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.hero.hero-in .kicker.rise { animation-delay: 0.1s; }
-.hero.hero-in .hero-heads.rise { animation-delay: 0.24s; }
-.hero.hero-in .hero-sub.rise { animation-delay: 0.46s; }
-.hero.hero-in .hero-cta.rise { animation-delay: 0.64s; }
-.hero.hero-in .scroll-cue.rise { animation-name: cueIn; animation-delay: 0.92s; }
+/* All hero elements rise together — synchronized, no stagger — and a touch slower. */
+.hero.hero-in .rise { animation: heroRise 1.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.hero.hero-in .scroll-cue.rise { animation-name: cueIn; }
 /* Hold the WHOLE hero entrance until the hero webfonts are ready (max ~900ms
    via lang-redirect.js). If only the headline waited, the kicker/sub/buttons
    would animate in the fallback font and then reshape when Manrope arrives —
