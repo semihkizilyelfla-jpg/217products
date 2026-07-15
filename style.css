@@ -5,6 +5,20 @@
    217 identity and cel-shaded anime illustrations.
    ============================================================ */
 
+/* ---------- self-hosted fonts (subset to the site's glyphs, preloaded) ----------
+   Served from our own origin like the pros do: no third-party connection, no
+   two-step CSS->woff2 fetch, headline font ready at first paint. Manrope is a
+   single variable file covering 400-800. */
+@font-face {
+  font-family: "Manrope";
+  src: url("assets/fonts/manrope-var.woff2") format("woff2");
+  font-weight: 400 800; font-style: normal; font-display: swap;
+}
+@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-500.woff2") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-600.woff2") format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-800.woff2") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
+
 :root {
   --paper: #F3ECDC;
   --paper-2: #ECE1C9;
@@ -87,7 +101,7 @@ img { max-width: 100%; height: auto; display: block; }
 /* ---------- shared ---------- */
 main { position: relative; z-index: 2; }
 section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
-.eyebrow, .kicker { font-size: 11px; font-weight: 700; letter-spacing: 0.36em; color: var(--accent-ink); }
+.eyebrow, .kicker { font-family: "Manrope", "Shippori Mincho", system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.36em; color: var(--accent-ink); }
 .big { font-size: clamp(44px, 8.4vw, 128px); }
 
 .tate {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <script src="lang-redirect.js?v=3"></script>
   <meta name="theme-color" content="#F3ECDC">
@@ -20,13 +20,13 @@
   <meta property="og:image" content="https://217products.com/assets/zen.webp">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20fill='%23F3ECDC'/%3E%3Ctext%20x='32'%20y='46'%20font-family='Georgia,serif'%20font-size='34'%20font-weight='700'%20text-anchor='middle'%20fill='%231A1714'%3E217%3C/text%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" imagesrcset="assets/hero-mount-900.webp 900w, assets/hero-mount.webp?u=2 1920w" imagesizes="100vw" fetchpriority="high">
-  <link rel="preload" as="image" imagesrcset="assets/hero-sky-900.webp 900w, assets/hero-sky.webp?u=2 1920w" imagesizes="100vw">
-  <link rel="preload" as="image" imagesrcset="assets/hero-fore-900.webp 900w, assets/hero-fore.webp?u=2 1920w" imagesizes="100vw">
-  <link rel="stylesheet" href="style.css?v=45">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/shippori-800.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/manrope-var.woff2" crossorigin>
+  <link rel="preload" as="image" imagesrcset="assets/hero-mount-900.webp 900w, assets/hero-mount-1400.webp 1400w, assets/hero-mount.webp?u=2 1920w" imagesizes="100vw" fetchpriority="high">
+  <link rel="preload" as="image" imagesrcset="assets/hero-sky-900.webp 900w, assets/hero-sky-1400.webp 1400w, assets/hero-sky.webp?u=2 1920w" imagesizes="100vw">
+  <link rel="preload" as="image" imagesrcset="assets/hero-fore-900.webp 900w, assets/hero-fore-1400.webp 1400w, assets/hero-fore.webp?u=2 1920w" imagesizes="100vw">
+  <link rel="preload" as="image" imagesrcset="assets/hero-torii-900.webp 900w, assets/hero-torii-1400.webp 1400w, assets/hero-torii.webp?u=2 1920w" imagesizes="100vw">
+  <link rel="stylesheet" href="style.css?v=46">
 </head>
 <body>
 
@@ -51,10 +51,10 @@
     <!-- 1 · HERO (3D parallax) -->
     <section class="hero">
       <div class="hero-scene" id="scene" aria-hidden="true">
-        <img decoding="async" class="pl pl-sky" data-depth="0.08" src="assets/hero-sky.webp?u=2" srcset="assets/hero-sky-900.webp 900w, assets/hero-sky.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768" fetchpriority="high">
-        <img decoding="async" class="pl pl-mount" data-depth="0.18" src="assets/hero-mount.webp?u=2" srcset="assets/hero-mount-900.webp 900w, assets/hero-mount.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768" fetchpriority="high">
-        <img decoding="async" class="pl pl-torii" data-depth="0.32" src="assets/hero-torii.webp?u=2" srcset="assets/hero-torii-900.webp 900w, assets/hero-torii.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768">
-        <img decoding="async" class="pl pl-fore" data-depth="0.52" src="assets/hero-fore.webp?u=2" srcset="assets/hero-fore-900.webp 900w, assets/hero-fore.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768">
+        <img decoding="async" class="pl pl-sky" data-depth="0.08" src="assets/hero-sky.webp?u=2" srcset="assets/hero-sky-900.webp 900w, assets/hero-sky-1400.webp 1400w, assets/hero-sky.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768" fetchpriority="high">
+        <img decoding="async" class="pl pl-mount" data-depth="0.18" src="assets/hero-mount.webp?u=2" srcset="assets/hero-mount-900.webp 900w, assets/hero-mount-1400.webp 1400w, assets/hero-mount.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768" fetchpriority="high">
+        <img decoding="async" class="pl pl-torii" data-depth="0.32" src="assets/hero-torii.webp?u=2" srcset="assets/hero-torii-900.webp 900w, assets/hero-torii-1400.webp 1400w, assets/hero-torii.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768">
+        <img decoding="async" class="pl pl-fore" data-depth="0.52" src="assets/hero-fore.webp?u=2" srcset="assets/hero-fore-900.webp 900w, assets/hero-fore-1400.webp 1400w, assets/hero-fore.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768">
         <div class="hero-scrim"></div>
       </div>
       <aside class="tate tate-l" aria-hidden="true">独立の製品工房</aside>
