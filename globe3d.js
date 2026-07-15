@@ -66,6 +66,31 @@
   );
   scene.add(rim);
 
+  /* faint ink limb (front-side fresnel) — shades the sphere's edge so it still
+     reads as a 3D globe even when a mostly-ocean, light hemisphere faces us,
+     instead of vanishing into the cream page. */
+  var limb = new THREE.Mesh(
+    new THREE.SphereGeometry(1.004, 96, 96),
+    new THREE.ShaderMaterial({
+      uniforms: {
+        uColor: { value: new THREE.Color(0x2b2219) },
+        uPower: { value: 2.4 },
+        uIntensity: { value: 0.34 }
+      },
+      vertexShader:
+        "varying vec3 vN; varying vec3 vP;" +
+        "void main(){ vN = normalize(normalMatrix * normal);" +
+        " vec4 mv = modelViewMatrix * vec4(position,1.0); vP = mv.xyz;" +
+        " gl_Position = projectionMatrix * mv; }",
+      fragmentShader:
+        "varying vec3 vN; varying vec3 vP; uniform vec3 uColor; uniform float uPower; uniform float uIntensity;" +
+        "void main(){ vec3 v = normalize(-vP); float f = pow(1.0 - abs(dot(vN, v)), uPower);" +
+        " gl_FragColor = vec4(uColor, f * uIntensity); }",
+      transparent: true, side: THREE.FrontSide, depthWrite: false
+    })
+  );
+  scene.add(limb);
+
   new THREE.TextureLoader().load("assets/globe-map.webp?u=1", function (tex) {
     if ("colorSpace" in tex) tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
