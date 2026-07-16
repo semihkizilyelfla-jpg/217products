@@ -94,13 +94,13 @@
      Scene 1 (the landscape) fades in on load with the copy, so the site never
      opens blank. Scrolling then builds scene 2 (sky) and scene 3 (torii),
      evenly paced. Reduced pin distance keeps the first scroll gentle. */
-  var isTouch = matchMedia("(max-width: 820px)").matches;
-  /* Scene 1 (mountains + foreground) is painted from the first frame via CSS and is
-     never hidden — the hero opens as a finished image, with no half-loaded
-     "assembling" flash. Sky + torii start hidden on desktop (gated in CSS, so they
-     never flash in either) and materialise on scroll. On touch there is no pin, so
-     all four layers simply show. */
-  if (!isTouch) {
+  /* Desktop and touch setups live in gsap.matchMedia so crossing the 820px
+     boundary (window narrowed then restored, device rotation, snap layouts)
+     tears one mode down cleanly and builds the other — the pin no longer
+     depends on the width the page happened to LOAD at. */
+  var mm = gsap.matchMedia();
+
+  mm.add("(min-width: 821px)", function () {
     /* desktop: give sky + torii their pre-assembly transform (opacity:0 comes from
        CSS); the pinned timeline below fades and settles them on scroll.
        Short, nimble pin (+=100%): sky settles first, then the torii lands as the
@@ -124,21 +124,30 @@
       .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.0)
       .to(".head-3",   { autoAlpha: 1, duration: 0.5 }, 1.25);
 
-    /* light mouse parallax (desktop only) */
+    /* section parallax (desktop only) */
+    gsap.utils.toArray("[data-parallax]").forEach(function (el) {
+      var f = parseFloat(el.dataset.parallax) || 0.12;
+      gsap.fromTo(el, { yPercent: -f * 100 }, { yPercent: f * 100, ease: "none",
+        scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: true } });
+    });
+
+    /* light mouse parallax */
     if (matchMedia("(pointer: fine)").matches) {
       var setters = gsap.utils.toArray(".hero-scene .pl").map(function (el) {
         var d = parseFloat(el.dataset.depth) || 0.2;
         return { x: gsap.quickTo(el, "x", { duration: 1.0, ease: "power3.out" }),
                  y: gsap.quickTo(el, "y", { duration: 1.0, ease: "power3.out" }), d: d };
       });
-      addEventListener("mousemove", function (e) {
+      var onMove = function (e) {
         var nx = (e.clientX / innerWidth) * 2 - 1, ny = (e.clientY / innerHeight) * 2 - 1;
         setters.forEach(function (s) { s.x(nx * -15 * s.d); s.y(ny * -9 * s.d); });
-      });
+      };
+      addEventListener("mousemove", onMove);
+      return function () { removeEventListener("mousemove", onMove); };
     }
-  }
+  });
 
-  if (isTouch) {
+  mm.add("(max-width: 820px)", function () {
     /* phones: no pin — instead the layers drift at their own depths as the
        hero scrolls away, so the scene keeps its dimensionality on touch too.
        Transform-only, scrubbed, cheap. The bottom scrim fade masks the edges. */
@@ -147,17 +156,10 @@
       gsap.to(el, { yPercent: -(d * 22), ease: "none", force3D: true,
         scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
     });
-  }
+  });
 
   /* recalc pins after big hero layers finish loading (kills layout shift) */
   addEventListener("load", function () { ScrollTrigger.refresh(); });
-
-  /* ---------- section parallax (desktop only) ---------- */
-  if (!isTouch) gsap.utils.toArray("[data-parallax]").forEach(function (el) {
-    var f = parseFloat(el.dataset.parallax) || 0.12;
-    gsap.fromTo(el, { yPercent: -f * 100 }, { yPercent: f * 100, ease: "none",
-      scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: true } });
-  });
 
   /* ---------- reading-progress ink line (transform-only, cheap) ---------- */
   var ink = document.querySelector(".scroll-ink");
