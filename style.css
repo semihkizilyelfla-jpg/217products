@@ -85,11 +85,16 @@ img { max-width: 100%; height: auto; display: block; }
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 40;
   display: flex; justify-content: space-between; align-items: center;
-  padding: 14px var(--pad);
+  padding: 10px var(--pad);
   background: linear-gradient(180deg, rgba(243,236,220,0.92), rgba(243,236,220,0));
   backdrop-filter: blur(4px);
+  transition: background 0.35s ease, box-shadow 0.35s ease, padding 0.3s ease;
 }
-.brand-mark { width: 78px; height: 78px; }
+.brand-mark { width: 54px; height: 54px; transition: width 0.3s ease, height 0.3s ease; }
+/* once you scroll, the bar tightens into a slim washi ribbon: solid paper,
+   ink hairline underneath, smaller mark — quiet until you need it */
+.nav.is-scrolled { padding: 7px var(--pad); background: rgba(243,236,220,0.96); box-shadow: 0 1px 0 rgba(30,26,22,0.12), 0 10px 30px rgba(30,26,22,0.07); }
+.nav.is-scrolled .brand-mark { width: 42px; height: 42px; }
 .nav-links { display: flex; gap: clamp(12px, 2vw, 30px); align-items: center; }
 .nav-links a { position: relative; font-size: 13px; font-weight: 600; letter-spacing: 0.03em; color: var(--ink-2); transition: color 0.25s; }
 .nav-links a:hover { color: var(--ink); }
@@ -101,7 +106,15 @@ img { max-width: 100%; height: auto; display: block; }
   transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .nav-links a:hover::after, .nav-links a:focus-visible::after { transform: scaleX(1); }
-.nav-cta { color: var(--vermilion) !important; }
+/* hanko-seal CTA: a small vermilion stamp instead of a plain text link */
+.nav-cta {
+  color: #fff !important; background: var(--vermilion);
+  padding: 8px 15px; border-radius: 9px;
+  box-shadow: 0 4px 14px rgba(226,75,38,0.28);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+.nav-cta:hover { background: var(--vermilion-deep); transform: translateY(-1px); }
+.nav-links .nav-cta::after { display: none; }
 .nav-alt { color: var(--gold-deep) !important; }
 .nav-toggle { display: none; width: 44px; height: 44px; background: none; border: 0; padding: 10px; cursor: pointer; flex-direction: column; align-items: center; justify-content: center; gap: 5px; z-index: 60; }
 .nav-toggle span { display: block; width: 24px; height: 2px; background: var(--ink); border-radius: 2px; transition: transform 0.3s ease, opacity 0.2s ease; }
@@ -115,6 +128,7 @@ img { max-width: 100%; height: auto; display: block; }
     flex-direction: column; align-items: flex-start; justify-content: center; gap: 26px;
     padding: var(--pad);
     background: var(--paper); box-shadow: -20px 0 60px rgba(30,26,22,0.18);
+    border-left: 1px solid rgba(30,26,22,0.1);
     transform: translateX(100%); transition: transform 0.42s cubic-bezier(0.7,0,0.2,1);
     z-index: 50;
   }
@@ -202,12 +216,13 @@ html:not(.img-wait) .hero-scene::before { display: none; }
    Animations API calls (see the note on .pl above — CSS animations here would
    restart when the pin re-parents the hero). The `.js .rise` rule further up
    is only the pre-script no-flash gate. */
-/* nav glides down with the page open (outside the hero — never re-parented,
-   so a CSS animation is safe here) */
+/* nav fades in with the page open. OPACITY ONLY — a transform here (even a
+   finished fill-mode one) turns the fixed nav into the containing block for
+   the fixed mobile drawer inside it, which squashed the menu into the bar. */
 @media (prefers-reduced-motion: no-preference) {
-  .nav { animation: navIn 1s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .nav { animation: navIn 1s cubic-bezier(0.16, 1, 0.3, 1); }
 }
-@keyframes navIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes navIn { from { opacity: 0; } to { opacity: 1; } }
 
 .hero-heads { display: grid; position: relative; }
 .hero-heads .head {
@@ -446,6 +461,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
      a stronger solid gradient reads the same without the per-frame cost */
   .nav { backdrop-filter: none; -webkit-backdrop-filter: none;
     background: linear-gradient(180deg, rgba(243,236,220,0.97), rgba(243,236,220,0.74) 62%, rgba(243,236,220,0)); }
+  .nav.is-scrolled { background: rgba(243,236,220,0.97); backdrop-filter: none; -webkit-backdrop-filter: none; }
   .section-seal { font-size: clamp(80px, 22vw, 180px); }
   /* hub stacks: content, then globe; the vertical column divider is hidden */
   .hub-grid { grid-template-columns: 1fr; justify-items: center; gap: clamp(34px, 6vh, 60px); min-height: auto; }
@@ -481,5 +497,5 @@ html, body { max-width: 100%; overflow-x: hidden; }
 @media (max-width: 380px) {
   :root { --pad: 18px; }
   .hero-heads .head { font-size: 32px; }
-  .brand-mark { width: 58px; height: 58px; }
+  .brand-mark { width: 42px; height: 42px; }
 }

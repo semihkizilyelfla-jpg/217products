@@ -7,6 +7,15 @@
   "use strict";
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* ---------- nav: scrolled "washi ribbon" state — runs regardless of GSAP ---------- */
+  (function () {
+    var nav = document.querySelector(".nav");
+    if (!nav) return;
+    function onScroll() { nav.classList.toggle("is-scrolled", (window.scrollY || 0) > 40); }
+    addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  })();
+
   /* ---------- mobile nav (hamburger) — runs regardless of GSAP ---------- */
   (function () {
     var t = document.getElementById("navToggle"), n = document.getElementById("navLinks");

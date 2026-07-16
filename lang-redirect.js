@@ -68,8 +68,8 @@
 
     /* hero layers — each fades in once decoded, in the same tempo family as
        the copy (1.8s, same curve). Desktop leaves sky + torii untouched for
-       the scroll-assembly; phones reveal all four. Cached repeat visits skip
-       the fade entirely and paint instantly. */
+       the scroll-assembly; phones reveal all four. Cached visits fade too —
+       the opening should feel composed every time, never "pop". */
     var small = matchMedia("(max-width: 820px)").matches;
     var pls = [].slice.call(document.querySelectorAll(small ? ".hero-scene .pl" : ".pl-mount, .pl-fore"));
     var delays = { "pl-mount": 0, "pl-fore": 180, "pl-sky": 360, "pl-torii": 540 };
@@ -87,7 +87,7 @@
         }
         done();
       }
-      if (im.complete && im.naturalWidth > 0) { reveal(false); return; }
+      if (im.complete && im.naturalWidth > 0) { reveal(de.classList.contains("img-wait")); return; }
       (im.decode ? im.decode() : Promise.resolve())
         .catch(function () {})
         .then(function () { reveal(de.classList.contains("img-wait")); });
