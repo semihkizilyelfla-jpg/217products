@@ -182,6 +182,22 @@
   /* recalc pins after big hero layers finish loading (kills layout shift) */
   addEventListener("load", function () { ScrollTrigger.refresh(); });
 
+  /* Pre-decode every below-fold image during idle time after load. GitHub
+     Pages caches assets for only 10 minutes, so revisits (especially right
+     after a deploy) are effectively cold — without this, images downloaded
+     and decoded MID-SCROLL, which read as the site "stuttering". After this
+     warm-up, scrolling never waits on network or decode. */
+  addEventListener("load", function () {
+    function warm() {
+      [].forEach.call(document.images, function (im) {
+        if (im.loading === "lazy") im.loading = "eager";
+        if (im.decode) im.decode().catch(function () {});
+      });
+    }
+    if ("requestIdleCallback" in window) requestIdleCallback(warm, { timeout: 2500 });
+    else setTimeout(warm, 1200);
+  });
+
   /* ---------- reading-progress ink line (transform-only, cheap) ---------- */
   var ink = document.querySelector(".scroll-ink");
   if (ink) ScrollTrigger.create({ start: 0, end: "max",
