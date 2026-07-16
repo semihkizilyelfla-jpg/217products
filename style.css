@@ -266,7 +266,7 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    finished fill-mode one) turns the fixed nav into the containing block for
    the fixed mobile drawer inside it, which squashed the menu into the bar. */
 @media (prefers-reduced-motion: no-preference) {
-  .nav { animation: navIn 1.4s cubic-bezier(0.45, 0.05, 0.25, 1); }
+  .nav { animation: navIn 1.2s cubic-bezier(0.45, 0.05, 0.25, 1); }
 }
 @keyframes navIn { from { opacity: 0; } to { opacity: 1; } }
 

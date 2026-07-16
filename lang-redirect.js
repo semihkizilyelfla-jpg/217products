@@ -58,7 +58,7 @@
       el.style.opacity = "1"; /* resting state — the animation covers the ride */
       var a = el.animate(
         [{ opacity: 0, transform: from }, { opacity: 1, transform: to }],
-        { duration: 3000, delay: 250, easing: EASE_FADE, fill: "backwards" });
+        { duration: 2400, delay: 200, easing: EASE_FADE, fill: "backwards" });
       if (!fontsReady) { a.pause(); textAnims.push(a); }
       bootAnims.push(a);
     });
@@ -68,7 +68,7 @@
     if (scene && matchMedia("(min-width: 821px)").matches) {
       scene.animate(
         [{ transform: "scale(1.035)" }, { transform: "scale(1)" }],
-        { duration: 2400, easing: EASE_MOVE, fill: "backwards" });
+        { duration: 2000, easing: EASE_MOVE, fill: "backwards" });
     }
 
     /* hero layers — each fades in once decoded, in the same tempo family as
@@ -77,7 +77,7 @@
        the opening should feel composed every time, never "pop". */
     var small = matchMedia("(max-width: 820px)").matches;
     var pls = [].slice.call(document.querySelectorAll(small ? ".hero-scene .pl" : ".pl-mount, .pl-fore"));
-    var delays = { "pl-mount": 100, "pl-fore": 320, "pl-sky": 540, "pl-torii": 760 };
+    var delays = { "pl-mount": 80, "pl-fore": 260, "pl-sky": 440, "pl-torii": 620 };
     if (!pls.length) { imgsGo(); return; }
     var left = pls.length;
     function done() { if (--left <= 0) imgsGo(); }
@@ -88,7 +88,7 @@
           var d = 0;
           Object.keys(delays).forEach(function (k) { if (im.classList.contains(k)) d = delays[k]; });
           bootAnims.push(im.animate([{ opacity: 0 }, { opacity: 1 }],
-            { duration: 2200, delay: d, easing: EASE_FADE, fill: "backwards" }));
+            { duration: 1800, delay: d, easing: EASE_FADE, fill: "backwards" }));
         }
         done();
       }
