@@ -89,11 +89,12 @@ img { max-width: 100%; height: auto; display: block; }
   background: linear-gradient(180deg, rgba(243,236,220,0.95), rgba(243,236,220,0.7) 62%, rgba(243,236,220,0));
   transition: background 0.35s ease, box-shadow 0.35s ease, height 0.3s ease;
 }
-.brand-mark { width: 44px; height: 44px; transition: width 0.3s ease, height 0.3s ease; }
+/* horizontal brush wordmark (1.87:1) — height drives the size */
+.brand-mark { width: auto; height: 32px; transition: height 0.3s ease; }
 /* once you scroll, the bar tightens into a slim washi ribbon: solid paper,
    ink hairline underneath, smaller mark — quiet until you need it */
 .nav.is-scrolled { height: 48px; background: rgba(243,236,220,0.96); box-shadow: 0 1px 0 rgba(30,26,22,0.12), 0 10px 30px rgba(30,26,22,0.07); }
-.nav.is-scrolled .brand-mark { width: 36px; height: 36px; }
+.nav.is-scrolled .brand-mark { height: 27px; }
 .nav-links { display: flex; gap: clamp(12px, 2vw, 30px); align-items: center; }
 .nav-links a { position: relative; font-size: 13px; font-weight: 600; letter-spacing: 0.03em; color: var(--ink-2); transition: color 0.25s; }
 .nav-links a:hover { color: var(--ink); }
@@ -274,7 +275,7 @@ html:not(.img-wait) .hero-scene::before { display: none; }
    finished fill-mode one) turns the fixed nav into the containing block for
    the fixed mobile drawer inside it, which squashed the menu into the bar. */
 @media (prefers-reduced-motion: no-preference) {
-  .nav { animation: navIn 1s cubic-bezier(0.16, 1, 0.3, 1); }
+  .nav { animation: navIn 1.4s cubic-bezier(0.45, 0.05, 0.25, 1); }
 }
 @keyframes navIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -542,5 +543,5 @@ html, body { max-width: 100%; overflow-x: hidden; }
 @media (max-width: 380px) {
   :root { --pad: 18px; }
   .hero-heads .head { font-size: 32px; }
-  .brand-mark { width: 36px; height: 36px; }
+  .brand-mark { height: 26px; }
 }

@@ -13,7 +13,12 @@
   var reduced = false;
   try { reduced = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (_) {}
   var canAnimate = !reduced && !!(window.Element && Element.prototype.animate);
-  var EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
+  /* Two curves on purpose. The expo-out (EASE_MOVE) front-loads ~75% of the
+     change into the first fifth of the duration — great for movement, but on
+     an opacity fade it reads as an instant "pop". Fades therefore use a
+     balanced curve (EASE_FADE) that spends the whole duration visibly. */
+  var EASE_MOVE = "cubic-bezier(0.16, 1, 0.3, 1)";
+  var EASE_FADE = "cubic-bezier(0.45, 0.05, 0.25, 1)";
 
   /* --- webfont hold: the hero copy waits (max 900ms) for its typefaces so it
      never rises in a fallback face and then reshapes. --- */
@@ -53,7 +58,7 @@
       el.style.opacity = "1"; /* resting state — the animation covers the ride */
       var a = el.animate(
         [{ opacity: 0, transform: from }, { opacity: 1, transform: to }],
-        { duration: 3000, easing: EASE, fill: "backwards" });
+        { duration: 3000, delay: 250, easing: EASE_FADE, fill: "backwards" });
       if (!fontsReady) { a.pause(); textAnims.push(a); }
       bootAnims.push(a);
     });
@@ -63,7 +68,7 @@
     if (scene && matchMedia("(min-width: 821px)").matches) {
       scene.animate(
         [{ transform: "scale(1.035)" }, { transform: "scale(1)" }],
-        { duration: 2000, easing: EASE, fill: "backwards" });
+        { duration: 2400, easing: EASE_MOVE, fill: "backwards" });
     }
 
     /* hero layers — each fades in once decoded, in the same tempo family as
@@ -72,7 +77,7 @@
        the opening should feel composed every time, never "pop". */
     var small = matchMedia("(max-width: 820px)").matches;
     var pls = [].slice.call(document.querySelectorAll(small ? ".hero-scene .pl" : ".pl-mount, .pl-fore"));
-    var delays = { "pl-mount": 0, "pl-fore": 180, "pl-sky": 360, "pl-torii": 540 };
+    var delays = { "pl-mount": 100, "pl-fore": 320, "pl-sky": 540, "pl-torii": 760 };
     if (!pls.length) { imgsGo(); return; }
     var left = pls.length;
     function done() { if (--left <= 0) imgsGo(); }
@@ -83,7 +88,7 @@
           var d = 0;
           Object.keys(delays).forEach(function (k) { if (im.classList.contains(k)) d = delays[k]; });
           bootAnims.push(im.animate([{ opacity: 0 }, { opacity: 1 }],
-            { duration: 1800, delay: d, easing: EASE, fill: "backwards" }));
+            { duration: 2200, delay: d, easing: EASE_FADE, fill: "backwards" }));
         }
         done();
       }
