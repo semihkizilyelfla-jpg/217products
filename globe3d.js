@@ -6,12 +6,27 @@
 (function () {
   "use strict";
   var mount = document.getElementById("globe3d");
-  if (!mount || !window.THREE) return;
+  if (!mount) return;
+
+  /* Three.js itself is loaded lazily, only when the globe section approaches —
+     ~155KB of transfer + parse that most first paints never need. The script is
+     injected with the same SRI pin it had as a static tag; if it fails, the
+     static fallback image simply stays. */
+  function loadThree() {
+    if (window.THREE) { init(); return; }
+    var s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js";
+    s.integrity = "sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O";
+    s.crossOrigin = "anonymous";
+    s.onload = init;
+    document.head.appendChild(s);
+  }
 
   /* Heavy WebGL setup is deferred until the section approaches the viewport,
      so it never competes with the hero's first paint (biggest win on phones). */
   function init() {
   var THREE = window.THREE;
+  if (!THREE) return;
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   var renderer;
@@ -177,8 +192,8 @@
 
   if ("IntersectionObserver" in window) {
     var boot = new IntersectionObserver(function (entries) {
-      if (entries.some(function (e) { return e.isIntersecting; })) { boot.disconnect(); init(); }
+      if (entries.some(function (e) { return e.isIntersecting; })) { boot.disconnect(); loadThree(); }
     }, { rootMargin: "600px 0px" });
     boot.observe(mount);
-  } else { init(); }
+  } else { loadThree(); }
 })();

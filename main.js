@@ -168,6 +168,11 @@
       scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: true } });
   });
 
+  /* ---------- reading-progress ink line (transform-only, cheap) ---------- */
+  var ink = document.querySelector(".scroll-ink");
+  if (ink) ScrollTrigger.create({ start: 0, end: "max",
+    onUpdate: function (self) { ink.style.transform = "scaleX(" + self.progress.toFixed(4) + ")"; } });
+
   /* ---------- marquee (paused while off-screen to save compositing) ---------- */
   var marq = document.getElementById("marqRow");
   if (marq) {
