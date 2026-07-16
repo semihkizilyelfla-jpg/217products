@@ -157,24 +157,14 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    needlessly re-render a full-screen blur every frame. */
 html:not(.img-wait) .hero-scene::before { display: none; }
 .pl { position: absolute; will-change: transform, opacity; }
-/* each layer fades in the moment it finishes decoding (class from lang-redirect.js);
-   cached repeat visits skip all of this and paint instantly */
-@keyframes plFade { from { opacity: 0; } to { opacity: 1; } }
+/* Pre-reveal gate only: the actual fades (and the scene-settle zoom) run on the
+   Web Animations API from lang-redirect.js, NOT CSS animations — CSS animations
+   restart when GSAP's pin re-parents the hero, which made the layers appear
+   twice on cold loads. lang-redirect.js sets inline opacity:1 per layer as it
+   decodes; inline style beats this gate. */
 @media (prefers-reduced-motion: no-preference) {
-  .img-wait .pl-mount, .img-wait .pl-fore { opacity: 0; }
-  .pl-mount.pl-in { animation: plFade 0.85s ease-out both; }
-  .pl-fore.pl-in  { animation: plFade 0.85s ease-out 0.12s both; }
+  .img-wait .pl { opacity: 0; }
 }
-@media (prefers-reduced-motion: no-preference) and (max-width: 820px) {
-  .img-wait .pl-sky, .img-wait .pl-torii { opacity: 0; }
-  .pl-sky.pl-in   { animation: plFade 0.85s ease-out 0.26s both; }
-  .pl-torii.pl-in { animation: plFade 0.85s ease-out 0.4s both; }
-}
-/* the whole scene settles from a gentle zoom as the page opens */
-@media (prefers-reduced-motion: no-preference) {
-  .hero-scene { animation: sceneSettle 2s cubic-bezier(0.16, 1, 0.3, 1) both; }
-}
-@keyframes sceneSettle { from { transform: scale(1.035); } to { transform: scale(1); } }
 .pl-sky, .pl-mount, .pl-torii, .pl-fore {
   inset: 0; width: 100%; height: 100%;
   object-fit: cover; object-position: center 46%;
@@ -207,35 +197,13 @@ html:not(.img-wait) .hero-scene::before { display: none; }
 }
 .kicker { margin-bottom: 26px; }
 
-/* ---------- hero entrance — pure CSS, plays with the first paint ----------
-   No script dependency: the page opens composed, like a title card settling.
-   fill-mode:both also overrides the .js .rise gate above, and the global
-   reduced-motion rule collapses it to an instant reveal. */
-@keyframes heroRise {
-  from { opacity: 0; transform: translateY(26px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes cueIn {
-  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
-}
-/* Gated behind .hero-in, which main.js adds only AFTER ScrollTrigger has pinned
-   the hero (wrapping it in a pin-spacer). Pinning re-parents the hero in the DOM,
-   and re-parenting restarts any running CSS animation on its descendants — that
-   restart was making the copy animate in a second time ("twice on open"). Starting
-   the entrance after the wrap is in place means it plays exactly once. */
-/* All hero elements rise together — synchronized, no stagger — slow and graceful. */
-.hero.hero-in .rise { animation: heroRise 3s cubic-bezier(0.16, 1, 0.3, 1) both; }
-.hero.hero-in .scroll-cue.rise { animation-name: cueIn; }
-/* Hold the WHOLE hero entrance until the hero webfonts are ready (max ~900ms
-   via lang-redirect.js). If only the headline waited, the kicker/sub/buttons
-   would animate in the fallback font and then reshape when Manrope arrives —
-   that mid-animation reflow reads as the entrance "playing twice". Gating the
-   whole group means it plays exactly once, in the final typefaces. */
-@media (prefers-reduced-motion: no-preference) {
-  .fonts-wait .hero .rise { animation-play-state: paused; }
-}
-/* nav glides down with the page open */
+/* ---------- hero entrance ----------
+   The synchronized 3s rise of the hero copy lives in lang-redirect.js as Web
+   Animations API calls (see the note on .pl above — CSS animations here would
+   restart when the pin re-parents the hero). The `.js .rise` rule further up
+   is only the pre-script no-flash gate. */
+/* nav glides down with the page open (outside the hero — never re-parented,
+   so a CSS animation is safe here) */
 @media (prefers-reduced-motion: no-preference) {
   .nav { animation: navIn 1s cubic-bezier(0.16, 1, 0.3, 1) both; }
 }
@@ -478,9 +446,6 @@ html, body { max-width: 100%; overflow-x: hidden; }
      a stronger solid gradient reads the same without the per-frame cost */
   .nav { backdrop-filter: none; -webkit-backdrop-filter: none;
     background: linear-gradient(180deg, rgba(243,236,220,0.97), rgba(243,236,220,0.74) 62%, rgba(243,236,220,0)); }
-  /* the scene-settle zoom re-renders the blurred LQIP while it scales — skip it
-     on phones; the layers still fade in, just without the container zoom */
-  .hero-scene { animation: none; }
   .section-seal { font-size: clamp(80px, 22vw, 180px); }
   /* hub stacks: content, then globe; the vertical column divider is hidden */
   .hub-grid { grid-template-columns: 1fr; justify-items: center; gap: clamp(34px, 6vh, 60px); min-height: auto; }

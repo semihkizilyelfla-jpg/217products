@@ -149,15 +149,6 @@
     });
   }
 
-  /* The hero pin (if any) has wrapped the hero in its pin-spacer by now, so the
-     DOM re-parenting is done. Starting the CSS entrance on the next frame means
-     ScrollTrigger can't restart it mid-play — which was the "copy animates in
-     twice" on first open. On touch there's no pin, so this just starts it. */
-  requestAnimationFrame(function () {
-    var hero = document.querySelector(".hero");
-    if (hero) hero.classList.add("hero-in");
-  });
-
   /* recalc pins after big hero layers finish loading (kills layout shift) */
   addEventListener("load", function () { ScrollTrigger.refresh(); });
 
