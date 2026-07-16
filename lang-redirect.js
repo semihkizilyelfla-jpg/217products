@@ -17,7 +17,7 @@
 
   /* --- webfont hold: the hero copy waits (max 900ms) for its typefaces so it
      never rises in a fallback face and then reshapes. --- */
-  var fontsReady = false, textAnims = [];
+  var fontsReady = false, textAnims = [], bootAnims = [];
   function fontsGo() {
     fontsReady = true;
     de.classList.remove("fonts-wait");
@@ -55,6 +55,7 @@
         [{ opacity: 0, transform: from }, { opacity: 1, transform: to }],
         { duration: 3000, easing: EASE, fill: "backwards" });
       if (!fontsReady) { a.pause(); textAnims.push(a); }
+      bootAnims.push(a);
     });
 
     /* scene settle — gentle zoom, desktop only (skipped on phones for GPU) */
@@ -81,8 +82,8 @@
         if (withFade) {
           var d = 0;
           Object.keys(delays).forEach(function (k) { if (im.classList.contains(k)) d = delays[k]; });
-          im.animate([{ opacity: 0 }, { opacity: 1 }],
-            { duration: 1800, delay: d, easing: EASE, fill: "backwards" });
+          bootAnims.push(im.animate([{ opacity: 0 }, { opacity: 1 }],
+            { duration: 1800, delay: d, easing: EASE, fill: "backwards" }));
         }
         done();
       }
@@ -92,8 +93,14 @@
         .then(function () { reveal(de.classList.contains("img-wait")); });
     });
 
-    /* absolute failsafe: whatever stalls, everything is released by 3.2s */
-    setTimeout(function () { fontsGo(); imgsGo(); }, 3200);
+    /* absolute failsafe: whatever stalls, everything is released by 3.2s. In a
+       tab opened in the background the animation timeline may be frozen — jump
+       those straight to their finished state so the page is fully settled the
+       moment the visitor switches to it. */
+    setTimeout(function () {
+      fontsGo(); imgsGo();
+      if (document.hidden) bootAnims.forEach(function (a) { try { a.finish(); } catch (_) {} });
+    }, 3200);
   });
 
   /* --- first-visit language routing (static, self-hosted, no network) --- */
