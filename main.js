@@ -63,6 +63,11 @@
     return;
   }
   gsap.registerPlugin(ScrollTrigger);
+  /* Phones hide/show the browser chrome while scrolling, which fires resize and
+     made ScrollTrigger recalc everything MID-SCROLL — the page visibly jumped.
+     This tells it to ignore those height-only mobile resizes (GSAP's official
+     cure); real orientation/width changes still refresh normally. */
+  ScrollTrigger.config({ ignoreMobileResize: true });
 
   var lenis = null;
   if (window.Lenis) {
@@ -126,7 +131,9 @@
     gsap.set(".head-3", { autoAlpha: 0 });
     gsap.timeline({
       defaults: { ease: "power2.out", duration: 1 },
-      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=100%", pin: true, scrub: 0.45, anticipatePin: 1 }
+      /* no anticipatePin: with Lenis smoothing it could double-adjust and hop
+         as the pin engaged — Lenis already removes the flash it guards against */
+      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=100%", pin: true, scrub: 0.45 }
     })
       /* constant micro-drift across the whole pin: every scroll tick moves
          pixels on screen, so the pinned hero never reads as "frozen" */
