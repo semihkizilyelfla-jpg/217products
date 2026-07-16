@@ -116,14 +116,17 @@ img { max-width: 100%; height: auto; display: block; }
 .nav-cta:hover { background: var(--vermilion-deep); transform: translateY(-1px); }
 .nav-links .nav-cta::after { display: none; }
 .nav-alt { color: var(--gold-deep) !important; }
-/* toggle: two asymmetric ink strokes (brush-like), morphing into a clean X */
-.nav-toggle { display: none; width: 48px; height: 48px; background: none; border: 0; padding: 12px 11px; cursor: pointer; flex-direction: column; align-items: flex-end; justify-content: center; gap: 7px; z-index: 60; }
-.nav-toggle span { display: block; height: 2px; background: var(--ink); border-radius: 2px; transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), width 0.35s ease; }
-.nav-toggle span:nth-child(1) { width: 26px; }
-.nav-toggle span:nth-child(2) { width: 17px; }
-.nav-toggle span:nth-child(3) { display: none; }
-.nav-toggle.is-open span:nth-child(1) { width: 24px; transform: translateY(4.5px) rotate(45deg); }
-.nav-toggle.is-open span:nth-child(2) { width: 24px; transform: translateY(-4.5px) rotate(-45deg); }
+/* toggle: three sumi-e brush strokes (三, HGF vector) that hand over to an X */
+.nav-toggle { display: none; position: relative; width: 48px; height: 48px; background: none; border: 0; padding: 0; cursor: pointer; align-items: center; justify-content: center; z-index: 60; }
+.toggle-brush { width: auto; height: 26px; transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
+.nav-toggle.is-open .toggle-brush { opacity: 0; transform: rotate(90deg) scale(0.55); }
+/* the X: two ink bars, hidden until the menu opens */
+.nav-toggle span { position: absolute; left: 50%; top: 50%; width: 24px; height: 2px; margin: -1px 0 0 -12px; background: var(--ink); border-radius: 2px; opacity: 0; transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
+.nav-toggle span:nth-of-type(1) { transform: rotate(45deg) scale(0.4); }
+.nav-toggle span:nth-of-type(2) { transform: rotate(-45deg) scale(0.4); }
+.nav-toggle span:nth-of-type(3) { display: none; }
+.nav-toggle.is-open span:nth-of-type(1) { opacity: 1; transform: rotate(45deg) scale(1); }
+.nav-toggle.is-open span:nth-of-type(2) { opacity: 1; transform: rotate(-45deg) scale(1); }
 
 /* while the takeover menu is open, the page behind it must not scroll */
 html.menu-open, html.menu-open body { overflow: hidden; }
@@ -212,18 +215,6 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   text-align: center; overflow: hidden;
 }
 .hero-scene { position: absolute; inset: 0; }
-/* Painterly stand-in: a 1.5KB blurred wash of the landscape painted from the
-   very first frame, so the scene is never "blank, then POP". The real layers
-   fade in over it as each one finishes decoding, like ink sharpening. */
-.hero-scene::before {
-  content: ""; position: absolute; inset: -36px; z-index: 0;
-  background: var(--paper) url("data:image/png;base64,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") center / cover no-repeat;
-  filter: blur(22px); transform: translateZ(0);
-}
-/* Once the real layers have decoded (lang-redirect.js clears .img-wait), drop the
-   blurred LQIP — it's fully covered, and keeping it makes the scene-settle scale
-   needlessly re-render a full-screen blur every frame. */
-html:not(.img-wait) .hero-scene::before { display: none; }
 .pl { position: absolute; will-change: transform, opacity; }
 /* Pre-reveal gate only: the actual fades (and the scene-settle zoom) run on the
    Web Animations API from lang-redirect.js, NOT CSS animations — CSS animations
