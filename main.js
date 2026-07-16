@@ -20,11 +20,16 @@
   (function () {
     var t = document.getElementById("navToggle"), n = document.getElementById("navLinks");
     if (!t || !n) return;
-    function close() { n.classList.remove("open"); t.classList.remove("is-open"); t.setAttribute("aria-expanded", "false"); }
+    function close() {
+      n.classList.remove("open"); t.classList.remove("is-open");
+      t.setAttribute("aria-expanded", "false");
+      document.documentElement.classList.remove("menu-open");
+    }
     t.addEventListener("click", function () {
       var open = n.classList.toggle("open");
       t.classList.toggle("is-open", open);
       t.setAttribute("aria-expanded", open ? "true" : "false");
+      document.documentElement.classList.toggle("menu-open", open); /* scroll lock */
     });
     [].forEach.call(n.querySelectorAll("a"), function (a) { a.addEventListener("click", close); });
     addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });

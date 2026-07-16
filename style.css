@@ -85,16 +85,16 @@ img { max-width: 100%; height: auto; display: block; }
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 40;
   display: flex; justify-content: space-between; align-items: center;
-  padding: 10px var(--pad);
+  padding: 6px var(--pad);
   background: linear-gradient(180deg, rgba(243,236,220,0.92), rgba(243,236,220,0));
   backdrop-filter: blur(4px);
   transition: background 0.35s ease, box-shadow 0.35s ease, padding 0.3s ease;
 }
-.brand-mark { width: 54px; height: 54px; transition: width 0.3s ease, height 0.3s ease; }
+.brand-mark { width: 46px; height: 46px; transition: width 0.3s ease, height 0.3s ease; }
 /* once you scroll, the bar tightens into a slim washi ribbon: solid paper,
    ink hairline underneath, smaller mark — quiet until you need it */
-.nav.is-scrolled { padding: 7px var(--pad); background: rgba(243,236,220,0.96); box-shadow: 0 1px 0 rgba(30,26,22,0.12), 0 10px 30px rgba(30,26,22,0.07); }
-.nav.is-scrolled .brand-mark { width: 42px; height: 42px; }
+.nav.is-scrolled { padding: 4px var(--pad); background: rgba(243,236,220,0.96); box-shadow: 0 1px 0 rgba(30,26,22,0.12), 0 10px 30px rgba(30,26,22,0.07); }
+.nav.is-scrolled .brand-mark { width: 36px; height: 36px; }
 .nav-links { display: flex; gap: clamp(12px, 2vw, 30px); align-items: center; }
 .nav-links a { position: relative; font-size: 13px; font-weight: 600; letter-spacing: 0.03em; color: var(--ink-2); transition: color 0.25s; }
 .nav-links a:hover { color: var(--ink); }
@@ -116,24 +116,78 @@ img { max-width: 100%; height: auto; display: block; }
 .nav-cta:hover { background: var(--vermilion-deep); transform: translateY(-1px); }
 .nav-links .nav-cta::after { display: none; }
 .nav-alt { color: var(--gold-deep) !important; }
-.nav-toggle { display: none; width: 44px; height: 44px; background: none; border: 0; padding: 10px; cursor: pointer; flex-direction: column; align-items: center; justify-content: center; gap: 5px; z-index: 60; }
-.nav-toggle span { display: block; width: 24px; height: 2px; background: var(--ink); border-radius: 2px; transition: transform 0.3s ease, opacity 0.2s ease; }
-.nav-toggle.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.nav-toggle.is-open span:nth-child(2) { opacity: 0; }
-.nav-toggle.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+/* toggle: two asymmetric ink strokes (brush-like), morphing into a clean X */
+.nav-toggle { display: none; width: 48px; height: 48px; background: none; border: 0; padding: 12px 11px; cursor: pointer; flex-direction: column; align-items: flex-end; justify-content: center; gap: 7px; z-index: 60; }
+.nav-toggle span { display: block; height: 2px; background: var(--ink); border-radius: 2px; transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), width 0.35s ease; }
+.nav-toggle span:nth-child(1) { width: 26px; }
+.nav-toggle span:nth-child(2) { width: 17px; }
+.nav-toggle span:nth-child(3) { display: none; }
+.nav-toggle.is-open span:nth-child(1) { width: 24px; transform: translateY(4.5px) rotate(45deg); }
+.nav-toggle.is-open span:nth-child(2) { width: 24px; transform: translateY(-4.5px) rotate(-45deg); }
+
+/* while the takeover menu is open, the page behind it must not scroll */
+html.menu-open, html.menu-open body { overflow: hidden; }
+
 @media (max-width: 900px) {
   .nav-toggle { display: flex; }
+  /* full-screen washi takeover: big Shippori links with their kanji pairings,
+     staggered in; opacity-only (no transforms on ancestors = no fixed-position
+     traps, and cheap to composite) */
   .nav-links {
-    position: fixed; inset: 0 0 0 auto; width: min(78vw, 300px);
-    flex-direction: column; align-items: flex-start; justify-content: center; gap: 26px;
-    padding: var(--pad);
-    background: var(--paper); box-shadow: -20px 0 60px rgba(30,26,22,0.18);
-    border-left: 1px solid rgba(30,26,22,0.1);
-    transform: translateX(100%); transition: transform 0.42s cubic-bezier(0.7,0,0.2,1);
+    position: fixed; inset: 0; width: 100%;
+    flex-direction: column; align-items: flex-start; justify-content: center;
+    gap: clamp(6px, 1.6vh, 16px);
+    padding: calc(var(--pad) + 40px) calc(var(--pad) + 8px) var(--pad);
+    background:
+      radial-gradient(120% 90% at 88% -12%, rgba(226,75,38,0.08), transparent 55%),
+      radial-gradient(90% 70% at -10% 110%, rgba(195,154,70,0.1), transparent 50%),
+      var(--paper);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.4s ease, visibility 0s linear 0.4s;
     z-index: 50;
   }
-  .nav-links.open { transform: translateX(0); }
-  .nav-links a { font-size: 19px; color: var(--ink); display: flex; align-items: center; min-height: 44px; padding: 6px 4px; }
+  .nav-links.open { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity 0.4s ease; }
+  /* faint vertical studio signature, like the hero's tate columns */
+  .nav-links::before {
+    content: "独立の製品工房"; position: absolute; right: 20px; bottom: 26px;
+    writing-mode: vertical-rl; font-family: "Shippori Mincho", serif;
+    font-size: 12px; letter-spacing: 0.4em; color: var(--ink-2); opacity: 0.45;
+    pointer-events: none;
+  }
+  .nav-links a {
+    font-family: "Shippori Mincho", Georgia, serif;
+    font-size: clamp(30px, 7.6vw, 42px); font-weight: 700; letter-spacing: 0;
+    color: var(--ink); display: flex; align-items: center; gap: 16px;
+    min-height: 56px; padding: 4px 0;
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-links.open a { opacity: 1; transform: translateY(0); }
+  .nav-links.open a:nth-child(1) { transition-delay: 0.07s; }
+  .nav-links.open a:nth-child(2) { transition-delay: 0.13s; }
+  .nav-links.open a:nth-child(3) { transition-delay: 0.19s; }
+  .nav-links.open a:nth-child(4) { transition-delay: 0.25s; }
+  .nav-links.open a:nth-child(5) { transition-delay: 0.33s; }
+  .nav-links.open a:nth-child(6) { transition-delay: 0.39s; }
+  /* kanji pairings — the site's bilingual signature, small and vermilion */
+  .nav-links a:nth-child(1)::before { content: "製品"; }
+  .nav-links a:nth-child(2)::before { content: "職人"; }
+  .nav-links a:nth-child(3)::before { content: "工房"; }
+  .nav-links a:nth-child(4)::before { content: "道"; }
+  .nav-links a:nth-child(-n+4)::before {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.2em;
+    color: var(--vermilion); opacity: 0.8; min-width: 44px;
+  }
+  /* the hanko CTA + language switch sit apart from the big links */
+  .nav-links .nav-cta {
+    font-family: "Manrope", system-ui, sans-serif; font-size: 16px;
+    padding: 14px 28px; border-radius: 12px; margin-top: clamp(10px, 2.4vh, 22px);
+    min-height: 0;
+  }
+  .nav-links .nav-alt {
+    font-family: "Manrope", system-ui, sans-serif; font-size: 13px;
+    font-weight: 700; letter-spacing: 0.3em; min-height: 44px;
+  }
 }
 
 /* ---------- shared ---------- */
@@ -497,5 +551,5 @@ html, body { max-width: 100%; overflow-x: hidden; }
 @media (max-width: 380px) {
   :root { --pad: 18px; }
   .hero-heads .head { font-size: 32px; }
-  .brand-mark { width: 42px; height: 42px; }
+  .brand-mark { width: 36px; height: 36px; }
 }
