@@ -124,7 +124,7 @@
   );
   scene.add(limb);
 
-  new THREE.TextureLoader().load("assets/globe-map.webp?u=1", function (tex) {
+  new THREE.TextureLoader().load("assets/globe-map.webp?u=2", function (tex) {
     if ("colorSpace" in tex) tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
     tex.wrapS = THREE.RepeatWrapping;

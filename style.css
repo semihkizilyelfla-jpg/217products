@@ -31,6 +31,9 @@
   --accent-ink: #B23A1C;
   --gold: #C39A46;
   --gold-deep: #A67C2E;
+  /* gold dark enough to read at text sizes on paper (5.07:1 — AA). The two
+     lighter golds stay for large display accents and borders only. */
+  --gold-ink: #7F5E1C;
   --sage: #7E8E6C;
   --pad: clamp(22px, 5vw, 90px);
   --maxw: 1220px;
@@ -116,14 +119,16 @@ img { max-width: 100%; height: auto; display: block; }
 .nav-links a:hover::after, .nav-links a:focus-visible::after { transform: scaleX(1); }
 /* hanko-seal CTA: a small vermilion stamp instead of a plain text link */
 .nav-cta {
-  color: #fff !important; background: var(--vermilion);
+  /* vermilion-deep, not vermilion: white at 13px needs 4.5:1 and the brighter
+     red only gives 3.99 — the deep tone reads 5.3:1 and still stamps red */
+  color: #fff !important; background: var(--vermilion-deep);
   padding: 8px 15px; border-radius: 9px;
-  box-shadow: 0 4px 14px rgba(226,75,38,0.28);
+  box-shadow: 0 4px 14px rgba(193,60,27,0.28);
   transition: background 0.25s ease, transform 0.25s ease;
 }
-.nav-cta:hover { background: var(--vermilion-deep); transform: translateY(-1px); }
+.nav-cta:hover { background: #A93413; transform: translateY(-1px); }
 .nav-links .nav-cta::after { display: none; }
-.nav-alt { color: var(--gold-deep) !important; }
+.nav-alt { color: var(--gold-ink) !important; }
 /* toggle: three sumi-e brush strokes (三, HGF vector) that hand over to an X */
 .nav-toggle { display: none; position: relative; width: 48px; height: 48px; background: none; border: 0; padding: 0; cursor: pointer; align-items: center; justify-content: center; z-index: 60; }
 .toggle-brush { width: auto; height: 26px; transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
@@ -205,6 +210,9 @@ html.menu-open, html.menu-open body { overflow: hidden; }
 main { position: relative; z-index: 2; }
 section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .eyebrow, .kicker { font-family: "Manrope", "Shippori Mincho", system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.36em; color: var(--accent-ink); }
+/* washi glow behind the hero kicker — on phones it can land on the torii's red
+   beam, where vermilion-on-vermilion needs the paper halo to stay legible */
+.kicker { text-shadow: 0 1px 2px rgba(243,236,220,0.95), 0 0 12px rgba(243,236,220,0.8); }
 .big { font-size: clamp(44px, 8.4vw, 128px); }
 
 .tate {
@@ -297,10 +305,12 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   font-size: 14px; font-weight: 600; letter-spacing: 0.01em;
   transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
-.btn.primary { background: var(--vermilion); color: #fff; box-shadow: 0 14px 30px rgba(226,75,38,0.28); }
-.btn.primary:hover { transform: translateY(-2px); background: var(--vermilion-deep); }
+/* deep vermilion base: white button text at 14px needs 4.5:1 (bright vermilion
+   was 3.99); hover steps darker still so the pressed direction stays legible */
+.btn.primary { background: var(--vermilion-deep); color: #fff; box-shadow: 0 14px 30px rgba(193,60,27,0.28); }
+.btn.primary:hover { transform: translateY(-2px); background: #A93413; }
 .btn.quiet { border: 1px solid rgba(30,26,22,0.3); color: var(--ink); background: rgba(243,236,220,0.6); }
-.btn.quiet:hover { transform: translateY(-2px); border-color: var(--gold-deep); color: var(--gold-deep); }
+.btn.quiet:hover { transform: translateY(-2px); border-color: var(--gold-deep); color: var(--gold-ink); }
 .btn:active { transform: translateY(0) scale(0.97); }
 .hero-cta { margin-top: 38px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
 .scroll-cue { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 5; display: flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 0.28em; color: var(--ink-2); }
@@ -422,6 +432,9 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .craft-bg img { width: 100%; height: 100%; object-fit: cover; }
 .craft::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(243,236,220,0.9) 0%, rgba(243,236,220,0.55) 48%, rgba(243,236,220,0.04) 100%); z-index: 1; }
 .craft-inner { position: relative; z-index: 2; max-width: var(--maxw); margin: 0 auto; width: 100%; }
+/* the zen backdrop is warm gold at heading height — the standard gold accent
+   melts into it. The ink-dark gold keeps the accent readable on the image. */
+.craft .gold { color: var(--gold-ink); }
 .craft .display { margin-top: 22px; line-height: 1.02; text-shadow: 0 1px 3px rgba(243,236,220,0.8); }
 .craft-lead { margin-top: 28px; font-size: clamp(16px, 1.9vw, 22px); font-weight: 500; color: var(--ink); max-width: 40ch; text-shadow: 0 1px 2px rgba(243,236,220,0.95), 0 0 14px rgba(243,236,220,0.8); }
 .craft .eyebrow { text-shadow: 0 1px 2px rgba(243,236,220,0.95), 0 0 10px rgba(243,236,220,0.85); }
@@ -478,7 +491,7 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .foot-logo { width: clamp(120px, 16vw, 180px); height: auto; }
 .foot-meta { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--ink-2); text-align: right; }
 .foot-meta a { display: inline-block; padding: 5px 0; }
-.foot-meta a:hover { color: var(--vermilion); }
+.foot-meta a:hover { color: var(--accent-ink); }
 
 /* ---------- responsive ---------- */
 @media (max-width: 820px) {
