@@ -372,14 +372,10 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 /* left panel — logo + numbered reach steps */
 .reach-panel { justify-self: center; max-width: 440px; display: flex; flex-direction: column; gap: clamp(20px, 3.2vh, 38px); }
 .reach-logo { width: clamp(150px, 15vw, 208px); height: auto; align-self: center; }
-.reach-steps { list-style: none; display: flex; flex-direction: column; gap: clamp(16px, 2.8vh, 30px); }
-/* fixed mark column keeps the text baseline aligned across all three rows */
-/* number · shared arrow · text — three fixed lanes so all rows align perfectly */
-.rstep { display: grid; grid-template-columns: auto auto 1fr; align-items: center; column-gap: clamp(10px, 1vw, 15px); }
-.rnum { height: clamp(46px, 4.8vw, 62px); width: auto; display: block; }
-.rarrow { height: clamp(19px, 2vw, 26px); width: auto; display: block; }
-.rtext { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: clamp(16px, 1.7vw, 22px); color: var(--ink); }
-.reach-foot { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(15px, 1.5vw, 19px); color: var(--ink-2); }
+/* A single statement under the mark — the numbered relay was replaced by one
+   line about where the work goes, so the globe carries the reach on its own. */
+.reach-head { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: clamp(25px, 2.5vw, 36px); line-height: 1.16; letter-spacing: -0.005em; color: var(--ink); text-wrap: balance; }
+.reach-lead { font-size: clamp(15px, 1.45vw, 18px); line-height: 1.66; color: var(--ink-2); max-width: 42ch; }
 
 /* right panel — enlarged globe */
 .globe-panel { justify-self: center; }
@@ -395,10 +391,6 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .globe-canvas.gl-ok .globe-fallback { display: none; }
 /* drag affordance — the spin gesture is invisible without a cue */
 .globe-hint { margin-top: clamp(48px, 6vw, 76px); text-align: center; font-size: 11px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-2); }
-
-/* JS reveal — numbered steps fade + slide in, staggered (no-JS shows all) */
-.js-hub .rstep { opacity: 0; transform: translateX(-14px); transition: opacity 0.7s ease, transform 0.85s cubic-bezier(0.22, 1, 0.36, 1); }
-.js-hub .reach-steps.on1 .rstep-1, .js-hub .reach-steps.on2 .rstep-2, .js-hub .reach-steps.on3 .rstep-3 { opacity: 1; transform: none; }
 
 /* ---------- 5 · products ---------- */
 .products { max-width: var(--maxw); margin: 0 auto; }
@@ -549,8 +541,6 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .brighten { font-size: clamp(20px, 5.8vw, 29px); max-width: 100%; }
   .product h3 { font-size: clamp(42px, 12.6vw, 68px); }
   .globe-stage { width: min(76vw, 44vh, 340px); }
-  .rstep { column-gap: 9px; }
-  .rtext { font-size: 17px; }
   .marquee-row span { font-size: 15px; }
   .marquee-row { gap: 20px; }
   .stats { grid-template-columns: 1fr 1fr; gap: 32px 18px; }
