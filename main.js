@@ -127,9 +127,13 @@
     gsap.set(".pl-sky",   { scale: 1.06, force3D: true });
     gsap.set(".pl-torii", { yPercent: -12, force3D: true });
 
+    /* The headline hand-over only runs where a second line exists. The TR page
+       carries a single headline, so there is nothing to hand over to — fading
+       head-1 out there would empty the hero for the rest of the pin. */
+    var swap = document.querySelector(".head-3");
     gsap.set(".head-1", { autoAlpha: 1 });
-    gsap.set(".head-3", { autoAlpha: 0 });
-    gsap.timeline({
+    if (swap) gsap.set(".head-3", { autoAlpha: 0 });
+    var heroTl = gsap.timeline({
       defaults: { ease: "power2.out", duration: 1 },
       /* no anticipatePin: with Lenis smoothing it could double-adjust and hop
          as the pin engaged — Lenis already removes the flash it guards against */
@@ -144,9 +148,12 @@
       .to(".pl-fore",      { yPercent: -4.5, ease: "none", duration: 2 }, 0)
       .to(".hero-content", { yPercent: -3,   ease: "none", duration: 2 }, 0)
       .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 0)
-      .to(".head-1",   { autoAlpha: 0, duration: 0.5 }, 0.9)
-      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.0)
-      .to(".head-3",   { autoAlpha: 1, duration: 0.5 }, 1.25);
+      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.0);
+
+    if (swap) {
+      heroTl.to(".head-1", { autoAlpha: 0, duration: 0.5 }, 0.9)
+            .to(".head-3", { autoAlpha: 1, duration: 0.5 }, 1.25);
+    }
 
     /* section parallax (desktop only) */
     gsap.utils.toArray("[data-parallax]").forEach(function (el) {
