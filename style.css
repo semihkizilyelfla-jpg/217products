@@ -87,14 +87,18 @@ img { max-width: 100%; height: auto; display: block; }
   display: flex; justify-content: space-between; align-items: center;
   height: 56px; padding: 0 var(--pad);
   background: linear-gradient(180deg, rgba(243,236,220,0.95), rgba(243,236,220,0.7) 62%, rgba(243,236,220,0));
-  transition: background 0.35s ease, box-shadow 0.35s ease, height 0.3s ease;
+  /* paint-only transitions. Height is NOT animated: it would run a layout pass
+     on every frame, and it fired exactly as scrolling began — the worst
+     possible moment. The bar keeps one height and reads its state through
+     colour, shadow and a scaled mark instead. */
+  transition: background 0.35s ease, box-shadow 0.35s ease;
 }
-/* horizontal brush wordmark (1.87:1) — height drives the size */
-.brand-mark { width: auto; height: 32px; transition: height 0.3s ease; }
-/* once you scroll, the bar tightens into a slim washi ribbon: solid paper,
-   ink hairline underneath, smaller mark — quiet until you need it */
-.nav.is-scrolled { height: 48px; background: rgba(243,236,220,0.96); box-shadow: 0 1px 0 rgba(30,26,22,0.12), 0 10px 30px rgba(30,26,22,0.07); }
-.nav.is-scrolled .brand-mark { height: 27px; }
+/* horizontal brush wordmark (1.87:1) — scaled, never resized */
+.brand-mark { width: auto; height: 32px; transform-origin: left center; transition: transform 0.3s ease; will-change: transform; }
+/* once you scroll, the bar settles into a solid washi ribbon: paper fill, ink
+   hairline underneath, mark drawn back — quiet until you need it */
+.nav.is-scrolled { background: rgba(243,236,220,0.96); box-shadow: 0 1px 0 rgba(30,26,22,0.12), 0 10px 30px rgba(30,26,22,0.07); }
+.nav.is-scrolled .brand-mark { transform: scale(0.84); }
 .nav-links { display: flex; gap: clamp(12px, 2vw, 30px); align-items: center; }
 .nav-links a { position: relative; font-size: 13px; font-weight: 600; letter-spacing: 0.03em; color: var(--ink-2); transition: color 0.25s; }
 .nav-links a:hover { color: var(--ink); }
@@ -251,8 +255,10 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
      the pinned layers moved beneath it — the single biggest scroll cost on the
      page. The stronger wash reads the same (proven on mobile first). */
   background: radial-gradient(64% 64% at 50% 49%, rgba(243,236,220,0.93), rgba(243,236,220,0.74) 42%, rgba(243,236,220,0.28) 66%, transparent 84%);
-  -webkit-mask-image: radial-gradient(66% 66% at 50% 49%, #000 44%, rgba(0,0,0,0.45) 66%, transparent 85%);
-  mask-image: radial-gradient(66% 66% at 50% 49%, #000 44%, rgba(0,0,0,0.45) 66%, transparent 85%);
+  /* NO mask-image here: this wash moves with the copy during the pinned scroll,
+     and a masked layer must be re-rasterised on every frame it moves — one of
+     the most expensive things a compositor can do. The radial gradient already
+     fades to transparent on its own, so the mask was pure cost. */
   pointer-events: none;
 }
 .kicker { margin-bottom: 26px; }
@@ -429,9 +435,10 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .process { max-width: var(--maxw); margin: 0 auto; }
 .process .display { margin-top: 24px; font-size: clamp(38px, 6.4vw, 92px); line-height: 1.0; }
 .steps { list-style: none; margin-top: clamp(48px, 7vh, 90px); }
-.steps li { display: grid; grid-template-columns: 92px minmax(0, 230px) 1fr; gap: clamp(14px, 3vw, 48px); align-items: baseline; padding: clamp(22px, 3vh, 34px) 0; border-top: 1px solid rgba(30,26,22,0.14); transition: padding-left 0.3s ease; }
+.steps li { display: grid; grid-template-columns: 92px minmax(0, 230px) 1fr; gap: clamp(14px, 3vw, 48px); align-items: baseline; padding: clamp(22px, 3vh, 34px) 0; border-top: 1px solid rgba(30,26,22,0.14); transition: transform 0.3s ease; }
 .steps li:last-child { border-bottom: 1px solid rgba(30,26,22,0.14); }
-.steps li:hover { padding-left: 10px; }
+/* translate, not padding — padding animates layout, transform only composites */
+.steps li:hover { transform: translateX(10px); }
 .step-n { font-size: 13px; font-weight: 700; color: var(--accent-ink); letter-spacing: 0.08em; }
 .step-t { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(24px, 3vw, 44px); font-weight: 700; }
 .step-d { font-size: 15px; color: var(--ink-2); }

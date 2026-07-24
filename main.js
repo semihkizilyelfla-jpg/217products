@@ -133,7 +133,10 @@
       defaults: { ease: "power2.out", duration: 1 },
       /* no anticipatePin: with Lenis smoothing it could double-adjust and hop
          as the pin engaged — Lenis already removes the flash it guards against */
-      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=100%", pin: true, scrub: 0.45 }
+      /* scrub:true, not a number. Lenis already smooths the scroll position;
+         adding scrub lag on top made the scene trail behind the page, which
+         reads as stutter rather than smoothness. Now it tracks 1:1. */
+      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=100%", pin: true, scrub: true }
     })
       /* constant micro-drift across the whole pin: every scroll tick moves
          pixels on screen, so the pinned hero never reads as "frozen" */
@@ -148,7 +151,9 @@
     /* section parallax (desktop only) */
     gsap.utils.toArray("[data-parallax]").forEach(function (el) {
       var f = parseFloat(el.dataset.parallax) || 0.12;
-      gsap.fromTo(el, { yPercent: -f * 100 }, { yPercent: f * 100, ease: "none",
+      /* force3D pins these onto their own GPU layer up front, so the first
+         scroll doesn't pay a promotion hitch mid-motion */
+      gsap.fromTo(el, { yPercent: -f * 100 }, { yPercent: f * 100, ease: "none", force3D: true,
         scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: true } });
     });
 
