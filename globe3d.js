@@ -12,6 +12,14 @@
      ~155KB of transfer + parse that most first paints never need. The script is
      injected with the same SRI pin it had as a static tag; if it fails, the
      static fallback image simply stays. */
+  /* The still globe is only fetched when the live one can't run (no WebGL,
+     Three.js blocked, driver refusal) — otherwise it is dead weight on every
+     visit, since the canvas covers it anyway. */
+  function showFallback() {
+    var img = mount.querySelector(".globe-fallback");
+    if (img && !img.getAttribute("src")) img.src = img.getAttribute("data-src");
+  }
+
   function loadThree() {
     if (window.THREE) { init(); return; }
     var s = document.createElement("script");
@@ -19,6 +27,7 @@
     s.integrity = "sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O";
     s.crossOrigin = "anonymous";
     s.onload = init;
+    s.onerror = showFallback;
     document.head.appendChild(s);
   }
 
@@ -26,14 +35,22 @@
      so it never competes with the hero's first paint (biggest win on phones). */
   function init() {
   var THREE = window.THREE;
-  if (!THREE) return;
+  if (!THREE) { showFallback(); return; }
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  var isSmall = window.matchMedia("(max-width: 820px)").matches;
   var renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
-  } catch (e) { return; } /* no WebGL — the fallback image stays visible */
-  var isSmall = window.matchMedia("(max-width: 820px)").matches;
+    renderer = new THREE.WebGLRenderer({
+      /* phones: skip MSAA (the 1.5x pixel ratio already resolves the edge),
+         keep the GPU in its normal power state, and let shaders run at medium
+         precision — this globe is soft ink, it needs none of the extra cost */
+      antialias: !isSmall,
+      alpha: true,
+      powerPreference: isSmall ? "default" : "high-performance",
+      precision: isSmall ? "mediump" : "highp"
+    });
+  } catch (e) { showFallback(); return; } /* no WebGL — bring in the still image */
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isSmall ? 1.5 : 2));
   if ("outputColorSpace" in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
   if ("toneMapping" in renderer) renderer.toneMapping = THREE.NoToneMapping;
