@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <script src="lang-redirect.js?v=9"></script>
+  <script src="lang-redirect.js?v=10"></script>
   <meta name="theme-color" content="#F3ECDC">
   <meta name="robots" content="index, follow">
   <title>217 Products — Independent Product Company</title>
@@ -13,7 +13,9 @@
   <link rel="canonical" href="https://217products.com/">
   <link rel="alternate" hreflang="en" href="https://217products.com/">
   <link rel="alternate" hreflang="tr" href="https://217products.com/index-tr.html">
+  <link rel="alternate" hreflang="x-default" href="https://217products.com/">
   <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
   <meta property="og:url" content="https://217products.com/">
   <meta property="og:title" content="217 Products — Independent Product Company">
   <meta property="og:description" content="An independent product company reaching from Ankara to the world. Where we see a gap, we build products that are fast, simple, and made to last.">
@@ -34,7 +36,7 @@
   <link rel="preload" as="image" imagesrcset="assets/hero-sky-900.webp 900w, assets/hero-sky-1400.webp 1400w, assets/hero-sky.webp?u=2 1920w" imagesizes="100vw">
   <link rel="preload" as="image" imagesrcset="assets/hero-fore-900.webp 900w, assets/hero-fore-1400.webp 1400w, assets/hero-fore.webp?u=2 1920w" imagesizes="100vw">
   <link rel="preload" as="image" imagesrcset="assets/hero-torii-900.webp 900w, assets/hero-torii-1400.webp 1400w, assets/hero-torii.webp?u=2 1920w" imagesizes="100vw">
-  <link rel="stylesheet" href="style.css?v=68">
+  <link rel="stylesheet" href="style.css?v=69">
   <script type="application/ld+json">
   {"@context": "https://schema.org", "@type": "Organization", "name": "217 Products", "url": "https://217products.com/", "logo": "https://217products.com/assets/icon-512.png", "image": "https://217products.com/assets/zen.webp", "description": "An independent product company reaching from Ankara to the world. Where we see a gap, we build products that are fast, simple, and made to last.", "email": "destek217product@gmail.com", "foundingDate": "2026", "address": {"@type": "PostalAddress", "addressLocality": "Ankara", "addressCountry": "TR"}}
   </script>
@@ -54,7 +56,7 @@
       <a href="#craft">Standard</a>
       <a href="#studio">Company</a>
       <a href="#process">Process</a>
-      <a class="nav-cta" href="mailto:destek217product@gmail.com">Say hello</a>
+      <a class="nav-cta" href="mailto:destek217product@gmail.com" data-mail>Say hello</a>
       <a class="nav-alt" href="index-tr.html" hreflang="tr" lang="tr" data-lang="tr" aria-label="Türkçe">TR</a>
     </nav>
   </header>
@@ -95,46 +97,16 @@
       </div>
     </div>
 
-    <!-- 3 · MANIFESTO -->
-    <section class="statement">
-      <span class="section-seal" aria-hidden="true">志</span>
-      <p class="eyebrow rise">仕事 · THE 217 APPROACH</p>
-      <h2 class="display rise">We <span class="gold">begin</span> where things fall short.</h2>
-      <p class="brighten" data-brighten>When a category is stuck with dated products, tangled experiences, or bad habits, we see an opening. We build our own answer, ship it, and keep refining it alongside the people who use it.</p>
-    </section>
-
-    <!-- 4 · GLOBE — our reach (auto-rotate + drag) -->
-    <section class="hub" id="hub">
-      <div class="reach-bg" aria-hidden="true"></div>
-      <div class="hub-grid">
-        <div class="reach-panel">
-          <p class="hub-eyebrow eyebrow">世界 · OUR REACH</p>
-          <img class="reach-logo" src="assets/logo-full.svg" alt="217 Products" width="220" height="220">
-          <h2 class="reach-head rise">Built here,<br>embraced <span class="gold">everywhere</span>.</h2>
-          <p class="reach-lead rise">We care less about where a product is made than whose life it makes easier. Every 217 product that leaves Ankara is designed to be used with the same simplicity and care anywhere in the world.</p>
-        </div>
-        <div class="globe-panel">
-          <div class="globe-stage">
-            <img class="globe-ring" src="assets/reach-ring.webp?u=2" alt="" aria-hidden="true" decoding="async">
-            <div id="globe3d" class="globe-canvas" role="img" aria-label="A rotating sumi-e ink globe of the world — drag to spin it">
-              <img class="globe-fallback" data-src="assets/globe.webp?u=2" alt="" width="560" height="560" decoding="async">
-              <noscript><img class="globe-fallback" src="assets/globe.webp?u=2" alt="" width="560" height="560"></noscript>
-            </div>
-          </div>
-          <p class="globe-hint">grab it and spin</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5 · PRODUCTS -->
+    <!-- 2 · PRODUCTS -->
     <section class="products" id="products">
       <p class="eyebrow rise">開花 · 217 WORKS</p>
       <div class="product">
         <figure class="product-art rise" data-parallax="0.12">
-          <img loading="lazy" decoding="async" src="assets/osnote-rich.webp?u=4" alt="OSNote — the floating handwriting toolbar over a page on a tablet, a stylus annotating it" width="1200" height="896">
+          <img loading="lazy" decoding="async" src="assets/osnote-rich.webp?u=5" alt="OSNote — the floating handwriting toolbar over a page on a tablet, a stylus annotating it" width="1200" height="896">
           <span class="frame-seal" aria-hidden="true">壱</span>
         </figure>
         <div class="product-body">
+          <p class="store-badge rise"><span class="badge-dot" aria-hidden="true"></span>Live on Google Play</p>
           <h3 class="display rise">OSNote</h3>
           <p class="product-sub rise">Write over any screen, or open a notebook of your own. OSNote brings free-form scribbling and tidy note-taking together in one place.</p>
           <ul class="features">
@@ -143,12 +115,20 @@
             <li class="rise">Classic, multi-page notebook mode</li>
             <li class="rise">Fast, stable, and carefully optimized</li>
           </ul>
-          <a class="btn primary rise" href="https://play.google.com/store" target="_blank" rel="noopener noreferrer">Try it now ↗</a>
+          <a class="btn primary rise" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener noreferrer">Try it now ↗</a>
         </div>
       </div>
     </section>
 
-    <!-- 6 · CRAFT (immersive parallax) -->
+    <!-- 3 · APPROACH -->
+    <section class="statement">
+      <span class="section-seal" aria-hidden="true">志</span>
+      <p class="eyebrow rise">仕事 · THE 217 APPROACH</p>
+      <h2 class="display rise">We <span class="gold">begin</span> where things fall short.</h2>
+      <p class="brighten" data-brighten>When a category is stuck with dated products, tangled experiences, or bad habits, we see an opening. We build our own answer, ship it, and keep refining it alongside the people who use it.</p>
+    </section>
+
+    <!-- 4 · CRAFT (immersive parallax) -->
     <section class="craft" id="craft">
       <div class="craft-bg" data-parallax="0.2" aria-hidden="true">
         <img loading="lazy" decoding="async" src="assets/zen.webp?u=2" alt="" width="1400" height="781">
@@ -160,7 +140,7 @@
       </div>
     </section>
 
-    <!-- 7 · STUDIO / VALUES -->
+    <!-- 5 · STUDIO / VALUES -->
     <section class="studio" id="studio">
       <p class="eyebrow rise">姿勢 · 217 PRODUCTS</p>
       <h2 class="display rise">We build <span class="gold">our own</span> products, <br class="br-lg">not someone else's idea.</h2>
@@ -184,7 +164,7 @@
       </div>
     </section>
 
-    <!-- 8 · PROCESS -->
+    <!-- 6 · PROCESS -->
     <section class="process" id="process">
       <p class="eyebrow rise">道 · HOW A PRODUCT IS BORN</p>
       <h2 class="display rise">We see a gap. <br class="br-lg">We build a <span class="gold">product</span>.</h2>
@@ -196,7 +176,30 @@
       </ol>
     </section>
 
-    <!-- 9 · FINAL -->
+    <!-- 7 · GLOBE — our reach (auto-rotate + drag) -->
+    <section class="hub" id="hub">
+      <div class="reach-bg" aria-hidden="true"></div>
+      <div class="hub-grid">
+        <div class="reach-panel">
+          <p class="hub-eyebrow eyebrow">世界 · OUR REACH</p>
+          <img class="reach-logo" src="assets/logo-full.svg" alt="217 Products" width="220" height="220">
+          <h2 class="reach-head rise">Built here,<br>with the <span class="gold">world</span> in mind.</h2>
+          <p class="reach-lead rise">We care less about where a product is made than whose life it makes easier. Every product we build in Ankara is designed to be used with the same simplicity across different countries and different habits.</p>
+        </div>
+        <div class="globe-panel">
+          <div class="globe-stage">
+            <img class="globe-ring" src="assets/reach-ring.webp?u=2" alt="" aria-hidden="true" decoding="async">
+            <div id="globe3d" class="globe-canvas" role="img" aria-label="A rotating sumi-e ink globe of the world — drag to spin it">
+              <img class="globe-fallback" data-src="assets/globe.webp?u=2" alt="" width="560" height="560" decoding="async">
+              <noscript><img class="globe-fallback" src="assets/globe.webp?u=2" alt="" width="560" height="560"></noscript>
+            </div>
+          </div>
+          <p class="globe-hint">drag · spin the world</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 · FINAL -->
     <section class="final">
       <img class="final-branch" loading="lazy" decoding="async" src="assets/branch.webp" alt="" aria-hidden="true" data-parallax="0.16" width="684" height="555">
       <p class="eyebrow rise"><span class="growing-mark" aria-hidden="true">芽</span>ON THE HORIZON</p>
@@ -204,17 +207,32 @@
       <p class="final-lead rise">Our next focus: making the relationship people have with financial products simpler and clearer.</p>
       <div class="cta rise">
         <a class="btn primary" href="#products">See our products</a>
-        <a class="btn quiet" href="mailto:destek217product@gmail.com">Say hello</a>
+        <a class="btn quiet" href="mailto:destek217product@gmail.com" data-mail>Say hello</a>
       </div>
     </section>
 
     <!-- FOOTER -->
     <footer class="foot">
       <img class="foot-logo" src="assets/logo-full.svg" alt="217 Products" width="300" height="300">
+      <nav class="foot-nav" aria-label="Footer">
+        <div class="foot-col">
+          <span class="foot-h">Explore</span>
+          <a href="#products">Products</a>
+          <a href="#studio">Company</a>
+          <a href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener noreferrer">Google Play ↗</a>
+        </div>
+        <div class="foot-col">
+          <span class="foot-h">Connect</span>
+          <a href="mailto:destek217product@gmail.com" data-mail>Contact</a>
+          <a href="https://semihkizilyelfla-jpg.github.io/privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy ↗</a>
+          <!-- Terms of Use: link here once the page exists -->
+          <!-- LinkedIn: link here once the company profile URL exists -->
+        </div>
+      </nav>
       <div class="foot-meta">
         <span>Independent Product Company</span>
         <span>Ankara, Türkiye</span>
-        <a href="mailto:destek217product@gmail.com">destek217product@gmail.com</a>
+        <a href="mailto:destek217product@gmail.com" data-mail data-mail-text>destek217product@gmail.com</a>
         <span>© 2026 217 Products</span>
       </div>
     </footer>
@@ -224,7 +242,7 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.25/dist/lenis.min.js" integrity="sha384-ClD7pCgIUz5M81HT8aZmMxCsWmfsycmBiwL5gy1pUbdWHvICIbea22N9sTtAFotA" crossorigin="anonymous"></script>
-  <script src="globe3d.js?v=14"></script>
-  <script src="main.js?v=39"></script>
+  <script type="module" src="globe3d.js?v=15"></script>
+  <script src="main.js?v=40"></script>
 </body>
 </html>

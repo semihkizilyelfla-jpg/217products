@@ -416,6 +416,10 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 }
 /* keep the corner seal from poking past the viewport edge on narrow phones */
 @media (max-width: 600px) { .frame-seal { right: -6px; bottom: -6px; width: 48px; height: 48px; font-size: 20px; } }
+/* store status badge — a quiet washi pill; the sage dot says "live" without
+   shouting, so the art direction of the section stays untouched */
+.store-badge { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 16px; padding: 7px 15px; border: 1px solid rgba(30,26,22,0.18); border-radius: 999px; background: rgba(255,255,255,0.5); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
+.badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 0 3px rgba(126,142,108,0.22); }
 .product h3 { font-size: clamp(46px, 6.5vw, 92px); line-height: 1; }
 .product-sub { margin-top: 16px; font-size: clamp(16px, 1.8vw, 21px); color: var(--ink-2); max-width: 30ch; }
 .features { list-style: none; margin-top: 30px; }
@@ -487,8 +491,14 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .cta { margin-top: 42px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
 
 /* ---------- footer ---------- */
-.foot { padding: clamp(60px, 9vh, 110px) var(--pad) clamp(40px, 6vh, 70px); max-width: var(--maxw); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; border-top: 1px solid rgba(30,26,22,0.14); }
+.foot { padding: clamp(60px, 9vh, 110px) var(--pad) clamp(40px, 6vh, 70px); max-width: var(--maxw); margin: 0 auto; display: flex; align-items: flex-start; justify-content: space-between; gap: clamp(36px, 6vw, 80px); flex-wrap: wrap; border-top: 1px solid rgba(30,26,22,0.14); }
 .foot-logo { width: clamp(120px, 16vw, 180px); height: auto; }
+/* link columns — same quiet meta voice, headed by a small ink label */
+.foot-nav { display: flex; gap: clamp(40px, 6vw, 90px); }
+.foot-col { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.foot-h { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: 14px; color: var(--ink); margin-bottom: 8px; }
+.foot-col a { display: inline-block; padding: 4px 0; color: var(--ink-2); }
+.foot-col a:hover { color: var(--accent-ink); }
 .foot-meta { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--ink-2); text-align: right; }
 .foot-meta a { display: inline-block; padding: 5px 0; }
 .foot-meta a:hover { color: var(--accent-ink); }
@@ -499,7 +509,8 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   .product-art { order: -1; }
   .steps li { grid-template-columns: 54px 1fr; grid-row-gap: 6px; }
   .step-d { grid-column: 1 / -1; }
-  .foot { flex-direction: column; text-align: center; }
+  .foot { flex-direction: column; align-items: center; text-align: center; }
+  .foot-nav { justify-content: center; text-align: left; }
   .foot-meta { text-align: center; }
   .craft::after { background: linear-gradient(180deg, rgba(243,236,220,0.6) 0%, rgba(243,236,220,0.92) 100%); }
 }

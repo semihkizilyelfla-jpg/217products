@@ -5,7 +5,20 @@
 
 (function () {
   "use strict";
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* ?motion=reduce mirrors the OS setting for testing — same code path */
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+                /[?&]motion=reduce/.test(location.search);
+
+  /* ---------- contact e-mail: ONE place to change ----------
+     When the corporate mailbox on the domain is ready, update this constant —
+     every a[data-mail] link (nav, closing CTA, footer) and the printed address
+     (a[data-mail][data-mail-text]) follow automatically. The mailto in the
+     HTML is only the no-JS fallback. */
+  var CONTACT_EMAIL = "destek217product@gmail.com";
+  [].forEach.call(document.querySelectorAll("a[data-mail]"), function (a) {
+    a.href = "mailto:" + CONTACT_EMAIL;
+    if (a.hasAttribute("data-mail-text")) a.textContent = CONTACT_EMAIL;
+  });
 
   /* ---------- nav: scrolled "washi ribbon" state — runs regardless of GSAP ---------- */
   (function () {
@@ -140,7 +153,7 @@
       /* scrub:true, not a number. Lenis already smooths the scroll position;
          adding scrub lag on top made the scene trail behind the page, which
          reads as stutter rather than smoothness. Now it tracks 1:1. */
-      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=100%", pin: true, scrub: true }
+      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=70%", pin: true, scrub: true }
     })
       /* constant micro-drift across the whole pin: every scroll tick moves
          pixels on screen, so the pinned hero never reads as "frozen" */
@@ -148,11 +161,13 @@
       .to(".pl-fore",      { yPercent: -4.5, ease: "none", duration: 2 }, 0)
       .to(".hero-content", { yPercent: -3,   ease: "none", duration: 2 }, 0)
       .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 0)
-      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 1.0);
+      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 0.75);
 
+    /* Hand-over sits earlier in the (30% shorter) pin so the second line is
+       on screen well before release — still scrubbed, still fully two-way. */
     if (swap) {
-      heroTl.to(".head-1", { autoAlpha: 0, duration: 0.5 }, 0.9)
-            .to(".head-3", { autoAlpha: 1, duration: 0.5 }, 1.25);
+      heroTl.to(".head-1", { autoAlpha: 0, duration: 0.5 }, 0.55)
+            .to(".head-3", { autoAlpha: 1, duration: 0.5 }, 0.9);
     }
 
     /* section parallax (desktop only) */

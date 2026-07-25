@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <script src="lang-redirect.js?v=9"></script>
+  <script src="lang-redirect.js?v=10"></script>
   <meta name="theme-color" content="#F3ECDC">
   <meta name="robots" content="index, follow">
   <title>217 Products — Bağımsız Ürün Şirketi</title>
@@ -13,6 +13,7 @@
   <link rel="canonical" href="https://217products.com/index-tr.html">
   <link rel="alternate" hreflang="en" href="https://217products.com/">
   <link rel="alternate" hreflang="tr" href="https://217products.com/index-tr.html">
+  <link rel="alternate" hreflang="x-default" href="https://217products.com/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:url" content="https://217products.com/index-tr.html">
@@ -35,7 +36,7 @@
   <link rel="preload" as="image" imagesrcset="assets/hero-sky-900.webp 900w, assets/hero-sky-1400.webp 1400w, assets/hero-sky.webp?u=2 1920w" imagesizes="100vw">
   <link rel="preload" as="image" imagesrcset="assets/hero-fore-900.webp 900w, assets/hero-fore-1400.webp 1400w, assets/hero-fore.webp?u=2 1920w" imagesizes="100vw">
   <link rel="preload" as="image" imagesrcset="assets/hero-torii-900.webp 900w, assets/hero-torii-1400.webp 1400w, assets/hero-torii.webp?u=2 1920w" imagesizes="100vw">
-  <link rel="stylesheet" href="style.css?v=68">
+  <link rel="stylesheet" href="style.css?v=69">
   <script type="application/ld+json">
   {"@context": "https://schema.org", "@type": "Organization", "name": "217 Products", "url": "https://217products.com/", "logo": "https://217products.com/assets/icon-512.png", "image": "https://217products.com/assets/zen.webp", "description": "Ankara’dan dünyaya açılan bağımsız bir ürün şirketiyiz. Gördüğümüz boşluklara hızlı, sade ve uzun ömürlü ürünler inşa ediyoruz.", "email": "destek217product@gmail.com", "foundingDate": "2026", "address": {"@type": "PostalAddress", "addressLocality": "Ankara", "addressCountry": "TR"}}
   </script>
@@ -55,7 +56,7 @@
       <a href="#craft">Standart</a>
       <a href="#studio">Şirket</a>
       <a href="#process">Süreç</a>
-      <a class="nav-cta" href="mailto:destek217product@gmail.com">Merhaba de</a>
+      <a class="nav-cta" href="mailto:destek217product@gmail.com" data-mail>Merhaba de</a>
       <a class="nav-alt" href="index.html" hreflang="en" lang="en" data-lang="en" aria-label="English">EN</a>
     </nav>
   </header>
@@ -96,46 +97,16 @@
       </div>
     </div>
 
-    <!-- 3 · MANIFESTO -->
-    <section class="statement">
-      <span class="section-seal" aria-hidden="true">志</span>
-      <p class="eyebrow rise">仕事 · 217 YAKLAŞIMI</p>
-      <h2 class="display rise">Yetmeyen yerde <span class="gold">başlarız</span>.</h2>
-      <p class="brighten" data-brighten>Bir kategori eski ürünlere, karmaşık deneyimlere veya kötü alışkanlıklara sıkıştıysa bunu fırsat sayarız. Kendi çözümümüzü kurar, yayınlar ve kullanıcıyla birlikte geliştirmeyi sürdürürüz.</p>
-    </section>
-
-    <!-- 4 · GLOBE — erişimimiz (otomatik döner + sürüklenir) -->
-    <section class="hub" id="hub">
-      <div class="reach-bg" aria-hidden="true"></div>
-      <div class="hub-grid">
-        <div class="reach-panel">
-          <p class="hub-eyebrow eyebrow">世界 · ERİŞİMİMİZ</p>
-          <img class="reach-logo" src="assets/logo-full.svg" alt="217 Products" width="220" height="220">
-          <h2 class="reach-head rise">Burada kurulur,<br>her yerde <span class="gold">karşılık</span> bulur.</h2>
-          <p class="reach-lead rise">Bir ürünün nerede geliştirildiğinden çok, kimin hayatını kolaylaştırdığına inanıyoruz. Ankara’dan çıkan her 217 ürününü, dünyanın herhangi bir yerinde aynı sadelik ve özenle kullanılabilecek şekilde tasarlıyoruz.</p>
-        </div>
-        <div class="globe-panel">
-          <div class="globe-stage">
-            <img class="globe-ring" src="assets/reach-ring.webp?u=2" alt="" aria-hidden="true" decoding="async">
-            <div id="globe3d" class="globe-canvas" role="img" aria-label="Dönen sumi-e mürekkep dünya küresi — döndürmek için sürükleyin">
-              <img class="globe-fallback" data-src="assets/globe.webp?u=2" alt="" width="560" height="560" decoding="async">
-              <noscript><img class="globe-fallback" src="assets/globe.webp?u=2" alt="" width="560" height="560"></noscript>
-            </div>
-          </div>
-          <p class="globe-hint">küreyi tutup çevir</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 5 · PRODUCTS -->
+    <!-- 2 · PRODUCTS -->
     <section class="products" id="products">
       <p class="eyebrow rise">開花 · 217 ESERLERİ</p>
       <div class="product">
         <figure class="product-art rise" data-parallax="0.12">
-          <img loading="lazy" decoding="async" src="assets/osnote-rich.webp?u=4" alt="OSNote — tablette bir sayfanın üstünde yüzen el yazısı araç çubuğu, kalemle işaretleniyor" width="1200" height="896">
+          <img loading="lazy" decoding="async" src="assets/osnote-rich.webp?u=5" alt="OSNote — tablette bir sayfanın üstünde yüzen el yazısı araç çubuğu, kalemle işaretleniyor" width="1200" height="896">
           <span class="frame-seal" aria-hidden="true">壱</span>
         </figure>
         <div class="product-body">
+          <p class="store-badge rise"><span class="badge-dot" aria-hidden="true"></span>Google Play’de yayında</p>
           <h3 class="display rise">OSNote</h3>
           <p class="product-sub rise">İstediğin ekranın üzerine yaz ya da kendi defterini aç. OSNote, özgürce karalamakla düzenli not tutmayı tek yerde buluşturur.</p>
           <ul class="features">
@@ -144,12 +115,20 @@
             <li class="rise">Klasik ve çok sayfalı defter modu</li>
             <li class="rise">Hızlı, kararlı ve özenle optimize edilmiş deneyim</li>
           </ul>
-          <a class="btn primary rise" href="https://play.google.com/store" target="_blank" rel="noopener noreferrer">Şimdi dene ↗</a>
+          <a class="btn primary rise" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener noreferrer">Şimdi dene ↗</a>
         </div>
       </div>
     </section>
 
-    <!-- 6 · CRAFT (immersive parallax) -->
+    <!-- 3 · APPROACH -->
+    <section class="statement">
+      <span class="section-seal" aria-hidden="true">志</span>
+      <p class="eyebrow rise">仕事 · 217 YAKLAŞIMI</p>
+      <h2 class="display rise">Yetmeyen yerde <span class="gold">başlarız</span>.</h2>
+      <p class="brighten" data-brighten>Bir kategori eski ürünlere, karmaşık deneyimlere veya kötü alışkanlıklara sıkıştıysa bunu fırsat sayarız. Kendi çözümümüzü kurar, yayınlar ve kullanıcıyla birlikte geliştirmeyi sürdürürüz.</p>
+    </section>
+
+    <!-- 4 · CRAFT (immersive parallax) -->
     <section class="craft" id="craft">
       <div class="craft-bg" data-parallax="0.2" aria-hidden="true">
         <img loading="lazy" decoding="async" src="assets/zen.webp?u=2" alt="" width="1400" height="781">
@@ -161,7 +140,7 @@
       </div>
     </section>
 
-    <!-- 7 · STUDIO / VALUES -->
+    <!-- 5 · STUDIO / VALUES -->
     <section class="studio" id="studio">
       <p class="eyebrow rise">姿勢 · 217 PRODUCTS</p>
       <h2 class="display rise">Başkalarının fikrini değil, <br class="br-lg">kendi ürünlerimizi <span class="gold">kuruyoruz</span>.</h2>
@@ -185,7 +164,7 @@
       </div>
     </section>
 
-    <!-- 8 · PROCESS -->
+    <!-- 6 · PROCESS -->
     <section class="process" id="process">
       <p class="eyebrow rise">道 · ÜRÜN NASIL DOĞAR</p>
       <h2 class="display rise">Bir boşluk görürüz. <br class="br-lg">Bir <span class="gold">ürün</span> kurarız.</h2>
@@ -197,7 +176,30 @@
       </ol>
     </section>
 
-    <!-- 9 · FINAL -->
+    <!-- 7 · GLOBE — erişimimiz (otomatik döner + sürüklenir) -->
+    <section class="hub" id="hub">
+      <div class="reach-bg" aria-hidden="true"></div>
+      <div class="hub-grid">
+        <div class="reach-panel">
+          <p class="hub-eyebrow eyebrow">世界 · ERİŞİMİMİZ</p>
+          <img class="reach-logo" src="assets/logo-full.svg" alt="217 Products" width="220" height="220">
+          <h2 class="reach-head rise">Burada kurulur,<br>dünyayı <span class="gold">düşünür</span>.</h2>
+          <p class="reach-lead rise">Bir ürünün nerede geliştirildiğinden çok, kimin hayatını kolaylaştırdığına inanıyoruz. Ankara’dan geliştirdiğimiz her ürünü, farklı ülkelerde ve farklı alışkanlıklar içinde aynı sadelikle kullanılabilecek şekilde tasarlıyoruz.</p>
+        </div>
+        <div class="globe-panel">
+          <div class="globe-stage">
+            <img class="globe-ring" src="assets/reach-ring.webp?u=2" alt="" aria-hidden="true" decoding="async">
+            <div id="globe3d" class="globe-canvas" role="img" aria-label="Dönen sumi-e mürekkep dünya küresi — döndürmek için sürükleyin">
+              <img class="globe-fallback" data-src="assets/globe.webp?u=2" alt="" width="560" height="560" decoding="async">
+              <noscript><img class="globe-fallback" src="assets/globe.webp?u=2" alt="" width="560" height="560"></noscript>
+            </div>
+          </div>
+          <p class="globe-hint">sürükle · dünyayı çevir</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 · FINAL -->
     <section class="final">
       <img class="final-branch" loading="lazy" decoding="async" src="assets/branch.webp" alt="" aria-hidden="true" data-parallax="0.16" width="684" height="555">
       <p class="eyebrow rise"><span class="growing-mark" aria-hidden="true">芽</span>UFUKTA</p>
@@ -205,17 +207,32 @@
       <p class="final-lead rise">Gelecek odağımız, insanların finansal ürünlerle kurduğu ilişkiyi daha sade ve anlaşılır hâle getirmek.</p>
       <div class="cta rise">
         <a class="btn primary" href="#products">Ürünleri gör</a>
-        <a class="btn quiet" href="mailto:destek217product@gmail.com">Merhaba de</a>
+        <a class="btn quiet" href="mailto:destek217product@gmail.com" data-mail>Merhaba de</a>
       </div>
     </section>
 
     <!-- FOOTER -->
     <footer class="foot">
       <img class="foot-logo" src="assets/logo-full.svg" alt="217 Products" width="300" height="300">
+      <nav class="foot-nav" aria-label="Alt bilgi">
+        <div class="foot-col">
+          <span class="foot-h">Keşfet</span>
+          <a href="#products">Ürünler</a>
+          <a href="#studio">Şirket</a>
+          <a href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener noreferrer">Google Play ↗</a>
+        </div>
+        <div class="foot-col">
+          <span class="foot-h">Bağlantı</span>
+          <a href="mailto:destek217product@gmail.com" data-mail>İletişim</a>
+          <a href="https://semihkizilyelfla-jpg.github.io/privacy.html" target="_blank" rel="noopener noreferrer">Gizlilik Politikası ↗</a>
+          <!-- Kullanım Koşulları: sayfa hazır olunca buraya bağlanacak -->
+          <!-- LinkedIn: şirket profili URL'i hazır olunca buraya bağlanacak -->
+        </div>
+      </nav>
       <div class="foot-meta">
         <span>Bağımsız Ürün Şirketi</span>
         <span>Ankara, Türkiye</span>
-        <a href="mailto:destek217product@gmail.com">destek217product@gmail.com</a>
+        <a href="mailto:destek217product@gmail.com" data-mail data-mail-text>destek217product@gmail.com</a>
         <span>© 2026 217 Products</span>
       </div>
     </footer>
@@ -225,7 +242,7 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.25/dist/lenis.min.js" integrity="sha384-ClD7pCgIUz5M81HT8aZmMxCsWmfsycmBiwL5gy1pUbdWHvICIbea22N9sTtAFotA" crossorigin="anonymous"></script>
-  <script src="globe3d.js?v=14"></script>
-  <script src="main.js?v=39"></script>
+  <script type="module" src="globe3d.js?v=15"></script>
+  <script src="main.js?v=40"></script>
 </body>
 </html>

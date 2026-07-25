@@ -1,42 +1,48 @@
-/* 217 Products — real-time 3D sumi-e globe (Three.js, UMD global).
+/* 217 Products — real-time 3D sumi-e globe (Three.js, ES module build).
    A textured sphere with a warm ink-wash world map and a soft gold fresnel
    rim. It rotates on its own and can be grabbed and spun with any pointer —
    mouse, pen or touch (horizontal swipes spin it, vertical swipes keep
-   scrolling the page). Renders only in view. */
+   scrolling the page). Renders only in view.
+
+   Loading contract:
+   1. WebGL capability is probed FIRST on a throwaway canvas — if the machine
+      can't produce a context, the static fallback shows immediately and
+      Three.js is never fetched (no renderer construction, no retries).
+   2. Three.js arrives lazily as the ES module build via dynamic import()
+      when the section approaches. The deprecated UMD three.min.js is gone. */
 (function () {
   "use strict";
   var mount = document.getElementById("globe3d");
   if (!mount) return;
 
-  /* Three.js itself is loaded lazily, only when the globe section approaches —
-     ~155KB of transfer + parse that most first paints never need. The script is
-     injected with the same SRI pin it had as a static tag; if it fails, the
-     static fallback image simply stays. */
-  /* The still globe is only fetched when the live one can't run (no WebGL,
-     Three.js blocked, driver refusal) — otherwise it is dead weight on every
-     visit, since the canvas covers it anyway. */
+  var THREE_URL = "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.min.js";
+
+  /* The still globe is only fetched when the live one can't run — otherwise
+     it is dead weight on every visit, since the canvas covers it anyway. */
   function showFallback() {
     var img = mount.querySelector(".globe-fallback");
     if (img && !img.getAttribute("src")) img.src = img.getAttribute("data-src");
   }
 
-  function loadThree() {
-    if (window.THREE) { init(); return; }
-    var s = document.createElement("script");
-    s.src = "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.min.js";
-    s.integrity = "sha384-qOkzR5Ke/XkQxuGVJ9hpFEpDlcoLtWwVYhnJf06cLIZa2vaIptSqaubivErzmD5O";
-    s.crossOrigin = "anonymous";
-    s.onload = init;
-    s.onerror = showFallback;
-    document.head.appendChild(s);
+  /* cheap capability probe, no renderer involved */
+  function webglAvailable() {
+    try {
+      var c = document.createElement("canvas");
+      return !!(window.WebGLRenderingContext &&
+        (c.getContext("webgl2") || c.getContext("webgl") || c.getContext("experimental-webgl")));
+    } catch (e) { return false; }
+  }
+
+  function boot() {
+    if (!webglAvailable()) { showFallback(); return; }
+    import(THREE_URL).then(function (THREE) { init(THREE); }, showFallback);
   }
 
   /* Heavy WebGL setup is deferred until the section approaches the viewport,
      so it never competes with the hero's first paint (biggest win on phones). */
-  function init() {
-  var THREE = window.THREE;
-  if (!THREE) { showFallback(); return; }
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function init(THREE) {
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+                /[?&]motion=reduce/.test(location.search);
 
   var isSmall = window.matchMedia("(max-width: 820px)").matches;
   var renderer;
@@ -50,7 +56,7 @@
       powerPreference: isSmall ? "default" : "high-performance",
       precision: isSmall ? "mediump" : "highp"
     });
-  } catch (e) { showFallback(); return; } /* no WebGL — bring in the still image */
+  } catch (e) { showFallback(); return; } /* context refused after all — one attempt, then the still image */
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isSmall ? 1.5 : 2));
   if ("outputColorSpace" in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
   if ("toneMapping" in renderer) renderer.toneMapping = THREE.NoToneMapping;
@@ -208,9 +214,9 @@
   }
 
   if ("IntersectionObserver" in window) {
-    var boot = new IntersectionObserver(function (entries) {
-      if (entries.some(function (e) { return e.isIntersecting; })) { boot.disconnect(); loadThree(); }
+    var watcher = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) { watcher.disconnect(); boot(); }
     }, { rootMargin: "600px 0px" });
-    boot.observe(mount);
-  } else { loadThree(); }
+    watcher.observe(mount);
+  } else { boot(); }
 })();

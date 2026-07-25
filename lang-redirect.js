@@ -11,7 +11,10 @@
   de.className += " js img-wait fonts-wait";
 
   var reduced = false;
-  try { reduced = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (_) {}
+  try {
+    reduced = matchMedia("(prefers-reduced-motion: reduce)").matches ||
+              /[?&]motion=reduce/.test(location.search); /* test hook, same path */
+  } catch (_) {}
   var canAnimate = !reduced && !!(window.Element && Element.prototype.animate);
   /* Two curves on purpose. The expo-out (EASE_MOVE) front-loads ~75% of the
      change into the first fifth of the duration — great for movement, but on
