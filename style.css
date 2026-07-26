@@ -209,7 +209,14 @@ html.menu-open, html.menu-open body { overflow: hidden; }
 /* ---------- shared ---------- */
 main { position: relative; z-index: 2; }
 section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
-.eyebrow, .kicker { font-family: "Manrope", "Shippori Mincho", system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.36em; color: var(--accent-ink); }
+/* Print-margin annotation: a vermilion serif kanji, a short gold rule, then
+   the tracked label — the section marker reads as a woodblock folio note
+   instead of a generic uppercase kicker. */
+.eyebrow, .kicker { display: flex; align-items: center; flex-wrap: wrap; gap: 11px; }
+.eb-k { font-family: "Shippori Mincho", Georgia, serif; font-size: 16px; font-weight: 700; line-height: 1; color: var(--vermilion); }
+.eb-t { display: inline-flex; align-items: center; font-family: "Manrope", system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.36em; color: var(--accent-ink); }
+.eb-t::before { content: ""; display: inline-block; width: 22px; height: 1px; background: var(--gold-deep); margin-right: 11px; }
+.hero .kicker, .final .eyebrow { justify-content: center; }
 /* washi glow behind the hero kicker — on phones it can land on the torii's red
    beam, where vermilion-on-vermilion needs the paper halo to stay legible */
 .kicker { text-shadow: 0 1px 2px rgba(243,236,220,0.95), 0 0 12px rgba(243,236,220,0.8); }
@@ -373,7 +380,7 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .brighten {
   margin-top: clamp(40px, 6vh, 84px); position: relative;
   font-family: "Shippori Mincho", Georgia, serif;
-  font-size: clamp(22px, 3vw, 42px); font-weight: 500; line-height: 1.4; letter-spacing: -0.005em; max-width: 24ch;
+  font-size: clamp(22px, 3vw, 42px); font-weight: 500; line-height: 1.4; letter-spacing: -0.005em; max-width: 30ch;
 }
 /* no CSS transition here: the scroll scrub already writes smooth color steps,
    and a transition on top made 42 spans churn style work on every frame */
@@ -443,8 +450,6 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .features li:last-child { border-bottom: 1px solid rgba(30,26,22,0.12); }
 .features li::before { content: ""; position: absolute; left: 0; top: 50%; margin-top: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--vermilion); }
 .features + .btn { margin-top: 30px; }
-.growing { margin-top: clamp(60px, 9vh, 120px); display: flex; align-items: center; justify-content: center; gap: 16px; text-align: center; font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(20px, 2.8vw, 36px); color: var(--ink-2); }
-.growing-mark { display: inline-grid; place-items: center; width: 54px; height: 54px; flex: none; border: 2px solid var(--sage); color: var(--sage); border-radius: 50%; font-size: 22px; }
 
 /* ---------- 6 · craft (immersive) ---------- */
 .craft { position: relative; min-height: 92svh; display: flex; align-items: center; overflow: hidden; padding-block: clamp(120px, 18vh, 220px); }
@@ -498,21 +503,13 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .step-d { font-size: 15px; color: var(--ink-2); }
 
 /* ---------- 9 · stats ---------- */
-.stats { max-width: var(--maxw); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: clamp(24px, 4vw, 60px); padding-block: clamp(70px, 10vh, 130px); border-top: 1px solid rgba(30,26,22,0.14); border-bottom: 1px solid rgba(30,26,22,0.14); text-align: center; }
-.stat-n { display: block; font-family: "Shippori Mincho", serif; font-weight: 800; font-size: clamp(44px, 6vw, 84px); line-height: 1; color: var(--vermilion); }
-/* the ∞ comes from a fallback face and renders optically small next to the big
-   Shippori digits — compensate so all four stats read the same weight */
-.stat-inf { font-size: clamp(58px, 7.9vw, 110px); line-height: 0.76; font-weight: 700; }
-.stat-l { display: block; margin-top: 10px; font-size: 13px; letter-spacing: 0.08em; color: var(--ink-2); }
-
 /* ---------- 10 · final ---------- */
 .final { position: relative; max-width: var(--maxw); margin: 0 auto; text-align: center; min-height: 88svh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
 .final-branch { position: absolute; top: 4%; right: -4%; width: clamp(180px, 26vw, 380px); opacity: 0.7; z-index: 0; transform: scaleX(-1); }
 .final .display, .final .cta, .final .eyebrow, .final-lead { position: relative; z-index: 2; }
 .final .display { line-height: 1.0; font-size: clamp(40px, 6.2vw, 88px); }
 /* UFUKTA — the closing note: kicker, one line of intent, then the two ways out */
-.final .eyebrow { display: inline-flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 24px; }
-.final .eyebrow .growing-mark { width: 30px; height: 30px; border-width: 1.5px; font-size: 14px; letter-spacing: 0; }
+.final .eyebrow { margin-bottom: 24px; }
 .final-lead { margin: 26px auto 0; max-width: 46ch; font-size: clamp(16px, 1.8vw, 20px); font-weight: 500; color: var(--ink-2); }
 .final .cta { margin-top: clamp(34px, 5vh, 54px); }
 .cta { margin-top: 42px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
@@ -598,7 +595,6 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .values { gap: 22px; }
   .steps li { grid-template-columns: 46px 1fr; }
   .foot-logo { width: 128px; }
-  .growing { flex-direction: column; gap: 12px; }
 }
 
 /* ---------- very small ---------- */
