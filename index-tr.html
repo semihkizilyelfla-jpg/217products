@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <script src="lang-redirect.js?v=10"></script>
   <meta name="theme-color" content="#F3ECDC">
@@ -14,21 +14,17 @@
   <link rel="alternate" hreflang="en" href="https://217products.com/">
   <link rel="alternate" hreflang="tr" href="https://217products.com/index-tr.html">
   <link rel="alternate" hreflang="x-default" href="https://217products.com/">
-  <meta property="og:site_name" content="217 Products">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:url" content="https://217products.com/index-tr.html">
   <meta property="og:title" content="217 Products — Bağımsız Ürün Şirketi">
   <meta property="og:description" content="Ankara’dan dünyaya açılan bağımsız bir ürün şirketiyiz. Gördüğümüz boşluklara hızlı, sade ve uzun ömürlü ürünler inşa ediyoruz.">
   <meta property="og:image" content="https://217products.com/assets/zen.webp">
-  <meta property="og:image:width" content="1600">
-  <meta property="og:image:height" content="923">
+  <meta property="og:image:width" content="1400">
+  <meta property="og:image:height" content="781">
   <meta property="og:image:alt" content="217 Products">
   <meta name="twitter:image" content="https://217products.com/assets/zen.webp">
-  <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="217 Products — Bağımsız Ürün Şirketi">
-  <meta name="twitter:description" content="Ankara’dan dünyaya açılan bağımsız bir ürün şirketiyiz. Gördüğümüz boşluklara hızlı, sade ve uzun ömürlü ürünler inşa ediyoruz.">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
@@ -37,13 +33,12 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/shippori-800.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/manrope-var.woff2" crossorigin>
   <link rel="preload" as="image" imagesrcset="assets/hero-mount-900.webp 900w, assets/hero-mount-1400.webp 1400w, assets/hero-mount.webp?u=2 1920w" imagesizes="100vw" fetchpriority="high">
+  <link rel="preload" as="image" imagesrcset="assets/hero-sky-900.webp 900w, assets/hero-sky-1400.webp 1400w, assets/hero-sky.webp?u=2 1920w" imagesizes="100vw">
   <link rel="preload" as="image" imagesrcset="assets/hero-fore-900.webp 900w, assets/hero-fore-1400.webp 1400w, assets/hero-fore.webp?u=2 1920w" imagesizes="100vw">
-  <link rel="stylesheet" href="style.css?v=75">
+  <link rel="preload" as="image" imagesrcset="assets/hero-torii-900.webp 900w, assets/hero-torii-1400.webp 1400w, assets/hero-torii.webp?u=2 1920w" imagesizes="100vw">
+  <link rel="stylesheet" href="style.css?v=71">
   <script type="application/ld+json">
   {"@context": "https://schema.org", "@type": "Organization", "name": "217 Products", "url": "https://217products.com/", "logo": "https://217products.com/assets/icon-512.png", "image": "https://217products.com/assets/zen.webp", "description": "Ankara’dan dünyaya açılan bağımsız bir ürün şirketiyiz. Gördüğümüz boşluklara hızlı, sade ve uzun ömürlü ürünler inşa ediyoruz.", "email": "destek217product@gmail.com", "foundingDate": "2026", "address": {"@type": "PostalAddress", "addressLocality": "Ankara", "addressCountry": "TR"}}
-  </script>
-  <script type="application/ld+json">
-  {"@context": "https://schema.org", "@type": "MobileApplication", "name": "OSNote", "operatingSystem": "Android", "applicationCategory": "ProductivityApplication", "url": "https://play.google.com/store/apps/details?id=com.kurapika.onscreennote", "installUrl": "https://play.google.com/store/apps/details?id=com.kurapika.onscreennote", "publisher": {"@type": "Organization", "name": "217 Products", "url": "https://217products.com/"}}
   </script>
 </head>
 <body>
@@ -55,7 +50,7 @@
     <a class="brand" href="/index-tr.html" aria-label="217 Products ana sayfa">
       <img class="brand-mark" src="assets/logo-217.svg" alt="217 Products" width="75" height="40">
     </a>
-    <button type="button" class="nav-toggle" id="navToggle" aria-label="Menüyü aç" aria-controls="navLinks" aria-expanded="false"><img class="toggle-brush" src="assets/menu-brush.svg" alt="" width="28" height="24"><span></span><span></span><span></span></button>
+    <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç" aria-controls="navLinks" aria-expanded="false"><img class="toggle-brush" src="assets/menu-brush.svg" alt="" width="28" height="24"><span></span><span></span><span></span></button>
     <nav class="nav-links" id="navLinks">
       <a href="#products">Ürünler</a>
       <a href="#craft">Standart</a>
@@ -71,16 +66,16 @@
     <!-- 1 · HERO (3D parallax) -->
     <section class="hero">
       <div class="hero-scene" id="scene" aria-hidden="true">
-        <img decoding="async" class="pl pl-sky" data-depth="0.08" src="assets/hero-sky.webp?u=2" srcset="assets/hero-sky-900.webp 900w, assets/hero-sky-1400.webp 1400w, assets/hero-sky.webp?u=2 1920w" sizes="100vw" alt="" width="1920" height="1075" fetchpriority="high">
-        <img decoding="async" class="pl pl-mount" data-depth="0.18" src="assets/hero-mount.webp?u=2" srcset="assets/hero-mount-900.webp 900w, assets/hero-mount-1400.webp 1400w, assets/hero-mount.webp?u=2 1920w" sizes="100vw" alt="" width="1920" height="1075" fetchpriority="high">
-        <img decoding="async" class="pl pl-torii" data-depth="0.32" src="assets/hero-torii.webp?u=2" srcset="assets/hero-torii-900.webp 900w, assets/hero-torii-1400.webp 1400w, assets/hero-torii.webp?u=2 1920w" sizes="100vw" alt="" width="1920" height="1075">
-        <img decoding="async" class="pl pl-fore" data-depth="0.52" src="assets/hero-fore.webp?u=2" srcset="assets/hero-fore-900.webp 900w, assets/hero-fore-1400.webp 1400w, assets/hero-fore.webp?u=2 1920w" sizes="100vw" alt="" width="1920" height="1075">
+        <img decoding="async" class="pl pl-sky" data-depth="0.08" src="assets/hero-sky.webp?u=2" srcset="assets/hero-sky-900.webp 900w, assets/hero-sky-1400.webp 1400w, assets/hero-sky.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768" fetchpriority="high">
+        <img decoding="async" class="pl pl-mount" data-depth="0.18" src="assets/hero-mount.webp?u=2" srcset="assets/hero-mount-900.webp 900w, assets/hero-mount-1400.webp 1400w, assets/hero-mount.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768" fetchpriority="high">
+        <img decoding="async" class="pl pl-torii" data-depth="0.32" src="assets/hero-torii.webp?u=2" srcset="assets/hero-torii-900.webp 900w, assets/hero-torii-1400.webp 1400w, assets/hero-torii.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768">
+        <img decoding="async" class="pl pl-fore" data-depth="0.52" src="assets/hero-fore.webp?u=2" srcset="assets/hero-fore-900.webp 900w, assets/hero-fore-1400.webp 1400w, assets/hero-fore.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768">
         <div class="hero-scrim"></div>
       </div>
       <aside class="tate tate-l" aria-hidden="true">独立の製品工房</aside>
       <aside class="tate tate-r" aria-hidden="true">二一七 · 217</aside>
       <div class="hero-content" data-depth="0.45">
-        <p class="kicker rise"><span class="eb-k" aria-hidden="true">独立</span><span class="eb-t">BAĞIMSIZ ÜRÜN ŞİRKETİ</span></p>
+        <p class="kicker rise">独立 · BAĞIMSIZ ÜRÜN ŞİRKETİ</p>
         <div class="hero-heads rise">
           <h1 class="head head-1 is-active">En iyinin <br class="br-lg">arkasındaki <em>fikir</em>.</h1>
           <div class="head head-3" aria-hidden="true">Olması gerekeni, <br class="br-lg"><em>baştan</em> kurarız.</div>
@@ -104,7 +99,7 @@
 
     <!-- 2 · PRODUCTS -->
     <section class="products" id="products">
-      <p class="eyebrow rise"><span class="eb-k" aria-hidden="true">開花</span><span class="eb-t">217 ESERLERİ</span></p>
+      <p class="eyebrow rise">開花 · 217 ESERLERİ</p>
       <div class="product">
         <figure class="product-art rise" data-parallax="0.12">
           <img loading="lazy" decoding="async" src="assets/osnote-rich.webp?u=5" alt="OSNote — tablette bir sayfanın üstünde yüzen el yazısı araç çubuğu, kalemle işaretleniyor" width="1200" height="896">
@@ -112,7 +107,7 @@
         </figure>
         <div class="product-body">
           <p class="store-badge rise"><span class="badge-dot" aria-hidden="true"></span>Google Play’de yayında</p>
-          <h2 class="display rise">OSNote</h2>
+          <h3 class="display rise">OSNote</h3>
           <p class="product-sub rise">İstediğin ekranın üzerine yaz ya da kendi defterini aç. OSNote, özgürce karalamakla düzenli not tutmayı tek yerde buluşturur.</p>
           <ul class="features">
             <li class="rise">Her uygulamanın üzerine yaz</li>
@@ -128,13 +123,13 @@
     <!-- 3 · APPROACH -->
     <section class="statement">
       <span class="section-seal" aria-hidden="true">志</span>
-      <p class="eyebrow rise"><span class="eb-k" aria-hidden="true">仕事</span><span class="eb-t">217 YAKLAŞIMI</span></p>
+      <p class="eyebrow rise">仕事 · 217 YAKLAŞIMI</p>
       <h2 class="display rise">Yetmeyen yerde <span class="gold">başlarız</span>.</h2>
       <figure class="section-art rise">
         <img loading="lazy" decoding="async" src="assets/kintsugi.webp" alt="Sumi-e üslubunda kintsugi çay çanağı — çatlakları altınla onarılmış" width="880" height="880">
-        <figcaption><span aria-hidden="true">金継ぎ · </span>Kırığı altınla onarma sanatı</figcaption>
+        <figcaption>金継ぎ · Kırığı altınla onarma sanatı</figcaption>
       </figure>
-      <p class="brighten" data-brighten>Bir ürün kullanıcıyı karmaşaya, kötü fiyatlandırmaya veya eskimiş alışkanlıklara mecbur bırakıyorsa orada daha iyisi için yer görürüz. Kendi çözümümüzü kurar, yayınlar ve kullanıcıyla birlikte geliştirmeyi sürdürürüz.</p>
+      <p class="brighten" data-brighten>Bir kategori eski ürünlere, karmaşık deneyimlere veya kötü alışkanlıklara sıkıştıysa bunu fırsat sayarız. Kendi çözümümüzü kurar, yayınlar ve kullanıcıyla birlikte geliştirmeyi sürdürürüz.</p>
     </section>
 
     <!-- 4 · CRAFT (immersive parallax) -->
@@ -143,7 +138,7 @@
         <img loading="lazy" decoding="async" src="assets/zen.webp?u=2" alt="" width="1400" height="781">
       </div>
       <div class="craft-inner">
-        <p class="eyebrow rise"><span class="eb-k" aria-hidden="true">職人</span><span class="eb-t">ÜRÜN STANDARDIMIZ</span></p>
+        <p class="eyebrow rise">職人 · ÜRÜN STANDARDIMIZ</p>
         <h2 class="display rise">Bugün için değil, <br class="br-lg">sonrası için de <span class="gold">yaparız</span>.</h2>
         <p class="craft-lead rise">Yaptığımız ürünlerin sorumluluğunu taşırız. Teknoloji değiştikçe yeniler, kullanıcı konuştukça dinler ve ihtiyaç ortaya çıktıkça geliştiririz.</p>
       </div>
@@ -151,24 +146,24 @@
 
     <!-- 5 · STUDIO / VALUES -->
     <section class="studio" id="studio">
-      <p class="eyebrow rise"><span class="eb-k" aria-hidden="true">姿勢</span><span class="eb-t">217 PRODUCTS</span></p>
-      <h2 class="display rise">Yönümüzü kendimiz belirler, <br class="br-lg">kendi ürünlerimizi <span class="gold">kurarız</span>.</h2>
+      <p class="eyebrow rise">姿勢 · 217 PRODUCTS</p>
+      <h2 class="display rise">Başkalarının fikrini değil, <br class="br-lg">kendi ürünlerimizi <span class="gold">kuruyoruz</span>.</h2>
       <figure class="section-art rise">
         <img loading="lazy" decoding="async" src="assets/potter.webp" alt="Sumi-e üslubunda çömlekçi çarkında çanak şekillendiren eller" width="880" height="880">
-        <figcaption><span aria-hidden="true">手仕事 · </span>Çarkta, elle kurulur</figcaption>
+        <figcaption>手仕事 · Çarkta, elle kurulur</figcaption>
       </figure>
       <p class="brighten" data-brighten>Bağımsızlık bizim için istediğimizi yapmak değil, yaptığımız her şeyin sonucunu üstlenmektir. Kararı da sorumluluğu da başkasına bırakmayız.</p>
       <div class="values">
         <article class="value rise">
-          <h3>Özenli</h3>
+          <h4>Özenli</h4>
           <p>Bir ürünü iyi yapanın, kimsenin fark etmediği küçük ayrıntılar olduğunu biliriz.</p>
         </article>
         <article class="value rise">
-          <h3>Odaklı</h3>
+          <h4>Odaklı</h4>
           <p>Her fikrin peşinden koşmaz, gerçek fark yaratabileceğimiz işe yoğunlaşırız.</p>
         </article>
         <article class="value rise">
-          <h3>İleriye dönük</h3>
+          <h4>İleriye dönük</h4>
           <p>Hedeflerimizi büyütürken odağımızı ve bizi biz yapan değerleri koruruz.</p>
         </article>
       </div>
@@ -176,7 +171,7 @@
 
     <!-- 6 · PROCESS -->
     <section class="process" id="process">
-      <p class="eyebrow rise"><span class="eb-k" aria-hidden="true">道</span><span class="eb-t">ÜRÜN NASIL DOĞAR</span></p>
+      <p class="eyebrow rise">道 · ÜRÜN NASIL DOĞAR</p>
       <h2 class="display rise">Bir boşluk görürüz. <br class="br-lg">Bir <span class="gold">ürün</span> kurarız.</h2>
       <ol class="steps">
         <li class="rise"><span class="step-n">01</span><span class="step-t">Fark et</span><span class="step-d">İnsanların mecburen katlandığı eksikliği görürüz.</span></li>
@@ -191,16 +186,16 @@
       <div class="reach-bg" aria-hidden="true"></div>
       <div class="hub-grid">
         <div class="reach-panel">
-          <p class="hub-eyebrow eyebrow"><span class="eb-k" aria-hidden="true">世界</span><span class="eb-t">ERİŞİMİMİZ</span></p>
-          <img class="reach-logo" loading="lazy" src="assets/logo-full.svg" alt="217 Products" width="220" height="220">
+          <p class="hub-eyebrow eyebrow">世界 · ERİŞİMİMİZ</p>
+          <img class="reach-logo" src="assets/logo-full.svg" alt="217 Products" width="220" height="220">
           <h2 class="reach-head rise">Burada kurulur,<br>dünyayı <span class="gold">düşünür</span>.</h2>
           <p class="reach-lead rise">Bir ürünün nerede geliştirildiğinden çok, kimin hayatını kolaylaştırdığına inanıyoruz. Ankara’dan geliştirdiğimiz her ürünü, farklı ülkelerde ve farklı alışkanlıklar içinde aynı sadelikle kullanılabilecek şekilde tasarlıyoruz.</p>
         </div>
         <div class="globe-panel">
           <div class="globe-stage">
-            <img class="globe-ring" src="assets/reach-ring.webp?u=2" alt="" aria-hidden="true" decoding="async" loading="lazy" width="1100" height="1100">
+            <img class="globe-ring" src="assets/reach-ring.webp?u=2" alt="" aria-hidden="true" decoding="async">
             <div id="globe3d" class="globe-canvas" role="img" aria-label="Dönen sumi-e mürekkep dünya küresi — döndürmek için sürükleyin">
-              <img class="globe-fallback" data-src="assets/globe.webp?u=2" alt="" width="560" height="560" decoding="async" loading="lazy">
+              <img class="globe-fallback" data-src="assets/globe.webp?u=2" alt="" width="560" height="560" decoding="async">
               <noscript><img class="globe-fallback" src="assets/globe.webp?u=2" alt="" width="560" height="560"></noscript>
             </div>
           </div>
@@ -212,7 +207,7 @@
     <!-- 8 · FINAL -->
     <section class="final">
       <img class="final-branch" loading="lazy" decoding="async" src="assets/branch.webp" alt="" aria-hidden="true" data-parallax="0.16" width="684" height="555">
-      <p class="eyebrow rise"><span class="eb-k" aria-hidden="true">芽</span><span class="eb-t">UFUKTA</span></p>
+      <p class="eyebrow rise"><span class="growing-mark" aria-hidden="true">芽</span>UFUKTA</p>
       <h2 class="display big rise">Finansı yeniden <br class="br-lg">düşünmek için.</h2>
       <p class="final-lead rise">Gelecek odağımız, insanların finansal ürünlerle kurduğu ilişkiyi daha sade ve anlaşılır hâle getirmek.</p>
       <div class="cta rise">
@@ -223,7 +218,7 @@
 
     <!-- FOOTER -->
     <footer class="foot">
-      <img class="foot-logo" loading="lazy" src="assets/logo-full.svg" alt="217 Products" width="300" height="300">
+      <img class="foot-logo" src="assets/logo-full.svg" alt="217 Products" width="300" height="300">
       <nav class="foot-nav" aria-label="Alt bilgi">
         <div class="foot-col">
           <span class="foot-h">Keşfet</span>
@@ -249,10 +244,10 @@
 
   </main>
 
-  <script src="vendor/gsap.min.js?v=3.15.0"></script>
-  <script src="vendor/ScrollTrigger.min.js?v=3.15.0"></script>
-  <script src="vendor/lenis.min.js?v=1.3.25"></script>
-  <script type="module" src="globe3d.js?v=16"></script>
-  <script src="main.js?v=42"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.25/dist/lenis.min.js" integrity="sha384-ClD7pCgIUz5M81HT8aZmMxCsWmfsycmBiwL5gy1pUbdWHvICIbea22N9sTtAFotA" crossorigin="anonymous"></script>
+  <script type="module" src="globe3d.js?v=15"></script>
+  <script src="main.js?v=40"></script>
 </body>
 </html>

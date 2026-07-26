@@ -8,28 +8,20 @@
    1. WebGL capability is probed FIRST on a throwaway canvas — if the machine
       can't produce a context, the static fallback shows immediately and
       Three.js is never fetched (no renderer construction, no retries).
-   2. Three.js is self-hosted and arrives lazily via dynamic import()
+   2. Three.js arrives lazily as the ES module build via dynamic import()
       when the section approaches. The deprecated UMD three.min.js is gone. */
 (function () {
   "use strict";
   var mount = document.getElementById("globe3d");
   if (!mount) return;
 
-  var THREE_URL = "vendor/three.module.min.js?v=0.160.1";
+  var THREE_URL = "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.min.js";
 
   /* The still globe is only fetched when the live one can't run — otherwise
-     it is dead weight on every visit, since the canvas covers it anyway.
-     When it takes over, the "drag to spin" cue would be a lie, so it goes,
-     and the region is relabelled as the still illustration it now is. */
+     it is dead weight on every visit, since the canvas covers it anyway. */
   function showFallback() {
     var img = mount.querySelector(".globe-fallback");
     if (img && !img.getAttribute("src")) img.src = img.getAttribute("data-src");
-    mount.classList.remove("gl-ok");
-    var panel = mount.closest(".globe-panel");
-    var hint = panel && panel.querySelector(".globe-hint");
-    if (hint) hint.hidden = true;
-    mount.setAttribute("aria-label", document.documentElement.lang === "tr"
-      ? "Mürekkep dünya illüstrasyonu" : "Ink illustration of the globe");
   }
 
   /* cheap capability probe, no renderer involved */
@@ -65,9 +57,7 @@
       precision: isSmall ? "mediump" : "highp"
     });
   } catch (e) { showFallback(); return; } /* context refused after all — one attempt, then the still image */
-  /* A soft ink globe gains nothing from 2x supersampling, and the fragment
-     cost scales with the square of this number: 1.5 on desktop, 1 on phones. */
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isSmall ? 1 : 1.5));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isSmall ? 1.5 : 2));
   if ("outputColorSpace" in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
   if ("toneMapping" in renderer) renderer.toneMapping = THREE.NoToneMapping;
   function box() { return Math.max(1, Math.min(mount.clientWidth, mount.clientHeight)); }
@@ -213,23 +203,6 @@
     entries.forEach(function (e) { inView = e.isIntersecting; if (inView) { renderer.render(scene, camera); start(); } });
   }, { threshold: 0.01 });
   io.observe(mount);
-
-  /* a hidden tab must cost nothing, and the loop resumes cleanly on return */
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden) { inView = false; running = false; }
-    else if (io.takeRecords && !running) { /* re-arm through the observer */
-      io.unobserve(mount); io.observe(mount);
-    }
-  });
-
-  /* A lost context (GPU reset, driver sleep, tab discard) must degrade to the
-     still image once — never spin retrying a renderer that cannot come back. */
-  el.addEventListener("webglcontextlost", function (ev) {
-    ev.preventDefault();
-    inView = false; running = false;
-    try { el.remove(); } catch (_) {}
-    showFallback();
-  }, { once: true });
 
   var rt;
   window.addEventListener("resize", function () {

@@ -73,20 +73,12 @@ a { color: inherit; text-decoration: none; }
 
 /* keyboard skip link — hidden until focused */
 .skip-link {
-  position: fixed; top: 12px; left: 12px; z-index: 120;
-  padding: 12px 20px; border-radius: 8px;
+  position: fixed; top: 10px; left: 10px; z-index: 100;
+  padding: 10px 18px; border-radius: 8px;
   background: var(--ink); color: var(--paper); font-size: 14px; font-weight: 600;
-  /* Parked off-screen by position, not by transform: a transform on a fixed
-     element can be neutralised by an animating ancestor, which is how it used
-     to land outside the viewport while focused. */
-  /* no transition: a skip link must be on screen the instant it takes focus,
-     not 200ms later — and a transition would be suppressed under
-     prefers-reduced-motion anyway */
-  transform: none; top: -100px;
+  transform: translateY(-160%); transition: transform 0.2s ease;
 }
-.skip-link:focus, .skip-link:focus-visible { top: 12px; outline: 2px solid var(--vermilion); outline-offset: 3px; }
-/* fixed 56px bar + breathing room, so anchors never land under the nav */
-:where(section[id], main) { scroll-margin-top: 76px; }
+.skip-link:focus { transform: translateY(0); outline: 2px solid var(--vermilion); outline-offset: 3px; }
 img { max-width: 100%; height: auto; display: block; }
 
 .display { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; letter-spacing: 0.004em; text-wrap: balance; }
@@ -217,14 +209,7 @@ html.menu-open, html.menu-open body { overflow: hidden; }
 /* ---------- shared ---------- */
 main { position: relative; z-index: 2; }
 section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
-/* Print-margin annotation: a vermilion serif kanji, a short gold rule, then
-   the tracked label — the section marker reads as a woodblock folio note
-   instead of a generic uppercase kicker. */
-.eyebrow, .kicker { display: flex; align-items: center; flex-wrap: wrap; gap: 11px; }
-.eb-k { font-family: "Shippori Mincho", Georgia, serif; font-size: 16px; font-weight: 700; line-height: 1; color: var(--vermilion); }
-.eb-t { display: inline-flex; align-items: center; font-family: "Manrope", system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.36em; color: var(--accent-ink); }
-.eb-t::before { content: ""; display: inline-block; width: 22px; height: 1px; background: var(--gold-deep); margin-right: 11px; }
-.hero .kicker, .final .eyebrow { justify-content: center; }
+.eyebrow, .kicker { font-family: "Manrope", "Shippori Mincho", system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.36em; color: var(--accent-ink); }
 /* washi glow behind the hero kicker — on phones it can land on the torii's red
    beam, where vermilion-on-vermilion needs the paper halo to stay legible */
 .kicker { text-shadow: 0 1px 2px rgba(243,236,220,0.95), 0 0 12px rgba(243,236,220,0.8); }
@@ -388,7 +373,7 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .brighten {
   margin-top: clamp(40px, 6vh, 84px); position: relative;
   font-family: "Shippori Mincho", Georgia, serif;
-  font-size: clamp(22px, 3vw, 42px); font-weight: 500; line-height: 1.4; letter-spacing: -0.005em; max-width: 30ch;
+  font-size: clamp(22px, 3vw, 42px); font-weight: 500; line-height: 1.4; letter-spacing: -0.005em; max-width: 24ch;
 }
 /* no CSS transition here: the scroll scrub already writes smooth color steps,
    and a transition on top made 42 spans churn style work on every frame */
@@ -451,13 +436,15 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    shouting, so the art direction of the section stays untouched */
 .store-badge { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 16px; padding: 7px 15px; border: 1px solid rgba(30,26,22,0.18); border-radius: 999px; background: rgba(255,255,255,0.5); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
 .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 0 3px rgba(126,142,108,0.22); }
-.product h2 { font-size: clamp(46px, 6.5vw, 92px); line-height: 1; }
+.product h3 { font-size: clamp(46px, 6.5vw, 92px); line-height: 1; }
 .product-sub { margin-top: 16px; font-size: clamp(16px, 1.8vw, 21px); color: var(--ink-2); max-width: 30ch; }
 .features { list-style: none; margin-top: 30px; }
 .features li { padding: 14px 0 14px 26px; position: relative; border-top: 1px solid rgba(30,26,22,0.12); font-size: 15px; font-weight: 500; }
 .features li:last-child { border-bottom: 1px solid rgba(30,26,22,0.12); }
 .features li::before { content: ""; position: absolute; left: 0; top: 50%; margin-top: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--vermilion); }
 .features + .btn { margin-top: 30px; }
+.growing { margin-top: clamp(60px, 9vh, 120px); display: flex; align-items: center; justify-content: center; gap: 16px; text-align: center; font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(20px, 2.8vw, 36px); color: var(--ink-2); }
+.growing-mark { display: inline-grid; place-items: center; width: 54px; height: 54px; flex: none; border: 2px solid var(--sage); color: var(--sage); border-radius: 50%; font-size: 22px; }
 
 /* ---------- 6 · craft (immersive) ---------- */
 .craft { position: relative; min-height: 92svh; display: flex; align-items: center; overflow: hidden; padding-block: clamp(120px, 18vh, 220px); }
@@ -491,11 +478,11 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    band, divided by thin rules like a magazine colophon; each principle is a
    big serif word with a short gold brush-breath beneath it. Quiet, printed. */
 .value { padding: clamp(30px, 4vh, 44px) clamp(24px, 2.6vw, 40px); background: none; }
-.value h3 { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(24px, 2.2vw, 30px); font-weight: 700; letter-spacing: 0.01em; }
-.value h3::after { content: ""; display: block; width: 38px; height: 2px; margin-top: 14px;
+.value h4 { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(24px, 2.2vw, 30px); font-weight: 700; letter-spacing: 0.01em; }
+.value h4::after { content: ""; display: block; width: 38px; height: 2px; margin-top: 14px;
   background: linear-gradient(90deg, var(--gold-deep), rgba(195,154,70,0));
   transform-origin: left center; transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
-.value:hover h3::after { transform: scaleX(2.2); }
+.value:hover h4::after { transform: scaleX(2.2); }
 .value p { margin-top: 16px; font-size: 15px; line-height: 1.75; color: var(--ink-2); max-width: 30ch; }
 
 /* ---------- 8 · process ---------- */
@@ -511,13 +498,21 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .step-d { font-size: 15px; color: var(--ink-2); }
 
 /* ---------- 9 · stats ---------- */
+.stats { max-width: var(--maxw); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: clamp(24px, 4vw, 60px); padding-block: clamp(70px, 10vh, 130px); border-top: 1px solid rgba(30,26,22,0.14); border-bottom: 1px solid rgba(30,26,22,0.14); text-align: center; }
+.stat-n { display: block; font-family: "Shippori Mincho", serif; font-weight: 800; font-size: clamp(44px, 6vw, 84px); line-height: 1; color: var(--vermilion); }
+/* the ∞ comes from a fallback face and renders optically small next to the big
+   Shippori digits — compensate so all four stats read the same weight */
+.stat-inf { font-size: clamp(58px, 7.9vw, 110px); line-height: 0.76; font-weight: 700; }
+.stat-l { display: block; margin-top: 10px; font-size: 13px; letter-spacing: 0.08em; color: var(--ink-2); }
+
 /* ---------- 10 · final ---------- */
 .final { position: relative; max-width: var(--maxw); margin: 0 auto; text-align: center; min-height: 88svh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
 .final-branch { position: absolute; top: 4%; right: -4%; width: clamp(180px, 26vw, 380px); opacity: 0.7; z-index: 0; transform: scaleX(-1); }
 .final .display, .final .cta, .final .eyebrow, .final-lead { position: relative; z-index: 2; }
 .final .display { line-height: 1.0; font-size: clamp(40px, 6.2vw, 88px); }
 /* UFUKTA — the closing note: kicker, one line of intent, then the two ways out */
-.final .eyebrow { margin-bottom: 24px; }
+.final .eyebrow { display: inline-flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 24px; }
+.final .eyebrow .growing-mark { width: 30px; height: 30px; border-width: 1.5px; font-size: 14px; letter-spacing: 0; }
 .final-lead { margin: 26px auto 0; max-width: 46ch; font-size: clamp(16px, 1.8vw, 20px); font-weight: 500; color: var(--ink-2); }
 .final .cta { margin-top: clamp(34px, 5vh, 54px); }
 .cta { margin-top: 42px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
@@ -545,6 +540,9 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   .foot-nav { justify-content: center; text-align: left; }
   .foot-meta { text-align: center; }
   .craft::after { background: linear-gradient(180deg, rgba(243,236,220,0.6) 0%, rgba(243,236,220,0.92) 100%); }
+}
+@media (max-width: 560px) {
+  .pl-branch { width: 46vw; }
 }
 
 /* ---------- reduced motion ---------- */
@@ -583,31 +581,24 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .globe-stage { width: min(72vw, 46vh, 420px); }
 }
 
-/* ---------- phones ----------
-   The display scale here is deliberate, not an oversight: this is a woodblock
-   poster, and a poster whose type is trimmed to a safe 36-48px "app band"
-   stops being one. The big Mincho headline and the big serif paragraph ARE
-   the design on a phone — they carry the whole ukiyo-e character that the
-   illustrations carry on desktop. Only genuine defects get corrected below
-   (touch area, overflow), never the scale itself. */
+/* ---------- phones ---------- */
 @media (max-width: 600px) {
   .hero-heads .head { font-size: clamp(33px, 11.4vw, 54px); line-height: 1.03; max-width: 100%; }
   .hero-sub { font-size: 16px; max-width: 34ch; }
   .hero-cta { gap: 10px; }
-  /* padding as before; min-height only lifts the box to a 44px touch target */
-  .btn { padding: 12px 20px; font-size: 13px; min-height: 44px; }
+  .btn { padding: 12px 20px; font-size: 13px; }
   .statement .display, .studio .display, .process .display, .craft .display { font-size: clamp(33px, 9.2vw, 54px); }
   .final .display.big { font-size: clamp(37px, 10.6vw, 58px); }
   .brighten { font-size: clamp(20px, 5.8vw, 29px); max-width: 100%; }
-  .product h2 { font-size: clamp(42px, 12.6vw, 68px); }
+  .product h3 { font-size: clamp(42px, 12.6vw, 68px); }
   .globe-stage { width: min(76vw, 44vh, 340px); }
   .marquee-row span { font-size: 15px; }
   .marquee-row { gap: 20px; }
+  .stats { grid-template-columns: 1fr 1fr; gap: 32px 18px; }
   .values { gap: 22px; }
   .steps li { grid-template-columns: 46px 1fr; }
   .foot-logo { width: 128px; }
-  /* the address is the one string that can outrun a 360px screen */
-  .foot-meta { overflow-wrap: anywhere; }
+  .growing { flex-direction: column; gap: 12px; }
 }
 
 /* ---------- very small ---------- */
@@ -615,7 +606,4 @@ html, body { max-width: 100%; overflow-x: hidden; }
   :root { --pad: 18px; }
   .hero-heads .head { font-size: 32px; }
   .brand-mark { height: 26px; }
-  /* two pill buttons genuinely collide below ~380px — stack rather than shrink */
-  .hero-cta { flex-direction: column; align-items: stretch; width: 100%; max-width: 280px; margin-inline: auto; }
-  .hero-cta .btn { justify-content: center; }
 }
