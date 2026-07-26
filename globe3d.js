@@ -15,7 +15,10 @@
   var mount = document.getElementById("globe3d");
   if (!mount) return;
 
-  var THREE_URL = "vendor/three.module.min.js?v=0.160.1";
+  /* MUST keep the leading "./": a specifier without it is a *bare* module
+     specifier, which browsers refuse to resolve without an import map — the
+     import rejected silently and the globe fell back to the still image. */
+  var THREE_URL = "./vendor/three.module.min.js?v=0.160.1";
 
   /* The still globe is only fetched when the live one can't run — otherwise
      it is dead weight on every visit, since the canvas covers it anyway. */
