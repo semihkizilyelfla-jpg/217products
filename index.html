@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <script src="lang-redirect.js?v=10"></script>
   <meta name="theme-color" content="#F3ECDC">
@@ -15,16 +15,20 @@
   <link rel="alternate" hreflang="tr" href="https://217products.com/index-tr.html">
   <link rel="alternate" hreflang="x-default" href="https://217products.com/">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="217 Products">
   <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="tr_TR">
   <meta property="og:url" content="https://217products.com/">
   <meta property="og:title" content="217 Products — Independent Product Company">
   <meta property="og:description" content="An independent product company reaching from Ankara to the world. Where we see a gap, we build products that are fast, simple, and made to last.">
   <meta property="og:image" content="https://217products.com/assets/zen.webp">
-  <meta property="og:image:width" content="1400">
-  <meta property="og:image:height" content="781">
+  <meta property="og:image:width" content="1600">
+  <meta property="og:image:height" content="923">
   <meta property="og:image:alt" content="217 Products">
   <meta name="twitter:image" content="https://217products.com/assets/zen.webp">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="217 Products — Independent Product Company">
+  <meta name="twitter:description" content="An independent product company reaching from Ankara to the world. Where we see a gap, we build products that are fast, simple, and made to last.">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
@@ -36,9 +40,12 @@
   <link rel="preload" as="image" imagesrcset="assets/hero-sky-900.webp 900w, assets/hero-sky-1400.webp 1400w, assets/hero-sky.webp?u=2 1920w" imagesizes="100vw">
   <link rel="preload" as="image" imagesrcset="assets/hero-fore-900.webp 900w, assets/hero-fore-1400.webp 1400w, assets/hero-fore.webp?u=2 1920w" imagesizes="100vw">
   <link rel="preload" as="image" imagesrcset="assets/hero-torii-900.webp 900w, assets/hero-torii-1400.webp 1400w, assets/hero-torii.webp?u=2 1920w" imagesizes="100vw">
-  <link rel="stylesheet" href="style.css?v=71">
+  <link rel="stylesheet" href="style.css?v=74">
   <script type="application/ld+json">
   {"@context": "https://schema.org", "@type": "Organization", "name": "217 Products", "url": "https://217products.com/", "logo": "https://217products.com/assets/icon-512.png", "image": "https://217products.com/assets/zen.webp", "description": "An independent product company reaching from Ankara to the world. Where we see a gap, we build products that are fast, simple, and made to last.", "email": "destek217product@gmail.com", "foundingDate": "2026", "address": {"@type": "PostalAddress", "addressLocality": "Ankara", "addressCountry": "TR"}}
+  </script>
+  <script type="application/ld+json">
+  {"@context": "https://schema.org", "@type": "MobileApplication", "name": "OSNote", "operatingSystem": "Android", "applicationCategory": "ProductivityApplication", "url": "https://play.google.com/store/apps/details?id=com.kurapika.onscreennote", "installUrl": "https://play.google.com/store/apps/details?id=com.kurapika.onscreennote", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "TRY"}, "publisher": {"@type": "Organization", "name": "217 Products", "url": "https://217products.com/"}}
   </script>
 </head>
 <body>
@@ -50,7 +57,7 @@
     <a class="brand" href="/" aria-label="217 Products home">
       <img class="brand-mark" src="assets/logo-217.svg" alt="217 Products" width="75" height="40">
     </a>
-    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-controls="navLinks" aria-expanded="false"><img class="toggle-brush" src="assets/menu-brush.svg" alt="" width="28" height="24"><span></span><span></span><span></span></button>
+    <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-controls="navLinks" aria-expanded="false"><img class="toggle-brush" src="assets/menu-brush.svg" alt="" width="28" height="24"><span></span><span></span><span></span></button>
     <nav class="nav-links" id="navLinks">
       <a href="#products">Products</a>
       <a href="#craft">Standard</a>
@@ -66,10 +73,10 @@
     <!-- 1 · HERO (3D parallax) -->
     <section class="hero">
       <div class="hero-scene" id="scene" aria-hidden="true">
-        <img decoding="async" class="pl pl-sky" data-depth="0.08" src="assets/hero-sky.webp?u=2" srcset="assets/hero-sky-900.webp 900w, assets/hero-sky-1400.webp 1400w, assets/hero-sky.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768" fetchpriority="high">
-        <img decoding="async" class="pl pl-mount" data-depth="0.18" src="assets/hero-mount.webp?u=2" srcset="assets/hero-mount-900.webp 900w, assets/hero-mount-1400.webp 1400w, assets/hero-mount.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768" fetchpriority="high">
-        <img decoding="async" class="pl pl-torii" data-depth="0.32" src="assets/hero-torii.webp?u=2" srcset="assets/hero-torii-900.webp 900w, assets/hero-torii-1400.webp 1400w, assets/hero-torii.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768">
-        <img decoding="async" class="pl pl-fore" data-depth="0.52" src="assets/hero-fore.webp?u=2" srcset="assets/hero-fore-900.webp 900w, assets/hero-fore-1400.webp 1400w, assets/hero-fore.webp?u=2 1920w" sizes="100vw" alt="" width="1376" height="768">
+        <img decoding="async" class="pl pl-sky" data-depth="0.08" src="assets/hero-sky.webp?u=2" srcset="assets/hero-sky-900.webp 900w, assets/hero-sky-1400.webp 1400w, assets/hero-sky.webp?u=2 1920w" sizes="100vw" alt="" width="1920" height="1075" fetchpriority="high">
+        <img decoding="async" class="pl pl-mount" data-depth="0.18" src="assets/hero-mount.webp?u=2" srcset="assets/hero-mount-900.webp 900w, assets/hero-mount-1400.webp 1400w, assets/hero-mount.webp?u=2 1920w" sizes="100vw" alt="" width="1920" height="1075" fetchpriority="high">
+        <img decoding="async" class="pl pl-torii" data-depth="0.32" src="assets/hero-torii.webp?u=2" srcset="assets/hero-torii-900.webp 900w, assets/hero-torii-1400.webp 1400w, assets/hero-torii.webp?u=2 1920w" sizes="100vw" alt="" width="1920" height="1075">
+        <img decoding="async" class="pl pl-fore" data-depth="0.52" src="assets/hero-fore.webp?u=2" srcset="assets/hero-fore-900.webp 900w, assets/hero-fore-1400.webp 1400w, assets/hero-fore.webp?u=2 1920w" sizes="100vw" alt="" width="1920" height="1075">
         <div class="hero-scrim"></div>
       </div>
       <aside class="tate tate-l" aria-hidden="true">独立の製品工房</aside>
@@ -107,7 +114,7 @@
         </figure>
         <div class="product-body">
           <p class="store-badge rise"><span class="badge-dot" aria-hidden="true"></span>Live on Google Play</p>
-          <h3 class="display rise">OSNote</h3>
+          <h2 class="display rise">OSNote</h2>
           <p class="product-sub rise">Write over any screen, or open a notebook of your own. OSNote brings free-form scribbling and tidy note-taking together in one place.</p>
           <ul class="features">
             <li class="rise">Write over any app</li>
@@ -155,15 +162,15 @@
       <p class="brighten" data-brighten>For us, independence isn't doing whatever we please — it's owning the outcome of everything we do. We hand off neither the decision nor the responsibility.</p>
       <div class="values">
         <article class="value rise">
-          <h4>Meticulous</h4>
+          <h3>Meticulous</h3>
           <p>We know it's the small details no one ever notices that make a product good.</p>
         </article>
         <article class="value rise">
-          <h4>Focused</h4>
+          <h3>Focused</h3>
           <p>We don't chase every idea — we concentrate where we can make a real difference.</p>
         </article>
         <article class="value rise">
-          <h4>Forward-looking</h4>
+          <h3>Forward-looking</h3>
           <p>As our ambitions grow, we hold on to our focus and the values that make us who we are.</p>
         </article>
       </div>
@@ -193,7 +200,7 @@
         </div>
         <div class="globe-panel">
           <div class="globe-stage">
-            <img class="globe-ring" src="assets/reach-ring.webp?u=2" alt="" aria-hidden="true" decoding="async">
+            <img class="globe-ring" src="assets/reach-ring.webp?u=2" alt="" aria-hidden="true" decoding="async" width="1100" height="1100">
             <div id="globe3d" class="globe-canvas" role="img" aria-label="A rotating sumi-e ink globe of the world — drag to spin it">
               <img class="globe-fallback" data-src="assets/globe.webp?u=2" alt="" width="560" height="560" decoding="async">
               <noscript><img class="globe-fallback" src="assets/globe.webp?u=2" alt="" width="560" height="560"></noscript>
@@ -244,10 +251,10 @@
 
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js" integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js" integrity="sha384-wl5TeDVvOWt30Pbf8aSo2ZrzsOjddu3avOBvHe+p+OhJt9gP6w9YXmDkN5DK2/dF" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.25/dist/lenis.min.js" integrity="sha384-ClD7pCgIUz5M81HT8aZmMxCsWmfsycmBiwL5gy1pUbdWHvICIbea22N9sTtAFotA" crossorigin="anonymous"></script>
-  <script type="module" src="globe3d.js?v=15"></script>
-  <script src="main.js?v=40"></script>
+  <script src="vendor/gsap.min.js?v=3.15.0"></script>
+  <script src="vendor/ScrollTrigger.min.js?v=3.15.0"></script>
+  <script src="vendor/lenis.min.js?v=1.3.25"></script>
+  <script type="module" src="globe3d.js?v=16"></script>
+  <script src="main.js?v=41"></script>
 </body>
 </html>

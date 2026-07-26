@@ -107,7 +107,7 @@ img { max-width: 100%; height: auto; display: block; }
 .nav.is-scrolled { background: rgba(243,236,220,0.96); box-shadow: 0 1px 0 rgba(30,26,22,0.12), 0 10px 30px rgba(30,26,22,0.07); }
 .nav.is-scrolled .brand-mark { transform: scale(0.84); }
 .nav-links { display: flex; gap: clamp(12px, 2vw, 30px); align-items: center; }
-.nav-links a { position: relative; font-size: 13px; font-weight: 600; letter-spacing: 0.03em; color: var(--ink-2); transition: color 0.25s; }
+.nav-links a { position: relative; font-size: 14px; font-weight: 600; letter-spacing: 0.03em; color: var(--ink-2); transition: color 0.25s; }
 .nav-links a:hover { color: var(--ink); }
 /* vermilion ink stroke sweeps under links on hover */
 .nav-links a::after {
@@ -396,12 +396,12 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .hub-eyebrow { position: relative; z-index: 3; }
 
 /* left panel — logo + numbered reach steps */
-.reach-panel { justify-self: center; max-width: 440px; display: flex; flex-direction: column; gap: clamp(20px, 3.2vh, 38px); }
+.reach-panel { justify-self: center; max-width: 500px; display: flex; flex-direction: column; gap: clamp(20px, 3.2vh, 38px); }
 .reach-logo { width: clamp(150px, 15vw, 208px); height: auto; align-self: center; }
 /* A single statement under the mark — the numbered relay was replaced by one
    line about where the work goes, so the globe carries the reach on its own. */
-.reach-head { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: clamp(25px, 2.5vw, 36px); line-height: 1.16; letter-spacing: -0.005em; color: var(--ink); text-wrap: balance; }
-.reach-lead { font-size: clamp(15px, 1.45vw, 18px); line-height: 1.66; color: var(--ink-2); max-width: 42ch; }
+.reach-head { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: clamp(28px, 3.4vw, 48px); line-height: 1.14; letter-spacing: -0.005em; color: var(--ink); text-wrap: balance; }
+.reach-lead { font-size: clamp(16px, 1.5vw, 18.5px); line-height: 1.68; color: var(--ink-2); max-width: 42ch; }
 
 /* right panel — enlarged globe */
 .globe-panel { justify-self: center; }
@@ -436,10 +436,10 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    shouting, so the art direction of the section stays untouched */
 .store-badge { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 16px; padding: 7px 15px; border: 1px solid rgba(30,26,22,0.18); border-radius: 999px; background: rgba(255,255,255,0.5); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
 .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sage); box-shadow: 0 0 0 3px rgba(126,142,108,0.22); }
-.product h3 { font-size: clamp(46px, 6.5vw, 92px); line-height: 1; }
+.product h2 { font-size: clamp(46px, 6.5vw, 92px); line-height: 1; }
 .product-sub { margin-top: 16px; font-size: clamp(16px, 1.8vw, 21px); color: var(--ink-2); max-width: 30ch; }
 .features { list-style: none; margin-top: 30px; }
-.features li { padding: 14px 0 14px 26px; position: relative; border-top: 1px solid rgba(30,26,22,0.12); font-size: 15px; font-weight: 500; }
+.features li { padding: 14px 0 14px 26px; position: relative; border-top: 1px solid rgba(30,26,22,0.12); font-size: 16.5px; font-weight: 500; }
 .features li:last-child { border-bottom: 1px solid rgba(30,26,22,0.12); }
 .features li::before { content: ""; position: absolute; left: 0; top: 50%; margin-top: -4px; width: 8px; height: 8px; border-radius: 50%; background: var(--vermilion); }
 .features + .btn { margin-top: 30px; }
@@ -478,12 +478,12 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    band, divided by thin rules like a magazine colophon; each principle is a
    big serif word with a short gold brush-breath beneath it. Quiet, printed. */
 .value { padding: clamp(30px, 4vh, 44px) clamp(24px, 2.6vw, 40px); background: none; }
-.value h4 { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(24px, 2.2vw, 30px); font-weight: 700; letter-spacing: 0.01em; }
-.value h4::after { content: ""; display: block; width: 38px; height: 2px; margin-top: 14px;
+.value h3 { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(25px, 2.3vw, 32px); font-weight: 700; line-height: 1.16; letter-spacing: 0.01em; }
+.value h3::after { content: ""; display: block; width: 38px; height: 2px; margin-top: 14px;
   background: linear-gradient(90deg, var(--gold-deep), rgba(195,154,70,0));
   transform-origin: left center; transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
-.value:hover h4::after { transform: scaleX(2.2); }
-.value p { margin-top: 16px; font-size: 15px; line-height: 1.75; color: var(--ink-2); max-width: 30ch; }
+.value:hover h3::after { transform: scaleX(2.2); }
+.value p { margin-top: 16px; font-size: 16.5px; line-height: 1.7; color: var(--ink-2); max-width: 32ch; }
 
 /* ---------- 8 · process ---------- */
 .process { max-width: var(--maxw); margin: 0 auto; }
@@ -494,8 +494,8 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 /* translate, not padding — padding animates layout, transform only composites */
 .steps li:hover { transform: translateX(10px); }
 .step-n { font-size: 13px; font-weight: 700; color: var(--accent-ink); letter-spacing: 0.08em; }
-.step-t { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(24px, 3vw, 44px); font-weight: 700; }
-.step-d { font-size: 15px; color: var(--ink-2); }
+.step-t { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(25px, 3vw, 44px); font-weight: 700; line-height: 1.12; }
+.step-d { font-size: 16.5px; line-height: 1.6; color: var(--ink-2); max-width: 46ch; }
 
 /* ---------- 9 · stats ---------- */
 .stats { max-width: var(--maxw); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: clamp(24px, 4vw, 60px); padding-block: clamp(70px, 10vh, 130px); border-top: 1px solid rgba(30,26,22,0.14); border-bottom: 1px solid rgba(30,26,22,0.14); text-align: center; }
@@ -522,11 +522,11 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .foot-logo { width: clamp(120px, 16vw, 180px); height: auto; }
 /* link columns — same quiet meta voice, headed by a small ink label */
 .foot-nav { display: flex; gap: clamp(40px, 6vw, 90px); }
-.foot-col { display: flex; flex-direction: column; gap: 4px; font-size: 13px; }
+.foot-col { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
 .foot-h { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: 14px; color: var(--ink); margin-bottom: 8px; }
-.foot-col a { display: inline-block; padding: 4px 0; color: var(--ink-2); }
+.foot-col a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-2); }
 .foot-col a:hover { color: var(--accent-ink); }
-.foot-meta { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--ink-2); text-align: right; }
+.foot-meta { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--ink-2); text-align: right; }
 .foot-meta a { display: inline-block; padding: 5px 0; }
 .foot-meta a:hover { color: var(--accent-ink); }
 
@@ -590,7 +590,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .statement .display, .studio .display, .process .display, .craft .display { font-size: clamp(33px, 9.2vw, 54px); }
   .final .display.big { font-size: clamp(37px, 10.6vw, 58px); }
   .brighten { font-size: clamp(20px, 5.8vw, 29px); max-width: 100%; }
-  .product h3 { font-size: clamp(42px, 12.6vw, 68px); }
+  .product h2 { font-size: clamp(42px, 12.6vw, 68px); }
   .globe-stage { width: min(76vw, 44vh, 340px); }
   .marquee-row span { font-size: 15px; }
   .marquee-row { gap: 20px; }
@@ -606,4 +606,42 @@ html, body { max-width: 100%; overflow-x: hidden; }
   :root { --pad: 18px; }
   .hero-heads .head { font-size: 32px; }
   .brand-mark { height: 26px; }
+}
+
+/* ================= PHONE DENSITY =================
+   Measured problem: at 390px the page ran 10.7 screens and every section
+   carried 127px of padding top AND bottom, so each one arrived as its own
+   full screen of type — "wall after wall". The poster voice stays (hero and
+   section headlines keep their scale); what changes is that PROSE behaves
+   like prose: the big Mincho paragraph came in at 23px on a 29-character
+   measure, which turned 188 characters into ~7 stacked lines.
+   ================================================= */
+@media (max-width: 600px) {
+  /* generous but not a screen per gap — ~2 screens of scroll come back */
+  section { padding: clamp(66px, 9.5vh, 92px) var(--pad); }
+  /* image-led sections already breathe through their artwork */
+  .craft { padding-block: clamp(76px, 11vh, 104px); }
+  .hero { padding-top: clamp(96px, 14vh, 132px); }
+
+  /* the scroll-brightening paragraph: still Mincho, now a readable measure
+     instead of a narrow column of giant words */
+  .brighten { font-size: clamp(18.5px, 5vw, 22px); line-height: 1.5; max-width: 34ch;
+    margin-top: clamp(24px, 3.6vh, 38px); }
+
+  /* one comfortable reading size for every supporting paragraph, so the page
+     stops alternating between shouting and whispering */
+  .hero-sub, .product-sub, .craft-lead, .reach-lead, .final-lead { font-size: 16.5px; line-height: 1.62; max-width: 36ch; }
+  .value p, .step-d { font-size: 16px; line-height: 1.6; }
+
+  /* section markers and captions sit closer to what they label */
+  .eyebrow, .kicker { margin-bottom: 14px; }
+  .section-art { margin-top: 26px; }
+  .section-art figcaption { margin-top: 12px; }
+
+  /* the three principles read as a short list, not three more screens */
+  .value { padding: 26px 0; }
+  .steps li { padding: 20px 0; }
+
+  /* comfortable, thumb-sized controls (was 13px type in a 44px pill) */
+  .btn { padding: 13px 22px; font-size: 14px; min-height: 46px; }
 }

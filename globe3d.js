@@ -8,14 +8,14 @@
    1. WebGL capability is probed FIRST on a throwaway canvas — if the machine
       can't produce a context, the static fallback shows immediately and
       Three.js is never fetched (no renderer construction, no retries).
-   2. Three.js arrives lazily as the ES module build via dynamic import()
-      when the section approaches. The deprecated UMD three.min.js is gone. */
+   2. Three.js is self-hosted and arrives lazily via dynamic import() when
+      the section approaches — no third-party origin, no CDN outage risk. */
 (function () {
   "use strict";
   var mount = document.getElementById("globe3d");
   if (!mount) return;
 
-  var THREE_URL = "https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.min.js";
+  var THREE_URL = "vendor/three.module.min.js?v=0.160.1";
 
   /* The still globe is only fetched when the live one can't run — otherwise
      it is dead weight on every visit, since the canvas covers it anyway. */
