@@ -9,15 +9,21 @@
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
                 /[?&]motion=reduce/.test(location.search);
 
-  /* ---------- contact e-mail: ONE place to change ----------
-     When the corporate mailbox on the domain is ready, update this constant —
-     every a[data-mail] link (nav, closing CTA, footer) and the printed address
-     (a[data-mail][data-mail-text]) follow automatically. The mailto in the
-     HTML is only the no-JS fallback. */
-  var CONTACT_EMAIL = "destek217product@gmail.com";
+  /* ---------- contact addresses: ONE place to change ----------
+     Both roles point at the working mailbox today. When the domain mailboxes
+     exist, set general -> "hello@217products.com" and support ->
+     "support@217products.com" here and every link follows: data-mail picks
+     the general address, data-mail="support" picks support, and
+     data-mail-text also prints it. The mailto in the HTML is the no-JS
+     fallback and stays valid either way. */
+  var CONTACT = {
+    general: "destek217product@gmail.com",
+    support: "destek217product@gmail.com"
+  };
   [].forEach.call(document.querySelectorAll("a[data-mail]"), function (a) {
-    a.href = "mailto:" + CONTACT_EMAIL;
-    if (a.hasAttribute("data-mail-text")) a.textContent = CONTACT_EMAIL;
+    var addr = CONTACT[a.getAttribute("data-mail") || "general"] || CONTACT.general;
+    a.href = "mailto:" + addr;
+    if (a.hasAttribute("data-mail-text")) a.textContent = addr;
   });
 
   /* ---------- nav: scrolled "washi ribbon" state — runs regardless of GSAP ---------- */
@@ -29,23 +35,80 @@
     onScroll();
   })();
 
-  /* ---------- mobile nav (hamburger) — runs regardless of GSAP ---------- */
+  /* ---------- mobile nav (hamburger) — runs regardless of GSAP ----------
+     A closed drawer is a real dialog: it is inert (out of the tab order and
+     hidden from screen readers), focus moves inside on open, Tab cycles within
+     it, and Escape returns focus to the button that opened it. */
   (function () {
     var t = document.getElementById("navToggle"), n = document.getElementById("navLinks");
     if (!t || !n) return;
-    function close() {
+    var links = [].slice.call(n.querySelectorAll("a"));
+    var isDrawer = function () { return getComputedStyle(t).display !== "none"; };
+
+    function setInert(on) {
+      /* only while the drawer layout is active — on desktop the same links are
+         the visible nav bar and must stay reachable */
+      if (on) { n.setAttribute("inert", ""); n.setAttribute("aria-hidden", "true"); }
+      else { n.removeAttribute("inert"); n.removeAttribute("aria-hidden"); }
+    }
+    function syncInert() { setInert(isDrawer() && !n.classList.contains("open")); }
+    syncInert();
+    addEventListener("resize", syncInert, { passive: true });
+
+    function close(returnFocus) {
       n.classList.remove("open"); t.classList.remove("is-open");
       t.setAttribute("aria-expanded", "false");
       document.documentElement.classList.remove("menu-open");
+      syncInert();
+      if (returnFocus) t.focus();
+    }
+    function open() {
+      n.classList.add("open"); t.classList.add("is-open");
+      t.setAttribute("aria-expanded", "true");
+      document.documentElement.classList.add("menu-open"); /* scroll lock */
+      setInert(false);
+      if (links[0]) links[0].focus();
     }
     t.addEventListener("click", function () {
-      var open = n.classList.toggle("open");
-      t.classList.toggle("is-open", open);
-      t.setAttribute("aria-expanded", open ? "true" : "false");
-      document.documentElement.classList.toggle("menu-open", open); /* scroll lock */
+      n.classList.contains("open") ? close(false) : open();
     });
-    [].forEach.call(n.querySelectorAll("a"), function (a) { a.addEventListener("click", close); });
-    addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+    links.forEach(function (a) { a.addEventListener("click", function () { close(false); }); });
+    addEventListener("keydown", function (e) {
+      if (!n.classList.contains("open")) return;
+      if (e.key === "Escape") { close(true); return; }
+      if (e.key !== "Tab" || !isDrawer()) return;
+      /* focus trap: the toggle (the X) is part of the cycle */
+      var ring = [t].concat(links);
+      var i = ring.indexOf(document.activeElement);
+      if (i === -1) return;
+      var next = e.shiftKey ? (i - 1 + ring.length) % ring.length : (i + 1) % ring.length;
+      e.preventDefault(); ring[next].focus();
+    });
+  })();
+
+  /* ---------- section ↔ nav sync: hash, history and aria-current ----------
+     Uses one IntersectionObserver instead of measuring on every scroll frame. */
+  (function () {
+    var sections = [].slice.call(document.querySelectorAll("main section[id]"));
+    var linkFor = {};
+    [].forEach.call(document.querySelectorAll('.nav-links a[href^="#"]'), function (a) {
+      linkFor[a.getAttribute("href").slice(1)] = a;
+    });
+    if (!sections.length) return;
+    var current = "";
+    function mark(id) {
+      if (id === current) return;
+      current = id;
+      for (var k in linkFor) linkFor[k].removeAttribute("aria-current");
+      if (linkFor[id]) linkFor[id].setAttribute("aria-current", "location");
+      /* keep the address bar honest without adding history entries */
+      var want = id ? "#" + id : location.pathname;
+      if (location.hash !== "#" + id) history.replaceState(null, "", want);
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) mark(e.target.id); });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    sections.forEach(function (s) { io.observe(s); });
   })();
 
   /* split brighten paragraphs into words */
@@ -82,13 +145,27 @@
      cure); real orientation/width changes still refresh normally. */
   ScrollTrigger.config({ ignoreMobileResize: true });
 
+  /* Lenis only where it adds something: a mouse wheel fires coarse ~100px
+     steps that genuinely benefit from interpolation. Touch scrolling is
+     already interpolated by the compositor off the main thread, so running
+     Lenis there replaces free native momentum with JS work every frame — the
+     single biggest scroll cost on a phone. Pointer-based coarse input and
+     reduced-motion opt out entirely; ScrollTrigger then rides native scroll. */
+  var wantsSmooth = matchMedia("(pointer: fine)").matches && !matchMedia("(max-width: 820px)").matches;
   var lenis = null;
-  if (window.Lenis) {
+  if (window.Lenis && wantsSmooth) {
     lenis = new Lenis({ lerp: 0.12 }); /* tighter, more responsive glide */
     lenis.on("scroll", ScrollTrigger.update);
+    /* one ticker drives Lenis + GSAP + ScrollTrigger — never a second RAF loop */
     gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
   }
+  /* A backgrounded tab should cost nothing, and must not fast-forward the
+     scene when it returns: pause the ticker while hidden, resync on return. */
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { gsap.ticker.sleep(); }
+    else { gsap.ticker.wake(); ScrollTrigger.update(); }
+  });
 
   /* in-page anchors glide with Lenis instead of teleporting */
   [].forEach.call(document.querySelectorAll('a[href^="#"]'), function (a) {
@@ -196,18 +273,39 @@
   });
 
   mm.add("(max-width: 820px)", function () {
-    /* phones: no pin — instead the layers drift at their own depths as the
-       hero scrolls away, so the scene keeps its dimensionality on touch too.
-       Transform-only, scrubbed, cheap. The bottom scrim fade masks the edges. */
-    gsap.utils.toArray(".hero-scene .pl").forEach(function (el) {
-      var d = parseFloat(el.dataset.depth) || 0.2;
-      gsap.to(el, { yPercent: -(d * 22), ease: "none", force3D: true,
-        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
-    });
+    /* Phones: no pin, and the four layers move together as ONE composited
+       group instead of four independently scrubbed transforms. Same drift on
+       screen, a quarter of the per-frame work — layer-by-layer parallax was
+       the most expensive thing left on touch devices.
+       The headline hand-over happens on its own short timeline so the second
+       line still arrives, without a long pinned scene to scroll through. */
+    gsap.to(".hero-scene", { yPercent: -6, ease: "none", force3D: true,
+      scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+
+    gsap.set(".pl-sky, .pl-torii", { autoAlpha: 1, scale: 1, yPercent: 0 });
+    var swapM = document.querySelector(".head-3");
+    if (swapM) {
+      gsap.set(".head-1", { autoAlpha: 1 });
+      gsap.set(".head-3", { autoAlpha: 0 });
+      gsap.timeline({ defaults: { ease: "none" },
+        scrollTrigger: { trigger: ".hero", start: "top top", end: "45% top", scrub: true } })
+        .to(".head-1", { autoAlpha: 0, duration: 0.45 }, 0.25)
+        .to(".head-3", { autoAlpha: 1, duration: 0.45 }, 0.55);
+    }
   });
 
-  /* recalc pins after big hero layers finish loading (kills layout shift) */
-  addEventListener("load", function () { ScrollTrigger.refresh(); });
+  /* One debounced refresh path for every source (load, fonts, resize) instead
+     of three uncoordinated calls — a refresh re-measures every trigger, so
+     firing it repeatedly is one of the most expensive things on the page. */
+  var refreshT;
+  function refreshSoon() { clearTimeout(refreshT); refreshT = setTimeout(function () { ScrollTrigger.refresh(); }, 180); }
+  addEventListener("load", refreshSoon);
+  var lastW = innerWidth;
+  addEventListener("resize", function () {
+    /* height-only changes are the mobile URL bar; ignore them completely */
+    if (innerWidth === lastW) return;
+    lastW = innerWidth; refreshSoon();
+  }, { passive: true });
 
   /* Pre-decode every below-fold image during idle time after load. GitHub
      Pages caches assets for only 10 minutes, so revisits (especially right
@@ -242,17 +340,35 @@
      reach copy rides the shared `.rise` reveal like every other section. */
 
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
+    document.fonts.ready.then(refreshSoon);
   }
 
-  /* Absolute failsafe: nothing in the hero stays invisible past ~2.6s, whatever
-     happens with GSAP timing, decode, or an initially-hidden tab. Plain inline
-     styles — no dependency on the animation ticker. */
-  setTimeout(function () {
-    document.querySelectorAll(".hero .rise").forEach(function (el) {
-      if (parseFloat(getComputedStyle(el).opacity) < 0.05) {
+  /* Fail-open. Whatever stalls — GSAP timing, a decode, a ScrollTrigger that
+     never fired — nothing already on screen stays invisible. Plain inline
+     styles, no dependency on the animation ticker.
+     It runs at 1.5s AND whenever the tab becomes visible again: a tab that was
+     scrolled while hidden never fired its triggers, and would otherwise come
+     back to blank sections. */
+  function revealOnScreen() {
+    document.querySelectorAll(".rise").forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.top > innerHeight * 1.2 || r.bottom < 0) return;  /* still gated on purpose */
+      if (parseFloat(getComputedStyle(el).opacity) < 0.9) {
         el.style.opacity = "1"; el.style.visibility = "visible"; el.style.transform = "none";
       }
     });
-  }, 2600);
+  }
+  setTimeout(revealOnScreen, 1500);
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) setTimeout(revealOnScreen, 60);
+  });
+
+  /* Anything focused must be visible — a keyboard user can reach a link inside
+     a section whose reveal has not run yet. */
+  document.addEventListener("focusin", function (e) {
+    var el = e.target && e.target.closest ? e.target.closest(".rise") : null;
+    if (el && parseFloat(getComputedStyle(el).opacity) < 0.99) {
+      gsap.set(el, { autoAlpha: 1, y: 0 });
+    }
+  });
 })();
