@@ -365,23 +365,26 @@
   })();
 
   /* ---------- screen two arrives out of the ink ----------
-     Measured off the reference: once the circle has flooded the screen and its
-     dark section rises into it, the section's two halves slide in from OPPOSITE
-     sides and fade up — caught mid-flight at -8px on the left and +62.6px on
-     the right, so the right half lags. That convergence is what makes screen
-     two "appear" rather than merely scroll into place.
-     Ours maps onto the shelf: the marker and the statement converge from
-     opposite sides, the note settles under them, and then the three slots come
-     up one after another — the last beat is the shelf being loaded. It fires
-     while the ink still owns the screen, so the shelf reads as something
-     surfacing in it. */
+     The sideways slide is gone. Sliding a block of type in from the left is the
+     move every scroll library ships with, and next to a shelf being loaded it
+     read as a different hand entirely — which is what "the text animation is
+     bad" was pointing at.
+     What replaces it: the statement rides UP from behind its own edge, one line
+     at a time, each line clipped by its own box (see .shelf-line .ln). Nothing
+     travels sideways, nothing crosses the marker, and the eye ends where the
+     reading starts. The marker and the note only breathe in — they are margin
+     notes, they should not perform.
+     Then the panels are set onto the shelf, and they land in the SAME language
+     as the hover flick: a short overshoot past the resting position and a
+     settle back, so the entrance and the interaction are obviously the same
+     hand at work. */
   (function () {
     var sec = document.querySelector(".products");
     if (!sec) return;
     var head = sec.querySelector(".shelf-head"),
-        line = sec.querySelector(".shelf-line"),
         eb   = sec.querySelector(".shelf-eyebrow"),
         note = sec.querySelector(".shelf-note"),
+        lines= gsap.utils.toArray(sec.querySelectorAll(".shelf-line .ln > span")),
         slots= gsap.utils.toArray(sec.querySelectorAll(".slot")),
         open = sec.querySelector(".shelf-open"),
         art  = sec.querySelector(".product-art"),
@@ -396,33 +399,106 @@
       return claimed.indexOf(el) < 0;
     });
 
-    gsap.set([head, art], { autoAlpha: 0 });
+    /* the head itself is shown immediately — only its PARTS are staged, so a
+       half-built headline is never on screen */
+    gsap.set(head, { autoAlpha: 1 });
+    gsap.set(art, { autoAlpha: 0 });
     gsap.set(body, { autoAlpha: 0 });
+    if (lines.length) gsap.set(lines, { yPercent: 108 });
+    if (eb) gsap.set(eb, { autoAlpha: 0, y: 10 });
+    if (note) gsap.set(note, { autoAlpha: 0, y: 14 });
     if (open) gsap.set(open, { autoAlpha: 0 });
-    if (slots.length) gsap.set(slots, { autoAlpha: 0 });
+    if (slots.length) gsap.set(slots, { autoAlpha: 0, y: 46 });
     if (rest.length) gsap.set(rest, { autoAlpha: 0 });
 
     var tl = gsap.timeline({ scrollTrigger: { trigger: head, start: "top 82%", once: true } });
-    tl.to(head, { autoAlpha: 1, duration: 0.4 })
-      .fromTo(eb,   { x: -44 }, { x: 0, duration: 0.9, ease: "expo.out" }, 0)
-      .fromTo(line, { x: -72 }, { x: 0, duration: 1.05, ease: "expo.out" }, 0.06)
-      .fromTo(note, { x:  44 }, { x: 0, duration: 0.9, ease: "expo.out" }, 0.2);
-    /* the panels are loaded onto the shelf left to right; each one rises AND
-       widens a hair out of the wall, so it reads as being set into place rather
-       than fading in */
-    if (slots.length) {
-      tl.fromTo(slots, { y: 54, scaleY: 0.965, transformOrigin: "50% 100%" },
-        { y: 0, scaleY: 1, autoAlpha: 1, duration: 1.0, ease: "expo.out", stagger: 0.09 }, 0.3);
+    if (eb) tl.to(eb, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0);
+    /* 108, not 100: the clip box carries a little padding for the descenders,
+       so a flat 100% leaves the tail of a g showing above the edge */
+    if (lines.length) {
+      tl.to(lines, { yPercent: 0, duration: 0.95, ease: "expo.out", stagger: 0.09 }, 0.06);
     }
-    if (open) tl.to(open, { autoAlpha: 1, duration: 0.6, ease: "power2.out" }, 0.78);
-    tl.fromTo(art, { y: 46 }, { y: 0, autoAlpha: 1, duration: 1.1, ease: "expo.out" }, 0.86)
-      .fromTo(body, { y: 30 }, { y: 0, autoAlpha: 1, duration: 0.85, ease: "expo.out", stagger: 0.075 }, 0.96);
-    if (rest.length) tl.fromTo(rest, { y: 22 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out", stagger: 0.055 }, 1.1);
-    /* hand the panels back to CSS once they are placed: GSAP leaves a transform
-       on them, and a lingering transform makes each slot its own containing
-       block, which is fine here but the will-change is not worth keeping */
-    tl.add(function () { [head, art].concat(slots).forEach(settle); }, 2.2);
+    if (note) tl.to(note, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.34);
+    /* Set onto the shelf, left to right. The overshoot is small (a 4px dip past
+       zero) — enough to feel like a hand placing something, not a bounce. */
+    if (slots.length) {
+      tl.to(slots, {
+        keyframes: [
+          { autoAlpha: 1, y: -5, duration: 0.52, ease: "power3.out" },
+          { y: 0, duration: 0.26, ease: "power2.inOut" }
+        ],
+        stagger: 0.1
+      }, 0.42);
+    }
+    if (open) tl.to(open, { autoAlpha: 1, duration: 0.6, ease: "power2.out" }, 1.0);
+    tl.fromTo(art, { y: 46 }, { y: 0, autoAlpha: 1, duration: 1.1, ease: "expo.out" }, 1.06)
+      .fromTo(body, { y: 30 }, { y: 0, autoAlpha: 1, duration: 0.85, ease: "expo.out", stagger: 0.075 }, 1.16);
+    if (rest.length) tl.fromTo(rest, { y: 22 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out", stagger: 0.055 }, 1.3);
+    /* hand the panels back to CSS once they are placed: a lingering will-change
+       on six elements is not worth keeping for a one-shot entrance */
+    tl.add(function () { [head, art].concat(slots).concat(lines).forEach(settle); }, 2.6);
   })();
+
+  /* ---------- the flick ----------
+     Lifted from the reference's own interaction data, stage for stage:
+       0ms          scale 0, rotate 0, opacity 1
+       +100ms 200ms scale -> 1.1, rotate -> 5deg
+       +300ms 100ms scale -> 1,   rotate -> 10deg
+     Three chained stages with an overshoot in the middle is not something a CSS
+     transition can express, so it lives here. One paused timeline per panel,
+     played on enter and reversed on leave — reversing (rather than firing a
+     second timeline) is what makes a fast in-out-in sweep pick up from wherever
+     it actually is instead of snapping.
+     Bound only on a real hover pointer: on touch there is no enter/leave pair
+     at all, and the CSS resting state already shows the art behind the copy.
+     BOTH widths are driven from here, differing only in how far the sheet
+     turns. That is deliberate. Handing the narrow width to a CSS :hover rule
+     instead looked tidier and did not work: a paused GSAP timeline renders its
+     start state immediately, so `opacity: 0` is sitting INLINE on the element,
+     and an inline value beats any stylesheet rule — the panel simply never
+     opened once the window had been wide at any point. One owner, no race. */
+  function bindFlick(midTurn, endTurn) {
+    return function () {
+      var bound = [];
+      gsap.utils.toArray(".slot").forEach(function (slot) {
+        var media = slot.querySelector(".slot-media");
+        if (!media) return;
+        var tl = gsap.timeline({ paused: true })
+          .set(media, { scale: 0, rotation: 0 })
+          /* opacity is its own, shorter tween — on the way back out it
+             dissolves the sheet while it is still shrinking, instead of
+             collapsing a solid dot into nothing */
+          .fromTo(media, { opacity: 0 }, { opacity: 1, duration: 0.14, ease: "none" }, 0.1)
+          .to(media, { scale: 1.1, rotation: midTurn, duration: 0.2, ease: "power1.inOut" }, 0.1)
+          .to(media, { scale: 1, rotation: endTurn, duration: 0.1, ease: "power1.inOut" }, 0.3);
+        var open = function () { tl.play(); };
+        var shut = function () { tl.reverse(); };
+        var blur = function (e) { if (!slot.contains(e.relatedTarget)) shut(); };
+        slot.addEventListener("mouseenter", open);
+        slot.addEventListener("mouseleave", shut);
+        /* keyboard reaches the panel through the link stretched over it */
+        slot.addEventListener("focusin", open);
+        slot.addEventListener("focusout", blur);
+        bound.push([slot, open, shut, blur, tl]);
+      });
+      return function () {
+        bound.forEach(function (b) {
+          b[0].removeEventListener("mouseenter", b[1]);
+          b[0].removeEventListener("mouseleave", b[2]);
+          b[0].removeEventListener("focusin", b[1]);
+          b[0].removeEventListener("focusout", b[3]);
+          b[4].kill();
+        });
+        bound = [];
+      };
+    };
+  }
+  /* Wide: the full 10deg, and the sheet is allowed to hang over its neighbours.
+     Narrow: the panels are stacked, and a full-width sheet at 10deg throws 70px
+     past its own box — right over the panel above and below — so it keeps the
+     overshoot and drops the turn. */
+  mm.add("(hover: hover) and (pointer: fine) and (min-width: 861px)", bindFlick(5, 10));
+  mm.add("(hover: hover) and (pointer: fine) and (max-width: 860px)", bindFlick(0, 0));
 
   mm.add("(min-width: 821px)", function () {
     /* section parallax (desktop only) */

@@ -176,6 +176,14 @@ html.past-hero .brand { opacity: 0; transform: translateY(-14px); pointer-events
      across the top where the sheet should be open. Half strength puts it back
      to what it is: a hint the header sits on. */
   opacity: 0.55;
+  /* Its own ceiling, for the same reason the plate has one: sized off width
+     alone it ran 474px down a 735px screen and met the mountains coming up.
+     26vh keeps it a band behind the header. The crop lands mid-cloud, so the
+     mask dissolves the cut instead of leaving a ruled edge — the element never
+     moves, so this rasterises once and costs nothing per frame. */
+  max-height: 26vh; object-fit: cover; object-position: 50% 0%;
+  -webkit-mask-image: linear-gradient(180deg, #000 58%, transparent 100%);
+          mask-image: linear-gradient(180deg, #000 58%, transparent 100%);
   pointer-events: none; user-select: none;
 }
 
@@ -445,6 +453,16 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    paper. A paint-only gradient, not a mask: the layers underneath move (mouse
    parallax, scroll drift), and masking a moving subtree forces the compositor
    to re-rasterise it every frame — the exact cost the blur was removed for. */
+/* The plate is cropped to its ceiling now, and a crop through a painted wash is
+   a ruled line across the whole screen. This soaks the top of it back into the
+   sheet. Painted OVER the image rather than masked INTO it on purpose: .hz
+   carries the pointer parallax, and a mask on a moving layer re-rasterises with
+   it, which is the exact cost this hero was tuned to avoid. */
+.hero-ground::before {
+  content: ""; position: absolute; left: 0; right: 0; z-index: 2;
+  bottom: 38vh; height: 9vh; pointer-events: none;
+  background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.72) 45%, rgba(255,255,255,0) 100%);
+}
 .hero-ground::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
   /* The mist at the foot of the print is painted INTO the picture now, where a
@@ -463,12 +481,17 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    drifts the horizon every time the window changes shape. */
 .hz {
   position: absolute; left: 50%; bottom: 0;
-  /* The band's ART is a fixed 19.4% of whatever width the image is given, so
-     the plate's height is set entirely by this number. A plain percentage
-     starves it on a phone (100% of 390px leaves a 75px sliver) and floods a
-     short laptop window, so it takes a floor in px and a ceiling further down
-     in vh. */
+  /* The width rule is what guarantees full bleed: a plain percentage starves
+     the plate on a phone (100% of 390px leaves a 75px sliver), so it takes a
+     floor in px. */
   width: max(118%, 1080px); max-width: none; height: auto;
+  /* THE CEILING, and it is not optional. Width alone decides height here, so on
+     a wide-but-short window the plate grew to 679px inside a 735px hero — the
+     whole sky gone, and the mist band at the top laid over the mountains for
+     418px. Capping in vh keeps the composition (a low range under open paper)
+     stable on any window shape; cover + bottom anchoring means the crop comes
+     off the plate's EMPTY top, which the page's own white already provides. */
+  max-height: 46vh; object-fit: cover; object-position: 50% 100%;
   transform: translateX(-50%);
   --o: 1; opacity: var(--o);
   will-change: transform, opacity;
@@ -808,9 +831,18 @@ html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
   grid-column: 2; margin: 0;
   font-family: "Shippori Mincho", Georgia, serif; font-weight: 700;
   font-size: clamp(34px, 3.9vw, 56px); line-height: 1.12; letter-spacing: -0.012em;
-  color: var(--paper); text-wrap: balance;
+  color: var(--paper);
 }
 .shelf-line em { font-style: italic; color: #F0704B; }
+/* Each line rides up from behind its own edge instead of sliding in from the
+   side. The padding/negative-margin pair is not decoration: the clip box is the
+   line box, and Turkish sets ğ and Ü hard against both edges of it — without
+   the extra room the mask shaves the diaeresis off the Ü and the tail off the ğ. */
+.shelf-line .ln {
+  display: block; overflow: hidden;
+  padding: 0.1em 0 0.16em; margin: -0.1em 0 -0.16em;
+}
+.shelf-line .ln > span { display: block; will-change: transform; }
 .shelf-note {
   grid-column: 3; align-self: end; padding-bottom: 0.35em;
   font-size: clamp(15px, 1.15vw, 18px); line-height: 1.6;
@@ -829,11 +861,13 @@ html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
    of why the row reads as a shelf rather than a template. Ours takes the same
    ratio deliberately, so it survives any tag copy. */
 .slots {
-  display: flex; gap: 24px;
+  position: relative; display: flex; gap: 24px;
   margin-top: clamp(44px, 6.5vh, 84px);
 }
 .slot {
-  position: relative; flex: 1 1 0; min-width: 0;
+  /* z-index 1 rather than auto: every panel is its own stacking context, so a
+     dormant panel's media (z 6) can never paint over the panel being hovered */
+  position: relative; z-index: 1; flex: 1 1 0; min-width: 0;
   display: flex; flex-direction: column; justify-content: space-between;
   gap: 24px;
   min-height: clamp(400px, 35vw, 532px);
@@ -842,12 +876,20 @@ html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
      a mounted panel, not a raised card */
   background: rgba(255,255,255,0.035);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
-  overflow: hidden; isolation: isolate;
+  /* NOT overflow:hidden. The revealed sheet ends at 10deg and has to hang over
+     its neighbours; clipping it here is what made our version read as a box
+     lighting up instead of a print being laid down. The raised z-index below
+     is the other half of that — without it the tilt would slide UNDER the
+     panel to its right. */
+  overflow: visible;
   transition: background 0.5s ease, box-shadow 0.5s ease;
 }
 .slot:nth-child(2) { flex-grow: 0.956; }
 .slot:nth-child(3) { flex-grow: 1.031; }
-.slot:hover, .slot:focus-within { background: rgba(255,255,255,0.055); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16); }
+.slot:hover, .slot:focus-within {
+  background: rgba(255,255,255,0.055); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16);
+  z-index: 3;
+}
 /* content sits at 2; the media opens ABOVE it at 6 and takes the whole panel,
    which is the reference's move: at rest you read the name, on hover you see
    the thing */
@@ -870,21 +912,40 @@ html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
 /* the open slot has nothing to sell, so its tag is drawn rather than filled */
 .slot.is-open .slot-tags li { background: none; color: rgba(255,255,255,0.6); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.24); }
 
-/* the reveal — grows out of the panel's centre and covers it */
+/* ---------- the reveal ----------
+   Read straight off the reference's own interaction data rather than guessed:
+     0ms          scale 0, rotate 0, opacity 1   (set instantly)
+     +100ms 200ms scale -> 1.1, rotate -> 5deg   (it OVERSHOOTS past 1)
+     +300ms 100ms scale -> 1,   rotate -> 10deg  (settles back, still turning)
+   Two things make it land. It ends TILTED, and it overshoots on the way — a
+   print flicked down onto the shelf, not a box fading up. The tilt is also why
+   the panel below must not clip: at 10deg an inset-0 sheet measures 552x605
+   inside a 467x532 slot, so it hangs over its neighbours on purpose.
+   The move itself is driven by GSAP (main.js) because three chained stages are
+   not a transition; this rule only holds the resting state and the no-motion
+   fallback. */
 .slot-media {
   position: absolute; inset: 0; z-index: 6;
   display: grid; place-items: center; overflow: hidden;
   background: #0C0C0C;
   opacity: 0; transform: scale(0); transform-origin: 50% 50%;
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.68s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
+  /* it hangs over its neighbours, so it needs to cast onto them */
+  box-shadow: 0 40px 90px rgba(0,0,0,0.55);
+  /* three elements on the page, each running a compound transform on hover */
+  will-change: transform, opacity;
 }
-.slot:hover .slot-media, .slot:focus-within .slot-media { opacity: 1; transform: scale(1); }
+/* No GSAP (or reduced motion): a plain crossfade, no tilt, no overshoot.
+   Scoped to those cases only so it can never fight the inline styles GSAP
+   writes on the same element. */
+.no-motion .slot { overflow: hidden; }
+.no-motion .slot-media { transition: opacity 0.28s ease; }
+.no-motion .slot:hover .slot-media, .no-motion .slot:focus-within .slot-media { opacity: 1; transform: none; }
 .slot-media img {
   grid-area: 1 / 1; width: 100%; height: 100%; object-fit: cover;
   /* the slow drift: it only runs while the panel is open, so the still reads
-     as footage rather than as a screenshot pasted over the card */
+     as footage rather than as a screenshot pasted over the card. Its own
+     element and its own property, so it never collides with the GSAP tween. */
   transform: scale(1.04); transition: transform 7s linear;
 }
 .slot:hover .slot-media img, .slot:focus-within .slot-media img { transform: scale(1.15); }
@@ -927,14 +988,18 @@ html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
    shelf would read as empty boxes. There the art sits BEHIND the copy as a
    ghost instead — same picture, different job. */
 @media (hover: none) {
-  .slot-media { opacity: 0.3; transform: none; z-index: 1; transition: none; }
+  /* the script never binds the flick on a touch pointer, so these are the
+     resting values, not an interrupted animation */
+  .slot { overflow: hidden; }
+  .slot-media { opacity: 0.3; transform: none; z-index: 1; }
   .slot-media img { transform: scale(1.04); transition: none; }
   .slot-seal { opacity: 1; transform: rotate(-6deg); transition: none; }
   .slot-say { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .slot { overflow: hidden; }
   .slot-media { transform: none; transition: opacity 0.2s ease; }
-  .slot:hover .slot-media, .slot:focus-within .slot-media { transform: none; }
+  .slot:hover .slot-media, .slot:focus-within .slot-media { opacity: 1; transform: none; }
   .slot-media img, .slot:hover .slot-media img { transform: scale(1.04); transition: none; }
   .slot-seal { transition: opacity 0.2s ease; transform: rotate(-6deg); }
   .slot:hover .slot-seal { transform: rotate(-6deg); }
@@ -943,6 +1008,11 @@ html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
   .slots { flex-direction: column; gap: 16px; }
   .slot, .slot:nth-child(2), .slot:nth-child(3) { flex: none; min-height: 300px; }
 }
+/* No overflow:hidden for the stacked width. It reads like free insurance and is
+   the opposite: the script already drops the turn to 0 there (see bindFlick),
+   so the only thing left to clip is the 10% overshoot — and clipping a ROTATED
+   sheet is the worse failure of the two, because the corners cut to triangles
+   rather than simply hanging over. */
 
 /* ---------- 01, opened ----------
    One product on the shelf means the card alone cannot carry the pitch, so the
