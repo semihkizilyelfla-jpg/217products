@@ -143,27 +143,17 @@ html.past-hero .brand { opacity: 0; transform: translateY(-14px); pointer-events
 
 /* ---------- kasumi ----------
    A woodblock print bands the top of the sheet with stylised mist rather than
-   leaving it bare; that band is where the seal and the title sit. This is ours:
-   three soft ink drifts across the head of the page, behind the header, at a
-   weight you read as paper rather than as a graphic. Fixed, so it stays with
-   the header it decorates. */
+   leaving it bare; that band is where the seal and the title sit. This is a
+   PAINTED band, the same hand as the landscape at the foot of the page — a CSS
+   gradient stack was the wrong tool, it reads as a graphic effect rather than
+   as part of the print. It sits behind the header inside the hero, so it
+   scrolls away with the opening rather than following the page down. */
 .kasumi {
-  position: fixed; top: 0; left: 0; right: 0; height: clamp(150px, 15vw, 250px);
-  z-index: 39; pointer-events: none;
-  background-repeat: no-repeat;
-  background-image:
-    radial-gradient(62% 120% at 14% 42%, rgba(30,26,22,0.095), transparent 72%),
-    radial-gradient(54% 120% at 44% 16%, rgba(30,26,22,0.07),  transparent 72%),
-    radial-gradient(48% 120% at 70% 46%, rgba(178,58,28,0.085), transparent 72%),
-    radial-gradient(44% 120% at 94% 18%, rgba(30,26,22,0.055), transparent 72%);
-  background-size: 54% 32%, 46% 24%, 38% 28%, 32% 22%;
-  background-position: 0 44%, 32% 8%, 68% 66%, 100% 18%;
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 52%, transparent 100%);
-          mask-image: linear-gradient(180deg, #000 0%, #000 52%, transparent 100%);
-  transition: opacity 0.5s ease;
+  position: absolute; top: 0; left: 50%; z-index: 2;
+  width: max(104%, 1080px); max-width: none; height: auto;
+  transform: translateX(-50%);
+  pointer-events: none; user-select: none;
 }
-html.past-hero .kasumi { opacity: 0; }
-@media (max-width: 900px) { .kasumi { display: none; } }
 
 /* ---------- desktop: the bar becomes a floating washi seal ----------
    The header stops being a strip across the top. The wordmark stands alone
@@ -185,14 +175,15 @@ html.past-hero .kasumi { opacity: 0; }
     gap: 0;
     padding: 12px 12px 12px clamp(22px, 1.9vw, 32px);
     border-radius: 999px;
-    /* washi weave, not a flat fill: a 7px cross-hatch at 5% reads as paper
-       under the links instead of as a plastic pill */
-    background-color: #FAF6EA;
-    background-image:
-      repeating-linear-gradient(90deg, rgba(30,26,22,0.05) 0 1px, transparent 1px 7px),
-      repeating-linear-gradient(0deg,  rgba(30,26,22,0.035) 0 1px, transparent 1px 7px);
-    box-shadow: 0 10px 40px rgba(30,26,22,0.09), 0 5px 18px rgba(30,26,22,0.055),
-                inset 0 1px 0 rgba(255,255,255,0.7);
+    /* Plain fill. A pattern in here fights the links for attention and the
+       capsule is not the place for decoration — all it needs is to sit clearly
+       ABOVE the page, which is a shadow's job. Three stacked shadows: a wide
+       soft one for the lift, a tight one to seat it, and an inner highlight
+       along the top edge so the paper catches light. */
+    background: #FAF6EA;
+    box-shadow: 0 18px 54px rgba(30,26,22,0.14), 0 6px 18px rgba(30,26,22,0.09),
+                0 1px 3px rgba(30,26,22,0.06),
+                inset 0 1px 0 rgba(255,255,255,0.75);
   }
   /* the seal CTA sets the row height; stretch hands it to every link, so each
      one gets a 50px target instead of a 23px text box */
@@ -349,7 +340,8 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   width: clamp(54px, 3.6vw, 72px); padding: clamp(19px, 1.4vw, 26px) 0;
   background: #FAF6EA;
   border-radius: 14px 0 0 14px;
-  box-shadow: -7px 9px 28px rgba(30,26,22,0.09), inset 0 0 0 1px rgba(30,26,22,0.055);
+  box-shadow: -16px 16px 48px rgba(30,26,22,0.14), -5px 5px 16px rgba(30,26,22,0.09),
+              inset 0 1px 0 rgba(255,255,255,0.7);
 }
 /* the seal reads across, the place name reads down — the reference's rail is
    built the same way, a mark stacked over a vertical label */
@@ -362,15 +354,7 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   font-size: clamp(12px, 0.82vw, 15px); font-weight: 700; letter-spacing: 0.3em; color: var(--ink-2);
 }
 @media (max-width: 900px) { .tate { display: none; } }
-/* it sits over the dark shelf as often as over paper, so it carries its own
-   light plate and a hairline rather than relying on the page behind it */
-.tate::before {
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  border-radius: inherit; background: #FAF6EA;
-  background-image:
-    repeating-linear-gradient(90deg, rgba(30,26,22,0.05) 0 1px, transparent 1px 7px),
-    repeating-linear-gradient(0deg,  rgba(30,26,22,0.035) 0 1px, transparent 1px 7px);
-}
+
 
 /* ============================================================
    1 · HERO — one sentence on a sheet of paper
@@ -424,10 +408,11 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    to re-rasterise it every frame — the exact cost the blur was removed for. */
 .hero-ground::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-  /* a whisper of paper at the very bottom so the foot line always clears its
-     backdrop, however the art happens to fall there */
-  height: clamp(56px, 7vh, 96px); pointer-events: none;
-  background: linear-gradient(180deg, rgba(243,236,220,0) 0%, rgba(243,236,220,0.5) 62%, rgba(243,236,220,0.84) 100%);
+  /* The mist at the foot of the print is painted INTO the picture now, where a
+     woodblock would put it, so this is only a safety net for whatever art
+     happens to land under the foot line at an unusual aspect ratio. */
+  height: clamp(36px, 4.5vh, 60px); pointer-events: none;
+  background: linear-gradient(180deg, rgba(243,236,220,0) 0%, rgba(243,236,220,0.2) 60%, rgba(243,236,220,0.38) 100%);
 }
 /* Each layer's resting opacity lives in --o, not in `opacity` directly: the
    entrance fades each image to its OWN resting value as it decodes, so a
@@ -631,12 +616,14 @@ html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
   display: flex; align-items: center; justify-content: space-between; gap: 20px;
   text-align: left;
 }
-.foot-l { font-size: 13px; font-weight: 600; letter-spacing: 0.18em; color: var(--ink-2); }
+/* full ink, not the muted tone: this line stands on a painted foreground,
+   not on flat paper, and a mid grey would disappear into the mist */
+.foot-l { font-size: 13px; font-weight: 700; letter-spacing: 0.18em; color: var(--ink); }
 .foot-l .seal { font-family: "Shippori Mincho", serif; color: var(--vermilion); letter-spacing: 0.14em; }
 .foot-c { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(15px, 1.32vw, 19px); font-weight: 500; color: var(--ink); }
 .foot-r {
   font-family: inherit; font-size: 14px; font-weight: 600; letter-spacing: 0.01em;
-  color: var(--ink-2); background: none; border: 0; cursor: pointer;
+  color: var(--ink); background: none; border: 0; cursor: pointer;
   display: inline-flex; align-items: center; gap: 9px;
   padding: 11px 15px; margin: -11px -15px -11px 0; border-radius: 999px;
   transition: color 0.25s ease, background 0.25s ease;
