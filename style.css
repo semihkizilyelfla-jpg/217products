@@ -48,7 +48,7 @@ body {
   font-family: "Manrope", system-ui, sans-serif;
   font-weight: 400; line-height: 1.65; color: var(--ink);
   background: var(--paper);
-  overflow-x: hidden; -webkit-font-smoothing: antialiased;
+  overflow-x: hidden; overflow-x: clip; -webkit-font-smoothing: antialiased;
 }
 
 /* First-load smoothing: below-fold entrance elements start hidden (with JS) so
@@ -208,6 +208,20 @@ html.menu-open, html.menu-open body { overflow: hidden; }
 
 /* ---------- shared ---------- */
 main { position: relative; z-index: 2; }
+/* The sliding deck. Sections are centred at max-width, so their own background
+   would leave the hero showing down both margins — the deck needs ONE
+   full-bleed sheet of paper behind everything after the hero. The marquee is
+   the first block over the hero, so it carries that sheet and extends it all
+   the way down; later sections paint their own art on top of it. */
+main > *:not(.hero) { position: relative; z-index: 2; }
+/* One full-bleed sheet of paper covering everything below the hero. It has to
+   live on `main`: the marquee (the first block over the hero) is
+   `overflow: hidden`, which would clip any backdrop drawn inside it. */
+main::before {
+  content: ""; position: absolute; z-index: 1;
+  left: 0; right: 0; top: var(--hero-h, 100svh); bottom: 0;
+  background: var(--paper); pointer-events: none;
+}
 section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .eyebrow, .kicker { font-family: "Manrope", "Shippori Mincho", system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.36em; color: var(--accent-ink); }
 /* washi glow behind the hero kicker — on phones it can land on the torii's red
@@ -225,8 +239,11 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 @media (max-width: 860px) { .tate { display: none; } }
 
 /* ---------- 1 · hero (3D parallax) ---------- */
+/* Sticky, not pinned: the hero parks at the top and the rest of the page
+   slides up over it. CSS does the holding, so GSAP never re-parents the hero
+   into a pin-spacer — which is what used to restart its entrance animation. */
 .hero {
-  position: relative; min-height: 100svh;
+  position: sticky; top: 0; z-index: 0; min-height: 100svh;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-align: center; overflow: hidden;
 }
@@ -556,7 +573,7 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    cross-browser + responsive hardening
    ============================================================ */
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
-html, body { max-width: 100%; overflow-x: hidden; }
+html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
 
 /* small-viewport-unit fallback (older iOS / Android) */
 @supports not (height: 100svh) {

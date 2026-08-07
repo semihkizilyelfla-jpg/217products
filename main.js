@@ -20,6 +20,22 @@
     if (a.hasAttribute("data-mail-text")) a.textContent = CONTACT_EMAIL;
   });
 
+  /* ---------- deck backdrop offset ----------
+     The paper sheet that slides over the parked hero starts exactly at the
+     hero's bottom. 100svh is only a first guess — on short landscape screens
+     the hero can be taller, and a fixed guess would cover its last rows. */
+  (function () {
+    var hero = document.querySelector(".hero");
+    if (!hero) return;
+    function sync() {
+      document.documentElement.style.setProperty("--hero-h", Math.round(hero.offsetHeight) + "px");
+    }
+    sync();
+    addEventListener("load", sync);
+    addEventListener("resize", sync, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(sync);
+  })();
+
   /* ---------- nav: scrolled "washi ribbon" state — runs regardless of GSAP ---------- */
   (function () {
     var nav = document.querySelector(".nav");
@@ -148,12 +164,15 @@
     if (swap) gsap.set(".head-3", { autoAlpha: 0 });
     var heroTl = gsap.timeline({
       defaults: { ease: "power2.out", duration: 1 },
-      /* no anticipatePin: with Lenis smoothing it could double-adjust and hop
-         as the pin engaged — Lenis already removes the flash it guards against */
-      /* scrub:true, not a number. Lenis already smooths the scroll position;
-         adding scrub lag on top made the scene trail behind the page, which
-         reads as stutter rather than smoothness. Now it tracks 1:1. */
-      scrollTrigger: { trigger: ".hero", start: "top top", end: "+=70%", pin: true, scrub: true }
+      /* No GSAP pin any more: the hero holds itself with CSS `position: sticky`
+         and the sections after it slide over on a higher layer (the "deck of
+         cards" reveal). That also removes the pin-spacer, so the hero is never
+         re-parented — the old cause of its entrance restarting.
+         Start/end are absolute scroll offsets, NOT element-relative: a sticky
+         element's box stays at top:0, so ScrollTrigger can't measure it.
+         scrub:true, not a number — Lenis already smooths position; extra scrub
+         lag made the scene trail the page and read as stutter. */
+      scrollTrigger: { start: 0, end: function () { return window.innerHeight * 0.7; }, scrub: true, invalidateOnRefresh: true }
     })
       /* constant micro-drift across the whole pin: every scroll tick moves
          pixels on screen, so the pinned hero never reads as "frozen" */
@@ -201,8 +220,10 @@
        Transform-only, scrubbed, cheap. The bottom scrim fade masks the edges. */
     gsap.utils.toArray(".hero-scene .pl").forEach(function (el) {
       var d = parseFloat(el.dataset.depth) || 0.2;
+      /* absolute offsets, like the desktop branch: the hero is sticky now, so
+         its box never travels and "bottom top" would never fire */
       gsap.to(el, { yPercent: -(d * 22), ease: "none", force3D: true,
-        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true } });
+        scrollTrigger: { start: 0, end: function () { return window.innerHeight; }, scrub: true, invalidateOnRefresh: true } });
     });
   });
 
