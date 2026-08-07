@@ -71,6 +71,18 @@ a { color: inherit; text-decoration: none; }
   transform: scaleX(0); transform-origin: left center; pointer-events: none;
 }
 
+/* ---------- washi grain ----------
+   A flat colour field reads as dead screen; real paper never is. One fixed,
+   non-interactive fibre layer sits over the whole page and gives every
+   surface something for the eye to hold on to. Generated in CSS, so it costs
+   no request and cannot fail to load. */
+.grain {
+  position: fixed; inset: 0; z-index: 88; pointer-events: none;
+  opacity: 0.05; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22180%22%20height%3D%22180%22%3E%3Cfilter%20id%3D%22p%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.82%22%20numOctaves%3D%223%22%20stitchTiles%3D%22stitch%22%2F%3E%3CfeColorMatrix%20type%3D%22saturate%22%20values%3D%220%22%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20filter%3D%22url%28%23p%29%22%20opacity%3D%220.62%22%2F%3E%3C%2Fsvg%3E");
+  background-size: 180px 180px;
+}
+
 /* keyboard skip link — hidden until focused */
 .skip-link {
   position: fixed; top: 10px; left: 10px; z-index: 100;
@@ -93,6 +105,7 @@ img { max-width: 100%; height: auto; display: block; }
   position: fixed; top: 0; left: 0; right: 0; z-index: 40;
   display: flex; justify-content: space-between; align-items: center;
   height: 56px; padding: 0 var(--pad);
+  /* mobile keeps the washi ribbon; the desktop pill below drops it */
   background: linear-gradient(180deg, rgba(243,236,220,0.95), rgba(243,236,220,0.7) 62%, rgba(243,236,220,0));
   /* paint-only transitions. Height is NOT animated: it would run a layout pass
      on every frame, and it fired exactly as scrolling began — the worst
@@ -129,6 +142,41 @@ img { max-width: 100%; height: auto; display: block; }
 .nav-cta:hover { background: #A93413; transform: translateY(-1px); }
 .nav-links .nav-cta::after { display: none; }
 .nav-alt { color: var(--gold-ink) !important; }
+
+/* ---------- desktop: the bar becomes a floating washi seal ----------
+   The header stops being a strip across the top. The wordmark stands alone
+   top-left and the links ride in one rounded paper capsule top-right, lifted
+   off the page by two very soft shadows. No backdrop-filter anywhere — it
+   repaints every frame and this site is tuned for scroll smoothness. */
+@media (min-width: 901px) {
+  .nav {
+    height: auto; align-items: flex-start;
+    padding: clamp(16px, 1.9vw, 26px) var(--pad);
+    background: none; box-shadow: none;
+  }
+  .nav-links {
+    gap: clamp(10px, 1.4vw, 22px);
+    padding: 9px 9px 9px clamp(20px, 1.8vw, 30px);
+    border-radius: 999px;
+    background: #FAF6EA;
+    box-shadow: 0 8px 32px rgba(30,26,22,0.08), 0 4px 16px rgba(30,26,22,0.05),
+                inset 0 1px 0 rgba(255,255,255,0.7);
+  }
+  .nav-links a { font-size: 14px; }
+  /* the capsule already lifts the links; the underline would fight its curve */
+  .nav-links a::after { bottom: -3px; }
+  .nav-cta { padding: 11px 20px; border-radius: 999px; }
+  .nav-alt { padding-left: 4px; }
+  /* the wordmark answers the capsule from the opposite corner */
+  .brand { padding-top: 6px; }
+  /* scrolled state: the capsule only deepens its shadow, it never resizes */
+  .nav.is-scrolled { background: none; box-shadow: none; }
+  .nav.is-scrolled .nav-links {
+    box-shadow: 0 14px 44px rgba(30,26,22,0.13), 0 5px 18px rgba(30,26,22,0.07),
+                inset 0 1px 0 rgba(255,255,255,0.7);
+  }
+  .nav.is-scrolled .brand-mark { transform: scale(0.9); }
+}
 /* toggle: three sumi-e brush strokes (三, HGF vector) that hand over to an X */
 .nav-toggle { display: none; position: relative; width: 48px; height: 48px; background: none; border: 0; padding: 0; cursor: pointer; align-items: center; justify-content: center; z-index: 60; }
 .toggle-brush { width: auto; height: 26px; transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
