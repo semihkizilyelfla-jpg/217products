@@ -245,9 +245,11 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .hero {
   position: sticky; top: 0; z-index: 0; min-height: 100svh;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center; overflow: hidden;
+  text-align: center;
+  /* NOT overflow:hidden — the ink blot has to grow past the hero. The scene
+     layers do their own clipping one level down. */
 }
-.hero-scene { position: absolute; inset: 0; }
+.hero-scene { position: absolute; inset: 0; overflow: hidden; }
 .pl { position: absolute; will-change: transform, opacity; }
 /* Pre-reveal gate only: the actual fades (and the scene-settle zoom) run on the
    Web Animations API from lang-redirect.js, NOT CSS animations — CSS animations
@@ -265,7 +267,6 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    Gated in CSS (before GSAP runs) so they never flash visible on first paint;
    scene 1 (mountains + foreground) stays fully visible the whole time. */
 @media (min-width: 821px) {
-  .js .pl-sky, .js .pl-torii { opacity: 0; }
 }
 .hero-scrim {
   position: absolute; inset: 0; z-index: 1;
@@ -316,6 +317,32 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 }
 .hero-heads .head.is-active { opacity: 1; }
 .hero-heads .head em { font-style: italic; color: var(--vermilion); }
+/* THE INK BLOT — the transition itself, not decoration.
+   At rest it is a solid sumi circle set into the headline. On scroll it is
+   scaled ~22x from its own centre, flooding the screen with ink and handing
+   the page over to the dark shelf below. */
+.blot {
+  display: inline-block; vertical-align: -0.26em;
+  width: 1.22em; height: 1.22em; margin: -0.5em 0.02em;
+  border-radius: 50%; background: var(--ink);
+  position: relative; z-index: 6;
+  will-change: transform; transform-origin: 50% 50%;
+  pointer-events: none;
+}
+@media (max-width: 600px) { .blot { width: 1.05em; height: 1.05em; vertical-align: -0.2em; } }
+/* Ensō in the headline: one ink ring set into the line, the way a woodblock
+   print drops a seal into its text. Sized in em so it scales with the
+   headline, and pulled in with negative margins so it never opens up the
+   line-height. Decorative only — aria-hidden, so the sentence still reads
+   cleanly to a screen reader. */
+.enso {
+  display: inline-block; vertical-align: -0.30em;
+  width: 1.32em; height: 1.32em;
+  margin: -0.5em -0.06em -0.5em 0.02em;
+  filter: drop-shadow(0 2px 10px rgba(243,236,220,0.75));
+  pointer-events: none; user-select: none;
+}
+@media (max-width: 600px) { .enso { width: 1.15em; height: 1.15em; vertical-align: -0.24em; } }
 .hero-sub { margin: 26px auto 0; font-size: clamp(15px, 1.7vw, 20px); color: var(--ink); font-weight: 500; max-width: 44ch; text-shadow: 0 1px 1px rgba(243,236,220,1), 0 1px 8px rgba(243,236,220,0.98), 0 0 22px rgba(243,236,220,0.9); }
 .btn {
   display: inline-flex; align-items: center; gap: 9px; padding: 14px 28px; border-radius: 999px;
@@ -436,7 +463,47 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .globe-hint { margin-top: clamp(48px, 6vw, 76px); text-align: center; font-size: 11px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-2); }
 
 /* ---------- 5 · products ---------- */
+/* ---------- 217 ESERLERİ — the gallery wall ----------
+   This is the screen that greets you once the hero slides away, so it breaks
+   the cream: its own full-bleed sumi ink, laid inside the section (the deck's
+   paper sheet sits a layer below). The framed white print then reads exactly
+   as what the eyebrow calls it — a work, hung on a dark wall. */
 .products { max-width: var(--maxw); margin: 0 auto; }
+.products::before {
+  content: ""; position: absolute; z-index: -1;
+  left: 50%; transform: translateX(-50%); width: 100vw;
+  top: 0; bottom: 0; background: var(--ink);
+}
+/* the ink lands here: one manifesto line, then the shelf itself */
+.shelf-line {
+  font-family: "Shippori Mincho", Georgia, serif; font-weight: 700;
+  font-size: clamp(34px, 5.6vw, 82px); line-height: 1.06; letter-spacing: -0.005em;
+  color: var(--paper); text-wrap: balance;
+}
+.shelf-line em { font-style: italic; color: #F0704B; }
+.shelf-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 20px;
+  margin-top: clamp(44px, 7vh, 84px); padding-bottom: 14px;
+  border-bottom: 1px solid rgba(243,236,220,0.22);
+}
+.shelf-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.36em; color: #E9A48C; }
+.shelf-num { font-size: 12px; font-weight: 600; letter-spacing: 0.16em; color: rgba(243,236,220,0.6); }
+.products .product { margin-top: clamp(38px, 5vh, 60px); }
+.products .product h2 { color: var(--paper); }
+.products .product-sub { color: rgba(243,236,220,0.9); }
+.products .features li { color: var(--paper); border-top-color: rgba(243,236,220,0.16); }
+.products .features li:last-child { border-bottom-color: rgba(243,236,220,0.16); }
+.products .store-badge {
+  border-color: rgba(243,236,220,0.28); background: rgba(243,236,220,0.07);
+  color: rgba(243,236,220,0.78);
+}
+/* the print gains depth against the dark wall instead of a paper shadow */
+.products .product-art {
+  box-shadow: 0 40px 90px rgba(0,0,0,0.55), 0 0 0 1px var(--gold), 0 0 0 8px rgba(195,154,70,0.16);
+}
+.products .product-art:hover {
+  box-shadow: 0 54px 110px rgba(0,0,0,0.62), 0 0 0 1px var(--gold), 0 0 0 8px rgba(195,154,70,0.24);
+}
 .product { margin-top: 52px; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: clamp(40px, 6vw, 96px); align-items: center; }
 .product-art { position: relative; padding: 12px; background: #fff; border-radius: 4px; box-shadow: 0 30px 70px rgba(30,26,22,0.16), 0 0 0 1px var(--gold), 0 0 0 8px rgba(195,154,70,0.12); transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease; }
 .product-art:hover { transform: translateY(-6px) rotate(-0.4deg); box-shadow: 0 42px 90px rgba(30,26,22,0.2), 0 0 0 1px var(--gold), 0 0 0 8px rgba(195,154,70,0.16); }

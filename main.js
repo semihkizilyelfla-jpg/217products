@@ -148,47 +148,43 @@
      depends on the width the page happened to LOAD at. */
   var mm = gsap.matchMedia();
 
-  mm.add("(min-width: 821px)", function () {
-    /* desktop: give sky + torii their pre-assembly transform (opacity:0 comes from
-       CSS); the pinned timeline below fades and settles them on scroll.
-       Short, nimble pin (+=100%): sky settles first, then the torii lands as the
-       headline hands over — opening line → closing line. */
-    gsap.set(".pl-sky",   { scale: 1.06, force3D: true });
-    gsap.set(".pl-torii", { yPercent: -12, force3D: true });
-
-    /* The headline hand-over only runs where a second line exists. The TR page
-       carries a single headline, so there is nothing to hand over to — fading
-       head-1 out there would empty the hero for the rest of the pin. */
-    var swap = document.querySelector(".head-3");
-    gsap.set(".head-1", { autoAlpha: 1 });
-    if (swap) gsap.set(".head-3", { autoAlpha: 0 });
-    var heroTl = gsap.timeline({
-      defaults: { ease: "power2.out", duration: 1 },
-      /* No GSAP pin any more: the hero holds itself with CSS `position: sticky`
-         and the sections after it slide over on a higher layer (the "deck of
-         cards" reveal). That also removes the pin-spacer, so the hero is never
-         re-parented — the old cause of its entrance restarting.
-         Start/end are absolute scroll offsets, NOT element-relative: a sticky
-         element's box stays at top:0, so ScrollTrigger can't measure it.
-         scrub:true, not a number — Lenis already smooths position; extra scrub
-         lag made the scene trail the page and read as stutter. */
-      scrollTrigger: { start: 0, end: function () { return window.innerHeight * 0.7; }, scrub: true, invalidateOnRefresh: true }
-    })
-      /* constant micro-drift across the whole pin: every scroll tick moves
-         pixels on screen, so the pinned hero never reads as "frozen" */
-      .to(".pl-mount",     { yPercent: -2.5, ease: "none", duration: 2 }, 0)
-      .to(".pl-fore",      { yPercent: -4.5, ease: "none", duration: 2 }, 0)
-      .to(".hero-content", { yPercent: -3,   ease: "none", duration: 2 }, 0)
-      .to(".pl-sky",   { autoAlpha: 1, scale: 1 }, 0)
-      .to(".pl-torii", { autoAlpha: 1, yPercent: 0 }, 0.75);
-
-    /* Hand-over sits earlier in the (30% shorter) pin so the second line is
-       on screen well before release — still scrubbed, still fully two-way. */
-    if (swap) {
-      heroTl.to(".head-1", { autoAlpha: 0, duration: 0.5 }, 0.55)
-            .to(".head-3", { autoAlpha: 1, duration: 0.5 }, 0.9);
+  /* ---------- THE INK BLOT ----------
+     The scene no longer assembles on scroll; the hero is one settled picture
+     and the whole opening gesture is this: the sumi circle sitting in the
+     headline is scaled from its own centre until it floods the screen, and
+     the dark shelf below takes over inside that ink. Runs on every width —
+     it IS the transition, not an enhancement.
+     The scale needed is derived, not guessed: the blot must cover the far
+     corner of the viewport from wherever it happens to sit. */
+  (function () {
+    var blot = document.querySelector(".blot");
+    if (!blot) return;
+    function neededScale() {
+      var r = blot.getBoundingClientRect();
+      if (!r.width) return 24;
+      var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      var far = Math.max(
+        Math.hypot(cx, cy),
+        Math.hypot(innerWidth - cx, cy),
+        Math.hypot(cx, innerHeight - cy),
+        Math.hypot(innerWidth - cx, innerHeight - cy));
+      return (far * 2) / r.width * 1.06; /* +6% so no rim shows at the corner */
     }
+    gsap.fromTo(blot, { scale: 1 }, {
+      scale: neededScale, ease: "none", force3D: true,
+      scrollTrigger: {
+        start: 0,
+        end: function () { return window.innerHeight * 0.55; },
+        scrub: true, invalidateOnRefresh: true
+      }
+    });
+    /* No fade on the hero copy. GSAP would capture its start opacity while the
+       WAAPI entrance is still mid-flight and animate 0 -> 0, blanking the hero.
+       It isn't needed either: the blot sits above the copy in the stack, so the
+       growing ink covers the words on its own. */
+  })();
 
+  mm.add("(min-width: 821px)", function () {
     /* section parallax (desktop only) */
     gsap.utils.toArray("[data-parallax]").forEach(function (el) {
       var f = parseFloat(el.dataset.parallax) || 0.12;
