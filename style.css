@@ -539,9 +539,11 @@ html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
    first frame. */
 .blot-figure {
   position: absolute; inset: 0; margin: auto;
-  /* the sitting pose is taller than it is wide, unlike the spread glide it
-     replaced, so the disc holds it by HEIGHT and lets the width follow */
-  width: 80%; height: 80.7%; max-width: none;
+  /* Every frame shares one canvas registered on the animal's EYES, so the
+     resting pose only fills 77% of its own frame — the rest is the room the
+     spread poses need. The disc therefore holds a frame slightly LARGER than
+     itself so the animal inside it lands at the right size. */
+  width: 112%; height: 116.3%; max-width: none;
   will-change: transform, opacity; user-select: none; pointer-events: none;
 }
 .blot .blot-fill {
@@ -1058,7 +1060,7 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
   position: fixed; left: 0; top: 0; z-index: 38;
   /* width is set by the script from the figure in the disc, so the handoff on
      the first frame is pixel-exact; this is only the pre-mount fallback */
-  width: 200px; aspect-ratio: 1100 / 1110;
+  width: 200px; aspect-ratio: 1700 / 1766;
   pointer-events: none; visibility: hidden; opacity: 0;
   transform-origin: 50% 50%; will-change: transform, opacity;
 }
@@ -1114,9 +1116,9 @@ html.in-flight .flier, html.in-flight .rush { visibility: visible; }
   --pw: clamp(104px, 11vw, 168px);
   position: absolute; right: clamp(58px, 7vw, 120px);
   width: var(--pw); height: auto;
-  /* its own tight crop puts the feet at 98.1% of the height, so it only
-     hangs 1.9% of that below the rule: 0.019 x (476/620) x width */
-  bottom: calc(var(--pw) * -0.0146);
+  /* its own tight crop puts the feet at 98.6% of the height, so it hangs
+     1.4% of that below the rule: 0.014 x (486/640) x width */
+  bottom: calc(var(--pw) * -0.0106);
   pointer-events: none; user-select: none; z-index: 2;
 }
 @media (max-width: 700px) { .perch { --pw: clamp(88px, 26vw, 116px); right: 0; } }

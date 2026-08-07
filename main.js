@@ -292,10 +292,8 @@
        fraction of the flight, and the first two live entirely inside the ink's
        hold — which is what makes scrolling feel like it CAUSES the launch. */
     var order = ["sit", "crouch", "open", "glide", "flare"];
-    var frames = {};
-    order.forEach(function (k) { frames[k] = flier.querySelector(".pose-" + k); });
+    var frames = order.map(function (k) { return flier.querySelector(".pose-" + k); });
     var de = document.documentElement;
-    var shown = null;
 
     var geo = null;
     function measure() {
@@ -315,7 +313,7 @@
       }
       flier.style.width = w.toFixed(1) + "px";
       return { cx: b.left + b.width / 2, cy: b.top + b.height / 2,
-               fw: w, fh: w * (986 / 1160) };
+               fw: w, fh: w * (1766 / 1700) };
     }
 
     /* The ink HOLDS its shape for the first stretch — that pause is the whole
@@ -324,10 +322,8 @@
        cream edges spill onto cream paper, which just reads as a clipped
        sprite. Measured: without this it was 16% wider than the ink at the
        moment the flood finally opened.
-       HOLD is the ink's own hold expressed in this trigger's units:
-       0.37 of a 0.26vh ride, inside a 0.42vh flight. */
-    /* the ink's hold, expressed in THIS trigger's units — derived, never typed
-       twice, so slowing one down slows the other by exactly as much */
+       Derived from the ink's own numbers, never typed twice, so retiming one
+       retimes the other by exactly as much. */
     var HOLD = (INK_RIDE * INK_HOLD) / FLY_RIDE;
     /* Distance in a straight line looks like a lift, not an approach. Real
        approach is exponential: almost nothing for a long time, then the last
@@ -343,6 +339,45 @@
          land on cream. Checked at the worst point, mid-flood: 239 against a
          432 radius. */
       return Math.pow((p - HOLD) / (1 - HOLD), 1.5);
+    }
+
+    /* WHERE EACH FRAME IS ITS ONLY SELF.
+       Two of the five live inside the ink's hold, so the launch is over before
+       the flood even opens; the last three carry the approach. */
+    /* HOLD is where the flood lets go, so the first two frames — still, then
+       gathered — are over before anything moves, and the animal opens on
+       exactly the frame the ink does. Written against HOLD rather than as
+       fixed numbers so retiming the ink retimes the launch with it. */
+    var STOPS = [0, HOLD * 0.55, HOLD, HOLD + 0.18, 0.86];
+    /* the blend is short on purpose. Two cream drawings held at half opacity
+       over each other is a double exposure, not an animation — so each frame
+       HOLDS, then swaps across the last quarter of its interval. */
+    var BLEND = 0.26;
+
+    /* Opacity is a pure function of scroll position. It used to be a set of
+       gsap.to() tweens fired on a cue change, which is the bug: a tween has its
+       own clock, so scrolling fast fired three of them on top of each other and
+       scrolling backwards played the fades forwards. Nothing here has a clock —
+       the same scroll position always paints the same frame, in both
+       directions, at any speed. */
+    function paint(p) {
+      var i, lo = 0;
+      for (i = 0; i < STOPS.length; i++) if (p >= STOPS[i]) lo = i;
+      var hi = Math.min(order.length - 1, lo + 1);
+      var t = 0;
+      if (hi > lo) {
+        var span = STOPS[hi] - STOPS[lo];
+        var into = (p - STOPS[lo]) / span;              /* 0..1 across the hold */
+        var start = 1 - BLEND;
+        t = into <= start ? 0 : (into - start) / BLEND;
+        t = Math.min(1, Math.max(0, t));
+        t = t * t * (3 - 2 * t);                        /* smoothstep */
+      }
+      for (i = 0; i < frames.length; i++) {
+        if (!frames[i]) continue;
+        var o = i === lo ? 1 - t : (i === hi ? t : 0);
+        if (frames[i].__o !== o) { frames[i].__o = o; frames[i].style.opacity = o; }
+      }
     }
 
     function place(p) {
@@ -365,18 +400,7 @@
            end, because a slow fade would read as a ghost rather than a body */
         opacity: p < 0.02 ? p / 0.02 : (p > 0.80 ? Math.max(0, 1 - (p - 0.80) / 0.20) : 1)
       });
-      /* cues: two inside the hold, three across the approach */
-      var want = p < HOLD * 0.42 ? "sit"
-               : p < HOLD ? "crouch"
-               : p < HOLD + 0.10 ? "open"
-               : p < 0.74 ? "glide" : "flare";
-      if (want !== shown) {
-        shown = want;
-        order.forEach(function (k) {
-          if (frames[k]) gsap.to(frames[k], { opacity: k === want ? 1 : 0,
-            duration: 0.26, ease: "power2.out", overwrite: true });
-        });
-      }
+      paint(p);
       /* shuchusen — the converging speed lines a woodblock uses for something
          moving fast at the viewer. They open with the animal and outrun it. */
       if (rush) {
@@ -404,12 +428,9 @@
         /* Home again. Without this the flier keeps whatever frame it died on —
            scroll to the bottom and back and you find the flare pose sitting
            invisible over the disc, ready to flash on the next nudge. */
-        shown = null;
         gsap.set(flier, { opacity: 0 });
         if (rush) gsap.set(rush, { opacity: 0 });
-        order.forEach(function (k) {
-          if (frames[k]) gsap.set(frames[k], { opacity: k === "sit" ? 1 : 0 });
-        });
+        paint(0);
       }
     });
 
