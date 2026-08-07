@@ -42,10 +42,15 @@
      click target would swallow every link on the page under it. */
   (function () {
     var nav = document.querySelector(".nav");
+    var de = document.documentElement;
     function onScroll() {
-      var past = (window.scrollY || 0) > 40;
+      var y = window.scrollY || 0;
+      var past = y > 40;
       if (nav) nav.classList.toggle("is-scrolled", past);
-      document.documentElement.classList.toggle("scrolled", past);
+      de.classList.toggle("scrolled", past);
+      /* the wordmark and the mist band belong to the opening screen and step
+         away once the ink has taken the page; the capsule and the rail stay */
+      de.classList.toggle("past-hero", y > (parseInt(getComputedStyle(de).getPropertyValue("--hero-h"), 10) || innerHeight) * 0.55);
     }
     addEventListener("scroll", onScroll, { passive: true });
     onScroll();

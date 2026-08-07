@@ -109,6 +109,12 @@ img { max-width: 100%; height: auto; display: block; }
 /* the reference runs its wordmark at 99x41. Ours was 71 wide — a third
    smaller, and it read as a small mark rather than a brand. */
 .brand-mark { width: auto; height: clamp(44px, 3.4vw, 66px); transform-origin: left center; transition: transform 0.3s ease; }
+/* The wordmark is the opening's signature, not a permanent fixture: once the
+   ink has taken the page it steps away and leaves the capsule and the rail to
+   carry the header. Opacity and transform only — no display switch, or the
+   focus order would change under a keyboard user mid-scroll. */
+.brand { transition: opacity 0.45s ease, transform 0.45s ease; }
+html.past-hero .brand { opacity: 0; transform: translateY(-14px); pointer-events: none; }
 /* once you scroll, the bar settles into a solid washi ribbon: paper fill, ink
    hairline underneath, mark drawn back — quiet until you need it */
 .nav-links { display: flex; gap: clamp(12px, 2vw, 30px); align-items: center; }
@@ -135,6 +141,30 @@ img { max-width: 100%; height: auto; display: block; }
 .nav-links .nav-cta::after { display: none; }
 .nav-alt { color: var(--gold-ink) !important; }
 
+/* ---------- kasumi ----------
+   A woodblock print bands the top of the sheet with stylised mist rather than
+   leaving it bare; that band is where the seal and the title sit. This is ours:
+   three soft ink drifts across the head of the page, behind the header, at a
+   weight you read as paper rather than as a graphic. Fixed, so it stays with
+   the header it decorates. */
+.kasumi {
+  position: fixed; top: 0; left: 0; right: 0; height: clamp(150px, 15vw, 250px);
+  z-index: 39; pointer-events: none;
+  background-repeat: no-repeat;
+  background-image:
+    radial-gradient(62% 120% at 14% 42%, rgba(30,26,22,0.095), transparent 72%),
+    radial-gradient(54% 120% at 44% 16%, rgba(30,26,22,0.07),  transparent 72%),
+    radial-gradient(48% 120% at 70% 46%, rgba(178,58,28,0.085), transparent 72%),
+    radial-gradient(44% 120% at 94% 18%, rgba(30,26,22,0.055), transparent 72%);
+  background-size: 54% 32%, 46% 24%, 38% 28%, 32% 22%;
+  background-position: 0 44%, 32% 8%, 68% 66%, 100% 18%;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 52%, transparent 100%);
+          mask-image: linear-gradient(180deg, #000 0%, #000 52%, transparent 100%);
+  transition: opacity 0.5s ease;
+}
+html.past-hero .kasumi { opacity: 0; }
+@media (max-width: 900px) { .kasumi { display: none; } }
+
 /* ---------- desktop: the bar becomes a floating washi seal ----------
    The header stops being a strip across the top. The wordmark stands alone
    top-left and the links ride in one rounded paper capsule top-right, lifted
@@ -155,7 +185,12 @@ img { max-width: 100%; height: auto; display: block; }
     gap: 0;
     padding: 12px 12px 12px clamp(22px, 1.9vw, 32px);
     border-radius: 999px;
-    background: #FAF6EA;
+    /* washi weave, not a flat fill: a 7px cross-hatch at 5% reads as paper
+       under the links instead of as a plastic pill */
+    background-color: #FAF6EA;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(30,26,22,0.05) 0 1px, transparent 1px 7px),
+      repeating-linear-gradient(0deg,  rgba(30,26,22,0.035) 0 1px, transparent 1px 7px);
     box-shadow: 0 10px 40px rgba(30,26,22,0.09), 0 5px 18px rgba(30,26,22,0.055),
                 inset 0 1px 0 rgba(255,255,255,0.7);
   }
@@ -304,8 +339,11 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    A small washi tab clipped to the edge of the sheet, carrying the studio
    signature down the margin the way a print carries its seal. One rail, not
    two: a second column on the left only crowded the type. */
+/* Fixed, not absolute, and no longer a child of the hero — it has to be there
+   on every screen, the way the reference's honours tab is. The wordmark does
+   the opposite: it belongs to the opening and leaves with it. */
 .tate {
-  position: absolute; right: 0; top: 47%; z-index: 4;
+  position: fixed; right: 0; top: 50%; z-index: 41;
   transform: translateY(-50%);
   display: flex; flex-direction: column; align-items: center; gap: clamp(15px, 1.1vw, 22px);
   width: clamp(54px, 3.6vw, 72px); padding: clamp(19px, 1.4vw, 26px) 0;
@@ -324,6 +362,15 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   font-size: clamp(12px, 0.82vw, 15px); font-weight: 700; letter-spacing: 0.3em; color: var(--ink-2);
 }
 @media (max-width: 900px) { .tate { display: none; } }
+/* it sits over the dark shelf as often as over paper, so it carries its own
+   light plate and a hairline rather than relying on the page behind it */
+.tate::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit; background: #FAF6EA;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(30,26,22,0.05) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(0deg,  rgba(30,26,22,0.035) 0 1px, transparent 1px 7px);
+}
 
 /* ============================================================
    1 · HERO — one sentence on a sheet of paper
@@ -339,11 +386,14 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    ============================================================ */
 .hero {
   position: sticky; top: 0; z-index: 0; min-height: 100svh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
   text-align: center;
-  /* deeper bottom padding than top: the plate lives down there, so the flex
-     centring lifts the sentence clear of the ridge line */
-  padding: clamp(96px, 13vh, 172px) var(--pad) clamp(140px, 32vh, 300px);
+  /* The sentence is bottom-anchored, not centred. A headline parked in the
+     middle of the screen is the safe answer everyone reaches for; dropping it
+     low leaves the top of the sheet genuinely empty, which is where the calm
+     comes from — and it is what the reference does too, its block sitting at
+     377-742 of a 900 screen. The bottom padding holds it off the foot line. */
+  padding: clamp(96px, 13vh, 172px) var(--pad) clamp(126px, 17vh, 200px);
   background: var(--paper);
   /* NOT overflow:hidden — the ink has to grow past the hero. The ground layer
      one level down does its own clipping. */
@@ -360,10 +410,11 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    instead of ending on a line. It stops short of the bottom edge so the paper
    keeps a clean margin for the foot line. */
 .hero-ground {
-  position: absolute; left: 0; right: 0; top: 0; z-index: 1;
-  /* the plate stops here so the foot line always lands on clean paper — the
-     bottom margin of a print, not an overlay on the art */
-  bottom: clamp(66px, 8vh, 94px);
+  /* Runs to the very bottom of the screen. It used to stop short and leave a
+     strip of bare paper for the foot line, which read as the picture running
+     out of room rather than as a horizon. The plate now ends where the page
+     does, and the foot line sits on the pale mist at the base of the art. */
+  position: absolute; inset: 0; z-index: 1;
   overflow: hidden; pointer-events: none;
 }
 /* The plate has to STOP, and a straight slice through a painted ridge reads as
@@ -373,11 +424,11 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    to re-rasterise it every frame — the exact cost the blur was removed for. */
 .hero-ground::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-  /* kept well under a third of the visible band — a soak, not a fade-out */
-  height: clamp(30px, 4.4vw, 78px); pointer-events: none;
-  background: linear-gradient(180deg, rgba(243,236,220,0) 0%, rgba(243,236,220,0.8) 58%, var(--paper) 100%);
+  /* a whisper of paper at the very bottom so the foot line always clears its
+     backdrop, however the art happens to fall there */
+  height: clamp(56px, 7vh, 96px); pointer-events: none;
+  background: linear-gradient(180deg, rgba(243,236,220,0) 0%, rgba(243,236,220,0.5) 62%, rgba(243,236,220,0.84) 100%);
 }
-@media (max-width: 700px) { .hero-ground { bottom: clamp(84px, 10.5vh, 104px); } }
 /* Each layer's resting opacity lives in --o, not in `opacity` directly: the
    entrance fades each image to its OWN resting value as it decodes, so a
    generic "fade to 1" can't flatten the depth stack. */
@@ -387,13 +438,13 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    and a short one. A % bottom resolves against the container's height and
    drifts the horizon every time the window changes shape. */
 .hz {
-  position: absolute; left: 50%; bottom: -4vw;
+  position: absolute; left: 50%; bottom: 0;
   /* The band's ART is a fixed 19.4% of whatever width the image is given, so
      the plate's height is set entirely by this number. A plain percentage
      starves it on a phone (100% of 390px leaves a 75px sliver) and floods a
      short laptop window, so it takes a floor in px and a ceiling further down
      in vh. */
-  width: max(104%, 940px); max-width: none; height: auto;
+  width: max(118%, 1080px); max-width: none; height: auto;
   transform: translateX(-50%);
   --o: 1; opacity: var(--o);
   will-change: transform, opacity;
@@ -488,13 +539,16 @@ html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
   position: absolute; inset: 0; width: 100%; height: 100%;
   will-change: opacity; user-select: none;
 }
-/* THE FIGURE — a Choju-giga rabbit with a calligraphy brush, living in the
-   ink. Centred with auto margins rather than a translate, because GSAP owns
-   this element's transform for the idle and the hop; a CSS translate would be
-   overwritten on the first frame and the figure would jump to the left. */
+/* THE MASCOT — a momonga, the Japanese dwarf flying squirrel, mid-glide with
+   its membrane open. The spread pose is a kite, which is the one silhouette
+   that actually fills a circle, and it is the reason it can live in the ink at
+   all. Both axes are given explicit percentages and the margins are auto:
+   centring by transform is not available here, because GSAP owns this
+   element's transform for the idle and the hop and would overwrite it on the
+   first frame. */
 .blot-figure {
-  position: absolute; left: 0; right: 0; bottom: 10%; margin: 0 auto;
-  height: 82%; width: auto; max-width: none;
+  position: absolute; inset: 0; margin: auto;
+  width: 70%; height: 66.3%; max-width: none;
   will-change: transform, opacity; user-select: none; pointer-events: none;
 }
 .blot .blot-fill {
@@ -987,7 +1041,10 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
    third of the page and the sentence lands on the ridge. Sink the plate and
    pull the type back. */
 @media (max-height: 660px) and (min-width: 701px) {
-  .hz { bottom: -13vh; }
+  /* the plate is anchored to the bottom edge now, so a short window shrinks it
+     rather than sinking it — sinking would cut off the pale mist plain that
+     the foot line stands on */
+  .hz { width: max(104%, 900px); }
   .hero { padding: clamp(74px, 12vh, 120px) var(--pad) clamp(84px, 20vh, 170px); }
   .hero-head { font-size: clamp(34px, 5.4vw, 72px); }
   .blot { width: 2.1em; height: 2.1em; }
