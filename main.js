@@ -255,167 +255,119 @@
   })();
 
   /* ============================================================
-     THE FLIGHT — the momonga leaves the ink and crosses to screen two
+     THE FLIGHT — the momonga comes at you, and the ink is its wake
      ------------------------------------------------------------
-     Scrubbed, not played: the launch and the glide sit under your finger and
-     run backwards if you scroll back, which is the same contract the ink
-     already has. Only the settle at the end is a one-shot, because a landing
-     that un-lands looks ridiculous.
-     Three handoffs, each invisible because the positions are measured rather
-     than guessed: the resting figure in the disc -> the flier -> the perch on
-     the shelf rule.
+     It does not travel across the screen; it travels toward you. That single
+     decision fixes the thing that made the earlier build look cheap — a sprite
+     sliding around a page always looks like a sticker on a slide — and it
+     solves a real constraint at the same time: the animal is cream and so is
+     the paper, so anything moving sideways over the hero would vanish until
+     the ink caught up. Growing from the SAME centre as the flood, it is
+     silhouetted on black from the first frame to the last, because the ink is
+     always opening faster than it is.
+     It starts the instant you touch the wheel, while the ink is still holding
+     its shape — the squirrel is the cause, the flood is the effect.
      ============================================================ */
   (function () {
     var flier = document.querySelector(".flier");
-    var head = document.querySelector(".shelf-head");
-    var num = document.querySelector(".shelf-num");
-    if (!flier || !head) return;
+    var rush = document.querySelector(".rush");
+    var blot = document.querySelector(".blot");
+    var seat = document.querySelector(".blot-figure");
+    if (!flier || !blot) return;
 
-    var poses = {
-      leap:  flier.querySelector(".pose-leap"),
-      glide: flier.querySelector(".pose-glide"),
-      land:  flier.querySelector(".pose-land"),
-      perch: flier.querySelector(".pose-perch")
-    };
-    var order = ["leap", "glide", "land", "perch"];
-    /* where each pose owns the path, as a fraction of the flight */
-    /* the braking pose needs a real window or the cross-fade eats it and the
-       glide snaps straight to a perch */
-    var cues = { leap: 0, glide: 0.16, land: 0.74, perch: 0.975 };
+    var near = flier.querySelector(".pose-near");
+    var flare = flier.querySelector(".pose-flare");
+    var de = document.documentElement;
 
-    /* Every pose shares one canvas, and inside it the perched animal's feet sit
-       at 83% of the height — the union crop leaves padding below them. Landing
-       "on" the rule therefore means putting THAT line on the rule, not the box
-       centre, or the squirrel floats with half its frame hanging through the
-       shelf. */
-    var FEET = 0.83;
     var geo = null;
     function measure() {
-      /* the launch point is the ink's own centre — the disc's box never moves,
-         because the hero is sticky, so this is a fixed point on screen */
-      var blot = document.querySelector(".blot");
-      var s = blot ? blot.getBoundingClientRect() : { left: innerWidth * 0.5, top: innerHeight * 0.5, width: 0, height: 0 };
-      var f = flier.getBoundingClientRect();
-      var W = innerWidth, H = innerHeight;
-      /* The perch is the right-hand end of the shelf rule, next to the 01/01
-         counter — and the flight ENDS when that rule is 70% down the screen,
-         so the landing point is a real place on a real element rather than a
-         number that happens to look right at one window size. */
-      var hr = head.getBoundingClientRect();
-      var nr = num ? num.getBoundingClientRect() : hr;
-      var endScroll = Math.max(H * 0.45, hr.top + scrollY + hr.height - H * 0.70);
-      return {
-        W: W, H: H,
-        fw: f.width || 200, fh: f.height || 190,
-        /* start: dead centre of the figure already sitting in the ink */
-        sx: s.left + s.width / 2, sy: s.top + s.height / 2,
-        /* end: feet on the rule, just left of the counter. The final scale is
-           0.82, so the feet sit (0.83-0.5)*0.82 of a box-height below centre. */
-        ex: nr.left + nr.width / 2 - (W < 760 ? 0 : 40),
-        ey: hr.top + scrollY + hr.height - endScroll - (FEET - 0.5) * 0.82 * (f.height || 190),
-        end: endScroll,
-        ruleX: nr.left + nr.width / 2 - (W < 760 ? 0 : 40)
-      };
+      /* the disc's box grows with the flood but its CENTRE never moves — the
+         hero is sticky, so this is one fixed point on the screen */
+      var b = blot.getBoundingClientRect();
+      var bs = Math.abs(gsap.getProperty(blot, "scaleX") || 1);
+      /* The flier is sized from the figure ALREADY SITTING IN THE DISC, not
+         from a viewport clamp. A clamp is right at one width and wrong at every
+         other: on a phone it came out 15% larger than the disc, so the handoff
+         on the first frame was a visible jump. Taken from the seat, scale 1 is
+         the seat, exactly, at every viewport. */
+      var w = 240;
+      if (seat) {
+        var sr = seat.getBoundingClientRect();
+        if (sr.width) w = sr.width / bs;
+      }
+      flier.style.width = w.toFixed(1) + "px";
+      return { cx: b.left + b.width / 2, cy: b.top + b.height / 2,
+               fw: w, fh: w * (986 / 1160) };
     }
 
-    /* Catmull-Rom through the control points: it passes THROUGH every point,
-       which is what a hand-placed flight path wants. A bezier would only be
-       pulled toward them and the apex would drift off the screen edge. */
-    function spline(pts, t) {
-      var n = pts.length - 1;
-      var i = Math.min(Math.floor(t * n), n - 1);
-      var u = t * n - i;
-      var p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(n, i + 2)];
-      var u2 = u * u, u3 = u2 * u;
-      return [
-        0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * u + (2*p0[0] - 5*p1[0] + 4*p2[0] - p3[0]) * u2 + (-p0[0] + 3*p1[0] - 3*p2[0] + p3[0]) * u3),
-        0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * u + (2*p0[1] - 5*p1[1] + 4*p2[1] - p3[1]) * u2 + (-p0[1] + 3*p1[1] - 3*p2[1] + p3[1]) * u3)
-      ];
+    /* The ink HOLDS its shape for the first stretch — that pause is the whole
+       reason you register it as a circle before it becomes a flood. The animal
+       has to hold with it, or it outgrows the disc it is sitting in and its
+       cream edges spill onto cream paper, which just reads as a clipped
+       sprite. Measured: without this it was 16% wider than the ink at the
+       moment the flood finally opened.
+       HOLD is the ink's own hold expressed in this trigger's units:
+       0.37 of a 0.26vh ride, inside a 0.42vh flight. */
+    var HOLD = 0.229;
+    /* Distance in a straight line looks like a lift, not an approach. Real
+       approach is exponential: almost nothing for a long time, then the last
+       third eats the screen. */
+    function depth(p) {
+      if (p <= HOLD) return 0;
+      return Math.pow((p - HOLD) / (1 - HOLD), 2.35);
     }
 
-    function path(g) {
-      var W = g.W, H = g.H, narrow = W < 760;
-      /* It launches BACKWARDS off the ink and to the left, banks at the apex,
-         then rides one long descending glide across the whole width. One turn,
-         at the top, where a real glider banks. On a phone the screen is too
-         narrow for that sweep, so it becomes a tall lazy S instead. */
-      return narrow
-        ? [[g.sx, g.sy], [W * 0.16, H * 0.44], [W * 0.80, H * 0.30], [W * 0.24, H * 0.52], [g.ex, g.ey]]
-        : [[g.sx, g.sy], [W * 0.30, H * 0.30], [W * 0.17, H * 0.13], [W * 0.62, H * 0.30], [g.ex, g.ey]];
-    }
-
-    function ease(p) { return p; }
-
-    var last = -1;
     function place(p) {
       if (!geo) geo = measure();
-      var pts = path(geo);
-      var a = spline(pts, Math.min(1, Math.max(0, p)));
-      var b = spline(pts, Math.min(1, Math.max(0, p) + 0.012));
-      var dx = b[0] - a[0], dy = b[1] - a[1];
-      var facingLeft = dx < 0;
-      /* bank into the direction of travel, but only part way: a sprite rotated
-         to the full tangent reads as a paper plane, not an animal */
-      var ang = Math.atan2(dy, Math.abs(dx) < 0.001 ? 0.001 : Math.abs(dx)) * (180 / Math.PI) * 0.55;
-      /* It comes OUT of the flood: small and faint at first, as if the ink
-         itself let go of it, then up to full size for the glide and a little
-         smaller again as it settles onto a shelf that is further away. */
-      var burst = Math.min(1, p / 0.09);
-      var scale = (0.52 + burst * 0.48) * (1 + Math.sin(Math.min(1, p) * Math.PI) * 0.16 - Math.min(1, p) * 0.18);
+      var d = depth(p);
+      /* during the hold it only gathers itself — a couple of percent, enough
+         that the screen answers your finger without breaking the circle */
+      var tense = Math.min(1, p / HOLD);
+      var scale = 1 + tense * 0.07 + d * 9.4;
+      /* it does not come at your eye but just past your shoulder, so the drift
+         grows with the approach instead of being a straight zoom */
+      var dx = -d * geo.fw * 1.15;
+      var dy = -d * geo.fh * 0.62;
       gsap.set(flier, {
-        x: a[0] - geo.fw / 2, y: a[1] - geo.fh / 2,
-        rotation: ang, scaleX: facingLeft ? -scale : scale, scaleY: scale,
-        opacity: burst
+        x: geo.cx - geo.fw / 2 + dx,
+        y: geo.cy - geo.fh / 2 + dy,
+        scale: scale,
+        rotation: -tense * 1.5 - d * 16,
+        /* it passes the lens and is gone — held to full opacity until the very
+           end, because a slow fade would read as a ghost rather than a body */
+        opacity: p < 0.02 ? p / 0.02 : (p > 0.80 ? Math.max(0, 1 - (p - 0.80) / 0.20) : 1)
       });
-      /* pose cross-fade — whichever cue we have passed owns the frame */
-      var want = "rest", i;
-      for (i = 0; i < order.length; i++) if (p >= cues[order[i]]) want = order[i];
-      if (want !== last) {
-        last = want;
-        order.forEach(function (k) {
-          if (poses[k]) gsap.to(poses[k], { opacity: k === want ? 1 : 0, duration: 0.28, ease: "power2.out", overwrite: true });
+      /* the membrane flares open the moment before it passes */
+      var flaring = p > 0.72;
+      if (flare && flare.__on !== flaring) {
+        flare.__on = flaring;
+        gsap.to(flare, { opacity: flaring ? 1 : 0, duration: 0.34, ease: "power2.out", overwrite: true });
+        gsap.to(near, { opacity: flaring ? 0 : 1, duration: 0.34, ease: "power2.out", overwrite: true });
+      }
+      /* shuchusen — the converging speed lines a woodblock uses for something
+         moving fast at the viewer. They open with the animal and outrun it. */
+      if (rush) {
+        gsap.set(rush, {
+          x: geo.cx, y: geo.cy,
+          scale: 0.18 + d * 13,
+          opacity: p < HOLD ? 0 : Math.min(1, (p - HOLD) / 0.16) * (1 - Math.max(0, (p - 0.78) / 0.22)) * 0.5
         });
       }
     }
 
-    var de = document.documentElement;
-    /* The flight does NOT start at the top of the page. The squirrel is cream
-       and so is the paper — launched over the hero it would simply vanish
-       until the ink caught up with it. So it waits inside the disc, goes down
-       with the flood, and only comes back out once the ink owns the whole
-       screen. Which is the better story anyway: the ink does not swallow it,
-       it throws it. */
-    function launchAt() { return innerHeight * 0.235; }
     ScrollTrigger.create({
-      start: launchAt,
-      end: function () { geo = measure(); return Math.max(launchAt() + innerHeight * 0.35, geo.end); },
+      start: 0,
+      end: function () { return innerHeight * 0.42; },
       scrub: true, invalidateOnRefresh: true,
+      onRefresh: function () { geo = null; },
       onUpdate: function (self) {
-        var p = ease(self.progress);
-        de.classList.toggle("in-flight", p > 0.001);
-        place(p);
-      },
-      onRefresh: function () { geo = measure(); }
-    });
-
-    /* Once it is down it stops being a fixed overlay and starts riding the
-       page: its screen position is re-read from the rule every frame, so it
-       stays on the shelf while the shelf scrolls. Then it lets go. */
-    ScrollTrigger.create({
-      start: function () { geo = measure(); return Math.max(launchAt() + innerHeight * 0.35, geo.end); },
-      end: function () { return Math.max(launchAt() + innerHeight * 0.35, measure().end) + innerHeight * 1.15; },
-      scrub: true, invalidateOnRefresh: true,
-      onUpdate: function (self) {
-        if (!geo) geo = measure();
-        var hr = head.getBoundingClientRect();
-        var nr = num ? num.getBoundingClientRect() : hr;
-        var scale = 0.84;
-        gsap.set(flier, {
-          x: nr.left + nr.width / 2 - (innerWidth < 760 ? 0 : 40) - geo.fw / 2,
-          y: hr.bottom - geo.fh * (0.5 + (FEET - 0.5) * scale),
-          rotation: 0, scaleX: scale, scaleY: scale,
-          opacity: 1 - Math.max(0, (self.progress - 0.68) / 0.32)
-        });
+        var p = self.progress;
+        var on = p > 0.001 && p < 0.999;
+        de.classList.toggle("in-flight", on);
+        /* the seat in the disc hands over on the first frame and takes the
+           figure back if you scroll all the way home */
+        if (seat) gsap.set(seat, { opacity: p > 0.004 ? 0 : 1 });
+        if (p > 0.001) place(p);
       }
     });
 
@@ -569,6 +521,7 @@
         head = sec.querySelector(".shelf-head"),
         eb   = sec.querySelector(".shelf-eyebrow"),
         num  = sec.querySelector(".shelf-num"),
+        perch= sec.querySelector(".perch"),
         art  = sec.querySelector(".product-art"),
         body = sec.querySelectorAll(".product-body > *");
     if (!line) return;
@@ -595,6 +548,13 @@
       .fromTo(art, { y: 46 }, { y: 0, autoAlpha: 1, duration: 1.1, ease: "expo.out" }, 0.34)
       .fromTo(body, { y: 30 }, { y: 0, autoAlpha: 1, duration: 0.85, ease: "expo.out", stagger: 0.075 }, 0.46);
     if (rest.length) tl.fromTo(rest, { y: 22 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out", stagger: 0.055 }, 0.62);
+    /* it beat you here. It drops the last few pixels onto the rule and settles,
+       so arriving on the shelf reads as a landing rather than a fade-in. */
+    if (perch) {
+      gsap.set(perch, { autoAlpha: 0 });
+      tl.fromTo(perch, { y: -26, scaleX: 1.1, scaleY: 0.86, transformOrigin: "50% 100%" },
+        { y: 0, scaleX: 1, scaleY: 1, autoAlpha: 1, duration: 0.72, ease: "back.out(2.2)" }, 0.5);
+    }
     tl.add(function () { [line, head, art].forEach(settle); }, 1.6);
   })();
 
