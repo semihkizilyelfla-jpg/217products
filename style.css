@@ -288,74 +288,121 @@ main::after {
 }
 section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .eyebrow, .kicker { font-family: "Manrope", "Shippori Mincho", system-ui, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.36em; color: var(--accent-ink); }
-/* washi glow behind the hero kicker — on phones it can land on the torii's red
-   beam, where vermilion-on-vermilion needs the paper halo to stay legible */
-.kicker { text-shadow: 0 1px 2px rgba(243,236,220,0.95), 0 0 12px rgba(243,236,220,0.8); }
 .big { font-size: clamp(44px, 8.4vw, 128px); }
 
+/* ---------- right rail ----------
+   A small washi tab clipped to the edge of the sheet, carrying the studio
+   signature down the margin the way a print carries its seal. One rail, not
+   two: a second column on the left only crowded the type. */
 .tate {
-  position: absolute; top: 18vh; z-index: 4;
+  position: absolute; right: 0; top: 47%; z-index: 4;
+  transform: translateY(-50%);
   writing-mode: vertical-rl; font-family: "Shippori Mincho", serif;
-  font-size: 13px; letter-spacing: 0.4em; color: var(--ink-2); opacity: 0.7;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.44em;
+  color: var(--ink-2);
+  background: #FAF6EA; padding: 24px 10px 24px 9px;
+  border-radius: 12px 0 0 12px;
+  box-shadow: -7px 9px 28px rgba(30,26,22,0.09), inset 0 0 0 1px rgba(30,26,22,0.055);
 }
-.tate-l { left: clamp(10px, 2.5vw, 34px); }
-.tate-r { right: clamp(10px, 2.5vw, 34px); color: var(--vermilion); }
-@media (max-width: 860px) { .tate { display: none; } }
+.tate .seal { color: var(--vermilion); }
+@media (max-width: 900px) { .tate { display: none; } }
 
-/* ---------- 1 · hero (3D parallax) ---------- */
-/* Sticky, not pinned: the hero parks at the top and the rest of the page
-   slides up over it. CSS does the holding, so GSAP never re-parents the hero
-   into a pin-spacer — which is what used to restart its entrance animation. */
+/* ============================================================
+   1 · HERO — one sentence on a sheet of paper
+   ------------------------------------------------------------
+   Screen one carries a single idea and nothing else: no kicker, no
+   sub-paragraph, no buttons, no scroll cue. The landscape is demoted from a
+   full-bleed backdrop to a print plate at the FOOT of the sheet, which is how
+   an ukiyo-e print composes anyway — a low horizon under a vast empty sky.
+   Because the type now sits on clean washi, every readability patch it used to
+   need (three text-shadows, a radial wash, a scrim) is gone.
+   Sticky, not pinned: the hero parks and the page slides over it, so GSAP
+   never re-parents it into a pin-spacer and restarts its entrance.
+   ============================================================ */
 .hero {
   position: sticky; top: 0; z-index: 0; min-height: 100svh;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   text-align: center;
-  /* NOT overflow:hidden — the ink blot has to grow past the hero. The scene
-     layers do their own clipping one level down. */
-}
-.hero-scene { position: absolute; inset: 0; overflow: hidden; }
-.pl { position: absolute; will-change: transform, opacity; }
-/* Pre-reveal gate only: the actual fades (and the scene-settle zoom) run on the
-   Web Animations API from lang-redirect.js, NOT CSS animations — CSS animations
-   restart when GSAP's pin re-parents the hero, which made the layers appear
-   twice on cold loads. lang-redirect.js sets inline opacity:1 per layer as it
-   decodes; inline style beats this gate. */
-@media (prefers-reduced-motion: no-preference) {
-  .img-wait .pl { opacity: 0; }
-}
-.pl-sky, .pl-mount, .pl-torii, .pl-fore {
-  inset: 0; width: 100%; height: 100%;
-  object-fit: cover; object-position: center 46%;
-}
-/* Desktop: sky + torii stay hidden until the pinned scroll assembles them.
-   Gated in CSS (before GSAP runs) so they never flash visible on first paint;
-   scene 1 (mountains + foreground) stays fully visible the whole time. */
-@media (min-width: 821px) {
-}
-.hero-scrim {
-  position: absolute; inset: 0; z-index: 1;
-  background:
-    radial-gradient(135% 105% at 50% 46%, rgba(243,236,220,0) 0%, rgba(243,236,220,0.16) 62%, rgba(243,236,220,0.55) 100%),
-    linear-gradient(180deg, rgba(243,236,220,0.12) 0%, transparent 22%, transparent 72%, var(--paper) 100%);
+  /* deeper bottom padding than top: the plate lives down there, so the flex
+     centring lifts the sentence clear of the ridge line */
+  padding: clamp(96px, 13vh, 172px) var(--pad) clamp(140px, 32vh, 300px);
+  background: var(--paper);
+  /* NOT overflow:hidden — the ink has to grow past the hero. The ground layer
+     one level down does its own clipping. */
 }
 
-.hero-content { position: relative; z-index: 5; will-change: transform; }
-/* soft localized wash so the copy stays legible over the busy landscape */
-.hero-content::before {
-  content: ""; position: absolute; z-index: -1;
-  left: 50%; top: 50%; transform: translate(-50%, -50%);
-  width: min(1180px, 112%); height: 160%;
-  /* no backdrop blur: it re-painted a huge region on EVERY scroll frame while
-     the pinned layers moved beneath it — the single biggest scroll cost on the
-     page. The stronger wash reads the same (proven on mobile first). */
-  background: radial-gradient(64% 64% at 50% 49%, rgba(243,236,220,0.93), rgba(243,236,220,0.74) 42%, rgba(243,236,220,0.28) 66%, transparent 84%);
-  /* NO mask-image here: this wash moves with the copy during the pinned scroll,
-     and a masked layer must be re-rasterised on every frame it moves — one of
-     the most expensive things a compositor can do. The radial gradient already
-     fades to transparent on its own, so the mask was pure cost. */
-  pointer-events: none;
+/* ---------- the print plate ----------
+   Far range and near ridge stacked at the bottom of the sheet, stopping short
+   of the edge so the paper keeps a clean margin for the foot line. */
+.hero-ground {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 1;
+  /* the plate stops here so the foot line always lands on clean paper — the
+     bottom margin of a print, not an overlay on the art */
+  bottom: clamp(66px, 8vh, 94px);
+  overflow: hidden; pointer-events: none;
 }
-.kicker { margin-bottom: 26px; }
+/* The plate has to STOP, and a straight slice through a painted ridge reads as
+   a crop rather than a horizon. So the last stretch is soaked back into the
+   paper. A paint-only gradient, not a mask: the layers underneath move (mouse
+   parallax, scroll drift), and masking a moving subtree forces the compositor
+   to re-rasterise it every frame — the exact cost the blur was removed for. */
+.hero-ground::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  /* kept well under a third of the visible band — a soak, not a fade-out */
+  height: clamp(30px, 4.4vw, 78px); pointer-events: none;
+  background: linear-gradient(180deg, rgba(243,236,220,0) 0%, rgba(243,236,220,0.8) 58%, var(--paper) 100%);
+}
+@media (max-width: 700px) { .hero-ground { bottom: clamp(84px, 10.5vh, 104px); } }
+/* Each layer's resting opacity lives in --o, not in `opacity` directly: the
+   entrance fades each image to its OWN resting value as it decodes, so a
+   generic "fade to 1" can't flatten the depth stack. */
+/* Both offsets are in vw, not %, and that is the whole trick. These images are
+   full-width landscapes: their rendered HEIGHT is a function of viewport WIDTH
+   (1075/1920 of it), so only a vw offset keeps the ridge line at the same place
+   on a tall screen and a short one. A % bottom resolves against the container's
+   height and drifts the horizon every time the window changes shape.
+   The offsets sink each layer by about half its own height, leaving only the
+   upper ridges above the fold — a far horizon, which is what an ukiyo-e print
+   puts under all that empty sky. */
+.hz {
+  position: absolute; left: 50%; bottom: -32vw;
+  width: 108%; max-width: none; height: auto;
+  transform: translateX(-50%);
+  --o: 0.92; opacity: var(--o);
+  will-change: transform, opacity;
+}
+.hz-far  { width: 94%; bottom: -24vw; --o: 0.4; }
+/* the gate stands on the near ridge — a landmark, not a monument */
+.hz-gate {
+  position: absolute; right: 8%; bottom: 4.6vw;
+  width: clamp(92px, 11.5vw, 178px); height: auto;
+  --o: 0.86; opacity: var(--o); will-change: transform, opacity;
+}
+/* Pre-reveal gate only: the fades themselves run on the Web Animations API in
+   lang-redirect.js, which survives DOM moves; a CSS animation here would
+   restart if anything ever re-parented the hero. Inline opacity beats this. */
+@media (prefers-reduced-motion: no-preference) {
+  .img-wait .hz, .img-wait .hz-gate { opacity: 0; }
+}
+
+/* sumi dot lattice — the ukiyo-e answer to a dot grid. It gives the empty top
+   of the sheet something to hold onto, and dissolves before the plate. */
+.hero::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(circle at 1px 1px, rgba(30,26,22,0.16) 1px, transparent 1.7px);
+  background-size: 30px 30px;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 42%, transparent 72%);
+          mask-image: linear-gradient(180deg, #000 0%, #000 42%, transparent 72%);
+}
+/* Washi fibre. The hero is a FLAT panel now, and grain is precisely the cure
+   for a flat panel — the reason it was wrong before was that it sat on a
+   painted scene already carrying brush texture. Plain opacity, no blend mode,
+   nothing for the compositor to read back per frame. */
+.hero::after {
+  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background-image: url("data:image/svg+xml,<svg%20xmlns='http%3A//www.w3.org/2000/svg'%20width='180'%20height='180'><filter%20id='w'><feTurbulence%20type='fractalNoise'%20baseFrequency='0.9'%20numOctaves='3'%20stitchTiles='stitch'/><feColorMatrix%20type='saturate'%20values='0'/></filter><rect%20width='180'%20height='180'%20filter='url%28%23w%29'/></svg>");
+  background-size: 180px 180px; opacity: 0.05;
+}
 
 /* ---------- hero entrance ----------
    The synchronized 3s rise of the hero copy lives in lang-redirect.js as Web
@@ -370,44 +417,122 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 }
 @keyframes navIn { from { opacity: 0; } to { opacity: 1; } }
 
-.hero-heads { display: grid; position: relative; }
-.hero-heads .head {
-  grid-area: 1 / 1; margin: 0;
+/* ---------- the sentence ----------
+   Two lines, hand-broken. The words stay in normal inline flow (not flex
+   items) so a screen reader still reads one clean sentence — a flex container
+   would swallow the spaces between them. */
+.hero-head {
+  position: relative; z-index: 5; margin: 0;
   font-family: "Shippori Mincho", Georgia, serif; font-weight: 800;
-  font-size: clamp(46px, 6.8vw, 100px); line-height: 0.98; letter-spacing: -0.015em;
-  text-wrap: balance;
-  text-shadow: 0 1px 3px rgba(243,236,220,0.85), 0 2px 44px rgba(243,236,220,0.7);
-  opacity: 0;
+  font-size: clamp(40px, 7.5vw, 112px); line-height: 1.05;
+  letter-spacing: -0.02em;
 }
-.hero-heads .head.is-active { opacity: 1; }
-.hero-heads .head em { font-style: italic; color: var(--vermilion); }
-/* THE INK BLOT — the transition itself, not decoration.
-   At rest it is a solid sumi circle set into the headline. On scroll it is
-   scaled ~22x from its own centre, flooding the screen with ink and handing
-   the page over to the dark shelf below. */
+.hero-line { display: block; }
+/* The accent word: light weight against the heavy carved ones, brushed, in
+   vermilion. A weight axis rather than a second typeface — Mincho has no true
+   italic, so a synthesised oblique of the 800 would just smear. */
+.hero-head em {
+  font-style: italic; font-weight: 500; color: var(--vermilion);
+  letter-spacing: -0.005em;
+}
+
+/* ---------- THE INK ----------
+   At rest an ensō set into the sentence. On scroll the ring fills solid and
+   the disc is scaled from its own centre until it floods the screen and hands
+   the page to the dark shelf below. This IS the transition, not decoration. */
+/* Sized well past the cap height on purpose — it has to read as an OBJECT set
+   into the sentence, not as a letter O.
+   Aligned to the BASELINE, not the middle. Middle-aligning it and cancelling
+   the overflow with negative margins looked tidy in the box model and put a
+   248px ring straight through the word on the line below. Sitting on the
+   baseline sends all of its extra height upward instead: the first line grows
+   a tall shoulder that the ring lives in, the two lines of text stay one
+   leading apart, and nothing collides. Same result Funtown gets from
+   `align-items: flex-end`, without turning the sentence into flex items a
+   screen reader would read as one run-on word. */
 .blot {
-  display: inline-block; vertical-align: -0.26em;
-  width: 1.22em; height: 1.22em; margin: -0.5em 0.02em;
-  border-radius: 50%; background: var(--ink);
-  position: relative; z-index: 6;
-  will-change: transform; transform-origin: 50% 50%;
-  pointer-events: none;
+  display: inline-block; position: relative; z-index: 6;
+  width: 2.3em; height: 2.3em;
+  vertical-align: baseline; margin: 0 0.02em -0.1em 0.07em;
+  transform-origin: 50% 50%; will-change: transform;
+  pointer-events: none; -webkit-tap-highlight-color: transparent;
 }
-@media (max-width: 600px) { .blot { width: 1.05em; height: 1.05em; vertical-align: -0.2em; } }
-/* Ensō in the headline: one ink ring set into the line, the way a woodblock
-   print drops a seal into its text. Sized in em so it scales with the
-   headline, and pulled in with negative margins so it never opens up the
-   line-height. Decorative only — aria-hidden, so the sentence still reads
-   cleanly to a screen reader. */
-.enso {
-  display: inline-block; vertical-align: -0.30em;
-  width: 1.32em; height: 1.32em;
-  margin: -0.5em -0.06em -0.5em 0.02em;
-  filter: drop-shadow(0 2px 10px rgba(243,236,220,0.75));
-  pointer-events: none; user-select: none;
+/* clickable only while the hero is at rest — once the ink starts growing it
+   covers the viewport, and a full-screen click target would eat the page */
+html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
+.blot .enso-ring {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  will-change: opacity; user-select: none;
 }
-@media (max-width: 600px) { .enso { width: 1.15em; height: 1.15em; vertical-align: -0.24em; } }
-.hero-sub { margin: 26px auto 0; font-size: clamp(15px, 1.7vw, 20px); color: var(--ink); font-weight: 500; max-width: 44ch; text-shadow: 0 1px 1px rgba(243,236,220,1), 0 1px 8px rgba(243,236,220,0.98), 0 0 22px rgba(243,236,220,0.9); }
+.blot .blot-fill {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: var(--ink); opacity: 0; will-change: opacity;
+}
+@media (max-width: 600px) { .blot { width: 1.9em; height: 1.9em; margin: 0 0.02em -0.08em 0.05em; } }
+
+/* ---------- flying ink ----------
+   A handful of specks already on the sheet, the way a brush throws a few when
+   it is loaded. They are what keeps a mostly-empty panel from reading as an
+   unfinished page — the same job Funtown's scattered confetti does, in sumi.
+   Placed by hand, not looped: an even scatter looks generated. */
+.specks { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.specks i {
+  position: absolute; display: block; border-radius: 50%;
+  background: var(--ink); opacity: 0.13;
+}
+.specks i:nth-child(1) { left: 9%;  top: 21%; width: 13px; height: 12px; opacity: 0.15; transform: rotate(-18deg); }
+.specks i:nth-child(2) { left: 17%; top: 13%; width: 6px;  height: 6px;  opacity: 0.11; }
+.specks i:nth-child(3) { left: 42%; top: 10%; width: 9px;  height: 8px;  opacity: 0.10; transform: rotate(24deg); }
+.specks i:nth-child(4) { left: 71%; top: 20%; width: 5px;  height: 5px;  opacity: 0.14; }
+.specks i:nth-child(5) { left: 88%; top: 33%; width: 11px; height: 10px; opacity: 0.09; transform: rotate(-34deg); }
+.specks i:nth-child(6) { left: 12%; top: 47%; width: 7px;  height: 7px;  opacity: 0.13; }
+.specks i:nth-child(7) { left: 25%; top: 59%; width: 5px;  height: 4px;  opacity: 0.12; }
+.specks i:nth-child(8) { left: 62%; top: 62%; width: 8px;  height: 7px;  opacity: 0.10; transform: rotate(12deg); }
+/* one speck in vermilion — the same trick as the seal: a single warm point in
+   a field of sumi, so the scatter reads as ours and not as dust */
+.specks i:nth-child(4) { background: var(--vermilion); opacity: 0.34; }
+@media (max-width: 700px) {
+  .specks i:nth-child(3), .specks i:nth-child(5), .specks i:nth-child(8) { display: none; }
+}
+
+/* the splash — sumi droplets thrown off when you tap the ink. They settle at a
+   whisper and stay, so the paper slowly collects marks. */
+.ink-drop {
+  /* left/top MUST be pinned. Without them an absolutely positioned child falls
+     back to its static position, and inside a centring flex container that is
+     nowhere near the origin — the drops burst off the right edge of the page. */
+  position: absolute; left: 0; top: 0; z-index: 4;
+  border-radius: 50%; background: var(--ink); pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ---------- the foot line ----------
+   Three quiet signals along the bottom margin: where we are, what we believe,
+   and one invitation to play. Nothing above 17px, nothing shouting. */
+.hero-foot {
+  position: absolute; left: var(--pad); right: var(--pad);
+  bottom: clamp(15px, 2vh, 22px); z-index: 5;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  text-align: left;
+}
+.foot-l { font-size: 12px; font-weight: 600; letter-spacing: 0.2em; color: var(--ink-2); }
+.foot-l .seal { font-family: "Shippori Mincho", serif; color: var(--vermilion); letter-spacing: 0.14em; }
+.foot-c { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(14px, 1.2vw, 17px); font-weight: 500; color: var(--ink); }
+.foot-r {
+  font-family: inherit; font-size: 13px; font-weight: 600; letter-spacing: 0.01em;
+  color: var(--ink-2); background: none; border: 0; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 11px 15px; margin: -11px -15px -11px 0; border-radius: 999px;
+  transition: color 0.25s ease, background 0.25s ease;
+}
+.foot-r::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--vermilion); }
+.foot-r:hover { color: var(--ink); background: rgba(30,26,22,0.055); }
+@media (max-width: 1080px) { .foot-c { display: none; } }
+@media (max-width: 700px) {
+  .hero-foot { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .foot-r { margin-left: -15px; }
+}
+
 .btn {
   display: inline-flex; align-items: center; gap: 9px; padding: 14px 28px; border-radius: 999px;
   font-size: 14px; font-weight: 600; letter-spacing: 0.01em;
@@ -420,11 +545,6 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .btn.quiet { border: 1px solid rgba(30,26,22,0.3); color: var(--ink); background: rgba(243,236,220,0.6); }
 .btn.quiet:hover { transform: translateY(-2px); border-color: var(--gold-deep); color: var(--gold-ink); }
 .btn:active { transform: translateY(0) scale(0.97); }
-.hero-cta { margin-top: 38px; display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
-.scroll-cue { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 5; display: flex; align-items: center; gap: 10px; font-size: 11px; letter-spacing: 0.28em; color: var(--ink-2); }
-.scroll-cue i { width: 30px; height: 1px; background: currentColor; position: relative; overflow: hidden; }
-.scroll-cue i::after { content: ""; position: absolute; inset: 0; width: 40%; background: var(--vermilion); animation: slide 2.2s ease-in-out infinite; }
-@keyframes slide { 0% { transform: translateX(-120%);} 60%,100% { transform: translateX(260%);} }
 
 /* ---------- 2 · marquee ---------- */
 .marquee { overflow: hidden; border-top: 1px solid rgba(30,26,22,0.14); border-bottom: 1px solid rgba(30,26,22,0.14); background: var(--paper-2); padding: 16px 0; }
@@ -695,7 +815,7 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 
 /* ---------- reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .marquee-row, .scroll-cue i::after { animation: none; }
+  .marquee-row { animation: none; }
   .brighten .w { color: var(--ink); }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
@@ -717,9 +837,13 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
 /* ---------- tablets & phones ---------- */
 @media (max-width: 820px) {
   .hero { padding-top: clamp(104px, 15vh, 150px); }
-  /* portrait crop that keeps the torii + valley in frame */
-  .hero-scene .pl { object-position: 32% 46%; }
-  /* (hero wash + nav are blur-free globally now — no per-frame repaint anywhere) */
+  /* portrait: the plate widens past the frame so the ridge still reads as a
+     landscape rather than a thin strip of detail */
+  /* a phone screen is tall and mostly empty, so the horizon is given more of
+     the ridge than on desktop — otherwise it reads as a stripe, not a place */
+  .hz { width: 176%; bottom: -40vw; }
+  .hz-far { width: 152%; bottom: -26vw; }
+  .hz-gate { width: clamp(74px, 18vw, 118px); right: 5%; bottom: 7vw; }
   .section-seal { font-size: clamp(80px, 22vw, 180px); }
   /* hub stacks: content, then globe; the vertical column divider is hidden */
   .hub-grid { grid-template-columns: 1fr; justify-items: center; gap: clamp(34px, 6vh, 60px); min-height: auto; }
@@ -731,9 +855,7 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
 
 /* ---------- phones ---------- */
 @media (max-width: 600px) {
-  .hero-heads .head { font-size: clamp(33px, 11.4vw, 54px); line-height: 1.03; max-width: 100%; }
-  .hero-sub { font-size: 16px; max-width: 34ch; }
-  .hero-cta { gap: 10px; }
+  .hero-head { font-size: clamp(32px, 10.8vw, 54px); line-height: 1.04; letter-spacing: -0.024em; }
   .btn { padding: 12px 20px; font-size: 13px; }
   .statement .display, .studio .display, .process .display, .craft .display { font-size: clamp(33px, 9.2vw, 54px); }
   .final .display.big { font-size: clamp(37px, 10.6vw, 58px); }
@@ -752,7 +874,7 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
 /* ---------- very small ---------- */
 @media (max-width: 380px) {
   :root { --pad: 18px; }
-  .hero-heads .head { font-size: 32px; }
+  .hero-head { font-size: 33px; }
   .brand-mark { height: 26px; }
 }
 
@@ -778,7 +900,7 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
 
   /* one comfortable reading size for every supporting paragraph, so the page
      stops alternating between shouting and whispering */
-  .hero-sub, .product-sub, .craft-lead, .reach-lead, .final-lead { font-size: 16.5px; line-height: 1.62; max-width: 36ch; }
+  .product-sub, .craft-lead, .reach-lead, .final-lead { font-size: 16.5px; line-height: 1.62; max-width: 36ch; }
   .value p, .step-d { font-size: 16px; line-height: 1.6; }
 
   /* section markers and captions sit closer to what they label */

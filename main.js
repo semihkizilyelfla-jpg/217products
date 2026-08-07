@@ -36,11 +36,17 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(sync);
   })();
 
-  /* ---------- nav: scrolled "washi ribbon" state — runs regardless of GSAP ---------- */
+  /* ---------- nav: scrolled "washi ribbon" state — runs regardless of GSAP ----------
+     Also flags <html>. The ensō is only clickable while the hero is at rest:
+     once the ink starts growing it covers the viewport, and a full-screen
+     click target would swallow every link on the page under it. */
   (function () {
     var nav = document.querySelector(".nav");
-    if (!nav) return;
-    function onScroll() { nav.classList.toggle("is-scrolled", (window.scrollY || 0) > 40); }
+    function onScroll() {
+      var past = (window.scrollY || 0) > 40;
+      if (nav) nav.classList.toggle("is-scrolled", past);
+      document.documentElement.classList.toggle("scrolled", past);
+    }
     addEventListener("scroll", onScroll, { passive: true });
     onScroll();
   })();
@@ -81,10 +87,9 @@
     [].forEach.call(document.querySelectorAll(".rise"), function (el) {
       el.style.opacity = "1"; el.style.transform = "none";
     });
-    /* no scroll-assembly available → make sure sky + torii show too */
-    [].forEach.call(document.querySelectorAll(".pl-sky, .pl-torii"), function (el) {
-      el.style.opacity = "1";
-    });
+    /* no scroll animation → the ensō stays a ring, and the hero keeps its
+       resting state. The plate layers are revealed by the boot script. */
+    document.documentElement.classList.add("no-motion");
     /* word-brighten scrub won't run → give the words full ink */
     [].forEach.call(document.querySelectorAll(".brighten .w"), function (el) {
       el.style.color = "var(--ink)";
@@ -148,40 +153,103 @@
      depends on the width the page happened to LOAD at. */
   var mm = gsap.matchMedia();
 
-  /* ---------- THE INK BLOT ----------
-     The scene no longer assembles on scroll; the hero is one settled picture
-     and the whole opening gesture is this: the sumi circle sitting in the
-     headline is scaled from its own centre until it floods the screen, and
-     the dark shelf below takes over inside that ink. Runs on every width —
-     it IS the transition, not an enhancement.
-     The scale needed is derived, not guessed: the blot must cover the far
-     corner of the viewport from wherever it happens to sit. */
+  /* ---------- THE INK ----------
+     The whole opening gesture. The ensō sitting in the sentence fills solid,
+     then is scaled from its own centre until it floods the screen and the dark
+     shelf below takes over inside that ink. Runs on every width — it IS the
+     transition, not an enhancement.
+     The scale needed is derived, not guessed: the disc has to reach the far
+     corner of the viewport from wherever the sentence happens to put it. */
   (function () {
     var blot = document.querySelector(".blot");
     if (!blot) return;
+    var ring = blot.querySelector(".enso-ring");
+    var fill = blot.querySelector(".blot-fill");
+
     function neededScale() {
       var r = blot.getBoundingClientRect();
       if (!r.width) return 24;
+      /* getBoundingClientRect already includes the live scroll transform, so
+         divide it back out — otherwise every refresh mid-flood reads a huge
+         width and collapses the target scale. */
+      var s = gsap.getProperty(blot, "scaleX") || 1;
+      var w = r.width / s;
       var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
       var far = Math.max(
         Math.hypot(cx, cy),
         Math.hypot(innerWidth - cx, cy),
         Math.hypot(cx, innerHeight - cy),
         Math.hypot(innerWidth - cx, innerHeight - cy));
-      return (far * 2) / r.width * 1.06; /* +6% so no rim shows at the corner */
+      return (far * 2) / w * 1.06; /* +6% so no rim shows at the corner */
     }
-    gsap.fromTo(blot, { scale: 1 }, {
-      scale: neededScale, ease: "none", force3D: true,
-      scrollTrigger: {
-        start: 0,
-        end: function () { return window.innerHeight * 0.55; },
-        scrub: true, invalidateOnRefresh: true
-      }
-    });
+
+    /* The ink holds its shape for the first fifth of the scroll — you get to
+       SEE it as a circle before it becomes a flood — then opens fast. A linear
+       ramp made the ensō vanish before anyone read it as one. */
+    function inkEase(p) {
+      return p < 0.2 ? p * 0.029 : Math.min(1, 0.0058 + (p - 0.2) * 1.308);
+    }
+
+    var st = {
+      start: 0,
+      end: function () { return window.innerHeight * 0.62; },
+      scrub: true, invalidateOnRefresh: true
+    };
+    gsap.fromTo(blot, { scale: 1 }, { scale: neededScale, ease: inkEase, force3D: true, scrollTrigger: st });
+    /* the ring closes into a solid disc during the hold, before any real growth */
+    if (fill) gsap.to(fill, { opacity: 1, ease: "power1.in", scrollTrigger: {
+      start: 0, end: function () { return window.innerHeight * 0.13; }, scrub: true, invalidateOnRefresh: true } });
+    if (ring) gsap.to(ring, { opacity: 0, ease: "none", scrollTrigger: {
+      start: function () { return window.innerHeight * 0.07; },
+      end: function () { return window.innerHeight * 0.15; }, scrub: true, invalidateOnRefresh: true } });
+
     /* No fade on the hero copy. GSAP would capture its start opacity while the
        WAAPI entrance is still mid-flight and animate 0 -> 0, blanking the hero.
-       It isn't needed either: the blot sits above the copy in the stack, so the
-       growing ink covers the words on its own. */
+       It isn't needed either: the ink sits above the copy in the stack, so the
+       growing disc covers the words on its own. */
+  })();
+
+  /* ---------- the splash ----------
+     Tap the ink and it throws sumi droplets across the sheet. They settle at a
+     whisper and stay, so the paper collects marks over a visit. Our version of
+     the "click for a surprise" toy: no physics engine, no extra bytes. */
+  (function () {
+    var hero = document.querySelector(".hero");
+    var blot = document.querySelector(".blot");
+    var btn = document.getElementById("inkTap");
+    if (!hero) return;
+
+    function splash(cx, cy) {
+      var n = 11;
+      for (var i = 0; i < n; i++) {
+        var d = document.createElement("i");
+        d.className = "ink-drop";
+        var size = 5 + Math.random() * 15;
+        var ang = Math.random() * Math.PI * 2;
+        var dist = 60 + Math.random() * Math.min(340, innerWidth * 0.3);
+        d.style.width = d.style.height = size.toFixed(1) + "px";
+        hero.appendChild(d);
+        gsap.set(d, { x: cx, y: cy, xPercent: -50, yPercent: -50, scale: 0.2, opacity: 0.9 });
+        var tl = gsap.timeline({ onComplete: (function (el) {
+          /* the drop stays on the paper — but never more than a few dozen, or
+             a long visit would leave hundreds of layers for the compositor */
+          return function () {
+            var all = hero.querySelectorAll(".ink-drop");
+            if (all.length > 40) all[0].remove();
+          };
+        })(d) });
+        tl.to(d, { x: cx + Math.cos(ang) * dist, y: cy + Math.sin(ang) * dist,
+                   scale: 0.35 + Math.random() * 0.8,
+                   duration: 0.62 + Math.random() * 0.5, ease: "power3.out" })
+          .to(d, { opacity: 0.1 + Math.random() * 0.07, duration: 0.9, ease: "power2.out" }, 0.35);
+      }
+    }
+    function at(el) {
+      var hb = hero.getBoundingClientRect(), r = el.getBoundingClientRect();
+      splash(r.left - hb.left + r.width / 2, r.top - hb.top + r.height / 2);
+    }
+    if (blot) blot.addEventListener("click", function () { at(blot); });
+    if (btn) btn.addEventListener("click", function () { at(blot || btn); });
   })();
 
   mm.add("(min-width: 821px)", function () {
@@ -194,16 +262,20 @@
         scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: true } });
     });
 
-    /* light mouse parallax */
+    /* light mouse parallax across the plate. The .hz layers already carry a
+       translateX(-50%) centring transform, so their pointer offset rides on
+       xPercent instead of x — writing to x would fight the centring. */
     if (matchMedia("(pointer: fine)").matches) {
-      var setters = gsap.utils.toArray(".hero-scene .pl").map(function (el) {
+      var setters = gsap.utils.toArray(".hero-ground [data-depth]").map(function (el) {
         var d = parseFloat(el.dataset.depth) || 0.2;
-        return { x: gsap.quickTo(el, "x", { duration: 1.0, ease: "power3.out" }),
-                 y: gsap.quickTo(el, "y", { duration: 1.0, ease: "power3.out" }), d: d };
+        var centred = el.classList.contains("hz");
+        return { x: gsap.quickTo(el, centred ? "xPercent" : "x", { duration: 1.0, ease: "power3.out" }),
+                 y: gsap.quickTo(el, "y", { duration: 1.0, ease: "power3.out" }),
+                 d: d, base: centred ? -50 : 0, unit: centred ? 0.14 : 1 };
       });
       var onMove = function (e) {
         var nx = (e.clientX / innerWidth) * 2 - 1, ny = (e.clientY / innerHeight) * 2 - 1;
-        setters.forEach(function (s) { s.x(nx * -15 * s.d); s.y(ny * -9 * s.d); });
+        setters.forEach(function (s) { s.x(s.base + nx * -18 * s.d * s.unit); s.y(ny * -11 * s.d); });
       };
       addEventListener("mousemove", onMove);
       return function () { removeEventListener("mousemove", onMove); };
@@ -211,14 +283,13 @@
   });
 
   mm.add("(max-width: 820px)", function () {
-    /* phones: no pin — instead the layers drift at their own depths as the
-       hero scrolls away, so the scene keeps its dimensionality on touch too.
-       Transform-only, scrubbed, cheap. The bottom scrim fade masks the edges. */
-    gsap.utils.toArray(".hero-scene .pl").forEach(function (el) {
+    /* phones: the plate layers drift at their own depths as the hero scrolls
+       away, so the print keeps its dimensionality on touch too. Transform-only,
+       scrubbed, cheap. Absolute offsets, like the desktop branch: the hero is
+       sticky, so its box never travels and "bottom top" would never fire. */
+    gsap.utils.toArray(".hero-ground [data-depth]").forEach(function (el) {
       var d = parseFloat(el.dataset.depth) || 0.2;
-      /* absolute offsets, like the desktop branch: the hero is sticky now, so
-         its box never travels and "bottom top" would never fire */
-      gsap.to(el, { yPercent: -(d * 22), ease: "none", force3D: true,
+      gsap.to(el, { y: -(d * 46), ease: "none", force3D: true,
         scrollTrigger: { start: 0, end: function () { return window.innerHeight; }, scrub: true, invalidateOnRefresh: true } });
     });
   });

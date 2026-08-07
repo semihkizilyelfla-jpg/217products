@@ -53,44 +53,47 @@
   document.addEventListener("DOMContentLoaded", function () {
     if (!canAnimate) { fontsGo(); imgsGo(); return; }
 
-    /* hero copy — one synchronized 3s rise, held for the webfonts */
+    /* hero copy — one synchronized rise, held for the webfonts. The foot line
+       comes in a beat later and travels less: it's a margin note, not the
+       headline, and giving it the same 26px lift made the screen arrive as one
+       undifferentiated block. */
     [].forEach.call(document.querySelectorAll(".hero .rise"), function (el) {
-      var cue = el.classList.contains("scroll-cue");
-      var from = cue ? "translateX(-50%) translateY(10px)" : "translateY(26px)";
-      var to   = cue ? "translateX(-50%) translateY(0)"    : "translateY(0)";
+      var foot = !!el.closest(".hero-foot");
       el.style.opacity = "1"; /* resting state — the animation covers the ride */
       var a = el.animate(
-        [{ opacity: 0, transform: from }, { opacity: 1, transform: to }],
-        { duration: 2400, delay: 200, easing: EASE_FADE, fill: "backwards" });
+        [{ opacity: 0, transform: "translateY(" + (foot ? 10 : 26) + "px)" },
+         { opacity: 1, transform: "translateY(0)" }],
+        { duration: foot ? 1600 : 2400, delay: foot ? 900 : 200, easing: EASE_FADE, fill: "backwards" });
       if (!fontsReady) { a.pause(); textAnims.push(a); }
       bootAnims.push(a);
     });
 
-    /* scene settle — gentle zoom, desktop only (skipped on phones for GPU) */
-    var scene = document.querySelector(".hero-scene");
+    /* plate settle — gentle zoom, desktop only (skipped on phones for GPU) */
+    var scene = document.querySelector(".hero-ground");
     if (scene && matchMedia("(min-width: 821px)").matches) {
       scene.animate(
         [{ transform: "scale(1.035)" }, { transform: "scale(1)" }],
         { duration: 2000, easing: EASE_MOVE, fill: "backwards" });
     }
 
-    /* hero layers — each fades in once decoded, in the same tempo family as
-       the copy (1.8s, same curve). Desktop leaves sky + torii untouched for
-       the scroll-assembly; phones reveal all four. Cached visits fade too —
+    /* plate layers — each fades in once decoded, in the same tempo family as
+       the copy (1.8s, same curve), far range first. Cached visits fade too:
        the opening should feel composed every time, never "pop". */
-    var small = matchMedia("(max-width: 820px)").matches;
-    var pls = [].slice.call(document.querySelectorAll(small ? ".hero-scene .pl" : ".pl-mount, .pl-fore"));
-    var delays = { "pl-mount": 80, "pl-fore": 260, "pl-sky": 440, "pl-torii": 620 };
+    var pls = [].slice.call(document.querySelectorAll(".hero-ground .hz, .hero-ground .hz-gate"));
+    var delays = { "hz-far": 80, "hz-near": 260, "hz-gate": 520 };
     if (!pls.length) { imgsGo(); return; }
     var left = pls.length;
     function done() { if (--left <= 0) imgsGo(); }
     pls.forEach(function (im) {
+      /* fade TO the layer's own resting opacity (see --o in the stylesheet),
+         never to a flat 1 — that would collapse the depth of the plate */
+      var rest = (getComputedStyle(im).getPropertyValue("--o") || "").trim() || "1";
       function reveal(withFade) {
-        im.style.opacity = "1";
+        im.style.opacity = rest;
         if (withFade) {
           var d = 0;
           Object.keys(delays).forEach(function (k) { if (im.classList.contains(k)) d = delays[k]; });
-          bootAnims.push(im.animate([{ opacity: 0 }, { opacity: 1 }],
+          bootAnims.push(im.animate([{ opacity: 0 }, { opacity: rest }],
             { duration: 1800, delay: d, easing: EASE_FADE, fill: "backwards" }));
         }
         done();
