@@ -183,25 +183,31 @@
       return (far * 2) / w * 1.06; /* +6% so no rim shows at the corner */
     }
 
-    /* The ink holds its shape for the first fifth of the scroll — you get to
-       SEE it as a circle before it becomes a flood — then opens fast. A linear
-       ramp made the ensō vanish before anyone read it as one. */
-    function inkEase(p) {
-      return p < 0.2 ? p * 0.029 : Math.min(1, 0.0058 + (p - 0.2) * 1.308);
-    }
+    /* ---- timing, measured off the reference rather than guessed ----
+       Its circle holds at 1:1 for the first ~80px of scroll (9% of a viewport),
+       then grows on a dead-straight linear ramp, and has swallowed the whole
+       screen by scrollY ~205 — under a quarter of one screen.
+       Ours used to finish at ~519px. Two and a half times too slow is not a
+       slower version of the same gesture; it turns a flood into a black ball
+       you sit and watch expand. Same shape now: hold, then go.
+         hold  = 0.37 * 0.26vh = ~87px on a 900-tall screen
+         cover = ~218px */
+    var RIDE = 0.26, HOLD = 0.37;
+    function inkEase(p) { return p < HOLD ? 0 : (p - HOLD) / (1 - HOLD); }
 
-    var st = {
-      start: 0,
-      end: function () { return window.innerHeight * 0.62; },
-      scrub: true, invalidateOnRefresh: true
-    };
-    gsap.fromTo(blot, { scale: 1 }, { scale: neededScale, ease: inkEase, force3D: true, scrollTrigger: st });
-    /* the ring closes into a solid disc during the hold, before any real growth */
+    gsap.fromTo(blot, { scale: 1 }, {
+      scale: function () { return neededScale() * 1.12; },
+      ease: inkEase, force3D: true,
+      scrollTrigger: { start: 0, end: function () { return window.innerHeight * RIDE; },
+                       scrub: true, invalidateOnRefresh: true }
+    });
+    /* the ring closes into a solid disc INSIDE the hold, so growth always
+       starts from a finished circle and never from a half-drawn one */
     if (fill) gsap.to(fill, { opacity: 1, ease: "power1.in", scrollTrigger: {
-      start: 0, end: function () { return window.innerHeight * 0.13; }, scrub: true, invalidateOnRefresh: true } });
+      start: 0, end: function () { return window.innerHeight * 0.075; }, scrub: true, invalidateOnRefresh: true } });
     if (ring) gsap.to(ring, { opacity: 0, ease: "none", scrollTrigger: {
-      start: function () { return window.innerHeight * 0.07; },
-      end: function () { return window.innerHeight * 0.15; }, scrub: true, invalidateOnRefresh: true } });
+      start: function () { return window.innerHeight * 0.04; },
+      end: function () { return window.innerHeight * 0.085; }, scrub: true, invalidateOnRefresh: true } });
 
     /* No fade on the hero copy. GSAP would capture its start opacity while the
        WAAPI entrance is still mid-flight and animate 0 -> 0, blanking the hero.
