@@ -510,13 +510,21 @@
         scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: true } });
     });
 
-    /* light mouse parallax across the plate. The .hz layers already carry a
-       translateX(-50%) centring transform, so their pointer offset rides on
-       xPercent instead of x — writing to x would fight the centring. */
+    /* Light mouse parallax across the plate.
+       THE TRAP, and it cost a live page: .hz is centred in CSS with
+       translateX(-50%), and GSAP cannot see that it was a PERCENTAGE — it reads
+       the computed matrix and records x = -897px. Writing xPercent on top does
+       not replace that, it ADDS to it, so the first mouse move shifted the plate
+       a full extra width to the left and half the horizon walked off screen.
+       It never showed in a headless check because nothing had moved the pointer
+       over the hero. Handing the centring to xPercent and zeroing x makes the
+       two live in the same unit, so the pointer offset is the only thing left
+       moving. */
     if (matchMedia("(pointer: fine)").matches) {
       var setters = gsap.utils.toArray(".hero-ground [data-depth]").map(function (el) {
         var d = parseFloat(el.dataset.depth) || 0.2;
         var centred = el.classList.contains("hz");
+        if (centred) gsap.set(el, { x: 0, xPercent: -50 });
         return { x: gsap.quickTo(el, centred ? "xPercent" : "x", { duration: 1.0, ease: "power3.out" }),
                  y: gsap.quickTo(el, "y", { duration: 1.0, ease: "power3.out" }),
                  d: d, base: centred ? -50 : 0, unit: centred ? 0.14 : 1 };
