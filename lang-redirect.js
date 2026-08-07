@@ -76,11 +76,11 @@
         { duration: 2000, easing: EASE_MOVE, fill: "backwards" });
     }
 
-    /* plate layers — each fades in once decoded, in the same tempo family as
-       the copy (1.8s, same curve), far range first. Cached visits fade too:
-       the opening should feel composed every time, never "pop". */
-    var pls = [].slice.call(document.querySelectorAll(".hero-ground .hz, .hero-ground .hz-gate"));
-    var delays = { "hz-far": 80, "hz-near": 260, "hz-gate": 520 };
+    /* the plate — fades in once decoded, in the same tempo family as the copy
+       (1.8s, same curve). Cached visits fade too: the opening should feel
+       composed every time, never "pop". */
+    var pls = [].slice.call(document.querySelectorAll(".hero-ground .hz"));
+    var delays = { "hz": 120 };
     if (!pls.length) { imgsGo(); return; }
     var left = pls.length;
     function done() { if (--left <= 0) imgsGo(); }

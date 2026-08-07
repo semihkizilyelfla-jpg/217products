@@ -129,7 +129,12 @@
   /* ---------- rise reveals ----------
      The hero entrance is pure CSS (it starts with the first paint, before any
      CDN script arrives) — GSAP only drives the below-fold, scroll-gated reveals. */
-  var belowRise = gsap.utils.toArray(".rise").filter(function (el) { return !el.closest(".hero"); });
+  /* The shelf is excluded: it is the first thing you see after the ink lands,
+     and it gets its own choreography further down rather than the generic
+     fade-up every other block uses. */
+  var belowRise = gsap.utils.toArray(".rise").filter(function (el) {
+    return !el.closest(".hero") && !el.closest(".products");
+  });
   gsap.set(belowRise, { autoAlpha: 0, y: 26 });
   belowRise.forEach(function (el) {
     gsap.to(el, { autoAlpha: 1, y: 0, duration: 1.2, ease: "power3.out",
@@ -215,47 +220,207 @@
        growing disc covers the words on its own. */
   })();
 
-  /* ---------- the splash ----------
-     Tap the ink and it throws sumi droplets across the sheet. They settle at a
-     whisper and stay, so the paper collects marks over a visit. Our version of
-     the "click for a surprise" toy: no physics engine, no extra bytes. */
+  /* ---------- the ink comes alive ----------
+     The reference's toy takes the decorations already scattered on its hero and
+     drops them into a physics world, where they tumble and pile up. That is why
+     it lands: it doesn't spawn a separate effect, it makes the page you are
+     already looking at fall over.
+     Ours does the same with the sumi specks. Tap the ink and every mark on the
+     sheet lets go, falls, bounces off the others and settles along the ridge.
+     Hand-rolled instead of pulling in a physics library: every mark here is a
+     circle, and circle-against-circle is the one collision case that is three
+     lines of maths. Tap again and they get thrown back up. */
   (function () {
     var hero = document.querySelector(".hero");
+    var wrap = document.querySelector(".specks");
     var blot = document.querySelector(".blot");
     var btn = document.getElementById("inkTap");
-    if (!hero) return;
+    if (!hero || !wrap) return;
 
-    function splash(cx, cy) {
-      var n = 11;
-      for (var i = 0; i < n; i++) {
+    var G = 2000, AIR = 0.9985, BOUNCE = 0.4, GRIP = 0.72, SLEEP = 6;
+    var bodies = [], raf = 0, prev = 0, still = 0;
+
+    function floorY() {
+      var g = document.querySelector(".hero-ground");
+      var hb = hero.getBoundingClientRect();
+      return g ? g.getBoundingClientRect().bottom - hb.top : hero.offsetHeight - 70;
+    }
+
+    /* Read a mark's resting place ONCE and keep driving it with a transform
+       delta from there. Rewriting left/top per frame would run layout on every
+       mark on every frame; a transform stays on the compositor. */
+    function adopt(el) {
+      if (el.__body) return el.__body;
+      if (getComputedStyle(el).display === "none") return null;
+      var hb = hero.getBoundingClientRect(), r = el.getBoundingClientRect();
+      var grow = 1.7 + Math.random() * 0.9;   /* a resting speck is a whisper; a
+                                                 falling one has to be real ink */
+      var b = {
+        el: el, r: (r.width / 2) * grow, grow: grow,
+        hx: r.left - hb.left + r.width / 2, hy: r.top - hb.top + r.height / 2,
+        vx: 0, vy: 0, hit: 0
+      };
+      b.x = b.hx; b.y = b.hy;
+      el.__body = b; bodies.push(b);
+      return b;
+    }
+
+    /* a drop that lands hard flattens for a moment, the way ink does */
+    function splat(b) {
+      if (b.hit) return;
+      b.hit = 1;
+      gsap.fromTo(b.el, { scaleX: b.grow * 1.34, scaleY: b.grow * 0.62 },
+        { scaleX: b.grow, scaleY: b.grow, duration: 0.42, ease: "elastic.out(1, 0.55)",
+          onComplete: function () { b.hit = 0; } });
+    }
+
+    function step(t) {
+      var dt = Math.min(0.032, (t - prev) / 1000 || 0.016);
+      prev = t;
+      var W = hero.offsetWidth, F = floorY(), moving = 0, i, j;
+
+      for (i = 0; i < bodies.length; i++) {
+        var b = bodies[i];
+        b.vy += G * dt; b.vx *= AIR; b.vy *= AIR;
+        b.x += b.vx * dt; b.y += b.vy * dt;
+
+        if (b.y + b.r > F) {
+          if (b.vy > 260) splat(b);
+          b.y = F - b.r; b.vy = -b.vy * BOUNCE; b.vx *= GRIP;
+        }
+        if (b.x - b.r < 0) { b.x = b.r; b.vx = -b.vx * BOUNCE; }
+        if (b.x + b.r > W) { b.x = W - b.r; b.vx = -b.vx * BOUNCE; }
+      }
+      /* separate overlapping pairs so they stack instead of merging into one
+         black dot at the bottom of the screen */
+      for (i = 0; i < bodies.length; i++) {
+        for (j = i + 1; j < bodies.length; j++) {
+          var a = bodies[i], c = bodies[j];
+          var dx = c.x - a.x, dy = c.y - a.y, d2 = dx * dx + dy * dy;
+          var min = a.r + c.r + 1;
+          if (d2 > 0 && d2 < min * min) {
+            var d = Math.sqrt(d2), push = (min - d) / 2, nx = dx / d, ny = dy / d;
+            a.x -= nx * push; a.y -= ny * push; c.x += nx * push; c.y += ny * push;
+            var p = (a.vx - c.vx) * nx + (a.vy - c.vy) * ny;
+            if (p > 0) {
+              a.vx -= p * nx * BOUNCE; a.vy -= p * ny * BOUNCE;
+              c.vx += p * nx * BOUNCE; c.vy += p * ny * BOUNCE;
+            }
+          }
+        }
+      }
+      /* Position is written on the transform, scale is left to GSAP's splat
+         tween — so the translate goes through gsap.set on x/y rather than a
+         raw style write, or the two would overwrite each other. */
+      for (i = 0; i < bodies.length; i++) {
+        var m = bodies[i];
+        gsap.set(m.el, { x: m.x - m.hx, y: m.y - m.hy });
+        if (Math.abs(m.vx) + Math.abs(m.vy) > SLEEP) moving++;
+      }
+
+      still = moving ? 0 : still + 1;
+      if (still > 26) {                       /* everything has come to rest */
+        raf = 0;
+        return;
+      }
+      raf = requestAnimationFrame(step);
+    }
+
+    function shake() {
+      [].forEach.call(wrap.children, adopt);
+      [].forEach.call(hero.querySelectorAll(".ink-drop"), adopt);
+      bodies = bodies.filter(Boolean);
+      if (!bodies.length) return;
+      bodies.forEach(function (b) {
+        b.vx = (Math.random() - 0.5) * 460;
+        b.vy = -160 - Math.random() * 520;
+        gsap.to(b.el, { opacity: 0.78 + Math.random() * 0.16, scale: b.grow,
+                        duration: 0.28, ease: "power2.out" });
+      });
+      still = 0; prev = performance.now();
+      if (!raf) raf = requestAnimationFrame(step);
+    }
+
+    /* tapping the ensō also throws a fresh handful of drops into the same world */
+    function spill() {
+      var hb = hero.getBoundingClientRect(), r = (blot || wrap).getBoundingClientRect();
+      var cx = r.left - hb.left + r.width / 2, cy = r.top - hb.top + r.height / 2;
+      for (var i = 0; i < 7; i++) {
+        if (hero.querySelectorAll(".ink-drop").length > 34) break;
         var d = document.createElement("i");
         d.className = "ink-drop";
-        var size = 5 + Math.random() * 15;
-        var ang = Math.random() * Math.PI * 2;
-        var dist = 60 + Math.random() * Math.min(340, innerWidth * 0.3);
+        var size = 5 + Math.random() * 11;
         d.style.width = d.style.height = size.toFixed(1) + "px";
+        d.style.left = (cx - size / 2).toFixed(1) + "px";
+        d.style.top = (cy - size / 2).toFixed(1) + "px";
+        d.style.opacity = "0.85";
         hero.appendChild(d);
-        gsap.set(d, { x: cx, y: cy, xPercent: -50, yPercent: -50, scale: 0.2, opacity: 0.9 });
-        var tl = gsap.timeline({ onComplete: (function (el) {
-          /* the drop stays on the paper — but never more than a few dozen, or
-             a long visit would leave hundreds of layers for the compositor */
-          return function () {
-            var all = hero.querySelectorAll(".ink-drop");
-            if (all.length > 40) all[0].remove();
-          };
-        })(d) });
-        tl.to(d, { x: cx + Math.cos(ang) * dist, y: cy + Math.sin(ang) * dist,
-                   scale: 0.35 + Math.random() * 0.8,
-                   duration: 0.62 + Math.random() * 0.5, ease: "power3.out" })
-          .to(d, { opacity: 0.1 + Math.random() * 0.07, duration: 0.9, ease: "power2.out" }, 0.35);
+        var b = adopt(d);
+        if (b) {
+          b.vx = (Math.random() - 0.5) * 620;
+          b.vy = -240 - Math.random() * 420;
+          gsap.set(d, { scale: b.grow });
+        }
       }
+      still = 0; prev = performance.now();
+      if (!raf) raf = requestAnimationFrame(step);
     }
-    function at(el) {
-      var hb = hero.getBoundingClientRect(), r = el.getBoundingClientRect();
-      splash(r.left - hb.left + r.width / 2, r.top - hb.top + r.height / 2);
-    }
-    if (blot) blot.addEventListener("click", function () { at(blot); });
-    if (btn) btn.addEventListener("click", function () { at(blot || btn); });
+
+    if (btn) btn.addEventListener("click", shake);
+    if (blot) blot.addEventListener("click", spill);
+    /* a resize invalidates every resting position; drop the world and let the
+       marks fall back to their CSS places rather than freeze somewhere wrong */
+    addEventListener("resize", function () {
+      if (raf) { cancelAnimationFrame(raf); raf = 0; }
+      bodies.forEach(function (b) { b.el.style.transform = ""; delete b.el.__body; });
+      bodies = [];
+    }, { passive: true });
+  })();
+
+  /* ---------- screen two arrives out of the ink ----------
+     Measured off the reference: once the circle has flooded the screen and its
+     dark section rises into it, the section's two halves slide in from OPPOSITE
+     sides and fade up — caught mid-flight at -8px on the left and +62.6px on
+     the right, so the right half lags. That convergence is what makes screen
+     two "appear" rather than merely scroll into place.
+     Ours maps onto the shelf: the slogan comes in from the left, the shelf
+     marker and its counter converge, the rule under them draws itself, then the
+     product follows. It fires while the ink still owns the screen, so the shelf
+     reads as something surfacing in it. */
+  (function () {
+    var sec = document.querySelector(".products");
+    if (!sec) return;
+    var line = sec.querySelector(".shelf-line"),
+        head = sec.querySelector(".shelf-head"),
+        eb   = sec.querySelector(".shelf-eyebrow"),
+        num  = sec.querySelector(".shelf-num"),
+        art  = sec.querySelector(".product-art"),
+        body = sec.querySelectorAll(".product-body > *");
+    if (!line) return;
+
+    /* every .rise inside the shelf is ours to reveal now that it is out of the
+       generic handler — miss one and it stays invisible forever, because the
+       CSS gate hides it and nothing else is coming for it */
+    var claimed = [line, head, art].concat([].slice.call(body));
+    var rest = gsap.utils.toArray(sec.querySelectorAll(".rise")).filter(function (el) {
+      return claimed.indexOf(el) < 0;
+    });
+
+    gsap.set([line, head, art], { autoAlpha: 0 });
+    gsap.set(body, { autoAlpha: 0 });
+    if (rest.length) gsap.set(rest, { autoAlpha: 0 });
+    gsap.set(head, { "--rule": 0 });
+
+    var tl = gsap.timeline({ scrollTrigger: { trigger: line, start: "top 78%", once: true } });
+    tl.fromTo(line, { x: -96 }, { x: 0, autoAlpha: 1, duration: 1.05, ease: "expo.out" })
+      .to(head, { autoAlpha: 1, duration: 0.4 }, 0.16)
+      .fromTo(eb,  { x: -44 }, { x: 0, duration: 0.9, ease: "expo.out" }, 0.16)
+      .fromTo(num, { x:  44 }, { x: 0, duration: 0.9, ease: "expo.out" }, 0.28)
+      .to(head, { "--rule": 1, duration: 0.9, ease: "expo.out" }, 0.3)
+      .fromTo(art, { y: 46 }, { y: 0, autoAlpha: 1, duration: 1.1, ease: "expo.out" }, 0.34)
+      .fromTo(body, { y: 30 }, { y: 0, autoAlpha: 1, duration: 0.85, ease: "expo.out", stagger: 0.075 }, 0.46);
+    if (rest.length) tl.fromTo(rest, { y: 22 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out", stagger: 0.055 }, 0.62);
+    tl.add(function () { [line, head, art].forEach(settle); }, 1.6);
   })();
 
   mm.add("(min-width: 821px)", function () {
