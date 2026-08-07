@@ -582,8 +582,8 @@
       onToggle: function (self) { self.isActive ? marqTween.play() : marqTween.pause(); } });
   }
 
-  /* The globe just auto-rotates (and can be dragged) — no scroll pinning. Its
-     reach copy rides the shared `.rise` reveal like every other section. */
+  /* The reach section has no moving part of its own — its copy rides the shared
+     `.rise` reveal like every other section. */
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () { ScrollTrigger.refresh(); });

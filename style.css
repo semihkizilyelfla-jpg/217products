@@ -761,44 +761,32 @@ html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
    and a transition on top made 42 spans churn style work on every frame */
 .brighten .w { color: var(--ink-dim); }
 
-/* ---------- 4 · globe · our reach (3-column) ---------- */
+/* ---------- 4 · our reach ----------
+   The WebGL globe that used to hold the right half of this section is gone,
+   along with Three.js. What carried the section was never the sphere anyway —
+   it was the field of ink behind it, so that steps forward and the statement
+   sits centred on it. One column, one mark, one sentence. */
 .hub { padding: 0; position: relative; overflow: hidden; }
-/* faint sumi ink-wave backdrop across the section (replaces the old column) */
 .reach-bg {
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
   background: url("assets/reach-ink.webp?w=1") no-repeat center center / cover;
-  opacity: 0.12;
+  /* it is the section's only picture now, so it is allowed to be seen */
+  opacity: 0.17;
 }
 .hub-grid {
-  position: relative; z-index: 1; min-height: 100svh;
-  display: grid; grid-template-columns: 1fr 1fr;
-  align-items: center; gap: clamp(24px, 3vw, 56px);
+  position: relative; z-index: 1; min-height: 78svh;
+  display: grid; place-items: center;
   padding: clamp(96px, 13vh, 150px) var(--pad);
 }
 .hub-eyebrow { position: relative; z-index: 3; }
-
-/* left panel — logo + numbered reach steps */
-.reach-panel { justify-self: center; max-width: 500px; display: flex; flex-direction: column; gap: clamp(20px, 3.2vh, 38px); }
-.reach-logo { width: clamp(150px, 15vw, 208px); height: auto; align-self: center; }
-/* A single statement under the mark — the numbered relay was replaced by one
-   line about where the work goes, so the globe carries the reach on its own. */
-.reach-head { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: clamp(30px, 3.9vw, 56px); line-height: 1.14; letter-spacing: -0.005em; color: var(--ink); text-wrap: balance; }
-.reach-lead { font-size: clamp(17px, 1.6vw, 20px); line-height: 1.66; color: var(--ink-2); max-width: 42ch; }
-
-/* right panel — enlarged globe */
-.globe-panel { justify-self: center; }
-.globe-stage { position: relative; width: min(46vw, 62vh, 560px); aspect-ratio: 1; }
-.globe-ring { /* HGF sumi ink-brush wreath framing the globe — same style as the section waves */
-  position: absolute; z-index: 0; top: 50%; left: 50%;
-  width: 124%; height: 124%; max-width: none;
-  transform: translate(-50%, -50%); pointer-events: none;
+.reach-panel {
+  max-width: 640px; text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(20px, 3.2vh, 38px);
 }
-.globe-canvas { position: relative; z-index: 1; width: 100%; height: 100%; transform: scale(0.85); }
-.globe-canvas canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; }
-.globe-fallback { width: 100%; height: 100%; filter: drop-shadow(0 26px 54px rgba(17,17,17,0.18)); }
-.globe-canvas.gl-ok .globe-fallback { display: none; }
-/* drag affordance — the spin gesture is invisible without a cue */
-.globe-hint { margin-top: clamp(48px, 6vw, 76px); text-align: center; font-size: 13px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-2); }
+.reach-logo { width: clamp(150px, 15vw, 208px); height: auto; }
+.reach-head { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: clamp(32px, 4.4vw, 62px); line-height: 1.14; letter-spacing: -0.008em; color: var(--ink); text-wrap: balance; }
+.reach-lead { font-size: clamp(17px, 1.6vw, 20px); line-height: 1.66; color: var(--ink-2); max-width: 52ch; text-wrap: pretty; }
 
 /* ---------- 5 · products ---------- */
 /* ---------- 217 ESERLERİ — the gallery wall ----------
@@ -1193,12 +1181,10 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
      only needs to sit a little lower */
   .hz { bottom: -2vw; }
   .section-seal { font-size: clamp(80px, 22vw, 180px); }
-  /* hub stacks: content, then globe; the vertical column divider is hidden */
-  .hub-grid { grid-template-columns: 1fr; justify-items: center; gap: clamp(34px, 6vh, 60px); min-height: auto; }
-  .hub-grid::before { display: none; }
-  .reach-panel { justify-self: center; align-items: flex-start; max-width: 460px; }
-  .globe-panel { justify-self: center; order: 1; }
-  .globe-stage { width: min(72vw, 46vh, 420px); }
+  /* one centred column already, so the phone only needs to stop reserving a
+     screen for a panel that no longer exists */
+  .hub-grid { min-height: auto; }
+  .reach-panel { max-width: 460px; }
 }
 
 /* ---------- phones ---------- */
@@ -1209,7 +1195,6 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
   .final .display.big { font-size: clamp(37px, 10.6vw, 58px); }
   .brighten { font-size: clamp(20px, 5.8vw, 29px); max-width: 100%; }
   .product h2 { font-size: clamp(42px, 12.6vw, 68px); }
-  .globe-stage { width: min(76vw, 44vh, 340px); }
   .marquee-row span { font-size: 15px; }
   .marquee-row { gap: 20px; }
   .stats { grid-template-columns: 1fr 1fr; gap: 32px 18px; }
