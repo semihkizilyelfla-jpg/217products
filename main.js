@@ -168,7 +168,7 @@
   (function () {
     var blot = document.querySelector(".blot");
     if (!blot) return;
-    var ring = blot.querySelector(".enso-ring");
+    var ring = blot.querySelectorAll(".blot-ink, .blot-figure");
     var fill = blot.querySelector(".blot-fill");
 
     function neededScale() {
@@ -210,7 +210,9 @@
        starts from a finished circle and never from a half-drawn one */
     if (fill) gsap.to(fill, { opacity: 1, ease: "power1.in", scrollTrigger: {
       start: 0, end: function () { return window.innerHeight * 0.075; }, scrub: true, invalidateOnRefresh: true } });
-    if (ring) gsap.to(ring, { opacity: 0, ease: "none", scrollTrigger: {
+    /* the painted rim and the figure both dissolve inside the hold, so what
+       actually floods the page is the flat disc and nothing else */
+    if (ring.length) gsap.to(ring, { opacity: 0, ease: "none", scrollTrigger: {
       start: function () { return window.innerHeight * 0.04; },
       end: function () { return window.innerHeight * 0.085; }, scrub: true, invalidateOnRefresh: true } });
 
@@ -218,6 +220,33 @@
        WAAPI entrance is still mid-flight and animate 0 -> 0, blanking the hero.
        It isn't needed either: the ink sits above the copy in the stack, so the
        growing disc covers the words on its own. */
+  })();
+
+  /* ---------- the figure in the ink ----------
+     The reference parks an animated mascot inside its circle, and that is what
+     stops the circle reading as a placeholder. Ours is a Choju-giga rabbit with
+     a calligraphy brush — the lineage that Japanese cartooning actually comes
+     from, and a brush because writing is what we build.
+     Two motions: a slow idle so it is alive at rest, and a hop when the circle
+     is touched. The hop pauses the idle rather than tweening the same property
+     from two places, which would fight frame by frame. */
+  (function () {
+    var fig = document.querySelector(".blot-figure");
+    var blot = document.querySelector(".blot");
+    if (!fig || !blot) return;
+    gsap.set(fig, { transformOrigin: "50% 100%" });
+    var idle = gsap.to(fig, { y: -6, rotation: 1.1, duration: 2.2,
+      ease: "sine.inOut", yoyo: true, repeat: -1 });
+    var hopping = false;
+    function hop() {
+      if (hopping) return;
+      hopping = true; idle.pause();
+      gsap.timeline({ onComplete: function () { hopping = false; idle.restart(); } })
+        .to(fig, { y: -34, rotation: 0, scaleY: 1.06, duration: 0.24, ease: "power2.out" })
+        .to(fig, { y: 0, scaleY: 1, duration: 0.62, ease: "bounce.out" });
+    }
+    blot.addEventListener("mouseenter", hop);
+    blot.addEventListener("click", hop);
   })();
 
   /* ---------- the ink comes alive ----------
@@ -233,7 +262,6 @@
   (function () {
     var hero = document.querySelector(".hero");
     var wrap = document.querySelector(".specks");
-    var blot = document.querySelector(".blot");
     var btn = document.getElementById("inkTap");
     if (!hero || !wrap) return;
 
@@ -341,33 +369,7 @@
       if (!raf) raf = requestAnimationFrame(step);
     }
 
-    /* tapping the ensō also throws a fresh handful of drops into the same world */
-    function spill() {
-      var hb = hero.getBoundingClientRect(), r = (blot || wrap).getBoundingClientRect();
-      var cx = r.left - hb.left + r.width / 2, cy = r.top - hb.top + r.height / 2;
-      for (var i = 0; i < 7; i++) {
-        if (hero.querySelectorAll(".ink-drop").length > 34) break;
-        var d = document.createElement("i");
-        d.className = "ink-drop";
-        var size = 5 + Math.random() * 11;
-        d.style.width = d.style.height = size.toFixed(1) + "px";
-        d.style.left = (cx - size / 2).toFixed(1) + "px";
-        d.style.top = (cy - size / 2).toFixed(1) + "px";
-        d.style.opacity = "0.85";
-        hero.appendChild(d);
-        var b = adopt(d);
-        if (b) {
-          b.vx = (Math.random() - 0.5) * 620;
-          b.vy = -240 - Math.random() * 420;
-          gsap.set(d, { scale: b.grow });
-        }
-      }
-      still = 0; prev = performance.now();
-      if (!raf) raf = requestAnimationFrame(step);
-    }
-
     if (btn) btn.addEventListener("click", shake);
-    if (blot) blot.addEventListener("click", spill);
     /* a resize invalidates every resting position; drop the world and let the
        marks fall back to their CSS places rather than freeze somewhere wrong */
     addEventListener("resize", function () {

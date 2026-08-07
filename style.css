@@ -108,7 +108,7 @@ img { max-width: 100%; height: auto; display: block; }
 /* horizontal brush wordmark (1.87:1) — scaled, never resized */
 /* the reference runs its wordmark at 99x41. Ours was 71 wide — a third
    smaller, and it read as a small mark rather than a brand. */
-.brand-mark { width: auto; height: 53px; transform-origin: left center; transition: transform 0.3s ease; }
+.brand-mark { width: auto; height: clamp(44px, 3.4vw, 66px); transform-origin: left center; transition: transform 0.3s ease; }
 /* once you scroll, the bar settles into a solid washi ribbon: paper fill, ink
    hairline underneath, mark drawn back — quiet until you need it */
 .nav-links { display: flex; gap: clamp(12px, 2vw, 30px); align-items: center; }
@@ -156,23 +156,25 @@ img { max-width: 100%; height: auto; display: block; }
     padding: 12px 12px 12px clamp(22px, 1.9vw, 32px);
     border-radius: 999px;
     background: #FAF6EA;
-    box-shadow: 0 8px 32px rgba(30,26,22,0.08), 0 4px 16px rgba(30,26,22,0.05),
+    box-shadow: 0 10px 40px rgba(30,26,22,0.09), 0 5px 18px rgba(30,26,22,0.055),
                 inset 0 1px 0 rgba(255,255,255,0.7);
   }
   /* the seal CTA sets the row height; stretch hands it to every link, so each
      one gets a 50px target instead of a 23px text box */
   .nav-links a {
-    /* 24px each side, the reference's link rhythm; ours sat at 18.7 and the
-       whole capsule read tighter and smaller than it should */
-    font-size: 15px;
+    /* The reference's capsule is a fixed 529x74 whatever the screen is, which
+       reads fine at 1440 and small at 1920. Ours grows a little with the
+       viewport instead, so the header keeps its weight on a wide monitor. */
+    font-size: clamp(15px, 0.98vw, 18px);
     display: inline-flex; align-items: center; align-self: stretch;
-    padding: 0 24px;
+    padding: 0 clamp(24px, 1.7vw, 32px);
   }
   .nav-links .nav-cta {
-    padding: 0 28px; height: 52px;
+    padding: 0 clamp(28px, 2vw, 38px); height: clamp(52px, 3.5vw, 64px);
+    font-size: clamp(15px, 0.98vw, 18px);
     display: inline-flex; align-items: center; border-radius: 999px;
   }
-  .nav-links a::after { left: 24px; right: 24px; bottom: 10px; }
+  .nav-links a::after { left: clamp(24px, 1.7vw, 32px); right: clamp(24px, 1.7vw, 32px); bottom: 10px; }
   /* the wordmark answers the capsule from the opposite corner */
   .brand { padding-top: 6px; }
   /* Cancels the full-width ribbon on desktop. The capsule itself never
@@ -305,8 +307,8 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .tate {
   position: absolute; right: 0; top: 47%; z-index: 4;
   transform: translateY(-50%);
-  display: flex; flex-direction: column; align-items: center; gap: 15px;
-  width: 54px; padding: 19px 0;
+  display: flex; flex-direction: column; align-items: center; gap: clamp(15px, 1.1vw, 22px);
+  width: clamp(54px, 3.6vw, 72px); padding: clamp(19px, 1.4vw, 26px) 0;
   background: #FAF6EA;
   border-radius: 14px 0 0 14px;
   box-shadow: -7px 9px 28px rgba(30,26,22,0.09), inset 0 0 0 1px rgba(30,26,22,0.055);
@@ -314,12 +316,12 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 /* the seal reads across, the place name reads down — the reference's rail is
    built the same way, a mark stacked over a vertical label */
 .tate .seal {
-  font-family: "Shippori Mincho", serif; font-size: 16px; font-weight: 700;
+  font-family: "Shippori Mincho", serif; font-size: clamp(16px, 1.12vw, 22px); font-weight: 700;
   letter-spacing: 0.02em; color: var(--vermilion); line-height: 1;
 }
 .tate .tate-t {
   writing-mode: vertical-rl; font-family: "Manrope", system-ui, sans-serif;
-  font-size: 12px; font-weight: 700; letter-spacing: 0.3em; color: var(--ink-2);
+  font-size: clamp(12px, 0.82vw, 15px); font-weight: 700; letter-spacing: 0.3em; color: var(--ink-2);
 }
 @media (max-width: 900px) { .tate { display: none; } }
 
@@ -478,9 +480,22 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 /* clickable only while the hero is at rest — once the ink starts growing it
    covers the viewport, and a full-screen click target would eat the page */
 html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
-.blot .enso-ring {
+/* The resting shape is a FILLED brush disc now, not an open ring. It had to
+   be: the reference puts a character inside its circle, and nothing can sit
+   inside a ring. The rim is still the ensō's own stroke, so the edge stays
+   hand-painted rather than geometric. */
+.blot .blot-ink {
   position: absolute; inset: 0; width: 100%; height: 100%;
   will-change: opacity; user-select: none;
+}
+/* THE FIGURE — a Choju-giga rabbit with a calligraphy brush, living in the
+   ink. Centred with auto margins rather than a translate, because GSAP owns
+   this element's transform for the idle and the hop; a CSS translate would be
+   overwritten on the first frame and the figure would jump to the left. */
+.blot-figure {
+  position: absolute; left: 0; right: 0; bottom: 10%; margin: 0 auto;
+  height: 82%; width: auto; max-width: none;
+  will-change: transform, opacity; user-select: none; pointer-events: none;
 }
 .blot .blot-fill {
   position: absolute; inset: 0; border-radius: 50%;
