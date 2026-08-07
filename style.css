@@ -181,9 +181,13 @@ html.past-hero .brand { opacity: 0; transform: translateY(-14px); pointer-events
        soft one for the lift, a tight one to seat it, and an inner highlight
        along the top edge so the paper catches light. */
     background: #FAF6EA;
-    box-shadow: 0 18px 54px rgba(30,26,22,0.14), 0 6px 18px rgba(30,26,22,0.09),
-                0 1px 3px rgba(30,26,22,0.06),
-                inset 0 1px 0 rgba(255,255,255,0.75);
+    /* Lifted harder. The capsule spends most of its life over a painted
+       landscape and then over solid ink, and a soft shadow disappeared against
+       both — it has to read as a piece of paper held ABOVE the page, which
+       means a wide dark throw plus a tight contact shadow under it. */
+    box-shadow: 0 30px 70px rgba(30,26,22,0.26), 0 12px 28px rgba(30,26,22,0.17),
+                0 3px 7px rgba(30,26,22,0.11),
+                inset 0 1px 0 rgba(255,255,255,0.8);
   }
   /* the seal CTA sets the row height; stretch hands it to every link, so each
      one gets a 50px target instead of a 23px text box */
@@ -229,8 +233,9 @@ html.menu-open, html.menu-open body { overflow: hidden; }
   .nav { height: auto; padding: 12px var(--pad); background: none; box-shadow: none; }
   .brand, .nav-toggle {
     border-radius: 999px; background: #FAF6EA;
-    box-shadow: 0 8px 28px rgba(30,26,22,0.10), 0 3px 10px rgba(30,26,22,0.06),
-                inset 0 1px 0 rgba(255,255,255,0.7);
+    box-shadow: 0 18px 44px rgba(30,26,22,0.22), 0 7px 16px rgba(30,26,22,0.14),
+                0 2px 4px rgba(30,26,22,0.09),
+                inset 0 1px 0 rgba(255,255,255,0.8);
   }
   .brand { padding: 8px 14px; }
   /* while the menu is open the toggle is on the sheet, not on a disc */
@@ -340,8 +345,9 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   width: clamp(54px, 3.6vw, 72px); padding: clamp(19px, 1.4vw, 26px) 0;
   background: #FAF6EA;
   border-radius: 14px 0 0 14px;
-  box-shadow: -16px 16px 48px rgba(30,26,22,0.14), -5px 5px 16px rgba(30,26,22,0.09),
-              inset 0 1px 0 rgba(255,255,255,0.7);
+  box-shadow: -26px 22px 62px rgba(30,26,22,0.26), -10px 8px 24px rgba(30,26,22,0.17),
+              -2px 2px 6px rgba(30,26,22,0.1),
+              inset 0 1px 0 rgba(255,255,255,0.75);
 }
 /* the seal reads across, the place name reads down — the reference's rail is
    built the same way, a mark stacked over a vertical label */
@@ -533,7 +539,9 @@ html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
    first frame. */
 .blot-figure {
   position: absolute; inset: 0; margin: auto;
-  width: 88%; height: 74.8%; max-width: none;
+  /* the sitting pose is taller than it is wide, unlike the spread glide it
+     replaced, so the disc holds it by HEIGHT and lets the width follow */
+  width: 80%; height: 80.7%; max-width: none;
   will-change: transform, opacity; user-select: none; pointer-events: none;
 }
 .blot .blot-fill {
@@ -1050,7 +1058,7 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
   position: fixed; left: 0; top: 0; z-index: 38;
   /* width is set by the script from the figure in the disc, so the handoff on
      the first frame is pixel-exact; this is only the pre-mount fallback */
-  width: 200px; aspect-ratio: 1160 / 986;
+  width: 200px; aspect-ratio: 1100 / 1110;
   pointer-events: none; visibility: hidden; opacity: 0;
   transform-origin: 50% 50%; will-change: transform, opacity;
 }
@@ -1060,7 +1068,7 @@ html.in-flight .flier, html.in-flight .rush { visibility: visible; }
   object-fit: contain; opacity: 0; user-select: none;
   will-change: opacity;
 }
-.flier .pose-near { opacity: 1; }
+.flier .pose-sit { opacity: 1; }
 
 /* shuchusen — the converging speed lines a woodblock reaches for when
    something is coming straight at the viewer. Fourteen tapered strokes on one
@@ -1106,7 +1114,9 @@ html.in-flight .flier, html.in-flight .rush { visibility: visible; }
   --pw: clamp(104px, 11vw, 168px);
   position: absolute; right: clamp(58px, 7vw, 120px);
   width: var(--pw); height: auto;
-  bottom: calc(var(--pw) * -0.1445);
+  /* its own tight crop puts the feet at 98.1% of the height, so it only
+     hangs 1.9% of that below the rule: 0.019 x (476/620) x width */
+  bottom: calc(var(--pw) * -0.0146);
   pointer-events: none; user-select: none; z-index: 2;
 }
 @media (max-width: 700px) { .perch { --pw: clamp(88px, 26vw, 116px); right: 0; } }

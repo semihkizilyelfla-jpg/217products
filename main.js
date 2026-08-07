@@ -163,6 +163,17 @@
      depends on the width the page happened to LOAD at. */
   var mm = gsap.matchMedia();
 
+  /* ---------- the opening's clock ----------
+     The flood and the animal are two hands on ONE clock. Kept as shared
+     constants rather than two sets of magic numbers, because the moment they
+     drift the squirrel starts outgrowing the disc it is sitting in.
+     Slower than the reference on purpose: its circle covers in 205px, which is
+     a snap you feel rather than read. Ours has a five-frame launch inside it,
+     and that needs room to be legible. */
+  var INK_RIDE = 0.40;   /* fraction of a viewport the flood takes */
+  var INK_HOLD = 0.37;   /* fraction of that ride it holds its shape */
+  var FLY_RIDE = 0.62;   /* the animal keeps going a little past the flood */
+
   /* ---------- THE INK ----------
      The whole opening gesture. The ensō sitting in the sentence fills solid,
      then is scaled from its own centre until it floods the screen and the dark
@@ -202,7 +213,7 @@
        you sit and watch expand. Same shape now: hold, then go.
          hold  = 0.37 * 0.26vh = ~87px on a 900-tall screen
          cover = ~218px */
-    var RIDE = 0.26, HOLD = 0.37;
+    var RIDE = INK_RIDE, HOLD = INK_HOLD;
     function inkEase(p) { return p < HOLD ? 0 : (p - HOLD) / (1 - HOLD); }
 
     gsap.fromTo(blot, { scale: 1 }, {
@@ -275,9 +286,16 @@
     var seat = document.querySelector(".blot-figure");
     if (!flier || !blot) return;
 
-    var near = flier.querySelector(".pose-near");
-    var flare = flier.querySelector(".pose-flare");
+    /* Five frames, not two. It is sitting still when you arrive, gathers itself
+       while the ink holds, throws its membrane half open as the flood lets go,
+       spreads into the glide, and flares as it passes the lens. Each cue is a
+       fraction of the flight, and the first two live entirely inside the ink's
+       hold — which is what makes scrolling feel like it CAUSES the launch. */
+    var order = ["sit", "crouch", "open", "glide", "flare"];
+    var frames = {};
+    order.forEach(function (k) { frames[k] = flier.querySelector(".pose-" + k); });
     var de = document.documentElement;
+    var shown = null;
 
     var geo = null;
     function measure() {
@@ -308,13 +326,23 @@
        moment the flood finally opened.
        HOLD is the ink's own hold expressed in this trigger's units:
        0.37 of a 0.26vh ride, inside a 0.42vh flight. */
-    var HOLD = 0.229;
+    /* the ink's hold, expressed in THIS trigger's units — derived, never typed
+       twice, so slowing one down slows the other by exactly as much */
+    var HOLD = (INK_RIDE * INK_HOLD) / FLY_RIDE;
     /* Distance in a straight line looks like a lift, not an approach. Real
        approach is exponential: almost nothing for a long time, then the last
        third eats the screen. */
     function depth(p) {
       if (p <= HOLD) return 0;
-      return Math.pow((p - HOLD) / (1 - HOLD), 2.35);
+      /* 1.5, not 2.35. The steeper curve kept the animal far behind the flood —
+         a 150px squirrel inside a 450px disc reads as being left behind rather
+         than as riding the same burst. It tracks the ink much more closely now
+         and only overtakes it once the ink owns the whole screen. The ceiling
+         is set by one rule: while ANY paper is still showing, the animal's
+         half-diagonal has to stay inside the ink's radius, or its cream edges
+         land on cream. Checked at the worst point, mid-flood: 239 against a
+         432 radius. */
+      return Math.pow((p - HOLD) / (1 - HOLD), 1.5);
     }
 
     function place(p) {
@@ -323,7 +351,7 @@
       /* during the hold it only gathers itself — a couple of percent, enough
          that the screen answers your finger without breaking the circle */
       var tense = Math.min(1, p / HOLD);
-      var scale = 1 + tense * 0.07 + d * 9.4;
+      var scale = 1 + tense * 0.07 + d * 10.3;
       /* it does not come at your eye but just past your shoulder, so the drift
          grows with the approach instead of being a straight zoom */
       var dx = -d * geo.fw * 1.15;
@@ -337,12 +365,17 @@
            end, because a slow fade would read as a ghost rather than a body */
         opacity: p < 0.02 ? p / 0.02 : (p > 0.80 ? Math.max(0, 1 - (p - 0.80) / 0.20) : 1)
       });
-      /* the membrane flares open the moment before it passes */
-      var flaring = p > 0.72;
-      if (flare && flare.__on !== flaring) {
-        flare.__on = flaring;
-        gsap.to(flare, { opacity: flaring ? 1 : 0, duration: 0.34, ease: "power2.out", overwrite: true });
-        gsap.to(near, { opacity: flaring ? 0 : 1, duration: 0.34, ease: "power2.out", overwrite: true });
+      /* cues: two inside the hold, three across the approach */
+      var want = p < HOLD * 0.42 ? "sit"
+               : p < HOLD ? "crouch"
+               : p < HOLD + 0.10 ? "open"
+               : p < 0.74 ? "glide" : "flare";
+      if (want !== shown) {
+        shown = want;
+        order.forEach(function (k) {
+          if (frames[k]) gsap.to(frames[k], { opacity: k === want ? 1 : 0,
+            duration: 0.26, ease: "power2.out", overwrite: true });
+        });
       }
       /* shuchusen — the converging speed lines a woodblock uses for something
          moving fast at the viewer. They open with the animal and outrun it. */
@@ -357,7 +390,7 @@
 
     ScrollTrigger.create({
       start: 0,
-      end: function () { return innerHeight * 0.42; },
+      end: function () { return innerHeight * FLY_RIDE; },
       scrub: true, invalidateOnRefresh: true,
       onRefresh: function () { geo = null; },
       onUpdate: function (self) {
@@ -367,7 +400,16 @@
         /* the seat in the disc hands over on the first frame and takes the
            figure back if you scroll all the way home */
         if (seat) gsap.set(seat, { opacity: p > 0.004 ? 0 : 1 });
-        if (p > 0.001) place(p);
+        if (p > 0.001) { place(p); return; }
+        /* Home again. Without this the flier keeps whatever frame it died on —
+           scroll to the bottom and back and you find the flare pose sitting
+           invisible over the disc, ready to flash on the next nudge. */
+        shown = null;
+        gsap.set(flier, { opacity: 0 });
+        if (rush) gsap.set(rush, { opacity: 0 });
+        order.forEach(function (k) {
+          if (frames[k]) gsap.set(frames[k], { opacity: k === "sit" ? 1 : 0 });
+        });
       }
     });
 
