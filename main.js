@@ -164,15 +164,11 @@
   var mm = gsap.matchMedia();
 
   /* ---------- the opening's clock ----------
-     The flood and the animal are two hands on ONE clock. Kept as shared
-     constants rather than two sets of magic numbers, because the moment they
-     drift the squirrel starts outgrowing the disc it is sitting in.
      Slower than the reference on purpose: its circle covers in 205px, which is
-     a snap you feel rather than read. Ours has a five-frame launch inside it,
-     and that needs room to be legible. */
+     a snap you feel rather than read. Ours holds a beat longer so the disc
+     registers as a shape before it becomes a flood. */
   var INK_RIDE = 0.40;   /* fraction of a viewport the flood takes */
   var INK_HOLD = 0.37;   /* fraction of that ride it holds its shape */
-  var FLY_RIDE = 0.62;   /* the animal keeps going a little past the flood */
 
   /* ---------- THE INK ----------
      The whole opening gesture. The ensō sitting in the sentence fills solid,
@@ -184,7 +180,7 @@
   (function () {
     var blot = document.querySelector(".blot");
     if (!blot) return;
-    var ring = blot.querySelectorAll(".blot-ink, .blot-figure");
+    var ring = blot.querySelectorAll(".blot-ink");
     var fill = blot.querySelector(".blot-fill");
 
     function neededScale() {
@@ -236,205 +232,6 @@
        WAAPI entrance is still mid-flight and animate 0 -> 0, blanking the hero.
        It isn't needed either: the ink sits above the copy in the stack, so the
        growing disc covers the words on its own. */
-  })();
-
-  /* ---------- the figure in the ink ----------
-     The reference parks an animated mascot inside its circle, and that is what
-     stops the circle reading as a placeholder. Ours is a Choju-giga rabbit with
-     a calligraphy brush — the lineage that Japanese cartooning actually comes
-     from, and a brush because writing is what we build.
-     Two motions: a slow idle so it is alive at rest, and a hop when the circle
-     is touched. The hop pauses the idle rather than tweening the same property
-     from two places, which would fight frame by frame. */
-  (function () {
-    var fig = document.querySelector(".blot-figure");
-    var blot = document.querySelector(".blot");
-    if (!fig || !blot) return;
-    gsap.set(fig, { transformOrigin: "50% 100%" });
-    var idle = gsap.to(fig, { y: -6, rotation: 1.1, duration: 2.2,
-      ease: "sine.inOut", yoyo: true, repeat: -1 });
-    var hopping = false;
-    function hop() {
-      if (hopping) return;
-      hopping = true; idle.pause();
-      gsap.timeline({ onComplete: function () { hopping = false; idle.restart(); } })
-        .to(fig, { y: -34, rotation: 0, scaleY: 1.06, duration: 0.24, ease: "power2.out" })
-        .to(fig, { y: 0, scaleY: 1, duration: 0.62, ease: "bounce.out" });
-    }
-    blot.addEventListener("mouseenter", hop);
-    blot.addEventListener("click", hop);
-  })();
-
-  /* ============================================================
-     THE FLIGHT — the momonga comes at you, and the ink is its wake
-     ------------------------------------------------------------
-     It does not travel across the screen; it travels toward you. That single
-     decision fixes the thing that made the earlier build look cheap — a sprite
-     sliding around a page always looks like a sticker on a slide — and it
-     solves a real constraint at the same time: the animal is cream and so is
-     the paper, so anything moving sideways over the hero would vanish until
-     the ink caught up. Growing from the SAME centre as the flood, it is
-     silhouetted on black from the first frame to the last, because the ink is
-     always opening faster than it is.
-     It starts the instant you touch the wheel, while the ink is still holding
-     its shape — the squirrel is the cause, the flood is the effect.
-     ============================================================ */
-  (function () {
-    var flier = document.querySelector(".flier");
-    var rush = document.querySelector(".rush");
-    var blot = document.querySelector(".blot");
-    var seat = document.querySelector(".blot-figure");
-    if (!flier || !blot) return;
-
-    /* Five frames, not two. It is sitting still when you arrive, gathers itself
-       while the ink holds, throws its membrane half open as the flood lets go,
-       spreads into the glide, and flares as it passes the lens. Each cue is a
-       fraction of the flight, and the first two live entirely inside the ink's
-       hold — which is what makes scrolling feel like it CAUSES the launch. */
-    var order = ["sit", "crouch", "open", "glide", "flare"];
-    var frames = order.map(function (k) { return flier.querySelector(".pose-" + k); });
-    var de = document.documentElement;
-
-    var geo = null;
-    function measure() {
-      /* the disc's box grows with the flood but its CENTRE never moves — the
-         hero is sticky, so this is one fixed point on the screen */
-      var b = blot.getBoundingClientRect();
-      var bs = Math.abs(gsap.getProperty(blot, "scaleX") || 1);
-      /* The flier is sized from the figure ALREADY SITTING IN THE DISC, not
-         from a viewport clamp. A clamp is right at one width and wrong at every
-         other: on a phone it came out 15% larger than the disc, so the handoff
-         on the first frame was a visible jump. Taken from the seat, scale 1 is
-         the seat, exactly, at every viewport. */
-      var w = 240;
-      if (seat) {
-        var sr = seat.getBoundingClientRect();
-        if (sr.width) w = sr.width / bs;
-      }
-      flier.style.width = w.toFixed(1) + "px";
-      return { cx: b.left + b.width / 2, cy: b.top + b.height / 2,
-               fw: w, fh: w * (1766 / 1700) };
-    }
-
-    /* The ink HOLDS its shape for the first stretch — that pause is the whole
-       reason you register it as a circle before it becomes a flood. The animal
-       has to hold with it, or it outgrows the disc it is sitting in and its
-       cream edges spill onto cream paper, which just reads as a clipped
-       sprite. Measured: without this it was 16% wider than the ink at the
-       moment the flood finally opened.
-       Derived from the ink's own numbers, never typed twice, so retiming one
-       retimes the other by exactly as much. */
-    var HOLD = (INK_RIDE * INK_HOLD) / FLY_RIDE;
-    /* Distance in a straight line looks like a lift, not an approach. Real
-       approach is exponential: almost nothing for a long time, then the last
-       third eats the screen. */
-    function depth(p) {
-      if (p <= HOLD) return 0;
-      /* 1.5, not 2.35. The steeper curve kept the animal far behind the flood —
-         a 150px squirrel inside a 450px disc reads as being left behind rather
-         than as riding the same burst. It tracks the ink much more closely now
-         and only overtakes it once the ink owns the whole screen. The ceiling
-         is set by one rule: while ANY paper is still showing, the animal's
-         half-diagonal has to stay inside the ink's radius, or its cream edges
-         land on cream. Checked at the worst point, mid-flood: 239 against a
-         432 radius. */
-      return Math.pow((p - HOLD) / (1 - HOLD), 1.5);
-    }
-
-    /* WHERE EACH FRAME IS ITS ONLY SELF.
-       Two of the five live inside the ink's hold, so the launch is over before
-       the flood even opens; the last three carry the approach. */
-    /* HOLD is where the flood lets go, so the first two frames — still, then
-       gathered — are over before anything moves, and the animal opens on
-       exactly the frame the ink does. Written against HOLD rather than as
-       fixed numbers so retiming the ink retimes the launch with it. */
-    var STOPS = [0, HOLD * 0.55, HOLD, HOLD + 0.18, 0.86];
-    /* the blend is short on purpose. Two cream drawings held at half opacity
-       over each other is a double exposure, not an animation — so each frame
-       HOLDS, then swaps across the last quarter of its interval. */
-    var BLEND = 0.26;
-
-    /* Opacity is a pure function of scroll position. It used to be a set of
-       gsap.to() tweens fired on a cue change, which is the bug: a tween has its
-       own clock, so scrolling fast fired three of them on top of each other and
-       scrolling backwards played the fades forwards. Nothing here has a clock —
-       the same scroll position always paints the same frame, in both
-       directions, at any speed. */
-    function paint(p) {
-      var i, lo = 0;
-      for (i = 0; i < STOPS.length; i++) if (p >= STOPS[i]) lo = i;
-      var hi = Math.min(order.length - 1, lo + 1);
-      var t = 0;
-      if (hi > lo) {
-        var span = STOPS[hi] - STOPS[lo];
-        var into = (p - STOPS[lo]) / span;              /* 0..1 across the hold */
-        var start = 1 - BLEND;
-        t = into <= start ? 0 : (into - start) / BLEND;
-        t = Math.min(1, Math.max(0, t));
-        t = t * t * (3 - 2 * t);                        /* smoothstep */
-      }
-      for (i = 0; i < frames.length; i++) {
-        if (!frames[i]) continue;
-        var o = i === lo ? 1 - t : (i === hi ? t : 0);
-        if (frames[i].__o !== o) { frames[i].__o = o; frames[i].style.opacity = o; }
-      }
-    }
-
-    function place(p) {
-      if (!geo) geo = measure();
-      var d = depth(p);
-      /* during the hold it only gathers itself — a couple of percent, enough
-         that the screen answers your finger without breaking the circle */
-      var tense = Math.min(1, p / HOLD);
-      var scale = 1 + tense * 0.07 + d * 10.3;
-      /* it does not come at your eye but just past your shoulder, so the drift
-         grows with the approach instead of being a straight zoom */
-      var dx = -d * geo.fw * 1.15;
-      var dy = -d * geo.fh * 0.62;
-      gsap.set(flier, {
-        x: geo.cx - geo.fw / 2 + dx,
-        y: geo.cy - geo.fh / 2 + dy,
-        scale: scale,
-        rotation: -tense * 1.5 - d * 16,
-        /* it passes the lens and is gone — held to full opacity until the very
-           end, because a slow fade would read as a ghost rather than a body */
-        opacity: p < 0.02 ? p / 0.02 : (p > 0.80 ? Math.max(0, 1 - (p - 0.80) / 0.20) : 1)
-      });
-      paint(p);
-      /* shuchusen — the converging speed lines a woodblock uses for something
-         moving fast at the viewer. They open with the animal and outrun it. */
-      if (rush) {
-        gsap.set(rush, {
-          x: geo.cx, y: geo.cy,
-          scale: 0.18 + d * 13,
-          opacity: p < HOLD ? 0 : Math.min(1, (p - HOLD) / 0.16) * (1 - Math.max(0, (p - 0.78) / 0.22)) * 0.5
-        });
-      }
-    }
-
-    ScrollTrigger.create({
-      start: 0,
-      end: function () { return innerHeight * FLY_RIDE; },
-      scrub: true, invalidateOnRefresh: true,
-      onRefresh: function () { geo = null; },
-      onUpdate: function (self) {
-        var p = self.progress;
-        var on = p > 0.001 && p < 0.999;
-        de.classList.toggle("in-flight", on);
-        /* the seat in the disc hands over on the first frame and takes the
-           figure back if you scroll all the way home */
-        if (seat) gsap.set(seat, { opacity: p > 0.004 ? 0 : 1 });
-        if (p > 0.001) { place(p); return; }
-        /* Home again. Without this the flier keeps whatever frame it died on —
-           scroll to the bottom and back and you find the flare pose sitting
-           invisible over the disc, ready to flash on the next nudge. */
-        gsap.set(flier, { opacity: 0 });
-        if (rush) gsap.set(rush, { opacity: 0 });
-        paint(0);
-      }
-    });
-
-    addEventListener("resize", function () { geo = null; }, { passive: true });
   })();
 
   /* ---------- the ink comes alive ----------
@@ -573,52 +370,58 @@
      sides and fade up — caught mid-flight at -8px on the left and +62.6px on
      the right, so the right half lags. That convergence is what makes screen
      two "appear" rather than merely scroll into place.
-     Ours maps onto the shelf: the slogan comes in from the left, the shelf
-     marker and its counter converge, the rule under them draws itself, then the
-     product follows. It fires while the ink still owns the screen, so the shelf
-     reads as something surfacing in it. */
+     Ours maps onto the shelf: the marker and the statement converge from
+     opposite sides, the note settles under them, and then the three slots come
+     up one after another — the last beat is the shelf being loaded. It fires
+     while the ink still owns the screen, so the shelf reads as something
+     surfacing in it. */
   (function () {
     var sec = document.querySelector(".products");
     if (!sec) return;
-    var line = sec.querySelector(".shelf-line"),
-        head = sec.querySelector(".shelf-head"),
+    var head = sec.querySelector(".shelf-head"),
+        line = sec.querySelector(".shelf-line"),
         eb   = sec.querySelector(".shelf-eyebrow"),
-        num  = sec.querySelector(".shelf-num"),
-        perch= sec.querySelector(".perch"),
+        note = sec.querySelector(".shelf-note"),
+        slots= gsap.utils.toArray(sec.querySelectorAll(".slot")),
+        open = sec.querySelector(".shelf-open"),
         art  = sec.querySelector(".product-art"),
         body = sec.querySelectorAll(".product-body > *");
-    if (!line) return;
+    if (!head) return;
 
     /* every .rise inside the shelf is ours to reveal now that it is out of the
        generic handler — miss one and it stays invisible forever, because the
        CSS gate hides it and nothing else is coming for it */
-    var claimed = [line, head, art].concat([].slice.call(body));
+    var claimed = [head, open, art].concat([].slice.call(body));
     var rest = gsap.utils.toArray(sec.querySelectorAll(".rise")).filter(function (el) {
       return claimed.indexOf(el) < 0;
     });
 
-    gsap.set([line, head, art], { autoAlpha: 0 });
+    gsap.set([head, art], { autoAlpha: 0 });
     gsap.set(body, { autoAlpha: 0 });
+    if (open) gsap.set(open, { autoAlpha: 0 });
+    if (slots.length) gsap.set(slots, { autoAlpha: 0 });
     if (rest.length) gsap.set(rest, { autoAlpha: 0 });
-    gsap.set(head, { "--rule": 0 });
 
-    var tl = gsap.timeline({ scrollTrigger: { trigger: line, start: "top 78%", once: true } });
-    tl.fromTo(line, { x: -96 }, { x: 0, autoAlpha: 1, duration: 1.05, ease: "expo.out" })
-      .to(head, { autoAlpha: 1, duration: 0.4 }, 0.16)
-      .fromTo(eb,  { x: -44 }, { x: 0, duration: 0.9, ease: "expo.out" }, 0.16)
-      .fromTo(num, { x:  44 }, { x: 0, duration: 0.9, ease: "expo.out" }, 0.28)
-      .to(head, { "--rule": 1, duration: 0.9, ease: "expo.out" }, 0.3)
-      .fromTo(art, { y: 46 }, { y: 0, autoAlpha: 1, duration: 1.1, ease: "expo.out" }, 0.34)
-      .fromTo(body, { y: 30 }, { y: 0, autoAlpha: 1, duration: 0.85, ease: "expo.out", stagger: 0.075 }, 0.46);
-    if (rest.length) tl.fromTo(rest, { y: 22 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out", stagger: 0.055 }, 0.62);
-    /* it beat you here. It drops the last few pixels onto the rule and settles,
-       so arriving on the shelf reads as a landing rather than a fade-in. */
-    if (perch) {
-      gsap.set(perch, { autoAlpha: 0 });
-      tl.fromTo(perch, { y: -26, scaleX: 1.1, scaleY: 0.86, transformOrigin: "50% 100%" },
-        { y: 0, scaleX: 1, scaleY: 1, autoAlpha: 1, duration: 0.72, ease: "back.out(2.2)" }, 0.5);
+    var tl = gsap.timeline({ scrollTrigger: { trigger: head, start: "top 82%", once: true } });
+    tl.to(head, { autoAlpha: 1, duration: 0.4 })
+      .fromTo(eb,   { x: -44 }, { x: 0, duration: 0.9, ease: "expo.out" }, 0)
+      .fromTo(line, { x: -72 }, { x: 0, duration: 1.05, ease: "expo.out" }, 0.06)
+      .fromTo(note, { x:  44 }, { x: 0, duration: 0.9, ease: "expo.out" }, 0.2);
+    /* the panels are loaded onto the shelf left to right; each one rises AND
+       widens a hair out of the wall, so it reads as being set into place rather
+       than fading in */
+    if (slots.length) {
+      tl.fromTo(slots, { y: 54, scaleY: 0.965, transformOrigin: "50% 100%" },
+        { y: 0, scaleY: 1, autoAlpha: 1, duration: 1.0, ease: "expo.out", stagger: 0.09 }, 0.3);
     }
-    tl.add(function () { [line, head, art].forEach(settle); }, 1.6);
+    if (open) tl.to(open, { autoAlpha: 1, duration: 0.6, ease: "power2.out" }, 0.78);
+    tl.fromTo(art, { y: 46 }, { y: 0, autoAlpha: 1, duration: 1.1, ease: "expo.out" }, 0.86)
+      .fromTo(body, { y: 30 }, { y: 0, autoAlpha: 1, duration: 0.85, ease: "expo.out", stagger: 0.075 }, 0.96);
+    if (rest.length) tl.fromTo(rest, { y: 22 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out", stagger: 0.055 }, 1.1);
+    /* hand the panels back to CSS once they are placed: GSAP leaves a transform
+       on them, and a lingering transform makes each slot its own containing
+       block, which is fine here but the will-change is not worth keeping */
+    tl.add(function () { [head, art].concat(slots).forEach(settle); }, 2.2);
   })();
 
   mm.add("(min-width: 821px)", function () {

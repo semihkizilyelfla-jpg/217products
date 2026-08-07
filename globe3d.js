@@ -80,19 +80,19 @@
 
   var globe = new THREE.Mesh(
     new THREE.SphereGeometry(1, 64, 48),
-    new THREE.MeshBasicMaterial({ color: 0xf3ecdc })
+    new THREE.MeshBasicMaterial({ color: 0xffffff })
   );
   tilt.add(globe);
   globe.rotation.y = -1.9; /* open on the Americas, not the empty Pacific */
 
-  /* gold fresnel rim — defines the sphere silhouette against the cream page */
+  /* ink fresnel rim — defines the sphere silhouette against the white page */
   var rim = new THREE.Mesh(
     new THREE.SphereGeometry(1.02, 48, 32),
     new THREE.ShaderMaterial({
       uniforms: {
-        uColor: { value: new THREE.Color(0xc39a46) },
+        uColor: { value: new THREE.Color(0x111111) },
         uPower: { value: 3.0 },
-        uIntensity: { value: 1.0 }
+        uIntensity: { value: 0.7 }
       },
       vertexShader:
         "varying vec3 vN; varying vec3 vP;" +
@@ -110,12 +110,12 @@
 
   /* faint ink limb (front-side fresnel) — shades the sphere's edge so it still
      reads as a 3D globe even when a mostly-ocean, light hemisphere faces us,
-     instead of vanishing into the cream page. */
+     instead of vanishing into the white page. */
   var limb = new THREE.Mesh(
     new THREE.SphereGeometry(1.004, 48, 32),
     new THREE.ShaderMaterial({
       uniforms: {
-        uColor: { value: new THREE.Color(0x2b2219) },
+        uColor: { value: new THREE.Color(0x111111) },
         uPower: { value: 2.4 },
         uIntensity: { value: 0.34 }
       },
@@ -133,7 +133,7 @@
   );
   scene.add(limb);
 
-  new THREE.TextureLoader().load("assets/globe-map.webp?u=2", function (tex) {
+  new THREE.TextureLoader().load("assets/globe-map.webp?w=1", function (tex) {
     if ("colorSpace" in tex) tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
     tex.wrapS = THREE.RepeatWrapping;
