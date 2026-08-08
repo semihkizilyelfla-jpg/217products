@@ -194,14 +194,17 @@
     if (!sun || !plate) return;
     var skin = sun.querySelector(".sun-ink");
     var fill = sun.querySelector(".sun-fill");
+    var copy = [].slice.call(document.querySelectorAll(".hero-head, .hero-foot"));
     var de = document.documentElement;
 
-    /* Where the front ridge is actually SOLID enough to hide something, as a
-       fraction of the plate's height from its bottom. Not the split row: the
-       handover is a long ramp, so the pine tops are mist the sentence can be
-       read through, and the layer only reaches 0.88 alpha at 81% down. This is
-       that line, measured off the layer's own alpha profile. */
-    var RIDGE = 0.20;
+    /* THE WATERLINE, as a fraction of the plate's height from its bottom — the
+       row the two layers were split on, so it is exact. Measured off the
+       painting: down the centre of the valley the ink is flat zero above raw
+       row 875 and only starts at the water, which is the horizon of the scene.
+       The sun belongs there. It used to sit on the pine ridge instead, which
+       put it nearer than the range standing behind it — the one thing a sun can
+       never be. */
+    var WATER = 0.744;
     var geo = null;
 
     function measure() {
@@ -210,31 +213,30 @@
       var s = Math.abs(gsap.getProperty(sun, "scaleX") || 1);
       var d = sr.width / s;                       /* the sun's own diameter */
       if (!pr.height || !d) return null;
-      var ridgeY = pr.bottom - pr.height * RIDGE; /* screen y of the ridge line */
-
-      /* THE SKY IT HAS TO FIT IN. Everything else on this screen is fixed — the
-         mist band at the top, the sentence below it — and the only genuinely
-         empty stretch is between them. Rather than pick a landing height and
-         then discover the sun collides with the type at some window size, the
-         gap is measured first and the sun is sized to it. It ends up as large
-         as the sheet can hold and never lands on a word. */
-      var head = document.querySelector(".hero-head");
+      var waterY = pr.bottom - pr.height * WATER;  /* screen y of the horizon */
       var kasumi = document.querySelector(".kasumi");
-      var headTop = head ? head.getBoundingClientRect().top : pr.top;
       var mistBottom = kasumi ? kasumi.getBoundingClientRect().bottom : 0;
-      /* the mist is pale and the sun reads beautifully behind it, so it is
-         allowed to sit up into the band — only the TYPE is a hard edge */
-      var gapTop = mistBottom - 46, gapBot = headTop - 10;
-      var gap = gapBot - gapTop;
-      if (gap > 60 && gap < d) {
-        d = Math.max(120, gap * 0.94);
-        sun.style.width = d.toFixed(1) + "px";
-      }
-      var topY = (gapTop + gapBot) / 2;
 
-      /* AT REST roughly a third of it stands clear of the pines. Buried deeper
-         it stopped reading as a sun and became a red mark among the trees. */
-      var restY = ridgeY + d * 0.16;
+      /* AT REST the disc sits on the horizon with its foot just touching the
+         water, which is exactly what a sun that has cleared the horizon looks
+         like — and the reflection column the painting already runs down the
+         middle of the lake becomes its own. */
+      var restY = waterY - d * 0.46;
+
+      /* IT LANDS high in the open sky. The sentence is no longer a constraint
+         on this: it fades out as the sun climbs (see the ride below), so the
+         sun is free to take the middle of the sheet instead of being squeezed
+         into whatever the type left over — which is what shrank it to 98px. */
+      var topY = mistBottom + d * 0.42;
+
+      /* only shrink if the sheet genuinely cannot hold it */
+      var room = restY - topY;
+      if (room < d * 0.55 && room > 0) {
+        d = Math.max(110, d * (room / (d * 0.55)));
+        sun.style.width = d.toFixed(1) + "px";
+        restY = waterY - d * 0.46;
+        topY = mistBottom + d * 0.42;
+      }
       return { d: d, rest: restY, climb: Math.max(0, restY - topY) };
     }
 
@@ -247,6 +249,22 @@
       sun.style.bottom = (groundBottom - geo.rest - geo.d / 2).toFixed(1) + "px";
       sun.style.marginLeft = (-geo.d / 2).toFixed(1) + "px";
       sun.style.visibility = "visible";
+
+      /* THE SENTENCE SITS ON THE SUN, not on a number. Its resting place is
+         whatever clears the disc at the horizon — and where the horizon falls
+         depends on the plate, which depends on the window's WIDTH, so no
+         padding written in vh could ever hold at both 735 and 911 tall. It was
+         landing across the sun at rest at exactly the sizes the clamp did not
+         happen to suit. This drives it off the geometry instead.
+         No circularity: the sun's rest reads the plate and the mist band only,
+         never the type. */
+      var hero = document.querySelector(".hero");
+      if (hero) {
+        var hb = hero.getBoundingClientRect();
+        var need = hb.bottom - (geo.rest - geo.d * 0.5 - 14);
+        hero.style.paddingBottom =
+          Math.max(140, Math.min(hb.height * 0.66, need)).toFixed(0) + "px";
+      }
     }
 
     function neededScale() {
@@ -308,6 +326,20 @@
           burn = burn * burn * (3 - 2 * burn);   /* smoothstep */
           fill.style.opacity = Math.min(1, burn * 2.4).toFixed(3);
           fill.style.transform = "scale(" + (0.1 + 0.9 * burn).toFixed(4) + ")";
+        }
+        /* The sentence steps aside. It has been read by the time anyone has
+           scrolled this far, and it is the only thing standing between the
+           horizon and the open sky the sun has to climb into — holding it there
+           is what forced the sun down to 98px in the first place. Written
+           straight to style rather than tweened: GSAP capturing a start value
+           while the WAAPI opening is still mid-flight is what blanked this hero
+           once before. */
+        if (copy.length) {
+          var fade = Math.max(0, Math.min(1, (r - 0.12) / 0.42));
+          fade = fade * fade * (3 - 2 * fade);
+          for (var i = 0; i < copy.length; i++) {
+            copy[i].style.opacity = (1 - fade).toFixed(3);
+          }
         }
         de.classList.toggle("sun-up", r > 0.98);
       }
