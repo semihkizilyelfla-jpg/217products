@@ -434,6 +434,19 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
      one level down does its own clipping. */
 }
 
+/* ---------- the hero's own scroll ----------
+   The hero is sticky and the deck slides over it, which means the dark shelf
+   starts climbing on the very first pixel of scroll. That was fine when the
+   opening took 40% of a viewport; at 82% the shelf simply outran the sun and
+   arrived over a sky that had not finished anything yet.
+   This is empty scroll that belongs to the hero. Nothing renders in it — the
+   pinned hero shows through — so the sun gets its whole ride before the next
+   section is allowed to reach the screen. 62svh is where the flood finishes
+   covering (0.72 of a 0.82svh ride), so the shelf begins to rise at the moment
+   the page has already gone black and you never see it arrive. */
+.hero-run { height: 62svh; pointer-events: none; }
+@supports not (height: 100svh) { .hero-run { height: 62vh; } }
+
 /* ---------- the print plate ----------
    ONE painted horizon, not three stacked cut-outs. The old plate re-purposed
    the original hero's mountain, foreground and gate layers: three images drawn
@@ -466,7 +479,12 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    Nothing needs painting over it, and a band sitting at a fixed vh could only
    fight the sun on its way up. */
 .hero-ground::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+  /* z 4, ABOVE the front ridge at 3. It used to be 2, which was right when the
+     plate was a single image at 1 — the moment the scene split into two layers
+     the ridge started painting over its own mist and the foot of the page went
+     to a black slab with the credo lost on it. Below the sentence at 5, above
+     everything the scene draws. */
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 4;
   /* The mist at the foot of the print, and it carries real weight now. The
      scene ends on the densest black in the whole painting and the foot line —
      the seal, the credo, the ink toy — sits right on it at 13-19px. A wash

@@ -27,8 +27,13 @@
   (function () {
     var hero = document.querySelector(".hero");
     if (!hero) return;
+    /* the hero's empty scroll-run counts as part of the hero here: the deck's
+       paper sheet must not start sliding up until the run is spent, or it would
+       paint over the pinned hero while the sun is still climbing it */
+    var run = document.querySelector(".hero-run");
     function sync() {
-      document.documentElement.style.setProperty("--hero-h", Math.round(hero.offsetHeight) + "px");
+      var h = hero.offsetHeight + (run ? run.offsetHeight : 0);
+      document.documentElement.style.setProperty("--hero-h", Math.round(h) + "px");
     }
     sync();
     addEventListener("load", sync);

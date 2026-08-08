@@ -36,9 +36,9 @@
   <link rel="manifest" href="/site.webmanifest">
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/shippori-800.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/manrope-var.woff2" crossorigin>
-  <link rel="preload" as="image" imagesrcset="assets/horizon-900.webp?s=5 900w, assets/horizon-1400.webp?s=5 1400w, assets/horizon.webp?s=5 1920w" imagesizes="110vw" fetchpriority="high">
-  <link rel="preload" as="image" href="assets/sun-ink.webp?s=5" fetchpriority="high">
-  <link rel="stylesheet" href="style.css?v=125">
+  <link rel="preload" as="image" imagesrcset="assets/horizon-900.webp?s=6 900w, assets/horizon-1400.webp?s=6 1400w, assets/horizon.webp?s=6 1920w" imagesizes="110vw" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/sun-ink.webp?s=6" fetchpriority="high">
+  <link rel="stylesheet" href="style.css?v=127">
   <script type="application/ld+json">
   {"@context": "https://schema.org", "@type": "Organization", "name": "217 Products", "url": "https://217products.com/", "logo": "https://217products.com/assets/icon-512.png", "image": "https://217products.com/assets/zen.webp?w=1", "description": "An independent product company reaching from Ankara to the world. Where we see a gap, we build products that are fast, simple, and made to last.", "email": "destek217product@gmail.com", "foundingDate": "2026", "address": {"@type": "PostalAddress", "addressLocality": "Ankara", "addressCountry": "TR"}}
   </script>
@@ -73,9 +73,9 @@
     <!-- 1 · HERO (3D parallax) -->
     <section class="hero">
       <div class="hero-ground" id="scene" aria-hidden="true">
-        <img decoding="async" class="hz hz-back" data-depth="0.22" src="assets/horizon.webp?s=5" srcset="assets/horizon-900.webp?s=5 900w, assets/horizon-1400.webp?s=5 1400w, assets/horizon.webp?s=5 1920w" sizes="110vw" alt="" width="1920" height="436" fetchpriority="high">
-        <span class="sun" id="sun"><img class="sun-ink" src="assets/sun-ink.webp?s=5" alt="" width="320" height="320" decoding="sync" fetchpriority="high"><i class="sun-fill"></i></span>
-        <img decoding="async" class="hz hz-front" data-depth="0.22" src="assets/horizon-front.webp?s=5" srcset="assets/horizon-front-900.webp?s=5 900w, assets/horizon-front-1400.webp?s=5 1400w, assets/horizon-front.webp?s=5 1920w" sizes="110vw" alt="" width="1920" height="436">
+        <img decoding="async" class="hz hz-back" data-depth="0.22" src="assets/horizon.webp?s=6" srcset="assets/horizon-900.webp?s=6 900w, assets/horizon-1400.webp?s=6 1400w, assets/horizon.webp?s=6 1920w" sizes="110vw" alt="" width="1920" height="436" fetchpriority="high">
+        <span class="sun" id="sun"><img class="sun-ink" src="assets/sun-ink.webp?s=6" alt="" width="320" height="320" decoding="sync" fetchpriority="high"><i class="sun-fill"></i></span>
+        <img decoding="async" class="hz hz-front" data-depth="0.22" src="assets/horizon-front.webp?s=6" srcset="assets/horizon-front-900.webp?s=6 900w, assets/horizon-front-1400.webp?s=6 1400w, assets/horizon-front.webp?s=6 1920w" sizes="110vw" alt="" width="1920" height="436">
       </div>
       <img class="kasumi" aria-hidden="true" decoding="async" src="assets/kasumi.webp?w=1" srcset="assets/kasumi-900.webp?w=1 900w, assets/kasumi-1400.webp?w=1 1400w, assets/kasumi.webp?w=1 1920w" sizes="110vw" alt="" width="1920" height="576">
       <div class="specks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -91,6 +91,9 @@
         <button class="foot-r rise" type="button" id="inkTap">Shake the ink</button>
       </div>
     </section>
+
+    <!-- the hero keeps the screen while the sun does its work -->
+    <div class="hero-run" aria-hidden="true"></div>
 
     <!-- 2 · PRODUCTS -->
     <section class="products" id="products">
@@ -296,6 +299,6 @@
   <script src="vendor/gsap.min.js?v=3.15.0"></script>
   <script src="vendor/ScrollTrigger.min.js?v=3.15.0"></script>
   <script src="vendor/lenis.min.js?v=1.3.25"></script>
-  <script src="main.js?v=81"></script>
+  <script src="main.js?v=82"></script>
 </body>
 </html>
