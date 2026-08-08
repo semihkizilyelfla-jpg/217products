@@ -181,7 +181,11 @@ html.past-hero .brand { opacity: 0; transform: translateY(-14px); pointer-events
      26vh keeps it a band behind the header. The crop lands mid-cloud, so the
      mask dissolves the cut instead of leaving a ruled edge — the element never
      moves, so this rasterises once and costs nothing per frame. */
-  max-height: 26vh; object-fit: cover; object-position: 50% 0%;
+  /* 16vh, not 26. The band is decoration behind the header, but at a quarter of
+     the screen it was eating the sky the sun has to rise into — the auto-sizing
+     below squeezed the sun to 98px to keep it off the type. Thinner band, room
+     for a sun. */
+  max-height: 16vh; object-fit: cover; object-position: 50% 0%;
   -webkit-mask-image: linear-gradient(180deg, #000 58%, transparent 100%);
           mask-image: linear-gradient(180deg, #000 58%, transparent 100%);
   pointer-events: none; user-select: none;
@@ -424,7 +428,7 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
      low leaves the top of the sheet genuinely empty, which is where the calm
      comes from — and it is what the reference does too, its block sitting at
      377-742 of a 900 screen. The bottom padding holds it off the foot line. */
-  padding: clamp(96px, 13vh, 172px) var(--pad) clamp(126px, 17vh, 200px);
+  padding: clamp(96px, 13vh, 172px) var(--pad) clamp(150px, 25vh, 250px);
   background: var(--paper);
   /* NOT overflow:hidden — the ink has to grow past the hero. The ground layer
      one level down does its own clipping. */
@@ -463,11 +467,17 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    fight the sun on its way up. */
 .hero-ground::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-  /* The mist at the foot of the print is painted INTO the picture now, where a
-     woodblock would put it, so this is only a safety net for whatever art
-     happens to land under the foot line at an unusual aspect ratio. */
-  height: clamp(36px, 4.5vh, 60px); pointer-events: none;
-  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 60%, rgba(255,255,255,0.38) 100%);
+  /* The mist at the foot of the print, and it carries real weight now. The
+     scene ends on the densest black in the whole painting and the foot line —
+     the seal, the credo, the ink toy — sits right on it at 13-19px. A wash
+     this deep is what a woodblock does at the edge of the block anyway, and it
+     is the difference between that line being readable and being lost.
+     Measured against the ridge, not guessed: the bottom 100px is where the
+     pine mass is solid. */
+  height: clamp(94px, 13.5vh, 158px); pointer-events: none;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0) 0%, rgba(255,255,255,0.34) 38%,
+    rgba(255,255,255,0.80) 68%, rgba(255,255,255,0.97) 100%);
 }
 /* Each layer's resting opacity lives in --o, not in `opacity` directly: the
    entrance fades each image to its OWN resting value as it decodes, so a
@@ -493,7 +503,7 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   /* The width rule is what guarantees full bleed: a plain percentage starves
      the plate on a phone (100% of 390px leaves a 75px sliver), so it takes a
      floor in px. */
-  width: max(112%, 1080px); max-width: none; height: auto;
+  width: max(106%, 1080px); max-width: none; height: auto;
   transform: translateX(-50%);
   --o: 1; opacity: var(--o);
   will-change: transform, opacity;
@@ -527,8 +537,17 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 }
 /* the painted brush rim, recoloured to the seal red */
 .sun-ink { will-change: opacity; }
-/* the ink it becomes on the way to flooding the page */
-.sun-fill { background: var(--ink); opacity: 0; will-change: opacity; }
+/* The ink it becomes. Not a flat crossfade over the disc — a soft-edged black
+   that blooms out of the core and takes the sun from the inside, which is what
+   a sun burning down actually looks like. Inset past the brush edge so that by
+   the time it is full there is no vermilion rim left to blow up to a red ring
+   when the disc floods the page. */
+.sun-fill {
+  inset: -2%;
+  background: radial-gradient(circle, var(--ink) 84%, rgba(17,17,17,0) 100%);
+  opacity: 0; transform: scale(0.1); transform-origin: 50% 50%;
+  will-change: transform, opacity;
+}
 /* THE SWAP, and the whole thing depends on it. While it climbs, the sun must
    pass BEHIND the pine ridge (z 3) and behind the sentence (z 5). Once it has
    cleared the range there is nothing left to hide it, and it has to be able to

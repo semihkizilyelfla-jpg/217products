@@ -167,8 +167,8 @@
      Slower than the reference on purpose: its circle covers in 205px, which is
      a snap you feel rather than read. Ours holds a beat longer so the disc
      registers as a shape before it becomes a flood. */
-  var INK_RIDE = 0.40;   /* fraction of a viewport the flood takes */
-  var INK_HOLD = 0.37;   /* fraction of that ride it holds its shape */
+  var INK_RIDE = 0.62;   /* fraction of a viewport the whole opening takes */
+  var INK_HOLD = 0.45;   /* fraction of that ride the sun spends climbing */
 
   /* ---------- THE SUN ----------
      One gesture, three beats, all on the scroll:
@@ -206,22 +206,30 @@
       var d = sr.width / s;                       /* the sun's own diameter */
       if (!pr.height || !d) return null;
       var ridgeY = pr.bottom - pr.height * RIDGE; /* screen y of the ridge line */
-      /* AT REST it is down in the ridge with only its top arc clear of the
-         pines. Any higher and it crosses the sentence, where a red disc behind
-         the red word `fikir` erases it. */
-      var restY = ridgeY + d * 0.34;
-      /* IT LANDS in the open band between the mist at the top and the first
-         line of the sentence — the only part of the sheet that is genuinely
-         empty, and the reason the sun has somewhere to go at all. Measured off
-         those two elements rather than off the plate, because they are what it
-         can actually collide with. */
+
+      /* THE SKY IT HAS TO FIT IN. Everything else on this screen is fixed — the
+         mist band at the top, the sentence below it — and the only genuinely
+         empty stretch is between them. Rather than pick a landing height and
+         then discover the sun collides with the type at some window size, the
+         gap is measured first and the sun is sized to it. It ends up as large
+         as the sheet can hold and never lands on a word. */
       var head = document.querySelector(".hero-head");
       var kasumi = document.querySelector(".kasumi");
       var headTop = head ? head.getBoundingClientRect().top : pr.top;
       var mistBottom = kasumi ? kasumi.getBoundingClientRect().bottom : 0;
-      var topY = headTop - d * 0.62;
-      /* never let it climb into the mist band it is supposed to rise out of */
-      topY = Math.max(topY, mistBottom + d * 0.45);
+      /* the mist is pale and the sun reads beautifully behind it, so it is
+         allowed to sit up into the band — only the TYPE is a hard edge */
+      var gapTop = mistBottom - 46, gapBot = headTop - 10;
+      var gap = gapBot - gapTop;
+      if (gap > 60 && gap < d) {
+        d = Math.max(120, gap * 0.94);
+        sun.style.width = d.toFixed(1) + "px";
+      }
+      var topY = (gapTop + gapBot) / 2;
+
+      /* AT REST roughly a third of it stands clear of the pines. Buried deeper
+         it stopped reading as a sun and became a red mark among the trees. */
+      var restY = ridgeY + d * 0.16;
       return { d: d, rest: restY, climb: Math.max(0, restY - topY) };
     }
 
@@ -268,9 +276,12 @@
         if (!geo) place();
         if (!geo) return;
         var p = self.progress;
-        /* RISE — the whole climb happens inside the old hold */
+        /* RISE — 45% of the ride, roughly 205px of scroll. It was 109px and
+           read as a jump rather than a climb. Ease is power2-out, not cubic:
+           the harder curve put most of the travel in the first few pixels,
+           which is what made it feel fast even before the distance changed. */
         var r = Math.min(1, p / HOLD);
-        r = 1 - Math.pow(1 - r, 3);              /* ease out, a sun slows as it clears */
+        r = 1 - Math.pow(1 - r, 2);
         /* FLOOD — nothing until the climb is done, then a straight ramp */
         var f = p <= HOLD ? 0 : (p - HOLD) / (1 - HOLD);
         gsap.set(sun, {
@@ -278,9 +289,16 @@
           scale: 1 + (neededScale() * 1.12 - 1) * f,
           force3D: true
         });
-        /* BURN — red goes to ink across the first third of the growth, so the
-           colour change is finished long before the disc reaches the edges */
-        if (fill) fill.style.opacity = Math.min(1, f / 0.34);
+        /* BURN — the ink no longer crossfades over the whole disc, it blooms
+           out of the core: a soft-edged black spreading from the centre until
+           it has taken the whole sun. Over 55% of the growth rather than 34%,
+           so you can actually watch the colour go. */
+        if (fill) {
+          var burn = Math.min(1, f / 0.55);
+          burn = burn * burn * (3 - 2 * burn);   /* smoothstep */
+          fill.style.opacity = Math.min(1, burn * 2.4).toFixed(3);
+          fill.style.transform = "scale(" + (0.1 + 0.9 * burn).toFixed(4) + ")";
+        }
         de.classList.toggle("sun-up", r > 0.98);
       }
     });
