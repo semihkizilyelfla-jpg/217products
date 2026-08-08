@@ -167,8 +167,8 @@
      Slower than the reference on purpose: its circle covers in 205px, which is
      a snap you feel rather than read. Ours holds a beat longer so the disc
      registers as a shape before it becomes a flood. */
-  var INK_RIDE = 0.62;   /* fraction of a viewport the whole opening takes */
-  var INK_HOLD = 0.45;   /* fraction of that ride the sun spends climbing */
+  var INK_RIDE = 0.82;   /* fraction of a viewport the whole opening takes */
+  var INK_HOLD = 0.52;   /* fraction of that ride the sun spends climbing */
 
   /* ---------- THE SUN ----------
      One gesture, three beats, all on the scroll:
@@ -196,7 +196,7 @@
        handover is a long ramp, so the pine tops are mist the sentence can be
        read through, and the layer only reaches 0.88 alpha at 81% down. This is
        that line, measured off the layer's own alpha profile. */
-    var RIDGE = 0.30;
+    var RIDGE = 0.20;
     var geo = null;
 
     function measure() {
@@ -261,7 +261,12 @@
         Math.hypot(innerWidth - cx, cy),
         Math.hypot(cx, innerHeight - cy),
         Math.hypot(innerWidth - cx, innerHeight - cy));
-      return (far * 2) / w * 1.06; /* +6% so no rim shows at the corner */
+      /* x1.75, not x1.06. The burn gradient's SOLID ink only reaches 62% of the
+         disc's radius — beyond that it is still oxblood cooling to a hot rim.
+         Sized for the outer edge, the viewport corners would have finished on
+         red. Sized so the ink CORE clears the far corner, the page hands over
+         black and the rim is off-screen where it belongs. */
+      return (far * 2) / w * 1.75;
     }
 
     var RIDE = INK_RIDE, HOLD = INK_HOLD;
@@ -542,14 +547,20 @@
       gsap.utils.toArray(".slot").forEach(function (slot) {
         var media = slot.querySelector(".slot-media");
         if (!media) return;
+        /* NO LEAD-IN. The reference waits 100ms before anything moves, which
+           reads as composure on its own site and as lag on ours — the cursor is
+           on the panel and the panel has not answered. The SHAPE of the move is
+           untouched (overshoot past 1, settle back, the turn carrying on
+           through both stages); only the pause in front of it is gone, and the
+           whole flick is a shade quicker at 260ms against 400. */
         var tl = gsap.timeline({ paused: true })
           .set(media, { scale: 0, rotation: 0 })
           /* opacity is its own, shorter tween — on the way back out it
              dissolves the sheet while it is still shrinking, instead of
              collapsing a solid dot into nothing */
-          .fromTo(media, { opacity: 0 }, { opacity: 1, duration: 0.14, ease: "none" }, 0.1)
-          .to(media, { scale: 1.1, rotation: midTurn, duration: 0.2, ease: "power1.inOut" }, 0.1)
-          .to(media, { scale: 1, rotation: endTurn, duration: 0.1, ease: "power1.inOut" }, 0.3);
+          .fromTo(media, { opacity: 0 }, { opacity: 1, duration: 0.1, ease: "none" }, 0)
+          .to(media, { scale: 1.1, rotation: midTurn, duration: 0.17, ease: "power2.out" }, 0)
+          .to(media, { scale: 1, rotation: endTurn, duration: 0.09, ease: "power1.inOut" }, 0.17);
         var open = function () { tl.play(); };
         var shut = function () { tl.reverse(); };
         var blur = function (e) { if (!slot.contains(e.relatedTarget)) shut(); };
