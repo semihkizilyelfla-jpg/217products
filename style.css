@@ -444,8 +444,12 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   /* Runs to the very bottom of the screen. It used to stop short and leave a
      strip of bare paper for the foot line, which read as the picture running
      out of room rather than as a horizon. The plate now ends where the page
-     does, and the foot line sits on the pale mist at the base of the art. */
-  position: absolute; inset: 0; z-index: 1;
+     does, and the foot line sits on the pale mist at the base of the art.
+     NO z-index here, deliberately. A z-index would make this a stacking
+     context and trap the sun inside it — and the sun has to be BELOW the
+     ridge while it rises and ABOVE the sentence once it floods, which it can
+     only do if its z-index is read against the hero, not against this box. */
+  position: absolute; inset: 0;
   overflow: hidden; pointer-events: none;
 }
 /* The plate has to STOP, and a straight slice through a painted ridge reads as
@@ -453,16 +457,10 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    paper. A paint-only gradient, not a mask: the layers underneath move (mouse
    parallax, scroll drift), and masking a moving subtree forces the compositor
    to re-rasterise it every frame — the exact cost the blur was removed for. */
-/* The plate is cropped to its ceiling now, and a crop through a painted wash is
-   a ruled line across the whole screen. This soaks the top of it back into the
-   sheet. Painted OVER the image rather than masked INTO it on purpose: .hz
-   carries the pointer parallax, and a mask on a moving layer re-rasterises with
-   it, which is the exact cost this hero was tuned to avoid. */
-.hero-ground::before {
-  content: ""; position: absolute; left: 0; right: 0; z-index: 2;
-  bottom: 38vh; height: 9vh; pointer-events: none;
-  background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.72) 45%, rgba(255,255,255,0) 100%);
-}
+/* The white band that used to soak the plate's cut top is gone with the cut —
+   the file is cropped where its ink begins, so the top edge is already paper.
+   Nothing needs painting over it, and a band sitting at a fixed vh could only
+   fight the sun on its way up. */
 .hero-ground::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
   /* The mist at the foot of the print is painted INTO the picture now, where a
@@ -479,23 +477,67 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    so only a vw offset keeps the ridge line in the same place on a tall screen
    and a short one. A % bottom resolves against the container's height and
    drifts the horizon every time the window changes shape. */
+/* TWO plates, not one, and they are the same box to the pixel — same width
+   rule, same bottom, same source geometry — so the sun can sit BETWEEN them and
+   rise out from behind the near ridge. They are an exact decomposition of one
+   painting: the back is the scene with the ridge lifted out of it, the front is
+   only that ridge, keyed on its own alpha. Composited they reproduce the
+   original, so nothing has to be lined up by eye.
+   The runtime crop is gone. The plate used to be a 2.64:1 image squeezed under
+   a 46vh ceiling with object-fit, which sliced a ruled line straight through a
+   painted wash — that was the cut top. The file is now cropped where the ink
+   actually begins, so at full width it arrives at its own natural height and
+   its top edge is already bare paper. */
 .hz {
   position: absolute; left: 50%; bottom: 0;
   /* The width rule is what guarantees full bleed: a plain percentage starves
      the plate on a phone (100% of 390px leaves a 75px sliver), so it takes a
      floor in px. */
-  width: max(118%, 1080px); max-width: none; height: auto;
-  /* THE CEILING, and it is not optional. Width alone decides height here, so on
-     a wide-but-short window the plate grew to 679px inside a 735px hero — the
-     whole sky gone, and the mist band at the top laid over the mountains for
-     418px. Capping in vh keeps the composition (a low range under open paper)
-     stable on any window shape; cover + bottom anchoring means the crop comes
-     off the plate's EMPTY top, which the page's own white already provides. */
-  max-height: 46vh; object-fit: cover; object-position: 50% 100%;
+  width: max(112%, 1080px); max-width: none; height: auto;
   transform: translateX(-50%);
   --o: 1; opacity: var(--o);
   will-change: transform, opacity;
 }
+.hz-back { z-index: 1; }
+.hz-front { z-index: 3; }
+
+/* ---------- the sun ----------
+   The mark that used to sit inside the sentence is now the sun of the scene: it
+   rests behind the pine ridge, rises through the valley the range opens at dead
+   centre, and then floods the page. Vermilion at rest, deepening to ink as it
+   grows — the flood has to arrive black, because what is inside it is the dark
+   shelf of screen two. Sunrise, then nightfall, in one gesture.
+   Positioned and driven entirely from main.js against the plate's measured box,
+   because every landmark it needs (the ridge line, the valley) is a fraction of
+   the painting, not of the viewport. */
+.sun {
+  position: absolute; left: 50%; bottom: 0; z-index: 2;
+  /* tied to the SHORTER axis too. On a wide-but-short window a width-only
+     clamp gave a 238px sun, and once the mist band, the open sky, the sentence
+     and the plate had taken their share there was nowhere left for it to rise
+     into — it ended up sitting on the headline. */
+  width: clamp(120px, min(15.5vw, 23vh), 264px); aspect-ratio: 1;
+  transform-origin: 50% 50%; will-change: transform;
+  pointer-events: none; user-select: none;
+  visibility: hidden;      /* main.js places it before showing it */
+}
+.sun-ink, .sun-fill {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  border-radius: 50%;
+}
+/* the painted brush rim, recoloured to the seal red */
+.sun-ink { will-change: opacity; }
+/* the ink it becomes on the way to flooding the page */
+.sun-fill { background: var(--ink); opacity: 0; will-change: opacity; }
+/* THE SWAP, and the whole thing depends on it. While it climbs, the sun must
+   pass BEHIND the pine ridge (z 3) and behind the sentence (z 5). Once it has
+   cleared the range there is nothing left to hide it, and it has to be able to
+   cover the page — so at that moment, and only then, it goes over everything.
+   main.js sets .sun-up on <html> at the top of the climb. */
+html.sun-up .sun { z-index: 6; }
+/* No JS (or reduced motion): no rise, no flood. The sun simply sits in the
+   valley where it belongs and the page is a still landscape. */
+.no-motion .sun { visibility: visible; }
 /* Pre-reveal gate only: the fades themselves run on the Web Animations API in
    lang-redirect.js, which survives DOM moves; a CSS animation here would
    restart if anything ever re-parented the hero. Inline opacity beats this. */
@@ -553,59 +595,6 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .hero-head em {
   font-style: italic; font-weight: 500; color: var(--vermilion);
   letter-spacing: -0.005em;
-}
-
-/* ---------- THE INK ----------
-   At rest an ensō set into the sentence. On scroll the ring fills solid and
-   the disc is scaled from its own centre until it floods the screen and hands
-   the page to the dark shelf below. This IS the transition, not decoration. */
-/* Sized well past the cap height on purpose — it has to read as an OBJECT set
-   into the sentence, not as a letter O.
-   Aligned to the BASELINE, not the middle. Middle-aligning it and cancelling
-   the overflow with negative margins looked tidy in the box model and put a
-   248px ring straight through the word on the line below. Sitting on the
-   baseline sends all of its extra height upward instead: the first line grows
-   a tall shoulder that the ring lives in, the two lines of text stay one
-   leading apart, and nothing collides. Same result Funtown gets from
-   `align-items: flex-end`, without turning the sentence into flex items a
-   screen reader would read as one run-on word. */
-.blot {
-  display: inline-block; position: relative; z-index: 6;
-  width: 2.3em; height: 2.3em;
-  vertical-align: baseline; margin: 0 0.02em -0.1em 0.07em;
-  transform-origin: 50% 50%; will-change: transform;
-  pointer-events: none; -webkit-tap-highlight-color: transparent;
-}
-/* clickable only while the hero is at rest — once the ink starts growing it
-   covers the viewport, and a full-screen click target would eat the page */
-html:not(.scrolled) .blot { pointer-events: auto; cursor: pointer; }
-/* The resting shape is a FILLED brush disc now, not an open ring. It had to
-   be: the reference puts a character inside its circle, and nothing can sit
-   inside a ring. The rim is still the ensō's own stroke, so the edge stays
-   hand-painted rather than geometric. */
-.blot .blot-ink {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  will-change: opacity; user-select: none;
-}
-.blot .blot-fill {
-  position: absolute; inset: 0; border-radius: 50%;
-  background: var(--ink); opacity: 0; will-change: opacity;
-}
-/* Phones can't hold it in the line. "En iyinin ◯ ardında" needs about 11em of
-   measure; a 390px screen offers 350px, which would mean a 32px headline just
-   to keep the ring between two words — and left in the flow it drops to the
-   end of a wrapped line and dangles there, which is the thing that looked
-   wrong in the first place. So on a phone it lifts out of the flow and stands
-   centred above the sentence, and the sentence gets to wrap like a sentence.
-   Positioned with margin-left rather than a transform: GSAP owns the transform
-   on this element and a CSS translate would be fighting the flood. */
-@media (max-width: 700px) {
-  .hero-head { position: relative; padding-top: 3.5em; }
-  .hero-line { display: inline; }
-  .blot {
-    position: absolute; top: 0; left: 50%; margin: 0 0 0 -1.55em;
-    width: 3.1em; height: 3.1em;
-  }
 }
 
 /* ---------- flying ink ----------
@@ -1260,5 +1249,4 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
   .hz { width: max(104%, 900px); }
   .hero { padding: clamp(74px, 12vh, 120px) var(--pad) clamp(84px, 20vh, 170px); }
   .hero-head { font-size: clamp(34px, 5.4vw, 72px); }
-  .blot { width: 2.1em; height: 2.1em; }
 }

@@ -170,27 +170,83 @@
   var INK_RIDE = 0.40;   /* fraction of a viewport the flood takes */
   var INK_HOLD = 0.37;   /* fraction of that ride it holds its shape */
 
-  /* ---------- THE INK ----------
-     The whole opening gesture. The ensō sitting in the sentence fills solid,
-     then is scaled from its own centre until it floods the screen and the dark
-     shelf below takes over inside that ink. Runs on every width — it IS the
-     transition, not an enhancement.
-     The scale needed is derived, not guessed: the disc has to reach the far
-     corner of the viewport from wherever the sentence happens to put it. */
+  /* ---------- THE SUN ----------
+     One gesture, three beats, all on the scroll:
+       RISE   the sun climbs out from behind the near pine ridge, through the
+              valley the range opens at dead centre, and stops in open sky
+       BURN   vermilion deepens to ink — the flood has to arrive BLACK, because
+              what is inside it is the dark shelf of screen two, and a red
+              screen handing over to a black one is a cut, not a transition
+       FLOOD  it grows from its own centre until it swallows the viewport
+     The rise costs nothing in scroll distance: the old opening already spent
+     its first 37% holding the disc still, and that dead hold is now the climb.
+     Every landmark it needs is a fraction of the PAINTING (the ridge line sits
+     at 58.1% up the plate, the valley at its centre), so the geometry is read
+     off the plate's measured box rather than guessed in viewport units. */
   (function () {
-    var blot = document.querySelector(".blot");
-    if (!blot) return;
-    var ring = blot.querySelectorAll(".blot-ink");
-    var fill = blot.querySelector(".blot-fill");
+    var sun = document.querySelector(".sun");
+    var plate = document.querySelector(".hz-back");
+    if (!sun || !plate) return;
+    var skin = sun.querySelector(".sun-ink");
+    var fill = sun.querySelector(".sun-fill");
+    var de = document.documentElement;
+
+    /* Where the front ridge is actually SOLID enough to hide something, as a
+       fraction of the plate's height from its bottom. Not the split row: the
+       handover is a long ramp, so the pine tops are mist the sentence can be
+       read through, and the layer only reaches 0.88 alpha at 81% down. This is
+       that line, measured off the layer's own alpha profile. */
+    var RIDGE = 0.30;
+    var geo = null;
+
+    function measure() {
+      var pr = plate.getBoundingClientRect();
+      var sr = sun.getBoundingClientRect();
+      var s = Math.abs(gsap.getProperty(sun, "scaleX") || 1);
+      var d = sr.width / s;                       /* the sun's own diameter */
+      if (!pr.height || !d) return null;
+      var ridgeY = pr.bottom - pr.height * RIDGE; /* screen y of the ridge line */
+      /* AT REST it is down in the ridge with only its top arc clear of the
+         pines. Any higher and it crosses the sentence, where a red disc behind
+         the red word `fikir` erases it. */
+      var restY = ridgeY + d * 0.34;
+      /* IT LANDS in the open band between the mist at the top and the first
+         line of the sentence — the only part of the sheet that is genuinely
+         empty, and the reason the sun has somewhere to go at all. Measured off
+         those two elements rather than off the plate, because they are what it
+         can actually collide with. */
+      var head = document.querySelector(".hero-head");
+      var kasumi = document.querySelector(".kasumi");
+      var headTop = head ? head.getBoundingClientRect().top : pr.top;
+      var mistBottom = kasumi ? kasumi.getBoundingClientRect().bottom : 0;
+      var topY = headTop - d * 0.62;
+      /* never let it climb into the mist band it is supposed to rise out of */
+      topY = Math.max(topY, mistBottom + d * 0.45);
+      return { d: d, rest: restY, climb: Math.max(0, restY - topY) };
+    }
+
+    /* the sun is bottom-anchored in the scene, so its resting offset is written
+       once as a `bottom` in px and the rise rides on transform from there */
+    function place() {
+      geo = measure();
+      if (!geo) return;
+      var groundBottom = document.querySelector(".hero-ground").getBoundingClientRect().bottom;
+      sun.style.bottom = (groundBottom - geo.rest - geo.d / 2).toFixed(1) + "px";
+      sun.style.marginLeft = (-geo.d / 2).toFixed(1) + "px";
+      sun.style.visibility = "visible";
+    }
 
     function neededScale() {
-      var r = blot.getBoundingClientRect();
+      var r = sun.getBoundingClientRect();
       if (!r.width) return 24;
       /* getBoundingClientRect already includes the live scroll transform, so
          divide it back out — otherwise every refresh mid-flood reads a huge
          width and collapses the target scale. */
-      var s = gsap.getProperty(blot, "scaleX") || 1;
+      var s = Math.abs(gsap.getProperty(sun, "scaleX") || 1);
       var w = r.width / s;
+      /* the rect already carries the live transform, so this is where the sun
+         actually is — and the flood only ever starts once the climb is over,
+         which means it is already at its final height when this is read */
       var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
       var far = Math.max(
         Math.hypot(cx, cy),
@@ -200,38 +256,43 @@
       return (far * 2) / w * 1.06; /* +6% so no rim shows at the corner */
     }
 
-    /* ---- timing, measured off the reference rather than guessed ----
-       Its circle holds at 1:1 for the first ~80px of scroll (9% of a viewport),
-       then grows on a dead-straight linear ramp, and has swallowed the whole
-       screen by scrollY ~205 — under a quarter of one screen.
-       Ours used to finish at ~519px. Two and a half times too slow is not a
-       slower version of the same gesture; it turns a flood into a black ball
-       you sit and watch expand. Same shape now: hold, then go.
-         hold  = 0.37 * 0.26vh = ~87px on a 900-tall screen
-         cover = ~218px */
     var RIDE = INK_RIDE, HOLD = INK_HOLD;
-    function inkEase(p) { return p < HOLD ? 0 : (p - HOLD) / (1 - HOLD); }
-
-    gsap.fromTo(blot, { scale: 1 }, {
-      scale: function () { return neededScale() * 1.12; },
-      ease: inkEase, force3D: true,
-      scrollTrigger: { start: 0, end: function () { return window.innerHeight * RIDE; },
-                       scrub: true, invalidateOnRefresh: true }
+    /* one scrubbed trigger for the whole gesture: three beats read off a single
+       progress value, so the hands can never drift apart */
+    ScrollTrigger.create({
+      start: 0,
+      end: function () { return window.innerHeight * RIDE; },
+      scrub: true, invalidateOnRefresh: true,
+      onRefresh: function () { place(); },
+      onUpdate: function (self) {
+        if (!geo) place();
+        if (!geo) return;
+        var p = self.progress;
+        /* RISE — the whole climb happens inside the old hold */
+        var r = Math.min(1, p / HOLD);
+        r = 1 - Math.pow(1 - r, 3);              /* ease out, a sun slows as it clears */
+        /* FLOOD — nothing until the climb is done, then a straight ramp */
+        var f = p <= HOLD ? 0 : (p - HOLD) / (1 - HOLD);
+        gsap.set(sun, {
+          y: -geo.climb * r,
+          scale: 1 + (neededScale() * 1.12 - 1) * f,
+          force3D: true
+        });
+        /* BURN — red goes to ink across the first third of the growth, so the
+           colour change is finished long before the disc reaches the edges */
+        if (fill) fill.style.opacity = Math.min(1, f / 0.34);
+        de.classList.toggle("sun-up", r > 0.98);
+      }
     });
-    /* the ring closes into a solid disc INSIDE the hold, so growth always
-       starts from a finished circle and never from a half-drawn one */
-    if (fill) gsap.to(fill, { opacity: 1, ease: "power1.in", scrollTrigger: {
-      start: 0, end: function () { return window.innerHeight * 0.075; }, scrub: true, invalidateOnRefresh: true } });
-    /* the painted rim and the figure both dissolve inside the hold, so what
-       actually floods the page is the flat disc and nothing else */
-    if (ring.length) gsap.to(ring, { opacity: 0, ease: "none", scrollTrigger: {
-      start: function () { return window.innerHeight * 0.04; },
-      end: function () { return window.innerHeight * 0.085; }, scrub: true, invalidateOnRefresh: true } });
+
+    addEventListener("resize", function () { geo = null; }, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+    addEventListener("load", place);
+    place();
 
     /* No fade on the hero copy. GSAP would capture its start opacity while the
        WAAPI entrance is still mid-flight and animate 0 -> 0, blanking the hero.
-       It isn't needed either: the ink sits above the copy in the stack, so the
-       growing disc covers the words on its own. */
+       It isn't needed either: the sun sits above the copy once it floods. */
   })();
 
   /* ---------- the ink comes alive ----------
