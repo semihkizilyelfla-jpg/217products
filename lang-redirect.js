@@ -68,19 +68,16 @@
       bootAnims.push(a);
     });
 
-    /* plate settle — gentle zoom, desktop only (skipped on phones for GPU) */
-    var scene = document.querySelector(".hero-ground");
-    if (scene && matchMedia("(min-width: 821px)").matches) {
-      scene.animate(
-        [{ transform: "scale(1.035)" }, { transform: "scale(1)" }],
-        { duration: 2000, easing: EASE_MOVE, fill: "backwards" });
-    }
+    /* The disc's settle used to be a zoom on the whole painted scene. There is
+       no scene now, and it must NOT be re-pointed at `.sun`: a WAAPI transform
+       there would override the scroll gesture's own transform for its first two
+       seconds. The disc arrives on opacity alone, below. */
 
-    /* the plate — fades in once decoded, in the same tempo family as the copy
+    /* the disc — fades in once decoded, in the same tempo family as the copy
        (1.8s, same curve). Cached visits fade too: the opening should feel
        composed every time, never "pop". */
-    var pls = [].slice.call(document.querySelectorAll(".hero-ground .hz"));
-    var delays = { "hz": 120 };
+    var pls = [].slice.call(document.querySelectorAll(".hero .sun-ink"));
+    var delays = { "sun-ink": 120 };
     if (!pls.length) { imgsGo(); return; }
     var left = pls.length;
     function done() { if (--left <= 0) imgsGo(); }

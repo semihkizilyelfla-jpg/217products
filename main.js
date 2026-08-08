@@ -98,7 +98,7 @@
       el.style.opacity = "1"; el.style.transform = "none";
     });
     /* no scroll animation → the ensō stays a ring, and the hero keeps its
-       resting state. The plate layers are revealed by the boot script. */
+       resting state: the disc sits in its field, vermilion, and never burns. */
     document.documentElement.classList.add("no-motion");
     /* word-brighten scrub won't run → give the words full ink */
     [].forEach.call(document.querySelectorAll(".brighten .w"), function (el) {
@@ -171,101 +171,44 @@
   /* ---------- the opening's clock ----------
      Slower than the reference on purpose: its circle covers in 205px, which is
      a snap you feel rather than read. Ours holds a beat longer so the disc
-     registers as a shape before it becomes a flood. */
-  var INK_RIDE = 0.82;   /* fraction of a viewport the whole opening takes */
-  var INK_HOLD = 0.52;   /* fraction of that ride the sun spends climbing */
+     registers as a shape before it becomes a flood.
+     RIDE is paired with .hero-run in the stylesheet — see the note there. Ride
+     0.68 of a viewport, run 0.76, so the flood is finished and the page is
+     black a comfortable 8% before the next section's shelf can reach the
+     screen. Change one and you must change the other. */
+  var INK_RIDE = 0.68;   /* fraction of a viewport the whole opening takes */
+  /* 0.30, down from 0.42. The climb is worth almost nothing on screen — a 50px
+     lift and 10% of growth — so spending two fifths of the ride on it forced
+     everything that IS worth watching into the back half, and the disc went
+     from vermilion to solid ink inside 200px of scroll. Measured: at 0.42 the
+     burn was already saturated by 41% of a viewport. The red is the thing here;
+     it gets the room. */
+  var INK_HOLD = 0.30;   /* fraction of that ride the disc spends climbing */
 
-  /* ---------- THE SUN ----------
-     One gesture, three beats, all on the scroll:
-       RISE   the sun climbs out from behind the near pine ridge, through the
-              valley the range opens at dead centre, and stops in open sky
-       BURN   vermilion deepens to ink — the flood has to arrive BLACK, because
-              what is inside it is the dark shelf of screen two, and a red
-              screen handing over to a black one is a cut, not a transition
-       FLOOD  it grows from its own centre until it swallows the viewport
-     The rise costs nothing in scroll distance: the old opening already spent
-     its first 37% holding the disc still, and that dead hold is now the climb.
-     Every landmark it needs is a fraction of the PAINTING (the ridge line sits
-     at 58.1% up the plate, the valley at its centre), so the geometry is read
-     off the plate's measured box rather than guessed in viewport units. */
+  /* ---------- THE DISC ----------
+     Two beats on the scroll, and no landscape in either of them:
+       CLIMB  the circle lifts a little and swells a little — enough to read as
+              a sun getting up, not enough to reach the nav
+       BURN + FLOOD  vermilion deepens to ink from the core out while the disc
+              grows past the far corner of the screen
+     The flood has to arrive BLACK: what is inside it is the dark shelf of
+     screen two, and a red screen handing over to a black one is a cut rather
+     than a transition.
+     ALL the geometry the old version needed — a ridge line measured off the
+     painting, the mist band's lower edge, a column with solid ink under it to
+     hide behind — is gone with the painting. The disc is laid out by the hero's
+     own flexbox and this only ever writes transforms on it. */
   (function () {
     var sun = document.querySelector(".sun");
-    var plate = document.querySelector(".hz-back");
-    if (!sun || !plate) return;
-    var skin = sun.querySelector(".sun-ink");
+    if (!sun) return;
     var fill = sun.querySelector(".sun-fill");
-    var copy = [].slice.call(document.querySelectorAll(".hero-head, .hero-foot"));
     var de = document.documentElement;
 
-    /* THE WATERLINE, as a fraction of the plate's height from its bottom — the
-       row the two layers were split on, so it is exact. Measured off the
-       painting: down the centre of the valley the ink is flat zero above raw
-       row 875 and only starts at the water, which is the horizon of the scene.
-       The sun belongs there. It used to sit on the pine ridge instead, which
-       put it nearer than the range standing behind it — the one thing a sun can
-       never be. */
-    var WATER = 0.744;
-    var geo = null;
-
-    function measure() {
-      var pr = plate.getBoundingClientRect();
-      var sr = sun.getBoundingClientRect();
-      var s = Math.abs(gsap.getProperty(sun, "scaleX") || 1);
-      var d = sr.width / s;                       /* the sun's own diameter */
-      if (!pr.height || !d) return null;
-      var waterY = pr.bottom - pr.height * WATER;  /* screen y of the horizon */
-      var kasumi = document.querySelector(".kasumi");
-      var mistBottom = kasumi ? kasumi.getBoundingClientRect().bottom : 0;
-
-      /* AT REST the disc sits on the horizon with its foot just touching the
-         water, which is exactly what a sun that has cleared the horizon looks
-         like — and the reflection column the painting already runs down the
-         middle of the lake becomes its own. */
-      var restY = waterY - d * 0.46;
-
-      /* IT LANDS high in the open sky. The sentence is no longer a constraint
-         on this: it fades out as the sun climbs (see the ride below), so the
-         sun is free to take the middle of the sheet instead of being squeezed
-         into whatever the type left over — which is what shrank it to 98px. */
-      var topY = mistBottom + d * 0.42;
-
-      /* only shrink if the sheet genuinely cannot hold it */
-      var room = restY - topY;
-      if (room < d * 0.55 && room > 0) {
-        d = Math.max(110, d * (room / (d * 0.55)));
-        sun.style.width = d.toFixed(1) + "px";
-        restY = waterY - d * 0.46;
-        topY = mistBottom + d * 0.42;
-      }
-      return { d: d, rest: restY, climb: Math.max(0, restY - topY) };
-    }
-
-    /* the sun is bottom-anchored in the scene, so its resting offset is written
-       once as a `bottom` in px and the rise rides on transform from there */
-    function place() {
-      geo = measure();
-      if (!geo) return;
-      var groundBottom = document.querySelector(".hero-ground").getBoundingClientRect().bottom;
-      sun.style.bottom = (groundBottom - geo.rest - geo.d / 2).toFixed(1) + "px";
-      sun.style.marginLeft = (-geo.d / 2).toFixed(1) + "px";
-      sun.style.visibility = "visible";
-
-      /* THE SENTENCE SITS ON THE SUN, not on a number. Its resting place is
-         whatever clears the disc at the horizon — and where the horizon falls
-         depends on the plate, which depends on the window's WIDTH, so no
-         padding written in vh could ever hold at both 735 and 911 tall. It was
-         landing across the sun at rest at exactly the sizes the clamp did not
-         happen to suit. This drives it off the geometry instead.
-         No circularity: the sun's rest reads the plate and the mist band only,
-         never the type. */
-      var hero = document.querySelector(".hero");
-      if (hero) {
-        var hb = hero.getBoundingClientRect();
-        var need = hb.bottom - (geo.rest - geo.d * 0.5 - 14);
-        hero.style.paddingBottom =
-          Math.max(140, Math.min(hb.height * 0.66, need)).toFixed(0) + "px";
-      }
-    }
+    /* How far it lifts. A fraction of the VIEWPORT, not of the disc: the disc
+       is already sized off the short axis, so tying the climb to it too would
+       compound and send it into the header on a tall window. 7% is a move you
+       notice without ever wondering where it went. */
+    function climbPx() { return Math.round(window.innerHeight * 0.07); }
 
     function neededScale() {
       var r = sun.getBoundingClientRect();
@@ -275,9 +218,9 @@
          width and collapses the target scale. */
       var s = Math.abs(gsap.getProperty(sun, "scaleX") || 1);
       var w = r.width / s;
-      /* the rect already carries the live transform, so this is where the sun
-         actually is — and the flood only ever starts once the climb is over,
-         which means it is already at its final height when this is read */
+      /* The rect carries the live y as well, which is exactly right: the flood
+         only ever starts once the climb is over, so this is the disc's real
+         centre at the moment it begins to grow. */
       var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
       var far = Math.max(
         Math.hypot(cx, cy),
@@ -293,66 +236,55 @@
     }
 
     var RIDE = INK_RIDE, HOLD = INK_HOLD;
-    /* one scrubbed trigger for the whole gesture: three beats read off a single
+    var LIFT = 1.10;   /* how much bigger the disc is by the top of its climb */
+
+    /* one scrubbed trigger for the whole gesture: both beats read off a single
        progress value, so the hands can never drift apart */
     ScrollTrigger.create({
       start: 0,
       end: function () { return window.innerHeight * RIDE; },
       scrub: true, invalidateOnRefresh: true,
-      onRefresh: function () { place(); },
       onUpdate: function (self) {
-        if (!geo) place();
-        if (!geo) return;
         var p = self.progress;
-        /* RISE — 45% of the ride, roughly 205px of scroll. It was 109px and
-           read as a jump rather than a climb. Ease is power2-out, not cubic:
-           the harder curve put most of the travel in the first few pixels,
-           which is what made it feel fast even before the distance changed. */
+        /* CLIMB — power2-out, not cubic: the harder curve puts most of the
+           travel in the first few pixels, which reads as a jump rather than a
+           rise even when the distance is identical. */
         var r = Math.min(1, p / HOLD);
         r = 1 - Math.pow(1 - r, 2);
         /* FLOOD — nothing until the climb is done, then a straight ramp */
         var f = p <= HOLD ? 0 : (p - HOLD) / (1 - HOLD);
         gsap.set(sun, {
-          y: -geo.climb * r,
-          scale: 1 + (neededScale() * 1.12 - 1) * f,
+          y: -climbPx() * r,
+          scale: 1 + (LIFT - 1) * r + (neededScale() - LIFT) * f,
           force3D: true
         });
-        /* BURN — the ink no longer crossfades over the whole disc, it blooms
-           out of the core: a soft-edged black spreading from the centre until
-           it has taken the whole sun. Over 55% of the growth rather than 34%,
-           so you can actually watch the colour go. */
+        /* BURN — the ink does not crossfade over the whole disc, it blooms out
+           of the core: a soft-edged black spreading from the centre until it
+           has taken the circle.
+           It starts LATE and runs LONG (0.16 -> 0.64 of the flood, against the
+           old 0 -> 0.23 once the 2.4x multiplier is accounted for). The first
+           beat of the growth is the disc getting bigger while it is still
+           unmistakably vermilion — that is the shot the whole hero is built
+           around, and burning from the first pixel of scroll threw it away.
+           It is still fully black well before the disc covers the screen, which
+           is the one hard requirement: what is inside the flood is the dark
+           shelf of screen two, and red handing over to black is a cut. */
         if (fill) {
-          var burn = Math.min(1, f / 0.55);
+          var burn = Math.min(1, Math.max(0, (f - 0.16) / 0.48));
           burn = burn * burn * (3 - 2 * burn);   /* smoothstep */
-          fill.style.opacity = Math.min(1, burn * 2.4).toFixed(3);
+          fill.style.opacity = Math.min(1, burn * 1.7).toFixed(3);
           fill.style.transform = "scale(" + (0.1 + 0.9 * burn).toFixed(4) + ")";
         }
-        /* The sentence steps aside. It has been read by the time anyone has
-           scrolled this far, and it is the only thing standing between the
-           horizon and the open sky the sun has to climb into — holding it there
-           is what forced the sun down to 98px in the first place. Written
-           straight to style rather than tweened: GSAP capturing a start value
-           while the WAAPI opening is still mid-flight is what blanked this hero
-           once before. */
-        if (copy.length) {
-          var fade = Math.max(0, Math.min(1, (r - 0.12) / 0.42));
-          fade = fade * fade * (3 - 2 * fade);
-          for (var i = 0; i < copy.length; i++) {
-            copy[i].style.opacity = (1 - fade).toFixed(3);
-          }
-        }
-        de.classList.toggle("sun-up", r > 0.98);
+        /* THE SWAP: while it is climbing the disc is part of the picture, under
+           the grain and under the sentence. The instant it starts covering, it
+           has to be over both. */
+        de.classList.toggle("sun-up", f > 0);
       }
     });
 
-    addEventListener("resize", function () { geo = null; }, { passive: true });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
-    addEventListener("load", place);
-    place();
-
     /* No fade on the hero copy. GSAP would capture its start opacity while the
        WAAPI entrance is still mid-flight and animate 0 -> 0, blanking the hero.
-       It isn't needed either: the sun sits above the copy once it floods. */
+       It isn't needed either: the disc sits above the copy once it floods. */
   })();
 
   /* ---------- the ink comes alive ----------
@@ -374,10 +306,15 @@
     var G = 2000, AIR = 0.9985, BOUNCE = 0.4, GRIP = 0.72, SLEEP = 6;
     var bodies = [], raf = 0, prev = 0, still = 0;
 
+    /* The ink used to pile up along the painted ridge. With the painting gone
+       the only line left on the sheet is the foot rule, so that is where it
+       lands — which is better anyway: the marks settle ON the credo instead of
+       on a horizon that was never quite where the pile ended up. */
     function floorY() {
-      var g = document.querySelector(".hero-ground");
       var hb = hero.getBoundingClientRect();
-      return g ? g.getBoundingClientRect().bottom - hb.top : hero.offsetHeight - 70;
+      var foot = document.querySelector(".hero-foot");
+      if (foot) return foot.getBoundingClientRect().top - hb.top - 6;
+      return hero.offsetHeight - 70;
     }
 
     /* Read a mark's resting place ONCE and keep driving it with a transform
@@ -637,44 +574,28 @@
         scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: true } });
     });
 
-    /* Light mouse parallax across the plate.
-       THE TRAP, and it cost a live page: .hz is centred in CSS with
-       translateX(-50%), and GSAP cannot see that it was a PERCENTAGE — it reads
-       the computed matrix and records x = -897px. Writing xPercent on top does
-       not replace that, it ADDS to it, so the first mouse move shifted the plate
-       a full extra width to the left and half the horizon walked off screen.
-       It never showed in a headless check because nothing had moved the pointer
-       over the hero. Handing the centring to xPercent and zeroing x makes the
-       two live in the same unit, so the pointer offset is the only thing left
-       moving. */
+    /* Light mouse parallax over the hero. It rides on the BRUSH SKIN inside the
+       disc, never on `.sun` itself: the scroll gesture writes y and scale on the
+       wrapper every frame, and two hands on one transform is how the plate's
+       centring bug shipped last time — GSAP read a CSS translateX(-50%) as
+       x = -897px and the pointer offset ADDED to it, walking half the horizon
+       off screen on the first mouse move. Nothing in the hero is centred by a
+       transform any more (flexbox does it), and the two writers now own two
+       different elements, so that class of bug cannot recur here. */
     if (matchMedia("(pointer: fine)").matches) {
-      var setters = gsap.utils.toArray(".hero-ground [data-depth]").map(function (el) {
+      var setters = gsap.utils.toArray(".hero [data-depth]").map(function (el) {
         var d = parseFloat(el.dataset.depth) || 0.2;
-        var centred = el.classList.contains("hz");
-        if (centred) gsap.set(el, { x: 0, xPercent: -50 });
-        return { x: gsap.quickTo(el, centred ? "xPercent" : "x", { duration: 1.0, ease: "power3.out" }),
-                 y: gsap.quickTo(el, "y", { duration: 1.0, ease: "power3.out" }),
-                 d: d, base: centred ? -50 : 0, unit: centred ? 0.14 : 1 };
+        return { x: gsap.quickTo(el, "x", { duration: 1.0, ease: "power3.out" }),
+                 y: gsap.quickTo(el, "y", { duration: 1.0, ease: "power3.out" }), d: d };
       });
+      if (!setters.length) return;
       var onMove = function (e) {
         var nx = (e.clientX / innerWidth) * 2 - 1, ny = (e.clientY / innerHeight) * 2 - 1;
-        setters.forEach(function (s) { s.x(s.base + nx * -18 * s.d * s.unit); s.y(ny * -11 * s.d); });
+        setters.forEach(function (s) { s.x(nx * -18 * s.d); s.y(ny * -11 * s.d); });
       };
       addEventListener("mousemove", onMove);
       return function () { removeEventListener("mousemove", onMove); };
     }
-  });
-
-  mm.add("(max-width: 820px)", function () {
-    /* phones: the plate layers drift at their own depths as the hero scrolls
-       away, so the print keeps its dimensionality on touch too. Transform-only,
-       scrubbed, cheap. Absolute offsets, like the desktop branch: the hero is
-       sticky, so its box never travels and "bottom top" would never fire. */
-    gsap.utils.toArray(".hero-ground [data-depth]").forEach(function (el) {
-      var d = parseFloat(el.dataset.depth) || 0.2;
-      gsap.to(el, { y: -(d * 46), ease: "none", force3D: true,
-        scrollTrigger: { start: 0, end: function () { return window.innerHeight; }, scrub: true, invalidateOnRefresh: true } });
-    });
   });
 
   /* recalc pins after big hero layers finish loading (kills layout shift) */

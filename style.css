@@ -30,6 +30,14 @@
   --paper: #FFFFFF;
   --paper-2: #F4F4F3;
   --paper-3: #E8E8E7;
+  /* THE OPENING SHEET. Measured off the reference, not chosen: its hero runs
+     rgb(240,240,243) with the nav capsule one step lighter at rgb(248,248,251),
+     and that half-step is the whole reason its chrome reads at all. Pure white
+     gives a floating capsule nothing to float above — which is exactly why our
+     nav needed an inset ring to be seen. The deck below stays --paper: the
+     six sumi illustrations are melted into a white ground, so moving the whole
+     page off white would ring each of them in a pale halo. */
+  --hero-paper: #F0F0F3;
   --ink: #111111;
   --ink-2: #575757;
   --ink-dim: #8C8C8C;
@@ -159,37 +167,6 @@ html.past-hero .brand { opacity: 0; transform: translateY(-14px); pointer-events
 .nav-cta:hover { background: #A02611; transform: translateY(-1px); }
 .nav-links .nav-cta::after { display: none; }
 .nav-alt { color: var(--gold-ink) !important; }
-
-/* ---------- kasumi ----------
-   A woodblock print bands the top of the sheet with stylised mist rather than
-   leaving it bare; that band is where the seal and the title sit. This is a
-   PAINTED band, the same hand as the landscape at the foot of the page — a CSS
-   gradient stack was the wrong tool, it reads as a graphic effect rather than
-   as part of the print. It sits behind the header inside the hero, so it
-   scrolls away with the opening rather than following the page down. */
-.kasumi {
-  position: absolute; top: 0; left: 50%; z-index: 2;
-  width: max(104%, 1080px); max-width: none; height: auto;
-  transform: translateX(-50%);
-  /* Held back on white. On cream this band was a warm haze that read as the
-     paper's own tone; neutralised, the same ink reads as weather — a grey mass
-     across the top where the sheet should be open. Half strength puts it back
-     to what it is: a hint the header sits on. */
-  opacity: 0.55;
-  /* Its own ceiling, for the same reason the plate has one: sized off width
-     alone it ran 474px down a 735px screen and met the mountains coming up.
-     26vh keeps it a band behind the header. The crop lands mid-cloud, so the
-     mask dissolves the cut instead of leaving a ruled edge — the element never
-     moves, so this rasterises once and costs nothing per frame. */
-  /* 16vh, not 26. The band is decoration behind the header, but at a quarter of
-     the screen it was eating the sky the sun has to rise into — the auto-sizing
-     below squeezed the sun to 98px to keep it off the type. Thinner band, room
-     for a sun. */
-  max-height: 16vh; object-fit: cover; object-position: 50% 0%;
-  -webkit-mask-image: linear-gradient(180deg, #000 58%, transparent 100%);
-          mask-image: linear-gradient(180deg, #000 58%, transparent 100%);
-  pointer-events: none; user-select: none;
-}
 
 /* ---------- desktop: the bar becomes a floating washi seal ----------
    The header stops being a strip across the top. The wordmark stands alone
@@ -411,11 +388,13 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    1 · HERO — one sentence on a sheet of paper
    ------------------------------------------------------------
    Screen one carries a single idea and nothing else: no kicker, no
-   sub-paragraph, no buttons, no scroll cue. The landscape is demoted from a
-   full-bleed backdrop to a print plate at the FOOT of the sheet, which is how
-   an ukiyo-e print composes anyway — a low horizon under a vast empty sky.
-   Because the type now sits on clean washi, every readability patch it used to
-   need (three text-shadows, a radial wash, a scrim) is gone.
+   sub-paragraph, no buttons, no scroll cue. THERE IS NO LANDSCAPE. Five
+   revisions went into fitting a painted horizon, a rising sun, a mist band and
+   a two-line sentence into one screen, and every one of them ended with ink
+   cutting through the type. The sheet is flat now, the way the reference's is:
+   a tinted ground, a ruled lattice, film grain, and one vermilion circle. All
+   of the readability patches that plate needed — three text-shadows, a radial
+   wash, a scrim, a foot mist — went with it.
    Sticky, not pinned: the hero parks and the page slides over it, so GSAP
    never re-parents it into a pin-spacer and restarts its entrance.
    ============================================================ */
@@ -425,147 +404,98 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   text-align: center;
   /* The sentence is bottom-anchored, not centred. A headline parked in the
      middle of the screen is the safe answer everyone reaches for; dropping it
-     low leaves the top of the sheet genuinely empty, which is where the calm
-     comes from — and it is what the reference does too, its block sitting at
-     377-742 of a 900 screen. The bottom padding holds it off the foot line. */
-  padding: clamp(96px, 13vh, 172px) var(--pad) clamp(150px, 25vh, 250px);
-  background: var(--paper);
-  /* NOT overflow:hidden — the ink has to grow past the hero. The ground layer
-     one level down does its own clipping. */
+     low leaves the top of the sheet for the disc — and it is what the reference
+     does too, its block sitting at 377-742 of a 900 screen. The bottom padding
+     holds it off the foot line. */
+  padding: clamp(96px, 13vh, 172px) var(--pad) clamp(126px, 17vh, 200px);
+  /* The reference's exact sheet, and it is a tint rather than white for a
+     reason that shows up two elements away: the nav capsule floats because it
+     is a half-step LIGHTER than what it floats over. On pure white that
+     capsule had to be drawn with an inset ring to exist at all. */
+  background: var(--hero-paper);
+  /* NOT overflow:hidden — the disc has to be able to grow past the hero. */
 }
 
 /* ---------- the hero's own scroll ----------
-   The hero is sticky and the deck slides over it, which means the dark shelf
-   starts climbing on the very first pixel of scroll. That was fine when the
-   opening took 40% of a viewport; at 82% the shelf simply outran the sun and
-   arrived over a sky that had not finished anything yet.
-   This is empty scroll that belongs to the hero. Nothing renders in it — the
-   pinned hero shows through — so the sun gets its whole ride before the next
-   section is allowed to reach the screen. 62svh is where the flood finishes
-   covering (0.72 of a 0.82svh ride), so the shelf begins to rise at the moment
-   the page has already gone black and you never see it arrive. */
-.hero-run { height: 62svh; pointer-events: none; }
-@supports not (height: 100svh) { .hero-run { height: 62vh; } }
+   The hero is sticky and the deck slides over it, which means the dark shelf of
+   screen two starts climbing on the very first pixel of scroll. This is empty
+   scroll that belongs to the hero: nothing renders in it — the parked hero
+   shows through — so the disc gets its whole ride before the next section is
+   allowed to reach the screen.
+   THE TWO NUMBERS ARE A PAIR. The shelf's top edge reaches the bottom of the
+   screen at exactly this height of scroll; the disc finishes covering at
+   INK_RIDE (main.js) of a viewport. Keep this the larger of the two or the
+   shelf arrives over a page that has not gone black yet, which reads as the
+   next section interrupting the first. 0.68 ride vs 0.76 run: an 8% cushion. */
+.hero-run { height: 76svh; pointer-events: none; }
+@supports not (height: 100svh) { .hero-run { height: 76vh; } }
 
-/* ---------- the print plate ----------
-   ONE painted horizon, not three stacked cut-outs. The old plate re-purposed
-   the original hero's mountain, foreground and gate layers: three images drawn
-   for a full-bleed backdrop, each with its own crop and its own idea of where
-   the ground was, so their ridges doubled up and the gate never quite stood on
-   anything. This is a single band painted for the job — a low range under two
-   thirds of empty paper, its own mist, its own gate on its own ridge — keyed to
-   our exact --paper and alpha-ramped at the top so it dissolves into the sheet
-   instead of ending on a line. It stops short of the bottom edge so the paper
-   keeps a clean margin for the foot line. */
-.hero-ground {
-  /* Runs to the very bottom of the screen. It used to stop short and leave a
-     strip of bare paper for the foot line, which read as the picture running
-     out of room rather than as a horizon. The plate now ends where the page
-     does, and the foot line sits on the pale mist at the base of the art.
-     NO z-index here, deliberately. A z-index would make this a stacking
-     context and trap the sun inside it — and the sun has to be BELOW the
-     ridge while it rises and ABOVE the sentence once it floods, which it can
-     only do if its z-index is read against the hero, not against this box. */
-  position: absolute; inset: 0;
-  overflow: hidden; pointer-events: none;
+/* ---------- the deck states its own sheet ----------
+   THE HERO IS STICKY FOR THE WHOLE OF main. Its box never leaves the top of the
+   screen, which means its sheet is painting behind every section below it, all
+   the way to the footer — and every one of those sections was transparent.
+   That was invisible for as long as the hero was #FFFFFF and the body was
+   #FFFFFF: two identical whites stacked. The moment the hero took the
+   reference's tint the whole deck started standing on grey, and the six sumi
+   illustrations are melted into a WHITE ground, so each of them would have
+   picked up a pale rectangular halo. Measured, not guessed: elementsFromPoint
+   at the middle of the statement section returns [statement, hero, main, body].
+   `.products` needs it too. Its dark shelf is a ::before inset
+   `0 -760px 0 680px` — it only covers from the shelf's left edge rightward, and
+   the column to the left of that is bare section.
+   Not on `main`: `.hero-run` is deliberately transparent so the flooding disc
+   shows through it, and a background there would be painted under the hero
+   rather than over it — the run would go white and swallow the flood. */
+.products, .statement, .craft, .studio, .process, .hub, .final, .foot {
+  background-color: var(--paper);
 }
-/* The plate has to STOP, and a straight slice through a painted ridge reads as
-   a crop rather than a horizon. So the last stretch is soaked back into the
-   paper. A paint-only gradient, not a mask: the layers underneath move (mouse
-   parallax, scroll drift), and masking a moving subtree forces the compositor
-   to re-rasterise it every frame — the exact cost the blur was removed for. */
-/* The white band that used to soak the plate's cut top is gone with the cut —
-   the file is cropped where its ink begins, so the top edge is already paper.
-   Nothing needs painting over it, and a band sitting at a fixed vh could only
-   fight the sun on its way up. */
-.hero-ground::after {
-  /* z 4, ABOVE the front ridge at 3. It used to be 2, which was right when the
-     plate was a single image at 1 — the moment the scene split into two layers
-     the ridge started painting over its own mist and the foot of the page went
-     to a black slab with the credo lost on it. Below the sentence at 5, above
-     everything the scene draws. */
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; z-index: 4;
-  /* The mist at the foot of the print, and it carries real weight now. The
-     scene ends on the densest black in the whole painting and the foot line —
-     the seal, the credo, the ink toy — sits right on it at 13-19px. A wash
-     this deep is what a woodblock does at the edge of the block anyway, and it
-     is the difference between that line being readable and being lost.
-     Measured against the ridge, not guessed: the bottom 100px is where the
-     pine mass is solid. */
-  height: clamp(94px, 13.5vh, 158px); pointer-events: none;
-  background: linear-gradient(180deg,
-    rgba(255,255,255,0) 0%, rgba(255,255,255,0.34) 38%,
-    rgba(255,255,255,0.80) 68%, rgba(255,255,255,0.97) 100%);
-}
-/* Each layer's resting opacity lives in --o, not in `opacity` directly: the
-   entrance fades each image to its OWN resting value as it decodes, so a
-   generic "fade to 1" can't flatten the depth stack. */
-/* The offset is in vw, not %, and that is the whole trick. This is a
-   full-width landscape: its rendered HEIGHT is a function of viewport WIDTH,
-   so only a vw offset keeps the ridge line in the same place on a tall screen
-   and a short one. A % bottom resolves against the container's height and
-   drifts the horizon every time the window changes shape. */
-/* TWO plates, not one, and they are the same box to the pixel — same width
-   rule, same bottom, same source geometry — so the sun can sit BETWEEN them and
-   rise out from behind the near ridge. They are an exact decomposition of one
-   painting: the back is the scene with the ridge lifted out of it, the front is
-   only that ridge, keyed on its own alpha. Composited they reproduce the
-   original, so nothing has to be lined up by eye.
-   The runtime crop is gone. The plate used to be a 2.64:1 image squeezed under
-   a 46vh ceiling with object-fit, which sliced a ruled line straight through a
-   painted wash — that was the cut top. The file is now cropped where the ink
-   actually begins, so at full width it arrives at its own natural height and
-   its top edge is already bare paper. */
-.hz {
-  position: absolute; left: 50%; bottom: 0;
-  /* The width rule is what guarantees full bleed: a plain percentage starves
-     the plate on a phone (100% of 390px leaves a 75px sliver), so it takes a
-     floor in px. */
-  width: max(106%, 1080px); max-width: none; height: auto;
-  transform: translateX(-50%);
-  --o: 1; opacity: var(--o);
-  will-change: transform, opacity;
-}
-.hz-back { z-index: 1; }
-.hz-front { z-index: 3; }
 
-/* ---------- the sun ----------
-   The mark that used to sit inside the sentence is now the sun of the scene: it
-   rests behind the pine ridge, rises through the valley the range opens at dead
-   centre, and then floods the page. Vermilion at rest, deepening to ink as it
-   grows — the flood has to arrive black, because what is inside it is the dark
-   shelf of screen two. Sunrise, then nightfall, in one gesture.
-   Positioned and driven entirely from main.js against the plate's measured box,
-   because every landmark it needs (the ridge line, the valley) is a fraction of
-   the painting, not of the viewport. */
+/* ---------- THE DISC ----------
+   The landscape is gone — plate, mist band, skyline haze and foot wash are
+   deleted, not hidden. What the hero shows now is a flat sheet and one
+   vermilion circle, which is the mark this brand actually owns: 日の丸, the
+   seal, the ensō are all the same shape, and it needs no mountain to explain
+   itself.
+   It is a FLEX ITEM, not an absolutely positioned one. `.hero` is a column
+   ending at flex-end, so `margin-block: auto` parks the disc in exactly the
+   space the sentence leaves over — centred in the open field on a laptop, and
+   riding up on its own when the headline wraps to four lines on a phone. Auto
+   margins also beat `justify-content`, so the headline stays pinned to the
+   bottom edge where it was. No measured vh, nothing to recompute on resize.
+   Centred on the cross axis by the hero's own `align-items`, NOT by a
+   translate: GSAP writes a transform on this element every frame of the flood,
+   and a CSS translateX would be parsed as pixels and doubled on top of it.
+   That exact bug already shipped to this page once. */
 .sun {
-  position: absolute; left: 50%; bottom: 0; z-index: 2;
-  /* tied to the SHORTER axis too. On a wide-but-short window a width-only
-     clamp gave a 238px sun, and once the mist band, the open sky, the sentence
-     and the plate had taken their share there was nowhere left for it to rise
-     into — it ended up sitting on the headline. */
-  width: clamp(120px, min(15.5vw, 23vh), 264px); aspect-ratio: 1;
+  position: relative; z-index: 2;
+  flex: none; margin: auto 0;
+  /* Tied to the SHORTER axis as well as the wider one. The disc lives in the
+     band between the hero's top padding and the headline, and that band is a
+     function of HEIGHT — 30vh fills it on a laptop without crowding the type,
+     while the vw arm takes over on a phone where 30vh would be wider than the
+     sheet is. */
+  width: clamp(150px, min(30vh, 60vw), 340px); aspect-ratio: 1;
   transform-origin: 50% 50%; will-change: transform;
   pointer-events: none; user-select: none;
-  visibility: hidden;      /* main.js places it before showing it */
 }
 .sun-ink, .sun-fill {
   position: absolute; inset: 0; width: 100%; height: 100%;
   border-radius: 50%;
 }
-/* the painted brush rim, recoloured to the seal red */
+/* The painted brush rim, at full strength. The old opening dimmed it to 0.30
+   so it could pass for a sun seen through haze; with the haze gone that
+   dimming only made the page's single graphic look unsure of itself. */
 .sun-ink { will-change: opacity; }
 /* The ink it becomes. Not a flat crossfade over the disc — a soft-edged black
-   that blooms out of the core and takes the sun from the inside, which is what
-   a sun burning down actually looks like. Inset past the brush edge so that by
-   the time it is full there is no vermilion rim left to blow up to a red ring
-   when the disc floods the page. */
+   that blooms out of the core and takes the circle from the inside. Inset past
+   the brush edge so that by the time it is full there is no vermilion rim left
+   to blow up into a red ring when the disc floods the page. */
 .sun-fill {
   inset: -2%;
   /* Black over red at half opacity is grey-red mud, which is what the flat
      crossfade looked like. The burn is a THREE-STOP fire instead — ink at the
      core, oxblood where it is still cooling, and a hot rim that never quite
-     goes out until the disc has taken the whole sun. All of it is baked into
+     goes out until the disc has taken the whole circle. All of it is baked into
      one static gradient; only the scale animates, so it composites and costs
      nothing per frame. */
   background: radial-gradient(circle,
@@ -573,40 +503,48 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
   opacity: 0; transform: scale(0.1); transform-origin: 50% 50%;
   will-change: transform, opacity;
 }
-/* THE SWAP, and the whole thing depends on it. While it climbs, the sun must
-   pass BEHIND the pine ridge (z 3) and behind the sentence (z 5). Once it has
-   cleared the range there is nothing left to hide it, and it has to be able to
-   cover the page — so at that moment, and only then, it goes over everything.
-   main.js sets .sun-up on <html> at the top of the climb. */
+/* THE SWAP. While it sits in the open field the disc is part of the picture,
+   under the grain and under the sentence. Once it starts covering the page it
+   has to be over everything; main.js sets .sun-up at the moment the flood
+   begins. */
 html.sun-up .sun { z-index: 6; }
-/* No JS (or reduced motion): no rise, no flood. The sun simply sits in the
-   valley where it belongs and the page is a still landscape. */
-.no-motion .sun { visibility: visible; }
-/* Pre-reveal gate only: the fades themselves run on the Web Animations API in
+/* No JS, or reduced motion: the disc STAYS. It used to be display:none here,
+   which was right when it was an effect layered over a painting — now it is
+   the only thing on the sheet, and hiding it would ship an empty hero. It
+   simply never burns and never floods. */
+.no-motion .sun { position: relative; }
+/* Pre-reveal gate only: the fade itself runs on the Web Animations API in
    lang-redirect.js, which survives DOM moves; a CSS animation here would
    restart if anything ever re-parented the hero. Inline opacity beats this. */
 @media (prefers-reduced-motion: no-preference) {
-  .img-wait .hz { opacity: 0; }
+  .img-wait .sun-ink { opacity: 0; }
 }
 
-/* sumi dot lattice — the ukiyo-e answer to a dot grid. It gives the empty top
-   of the sheet something to hold onto, and dissolves before the plate. */
+/* ---------- the lattice ----------
+   Read off the reference rather than invented: an 82-unit tile carrying one
+   9-unit SQUARE, drawn at a 30px repeat — so a 3.3px mark with 26.7px of air
+   around it, covering the whole sheet. Two things here are deliberate copies.
+   SQUARES, not the circles this used to draw: at three pixels a circle is a
+   soft smudge and a square is a mark, and the difference is the whole reason
+   the reference's field reads as ruled paper instead of as noise.
+   NO MASK. The old lattice dissolved at 72% because a painted landscape was
+   coming up underneath it and the two textures fought. With the landscape gone
+   the fade only made the bottom half of the sheet look unfinished — the field
+   is uniform now, edge to edge, which is what holds the disc in place. */
 .hero::before {
   content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  /* 0.11, not 0.16: the same dot that whispered on cream shouts on white */
-  background-image: radial-gradient(circle at 1px 1px, rgba(17,17,17,0.11) 1px, transparent 1.7px);
+  background-image: url("data:image/svg+xml,<svg%20xmlns='http%3A//www.w3.org/2000/svg'%20width='82'%20height='82'><rect%20x='36'%20y='36'%20width='9'%20height='9'%20fill='%23D8D8DC'/></svg>");
   background-size: 30px 30px;
-  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 42%, transparent 72%);
-          mask-image: linear-gradient(180deg, #000 0%, #000 42%, transparent 72%);
 }
-/* Washi fibre. The hero is a FLAT panel now, and grain is precisely the cure
-   for a flat panel — the reason it was wrong before was that it sat on a
-   painted scene already carrying brush texture. Plain opacity, no blend mode,
-   nothing for the compositor to read back per frame. */
+/* Washi fibre, and it matters more now than it ever did: a flat sheet with one
+   circle on it is exactly the composition that goes dead without grain. 0.04,
+   half a step over the reference's 0.03, because our sheet carries a hand-drawn
+   brush disc rather than vector shapes and the tooth has to match it. Plain
+   opacity, no blend mode — nothing for the compositor to read back per frame. */
 .hero::after {
   content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
   background-image: url("data:image/svg+xml,<svg%20xmlns='http%3A//www.w3.org/2000/svg'%20width='180'%20height='180'><filter%20id='w'><feTurbulence%20type='fractalNoise'%20baseFrequency='0.9'%20numOctaves='3'%20stitchTiles='stitch'/><feColorMatrix%20type='saturate'%20values='0'/></filter><rect%20width='180'%20height='180'%20filter='url%28%23w%29'/></svg>");
-  background-size: 180px 180px; opacity: 0.05;
+  background-size: 180px 180px; opacity: 0.04;
 }
 
 /* ---------- hero entrance ----------
@@ -1247,9 +1185,6 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
 /* ---------- tablets & phones ---------- */
 @media (max-width: 820px) {
   .hero { padding-top: clamp(104px, 15vh, 150px); }
-  /* the 940px floor above already widens the plate past a phone frame; here it
-     only needs to sit a little lower */
-  .hz { bottom: -2vw; }
   .section-seal { font-size: clamp(80px, 22vw, 180px); }
   /* one centred column already, so the phone only needs to stop reserving a
      screen for a panel that no longer exists */
@@ -1320,14 +1255,10 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
 }
 
 /* Short windows — a laptop with browser chrome, a tablet in landscape. The
-   plate is sized off viewport WIDTH, so on a wide-but-short screen it takes a
-   third of the page and the sentence lands on the ridge. Sink the plate and
-   pull the type back. */
+   disc is sized off the SHORTER axis, so a laptop in a short window keeps it in
+   proportion on its own — what still has to give is the type, which is sized
+   off width and would otherwise leave the disc no field to sit in. */
 @media (max-height: 660px) and (min-width: 701px) {
-  /* the plate is anchored to the bottom edge now, so a short window shrinks it
-     rather than sinking it — sinking would cut off the pale mist plain that
-     the foot line stands on */
-  .hz { width: max(104%, 900px); }
   .hero { padding: clamp(74px, 12vh, 120px) var(--pad) clamp(84px, 20vh, 170px); }
   .hero-head { font-size: clamp(34px, 5.4vw, 72px); }
 }
