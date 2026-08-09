@@ -900,20 +900,31 @@ html.sun-up .sun-clip {
    exactly what it looked like afterwards. */
 .shelf-head {
   position: relative;
+  --head-fs: clamp(34px, 3.9vw, 56px);
   display: grid;
   grid-template-columns: minmax(84px, 8.4%) minmax(0, 1.42fr) minmax(0, 1fr);
+  /* TWO ROWS, and the second one is how the note gets its drop. Bottom-aligning
+     it inside a single row only sinks it as far as the statement is tall, which
+     on a two-line statement is barely a drop at all — measured, ours started 49%
+     down the block where the reference's starts 79%. Putting the note in row 2
+     of the third column makes its top the statement's BOTTOM, whatever the
+     statement turns out to be, and the gap below that is stated in the heading's
+     own em so it scales with the type instead of being a pixel that only
+     happens to be right at one width. */
+  grid-template-rows: auto auto;
   column-gap: clamp(24px, 2.4vw, 34px);
   align-items: start;
 }
 .shelf-eyebrow {
-  grid-column: 1; font-size: 13px; font-weight: 700; letter-spacing: 0.24em;
+  grid-column: 1; grid-row: 1;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.24em;
   color: #F0704B; padding-top: 0.6em;
 }
-.shelf-text { grid-column: 2; }
+.shelf-text { grid-column: 2; grid-row: 1; }
 .shelf-line {
   margin: 0;
   font-family: "Shippori Mincho", Georgia, serif; font-weight: 700;
-  font-size: clamp(34px, 3.9vw, 56px); line-height: 1.12; letter-spacing: -0.012em;
+  font-size: var(--head-fs); line-height: 1.12; letter-spacing: -0.012em;
   color: var(--paper);
 }
 .shelf-line em { font-style: italic; color: #F0704B; }
@@ -945,8 +956,15 @@ html.no-motion .shelf-rule { clip-path: inset(0 0 0 0); transition: none; }
    its right-hand paragraph carries 280px of top padding for the same reason.
    `align-self: end` does it without a magic number, so the note stays level
    with the last line whether the statement wraps to two lines or three. */
+/* THE DROP. The reference pushes its paragraph down with `padding-top: 280px`
+   — 5.83 times its own heading size — so the paragraph's first line clears the
+   scrawled rule by 1.69em and the block ends up 356 tall for 199 of content.
+   That deliberate emptiness is what stops the head reading as two things side
+   by side. Ours takes the same 1.69em, measured off the same page, but counts
+   it from the statement's real bottom rather than from a number. */
 .shelf-note {
-  grid-column: 3; align-self: end; padding-bottom: 0.4em;
+  grid-column: 3; grid-row: 2;
+  margin-top: calc(var(--head-fs) * 1.69);
   font-size: clamp(15px, 1.15vw, 18px); line-height: 1.6;
   color: rgba(255,255,255,0.62); max-width: 46ch;
 }
@@ -976,14 +994,15 @@ html.no-motion .shelf-rule { clip-path: inset(0 0 0 0); transition: none; }
    order and leaves the head parked 64px off to the side forever. */
 html.no-motion .shelf-head [data-slide] { transition: none; }
 @media (max-width: 1100px) {
-  /* the note loses its own column before the statement loses its scale */
+  /* the note loses its own column before the statement loses its scale — and
+     with it the drop, which only means anything beside the statement */
   .shelf-head { grid-template-columns: minmax(72px, 8%) minmax(0, 1fr); }
-  .shelf-note { grid-column: 2; align-self: start; margin-top: clamp(18px, 2vw, 26px); padding-bottom: 0; max-width: 52ch; }
+  .shelf-note { grid-column: 2; grid-row: 2; margin-top: clamp(18px, 2vw, 26px); max-width: 52ch; }
 }
 @media (max-width: 900px) {
   .shelf-head { grid-template-columns: 1fr; row-gap: 18px; }
-  .shelf-eyebrow, .shelf-text, .shelf-note { grid-column: 1; }
-  .shelf-note { margin-top: 0; }
+  .shelf-eyebrow, .shelf-text { grid-column: 1; grid-row: auto; }
+  .shelf-note { grid-column: 1; grid-row: auto; margin-top: 0; }
   .shelf-rule { width: min(76%, 280px); height: 20px; }
   /* 300px of travel is a third of a phone screen and reads as a lurch */
   .js .shelf-head:not(.is-in) [data-slide="-1"] { transform: translateX(-64px); }
