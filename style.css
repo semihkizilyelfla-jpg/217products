@@ -889,16 +889,19 @@ html.sun-up .sun-clip {
   top: 0; bottom: 0; background: var(--ink);
 }
 /* ---------- the shelf head ----------
-   TWO parts, not three. The old version put the statement and its qualifying
-   paragraph side by side in columns two and three, and side-by-side is exactly
-   what the reference does NOT do: measured on its work section, the marker sits
-   hard left at x 32 and ONE text block starts at x 147 and runs 693 of a 1361
-   container — a little over half, with the entire right side left empty. The
-   paragraph belongs under the statement, in the same column, or nowhere. */
+   THREE COLUMNS, and the third one is the point. Measured on the reference's
+   work section at 1425: the marker sits hard left at x 32 (91 wide), the
+   statement runs x 147 to 840 (693, a little over half the container), and a
+   small grey paragraph holds the right column at x 864, 529 wide — carrying
+   `padding-top: 280px`, which drops it out of the top line and sets its first
+   line level with the LAST line of the statement.
+   That drop is what stops the block reading as a stack. An earlier pass here
+   removed the third column outright on a misreading of the same page; flat is
+   exactly what it looked like afterwards. */
 .shelf-head {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(84px, 8.4%) minmax(0, 1fr);
+  grid-template-columns: minmax(84px, 8.4%) minmax(0, 1.42fr) minmax(0, 1fr);
   column-gap: clamp(24px, 2.4vw, 34px);
   align-items: start;
 }
@@ -906,11 +909,7 @@ html.sun-up .sun-clip {
   grid-column: 1; font-size: 13px; font-weight: 700; letter-spacing: 0.24em;
   color: #F0704B; padding-top: 0.6em;
 }
-/* The reference's proportion, not a guess: its text block is 51% of the
-   container and the rest is air. Ours holds the same restraint on a wide
-   screen and is allowed to fill on a narrow one. */
-.shelf-text { grid-column: 2; max-width: min(52%, 62ch); }
-@media (max-width: 1200px) { .shelf-text { max-width: 68%; } }
+.shelf-text { grid-column: 2; }
 .shelf-line {
   margin: 0;
   font-family: "Shippori Mincho", Georgia, serif; font-weight: 700;
@@ -918,52 +917,80 @@ html.sun-up .sun-clip {
   color: var(--paper);
 }
 .shelf-line em { font-style: italic; color: #F0704B; }
-/* Plain line boxes now. They used to be clip windows for a per-line masked
-   reveal; the entrance is the reference's horizontal slide instead, so the
-   overflow — and the padding/margin pair that kept it from shaving the tail off
-   a ğ and the diaeresis off a Ü — is no longer needed. */
 .shelf-line .ln { display: block; }
-.shelf-note {
-  margin-top: clamp(18px, 1.8vw, 26px);
-  font-size: clamp(15px, 1.15vw, 18px); line-height: 1.6;
-  color: rgba(255,255,255,0.62); max-width: 52ch;
+
+/* ---------- the brush under the statement ----------
+   The reference draws a hand-scrawled pen line here and animates it in with
+   stroke-dashoffset. Same job, different hand: ours is a brush, and a brush
+   stroke is not a constant width — so this is a FILLED shape (thick through the
+   body, tapering to nothing at both ends, the tail breaking up where the hair
+   runs dry) carried as a mask so it takes its colour from CSS.
+   It is revealed with clip-path rather than a dash offset, and that is the
+   point of difference: a dash draw reads as a pen tip travelling at constant
+   width, while wiping a filled shape left to right reads as ink being LAID
+   DOWN. 0.15s behind the head's own slide, so it lands after the words settle. */
+.shelf-rule {
+  display: block; width: min(64%, 380px); height: 26px;
+  margin-top: clamp(16px, 1.6vw, 24px);
+  background: #F0704B;
+  -webkit-mask: url("assets/brush-rule.svg?v=2") left center / 100% 100% no-repeat;
+          mask: url("assets/brush-rule.svg?v=2") left center / 100% 100% no-repeat;
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.72s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
 }
-/* THE REFERENCE'S ENTRANCE, read off its IX2 data rather than eyeballed: two
+.shelf-head.is-in .shelf-rule { clip-path: inset(0 0 0 0); }
+html.no-motion .shelf-rule { clip-path: inset(0 0 0 0); transition: none; }
+
+/* THE DROP. Bottom-aligned to the statement, exactly as the reference sets it —
+   its right-hand paragraph carries 280px of top padding for the same reason.
+   `align-self: end` does it without a magic number, so the note stays level
+   with the last line whether the statement wraps to two lines or three. */
+.shelf-note {
+  grid-column: 3; align-self: end; padding-bottom: 0.4em;
+  font-size: clamp(15px, 1.15vw, 18px); line-height: 1.6;
+  color: rgba(255,255,255,0.62); max-width: 46ch;
+}
+/* THE REFERENCE'S ENTRANCE, read off its IX2 data rather than eyeballed: the
    blocks start at opacity 0 and x -300 / +300 and travel to 0 over 500ms on
-   `ease`, triggered by SCROLL_INTO_VIEW. The marker comes in from the left and
-   the text block from the right, so they close on each other. */
-.shelf-head [data-slide] { will-change: transform, opacity; }
-.js .shelf-head [data-slide] { opacity: 0; }
-.js .shelf-head [data-slide="-1"] { transform: translateX(-300px); }
-.js .shelf-head [data-slide="1"]  { transform: translateX(300px); }
-.shelf-head.is-in [data-slide] {
-  opacity: 1; transform: translateX(0);
+   `ease`, triggered by SCROLL_INTO_VIEW. The marker comes in from the left, the
+   statement and its note from the right, so they close on the centre. */
+/* THE STAGED STATE IS SCOPED TO :not(.is-in), and that is a specificity war
+   avoided rather than won. Written as `.js .shelf-head [data-slide]` the staging
+   and the `.is-in` release are both (0,3,0), so the phone override forty lines
+   below — same weight, later in the file — beat the release and the head stayed
+   64px off to the side on every phone. Measured at 390: eyebrow left -44 where
+   it should have been 20. With `:not(.is-in)` the staged rules simply STOP
+   MATCHING once the class lands, so there is nothing left to out-rank. */
+.shelf-head [data-slide] {
+  will-change: transform, opacity;
   transition: transform 0.5s ease, opacity 0.5s ease;
 }
+.js .shelf-head:not(.is-in) [data-slide] { opacity: 0; }
+.js .shelf-head:not(.is-in) [data-slide="-1"] { transform: translateX(-300px); }
+.js .shelf-head:not(.is-in) [data-slide="1"]  { transform: translateX(300px); }
+/* the note trails the statement by a beat rather than arriving welded to it */
+.shelf-head.is-in .shelf-note { transition-delay: 0.09s; }
 /* No JS, or reduced motion: the head is simply there.
-   `html.` IS LOad-BEARING. Written as `.no-motion ...` this is specificity
-   (0,3,0) — identical to the phone override forty lines below, which then wins
-   on source order and leaves the head parked 64px off to the side forever.
-   Measured with ?motion=reduce at 390px: the eyebrow sat at translateX(-64px)
-   and never came back. The element selector makes it (0,3,1), so it wins
-   wherever it sits in the file and stays correct if these blocks ever move. */
-html.no-motion .shelf-head [data-slide] { opacity: 1; transform: none; transition: none; }
+   `html.` IS LOAD-BEARING — written as `.no-motion ...` this is specificity
+   (0,3,0), identical to the phone override below, which then wins on source
+   order and leaves the head parked 64px off to the side forever. */
+html.no-motion .shelf-head [data-slide] { transition: none; }
+@media (max-width: 1100px) {
+  /* the note loses its own column before the statement loses its scale */
+  .shelf-head { grid-template-columns: minmax(72px, 8%) minmax(0, 1fr); }
+  .shelf-note { grid-column: 2; align-self: start; margin-top: clamp(18px, 2vw, 26px); padding-bottom: 0; max-width: 52ch; }
+}
 @media (max-width: 900px) {
   .shelf-head { grid-template-columns: 1fr; row-gap: 18px; }
-  .shelf-eyebrow, .shelf-text { grid-column: 1; }
-  .shelf-text { max-width: none; }
+  .shelf-eyebrow, .shelf-text, .shelf-note { grid-column: 1; }
+  .shelf-note { margin-top: 0; }
+  .shelf-rule { width: min(76%, 280px); height: 20px; }
   /* 300px of travel is a third of a phone screen and reads as a lurch */
-  .js .shelf-head [data-slide="-1"] { transform: translateX(-64px); }
-  .js .shelf-head [data-slide="1"]  { transform: translateX(64px); }
+  .js .shelf-head:not(.is-in) [data-slide="-1"] { transform: translateX(-64px); }
+  .js .shelf-head:not(.is-in) [data-slide="1"]  { transform: translateX(64px); }
   .shelf-eyebrow { padding-top: 0; }
-  .shelf-note { align-self: start; padding-bottom: 0; }
 }
 
-/* ---------- the three slots ----------
-   Not a card grid of equal thirds — the reference's three run 439 / 420 / 453
-   because each is sized by the tag rows inside it, and that unevenness is most
-   of why the row reads as a shelf rather than a template. Ours takes the same
-   ratio deliberately, so it survives any tag copy. */
 .slots {
   position: relative; display: flex; gap: 24px;
   margin-top: clamp(44px, 6.5vh, 84px);

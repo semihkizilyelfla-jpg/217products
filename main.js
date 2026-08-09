@@ -141,6 +141,10 @@
     [].forEach.call(document.querySelectorAll(".brighten .w"), function (el) {
       el.style.color = "var(--ink)";
     });
+    /* the shelf head's staged offsets are scoped to :not(.is-in), so the class
+       IS the release — set it here too or the reduced-motion page keeps the
+       head shoved off to one side */
+    [].forEach.call(document.querySelectorAll(".shelf-head"), function (h) { h.classList.add("is-in"); });
     document.documentElement.classList.add("js-live");
     return;
   }
