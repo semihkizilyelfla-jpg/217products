@@ -42,6 +42,19 @@
   --ink-dim: #8C8C8C;
   --vermilion: #E0402A;
   --vermilion-deep: #BF3218;
+  /* THE SAME RED, LIT FOR THE INK WALL. The ramp is indexed by GROUND, never by
+     size or by section: --vermilion on paper, --vermilion-deep as a field under
+     white text, --vermilion-ink as a mark on the #111 wall of the shelf.
+     It exists because --vermilion measures 4.44:1 there and small text needs
+     4.5 — it misses by 1.4% of luminance, so this is the smallest lift that
+     clears it (4.73:1), not a new colour. Hue 30.9 against --vermilion's 31.1;
+     lightness +0.014 in OKLCH. That restraint is the whole point: the "orange"
+     reading on this wall came from LIGHTNESS, not hue — you cannot raise L on
+     this hue without the green channel following, and the colour this replaces
+     had ridden it to G=112 against the seal's 64. This sits at 75.
+     Chroma 0.190 leaves 0.052 of gamut headroom (R=225, thirty counts off
+     clipping) so it stays put on a P3 display instead of going fluorescent. */
+  --vermilion-ink: #E14B36;
   --accent-ink: #A82C15;
   /* the print's keyline — ink, not gilt (overridden to a white keyline where it
      hangs on the dark shelf) */
@@ -918,7 +931,7 @@ html.sun-up .sun-clip {
 .shelf-eyebrow {
   grid-column: 1; grid-row: 1;
   font-size: 13px; font-weight: 700; letter-spacing: 0.24em;
-  color: #F0704B; padding-top: 0.6em;
+  color: var(--vermilion-ink); padding-top: 0.6em;
 }
 .shelf-text { grid-column: 2; grid-row: 1; }
 .shelf-line {
@@ -927,7 +940,7 @@ html.sun-up .sun-clip {
   font-size: var(--head-fs); line-height: 1.12; letter-spacing: -0.012em;
   color: var(--paper);
 }
-.shelf-line em { font-style: italic; color: #F0704B; }
+.shelf-line em { font-style: italic; color: var(--vermilion-ink); }
 .shelf-line .ln { display: block; }
 
 /* ---------- the brush under the statement ----------
@@ -943,7 +956,7 @@ html.sun-up .sun-clip {
 .shelf-rule {
   display: block; width: min(64%, 380px); height: 26px;
   margin-top: clamp(16px, 1.6vw, 24px);
-  background: #F0704B;
+  background: var(--vermilion-ink);
   -webkit-mask: url("assets/brush-rule.svg?v=2") left center / 100% 100% no-repeat;
           mask: url("assets/brush-rule.svg?v=2") left center / 100% 100% no-repeat;
   clip-path: inset(0 100% 0 0);
@@ -1010,9 +1023,27 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
   .shelf-eyebrow { padding-top: 0; }
 }
 
+/* ---------- head to shelf ----------
+   THREE QUARTERS OF THE SECTION'S OWN PADDING, at every knee of it. `section`
+   is clamp(96px, 15vh, 210px) (line 368), so this is 72 / 11.25vh / 158 and the
+   ratio never moves: 0.75 at any window shape.
+   The unit is load-bearing and it is vh ON PURPOSE. This gap was already tied to
+   the parent — 6.5vh against 15vh, a locked 0.433 — and rewriting it in vw looked
+   tempting (the reference states a flat 120px) but decouples it from the padding
+   it must stay subordinate to. A vw gap of 128px against a 15vh padding inverts
+   on any window wider than 1438 and shorter than 853: the head would sit further
+   from its own cards than the whole section sits from the screen before it, and
+   the head stops reading as the shelf's. That is most Windows laptops once
+   browser chrome is subtracted, so it would have shipped broken for the majority.
+   The fraction moved from 0.433 to 0.75 because the old one was measurably tight:
+   58.5px at 1425 against the reference's 120, and only 2.4x the 24px gutter
+   between the cards where theirs is 5x — so the section break barely read as
+   bigger than the seam inside it. At 0.75 it resolves to 101px there, 4.2x the
+   gutter, and the empty run under the brush lands on 277px against the
+   reference's own 277. That agreement is a check, not the derivation. */
 .slots {
   position: relative; display: flex; gap: 24px;
-  margin-top: clamp(44px, 6.5vh, 84px);
+  margin-top: clamp(72px, 11.25vh, 158px);
 }
 .slot {
   /* z-index 1 rather than auto: every panel is its own stacking context, so a
@@ -1083,8 +1114,14 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
   content: ""; width: 26px; height: 1px;
   background: rgba(255,255,255,0.26);
 }
-.slot.is-live .slot-n { color: #F0704B; }
-.slot.is-live .slot-n::after { background: rgba(240,112,75,0.5); }
+.slot.is-live .slot-n { color: var(--vermilion-ink); }
+/* 0.6, not the 0.5 this inherited. The dormant slots rule themselves off in
+   rgba(255,255,255,0.26) — 2.30:1 against the wall — and the live slot's rule
+   has to read as at least as present as theirs or the one shelf that is filled
+   looks like the faint one. At 0.5 the deeper red lands on 2.00:1; 0.6 puts it
+   at 2.40:1, which is where the old colour sat. Both are decoration, not state
+   — the state is carried by the number itself — so neither owes 3:1. */
+.slot.is-live .slot-n::after { background: rgba(225,75,54,0.6); }
 .slot-name {
   font-family: "Shippori Mincho", Georgia, serif; font-weight: 700;
   font-size: clamp(30px, 3.3vw, 48px); line-height: 1.16; letter-spacing: -0.01em;
@@ -1380,6 +1417,10 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
 @media (max-width: 600px) {
   /* generous but not a screen per gap — ~2 screens of scroll come back */
   section { padding: clamp(66px, 9.5vh, 92px) var(--pad); }
+  /* the shelf gap follows its parent down here too — same three quarters of
+     whatever `section` is, so the phone keeps the density decision above
+     instead of inheriting a desktop number that would exceed it */
+  .slots { margin-top: clamp(50px, 7.125vh, 69px); }
   /* image-led sections already breathe through their artwork */
   .craft { padding-block: clamp(76px, 11vh, 104px); }
   .hero { padding-top: clamp(96px, 14vh, 132px); }
