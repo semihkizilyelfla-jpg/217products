@@ -9,6 +9,22 @@
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg">
   <style>
+    /* THE SAME TWO FACES THE SITE USES, self-hosted, so a mistyped URL does not
+       land in Georgia and system-ui while every other page is Shippori Mincho
+       and Manrope. Only the weights this page actually sets are loaded — 800 for
+       the headline, matching .hero-head, and the Manrope variable file for
+       everything else — so it costs two requests, not four.
+       Both keep font-display: swap and both stacks keep their original
+       fallbacks, so if the fonts never arrive the page still reads exactly as it
+       did before: an error page must never hold its own text hostage to a font. */
+    @font-face {
+      font-family: "Shippori Mincho"; src: url("/assets/fonts/shippori-800.woff2") format("woff2");
+      font-weight: 800; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: "Manrope"; src: url("/assets/fonts/manrope-var.woff2") format("woff2");
+      font-weight: 400 800; font-style: normal; font-display: swap;
+    }
     /* This page carries its own copy of the palette rather than linking
        style.css — an error page should render from one file, with no stylesheet
        to miss. The copy is what makes it drift, so the values are named here
@@ -41,14 +57,17 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
     body {
-      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-weight: 400; line-height: 1.65;
       background: var(--paper); color: var(--ink);
       display: grid; place-items: center; text-align: center;
       padding: 40px 22px; -webkit-font-smoothing: antialiased;
     }
     .mark { width: 92px; height: auto; margin: 0 auto 34px; display: block; }
     .code { font-size: 13px; font-weight: 700; letter-spacing: 0.36em; color: var(--accent-ink); text-transform: uppercase; }
-    h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 800; font-size: clamp(30px, 7vw, 56px); line-height: 1.05; margin: 18px 0 14px; }
+    h1 { font-family: "Shippori Mincho", Georgia, "Times New Roman", serif; font-weight: 800;
+         font-size: clamp(30px, 7vw, 56px); line-height: 1.05; letter-spacing: -0.01em;
+         margin: 18px 0 14px; text-wrap: balance; }
     p { font-size: clamp(15px, 2.2vw, 18px); color: var(--ink-2); max-width: 42ch; margin: 0 auto 34px; line-height: 1.6; }
     .home {
       display: inline-flex; align-items: center; gap: 8px; padding: 14px 30px; border-radius: 999px;
