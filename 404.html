@@ -9,25 +9,59 @@
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg">
   <style>
+    /* This page carries its own copy of the palette rather than linking
+       style.css — an error page should render from one file, with no stylesheet
+       to miss. The copy is what makes it drift, so the values are named here
+       exactly as they are in style.css's :root and nowhere written raw below.
+
+       It had drifted: this page was still on the retired cream palette
+       (#F3ECDC ground, #1E1A16 ink, and three accents clustered at hue 34.7°,
+       a third cluster belonging to neither the live 31° family nor anything
+       else). A visitor who mistyped a URL met the old brand.
+
+       Two of those values also failed WCAG AA, which is the part that made this
+       worth doing rather than merely tidy:
+         .home  white on #E24B26 = 3.99:1 at 15px — needed 4.5
+         .sub   #767676 on the cream = 3.86:1 — and that grey was picked in
+                style.css precisely because it measures 4.54:1 ON WHITE, so the
+                cream ground was breaking a colour chosen to pass.
+       On the live palette both clear it: 5.70:1 and 4.54:1. */
+    :root {
+      --paper: #FFFFFF;
+      --ink: #111111;
+      --ink-2: #575757;
+      /* the AA-corrected dim: --ink-dim (#8C8C8C) measures 3.36:1 on paper */
+      --ink-dim-aa: #767676;
+      /* white button text at 15px needs 4.5:1, and bright --vermilion gives
+         4.25 — so the filled button takes the deep step, exactly as .btn.primary
+         does, and the hover goes darker still so the pressed direction reads */
+      --vermilion-deep: #BF3218;
+      --accent-ink: #A82C15;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
     body {
       font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-      background: #F3ECDC; color: #1E1A16;
+      background: var(--paper); color: var(--ink);
       display: grid; place-items: center; text-align: center;
       padding: 40px 22px; -webkit-font-smoothing: antialiased;
     }
     .mark { width: 92px; height: auto; margin: 0 auto 34px; display: block; }
-    .code { font-size: 13px; font-weight: 700; letter-spacing: 0.36em; color: #B23A1C; text-transform: uppercase; }
+    .code { font-size: 13px; font-weight: 700; letter-spacing: 0.36em; color: var(--accent-ink); text-transform: uppercase; }
     h1 { font-family: Georgia, "Times New Roman", serif; font-weight: 800; font-size: clamp(30px, 7vw, 56px); line-height: 1.05; margin: 18px 0 14px; }
-    p { font-size: clamp(15px, 2.2vw, 18px); color: #6C6154; max-width: 42ch; margin: 0 auto 34px; line-height: 1.6; }
+    p { font-size: clamp(15px, 2.2vw, 18px); color: var(--ink-2); max-width: 42ch; margin: 0 auto 34px; line-height: 1.6; }
     .home {
       display: inline-flex; align-items: center; gap: 8px; padding: 14px 30px; border-radius: 999px;
-      background: #E24B26; color: #fff; text-decoration: none; font-weight: 600; font-size: 15px;
-      box-shadow: 0 14px 30px rgba(226,75,38,0.28); transition: transform 0.25s ease, background 0.25s ease;
+      background: var(--vermilion-deep); color: var(--paper); text-decoration: none; font-weight: 600; font-size: 15px;
+      box-shadow: 0 14px 30px rgba(191,50,24,0.28); transition: transform 0.25s ease, background 0.25s ease;
     }
-    .home:hover { transform: translateY(-2px); background: #C13C1B; }
-    .sub { margin-top: 20px; font-size: 13px; color: #767676; }
+    .home:hover { transform: translateY(-2px); background: var(--accent-ink); }
+    .home:focus-visible { outline: 2px solid var(--vermilion-deep); outline-offset: 3px; }
+    .sub { margin-top: 20px; font-size: 13px; color: var(--ink-dim-aa); }
+    @media (prefers-reduced-motion: reduce) {
+      .home { transition: background 0.25s ease; }
+      .home:hover { transform: none; }
+    }
   </style>
 </head>
 <body>

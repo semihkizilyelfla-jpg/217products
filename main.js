@@ -219,7 +219,11 @@
   });
 
   /* ---------- word-by-word brighten ---------- */
-  var inkColor = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() || "#1E1A16";
+  /* The fallback only fires if --ink fails to resolve, but it was still the
+     retired warm-black from the cream palette — so the one path that runs when
+     the stylesheet is missing would have brightened every word to a colour the
+     site no longer uses. It matches --ink now. */
+  var inkColor = getComputedStyle(document.documentElement).getPropertyValue("--ink").trim() || "#111111";
   brightenEls.forEach(function (el) {
     gsap.to(el.querySelectorAll(".w"), { color: inkColor, ease: "none", stagger: 1,
       scrollTrigger: { trigger: el, start: "top 82%", end: "bottom 58%", scrub: true } });
