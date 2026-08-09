@@ -1,9 +1,9 @@
 {
   "name": "217 Products",
   "short_name": "217",
-  "description": "An independent product company reaching from Ankara to the world. Where we see a gap, we build products that are fast, simple, and made to last.",
-  "lang": "en",
-  "start_url": "/",
+  "description": "Ankara’dan dünyaya açılan bağımsız bir ürün şirketiyiz. Gördüğümüz boşluklara hızlı, sade ve uzun ömürlü ürünler inşa ediyoruz.",
+  "lang": "tr",
+  "start_url": "/index-tr.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#F0F0F3",

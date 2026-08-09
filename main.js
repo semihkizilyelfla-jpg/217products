@@ -61,23 +61,60 @@
     onScroll();
   })();
 
-  /* ---------- mobile nav (hamburger) — runs regardless of GSAP ---------- */
+  /* ---------- mobile nav (hamburger) — runs regardless of GSAP ----------
+     The drawer is a full-screen overlay, and an overlay that only LOOKS modal is
+     the classic keyboard trap in reverse: measured, tabbing past the last link
+     used to land on "Mürekkebi silkele" — a control sitting underneath the
+     drawer, invisible and unreachable by mouse. Three things fix it, and all
+     three are needed:
+       inert on the rest of the page, so assistive tech cannot walk into content
+         the drawer is covering;
+       a wrap at both ends of the drawer's own focusables, so Tab and Shift+Tab
+         cycle inside it;
+       focus handed to the first link on open and RETURNED to the toggle on
+         close, so a keyboard user is never dropped at the top of the document.
+     `inert` is skipped where unsupported rather than polyfilled: the wrap and
+     the scroll lock still hold, and the drawer paints over everything anyway. */
   (function () {
     var t = document.getElementById("navToggle"), n = document.getElementById("navLinks");
     if (!t || !n) return;
-    function close() {
-      n.classList.remove("open"); t.classList.remove("is-open");
-      t.setAttribute("aria-expanded", "false");
-      document.documentElement.classList.remove("menu-open");
+    var main = document.getElementById("main"),
+        rail = document.querySelector(".tate"),
+        outside = [main, rail].filter(Boolean),
+        canInert = "inert" in HTMLElement.prototype;
+
+    function focusables() {
+      return [].filter.call(n.querySelectorAll("a[href], button:not([disabled])"), function (el) {
+        return el.offsetWidth || el.offsetHeight || el.getClientRects().length;
+      });
     }
-    t.addEventListener("click", function () {
-      var open = n.classList.toggle("open");
+    function setOpen(open, returnFocus) {
+      n.classList.toggle("open", open);
       t.classList.toggle("is-open", open);
       t.setAttribute("aria-expanded", open ? "true" : "false");
       document.documentElement.classList.toggle("menu-open", open); /* scroll lock */
+      if (canInert) outside.forEach(function (el) { el.inert = open; });
+      if (open) { var f = focusables(); if (f.length) f[0].focus(); }
+      else if (returnFocus) t.focus();
+    }
+    function close(returnFocus) { if (n.classList.contains("open")) setOpen(false, returnFocus); }
+
+    t.addEventListener("click", function () { setOpen(!n.classList.contains("open"), false); });
+    /* the link's own navigation still happens; this only tears the overlay down.
+       No focus return here — the anchor target is where the user asked to go. */
+    [].forEach.call(n.querySelectorAll("a"), function (a) {
+      a.addEventListener("click", function () { close(false); });
     });
-    [].forEach.call(n.querySelectorAll("a"), function (a) { a.addEventListener("click", close); });
-    addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+    addEventListener("keydown", function (e) {
+      if (!n.classList.contains("open")) return;
+      if (e.key === "Escape") { close(true); return; }
+      if (e.key !== "Tab") return;
+      var f = focusables();
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
   })();
 
   /* split brighten paragraphs into words */
@@ -104,6 +141,7 @@
     [].forEach.call(document.querySelectorAll(".brighten .w"), function (el) {
       el.style.color = "var(--ink)";
     });
+    document.documentElement.classList.add("js-live");
     return;
   }
   gsap.registerPlugin(ScrollTrigger);
@@ -122,13 +160,38 @@
   }
 
   /* in-page anchors glide with Lenis instead of teleporting */
+  /* SCROLLING IS NOT NAVIGATING. preventDefault kills the browser's own jump,
+     and Lenis then moves the viewport — but the browser's jump also moves FOCUS
+     and the sequential-focus starting point, and Lenis does neither. Measured:
+     activating the skip link left document.activeElement on the skip link, the
+     hash empty and scrollY at 0, so the one "skip to content" control on the
+     site skipped nothing and the next Tab went straight back into the header.
+     Every in-page link had the same hole: you could jump to a section and then
+     Tab into whatever happened to sit next in the DOM.
+     So the handler now finishes the job the default would have done — move the
+     focus, and write the hash so Back still works and the URL is shareable.
+     `tabindex="-1"` is set on demand rather than in the markup: it makes the
+     target programmatically focusable without putting sections into the tab
+     order, and the outline is suppressed only for these scroll targets, never
+     for real controls. */
   [].forEach.call(document.querySelectorAll('a[href^="#"]'), function (a) {
     a.addEventListener("click", function (e) {
-      var target = document.querySelector(a.getAttribute("href"));
+      var hash = a.getAttribute("href");
+      if (hash === "#") return;
+      var target = document.querySelector(hash);
       if (!target) return;
       e.preventDefault();
-      if (lenis) lenis.scrollTo(target, { duration: 1.35, easing: function (t) { return 1 - Math.pow(1 - t, 4); } });
-      else target.scrollIntoView({ behavior: "smooth" });
+      function land() {
+        if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+        target.focus({ preventScroll: true });
+        try { history.replaceState(null, "", hash); } catch (_) { }
+      }
+      if (lenis) lenis.scrollTo(target, {
+        duration: 1.35,
+        easing: function (t) { return 1 - Math.pow(1 - t, 4); },
+        onComplete: land
+      });
+      else { target.scrollIntoView({ behavior: "smooth" }); land(); }
     });
   });
   function settle(el){ el.style.willChange = "auto"; }
@@ -177,50 +240,128 @@
      black a comfortable 8% before the next section's shelf can reach the
      screen. Change one and you must change the other. */
   var INK_RIDE = 0.68;   /* fraction of a viewport the whole opening takes */
-  /* 0.30, down from 0.42. The climb is worth almost nothing on screen — a 50px
-     lift and 10% of growth — so spending two fifths of the ride on it forced
-     everything that IS worth watching into the back half, and the disc went
-     from vermilion to solid ink inside 200px of scroll. Measured: at 0.42 the
-     burn was already saturated by 41% of a viewport. The red is the thing here;
-     it gets the room. */
-  var INK_HOLD = 0.30;   /* fraction of that ride the disc spends climbing */
+  /* 0.45, up from 0.30. The arc is no longer a 50px lift — it now carries the
+     disc four hundred-odd pixels up and across to the top centre of the screen,
+     and a journey that size needs the room to be read. At 0.30 the whole thing
+     was over in 184px of scroll. */
+  var INK_HOLD = 0.45;   /* fraction of that ride the disc spends on its arc */
 
-  /* ---------- THE DISC ----------
-     Two beats on the scroll, and no landscape in either of them:
-       CLIMB  the circle lifts a little and swells a little — enough to read as
-              a sun getting up, not enough to reach the nav
-       BURN + FLOOD  vermilion deepens to ink from the core out while the disc
-              grows past the far corner of the screen
-     The flood has to arrive BLACK: what is inside it is the dark shelf of
-     screen two, and a red screen handing over to a black one is a cut rather
-     than a transition.
-     ALL the geometry the old version needed — a ridge line measured off the
-     painting, the mist band's lower edge, a column with solid ink under it to
-     hide behind — is gone with the painting. The disc is laid out by the hero's
-     own flexbox and this only ever writes transforms on it. */
+  /* ---------- THE SUN ----------
+     One gesture, three beats, all on the scroll:
+       RISE   the sun climbs out from behind the range, at the column the plate
+              itself nominates, and stops in open sky
+       BURN   vermilion deepens to ink — the flood has to arrive BLACK, because
+              what is inside it is the dark shelf of screen two, and a red
+              screen handing over to a black one is a cut, not a transition
+       FLOOD  it grows from its own centre until it swallows the viewport
+     Every landmark is a fraction of the PAINTING, read off the plate's measured
+     box rather than guessed in viewport units, so the geometry survives any
+     window shape. */
   (function () {
     var sun = document.querySelector(".sun");
-    if (!sun) return;
+    var plate = document.querySelector(".hz");
+    if (!sun || !plate) return;
     var fill = sun.querySelector(".sun-fill");
     var de = document.documentElement;
 
-    /* How far it lifts. A fraction of the VIEWPORT, not of the disc: the disc
-       is already sized off the short axis, so tying the climb to it too would
-       compound and send it into the header on a tall window. 7% is a move you
-       notice without ever wondering where it went. */
-    function climbPx() { return Math.round(window.innerHeight * 0.07); }
+    /* Read off the PLATE, not written here. The drawing is the only thing that
+       knows where its own skyline runs and which column stands high enough with
+       solid ink under it to hide a sun; the build script measures both and
+       stamps them on the tag. Swap the painting and the sun follows it — there
+       is no constant here to forget. */
+    var SUN_X = parseFloat(plate.dataset.sunX);
+    var RIDGE_AT_X = parseFloat(plate.dataset.ridge);
+    if (!(SUN_X >= 0 && SUN_X <= 1)) SUN_X = 0.105;
+    if (!(RIDGE_AT_X >= 0 && RIDGE_AT_X <= 1)) RIDGE_AT_X = 0.126;
+    var geo = null;
+
+    /* WHERE THE PLATE IS, DERIVED — NOT MEASURED OFF THE SCREEN.
+       This used to read plate.getBoundingClientRect(), and it shipped a sun
+       parked 469px off the left edge. A rect is the LIVE box: the opening
+       animates .hero-ground with scale(1.035), the pointer parallax writes
+       xPercent on .hz, and the very first call runs while the page is still
+       laying itself out — read at any of those moments the plate is somewhere
+       it will not stay, and the number written into `left` is wrong for good.
+       Nothing recomputed afterwards, so the error was permanent; only a manual
+       ScrollTrigger.refresh() corrected it.
+       These four numbers are the LAYOUT box — offsetLeft/Top/Width/Height —
+       which is exactly the geometry the stylesheet produced and which no
+       transform can perturb. It does not restate the CSS either, so the plate
+       can be re-centred, left-aligned on phones, or resized in the stylesheet
+       alone and this follows without being edited. */
+    function plateBox() {
+      var g = document.querySelector(".hero-ground");
+      var gw = g.clientWidth, gh = g.clientHeight;
+      var pw = plate.offsetWidth, ph = plate.offsetHeight;
+      /* offsetHeight is right before the file arrives too: the tag carries
+         width/height, so the browser reserves the aspect-ratio box up front and
+         the first call is already correct rather than waiting on decode. */
+      if (!gw || !gh || !pw || !ph) return null;
+      return { left: plate.offsetLeft, top: plate.offsetTop, w: pw, h: ph, gw: gw, gh: gh };
+    }
+
+    function measure() {
+      var b = plateBox();
+      if (!b) return null;
+      /* offsetWidth, not the rect: the layout width, unaffected by the scale
+         GSAP is writing on this element every frame of the flood */
+      var d = sun.offsetWidth;
+      if (!d) return null;
+      var ridgeY = b.top + b.h * RIDGE_AT_X;
+      /* AT REST it is down behind the peak with only its crown showing. Just
+         over two fifths of a diameter below the skyline: enough that what shows
+         reads as a sun still in the range, not a disc parked on top of it. */
+      var restY = ridgeY + d * 0.42;
+      var restX = b.left + b.w * SUN_X;
+      /* THE APEX — top centre of the screen, which is where a sun ends up, not
+         straight above where it came out. Held clear of the header by a
+         diameter, and off the very top by a sixth of the scene on a tall
+         window, so the disc arrives in open sky rather than under the nav. */
+      var apexX = b.gw / 2;
+      var apexY = Math.max(d * 0.95, b.gh * 0.17);
+      return { d: d, rest: restY, restX: restX, ridge: ridgeY,
+               apexX: apexX, apexY: apexY, box: b };
+    }
+
+    /* Written once as a `top`/`left` in px; the whole arc rides on transform
+       from there. Everything is in the SCENE's own coordinates — no screen
+       positions, so it cannot be perturbed by scroll, parallax or the entrance
+       settle. */
+    function place() {
+      geo = measure();
+      if (!geo) return;
+      var b = geo.box;
+      sun.style.top = (geo.rest - geo.d / 2).toFixed(1) + "px";
+      /* pinned to the PLATE's column, not the viewport's: the plate is wider
+         than the screen, so anchoring the sun to a viewport percentage would
+         drift it off its own peak on every window shape */
+      sun.style.left = (geo.restX - geo.d / 2).toFixed(1) + "px";
+      sun.style.visibility = "visible";
+      /* THE CUT, registered to the painting. The mask is the plate's own alpha
+         inverted, so it has to sit exactly where the plate sits — same width,
+         same left edge, and its bottom band aligned to the plate's bottom. The
+         image is three plate-heights tall with the top two thirds fully opaque,
+         which is what lets the disc keep rising past the top of the painting
+         instead of vanishing at its edge. */
+      var clip = document.querySelector(".sun-clip");
+      if (clip) {
+        var size = b.w.toFixed(1) + "px " + (b.h * 3).toFixed(1) + "px";
+        var pos  = b.left.toFixed(1) + "px " + (b.top - b.h * 2).toFixed(1) + "px";
+        clip.style.webkitMaskSize = size; clip.style.maskSize = size;
+        clip.style.webkitMaskPosition = pos; clip.style.maskPosition = pos;
+      }
+    }
 
     function neededScale() {
+      /* the base diameter from LAYOUT, the centre from the live rect. Dividing
+         the rect's width back out by the current scale worked but compounded
+         rounding on every frame of the flood; offsetWidth is the same number,
+         exactly, and never needs undoing. The centre does have to be live —
+         that is where the disc actually sits after its climb — and scaling is
+         about its own centre, so it holds still while the disc grows. */
+      var w = sun.offsetWidth;
+      if (!w) return 24;
       var r = sun.getBoundingClientRect();
-      if (!r.width) return 24;
-      /* getBoundingClientRect already includes the live scroll transform, so
-         divide it back out — otherwise every refresh mid-flood reads a huge
-         width and collapses the target scale. */
-      var s = Math.abs(gsap.getProperty(sun, "scaleX") || 1);
-      var w = r.width / s;
-      /* The rect carries the live y as well, which is exactly right: the flood
-         only ever starts once the climb is over, so this is the disc's real
-         centre at the moment it begins to grow. */
       var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
       var far = Math.max(
         Math.hypot(cx, cy),
@@ -236,55 +377,81 @@
     }
 
     var RIDE = INK_RIDE, HOLD = INK_HOLD;
-    var LIFT = 1.10;   /* how much bigger the disc is by the top of its climb */
-
-    /* one scrubbed trigger for the whole gesture: both beats read off a single
+    /* one scrubbed trigger for the whole gesture: three beats read off a single
        progress value, so the hands can never drift apart */
     ScrollTrigger.create({
       start: 0,
       end: function () { return window.innerHeight * RIDE; },
       scrub: true, invalidateOnRefresh: true,
+      onRefresh: function () { place(); },
       onUpdate: function (self) {
+        if (!geo) place();
+        if (!geo) return;
         var p = self.progress;
-        /* CLIMB — power2-out, not cubic: the harder curve puts most of the
-           travel in the first few pixels, which reads as a jump rather than a
-           rise even when the distance is identical. */
+        /* LINEAR along the arc, deliberately. This used to be power2-out, and
+           measured on the page that put 71% of the whole climb inside the first
+           6% of a viewport of scroll — the curve was there but nobody could see
+           it go. The trig below already shapes the motion; easing the parameter
+           on top of it only front-loads the same shape twice. */
         var r = Math.min(1, p / HOLD);
-        r = 1 - Math.pow(1 - r, 2);
-        /* FLOOD — nothing until the climb is done, then a straight ramp */
+        /* FLOOD — nothing until the arc is done, then a straight ramp */
         var f = p <= HOLD ? 0 : (p - HOLD) / (1 - HOLD);
+        /* IT TRAVELS THE WAY A SUN DOES: an ellipse quadrant from where it
+           broke the skyline to the top centre of the screen, not a lift
+           straight up.
+           THE OFFSET IS THE POINT. Run the quadrant from 0 and the disc leaves
+           the ridge dead vertical and only turns right at the end — a fountain,
+           not a sunrise. Starting a third of the way into the quadrant and
+           renormalising both axes back onto the endpoints keeps the arrival
+           horizontal (which is what an apex is) while giving the departure a
+           real diagonal: measured, it leaves the range about two and a half
+           times steeper than it travels sideways, which is roughly what a sun
+           does at this latitude. */
+        var U0 = 0.35 * Math.PI / 2, U1 = Math.PI / 2;
+        var u = U0 + (U1 - U0) * r;
+        var x0 = 1 - Math.cos(U0), y0 = Math.sin(U0);
+        var ax = (geo.apexX - geo.restX) * ((1 - Math.cos(u)) - x0) / (1 - x0);
+        var ay = -(geo.rest - geo.apexY) * (Math.sin(u) - y0) / (1 - y0);
         gsap.set(sun, {
-          y: -climbPx() * r,
-          scale: 1 + (LIFT - 1) * r + (neededScale() - LIFT) * f,
+          x: ax, y: ay,
+          scale: 1 + (neededScale() - 1) * f,
           force3D: true
         });
         /* BURN — the ink does not crossfade over the whole disc, it blooms out
-           of the core: a soft-edged black spreading from the centre until it
-           has taken the circle.
-           It starts LATE and runs LONG (0.16 -> 0.64 of the flood, against the
-           old 0 -> 0.23 once the 2.4x multiplier is accounted for). The first
-           beat of the growth is the disc getting bigger while it is still
-           unmistakably vermilion — that is the shot the whole hero is built
-           around, and burning from the first pixel of scroll threw it away.
-           It is still fully black well before the disc covers the screen, which
-           is the one hard requirement: what is inside the flood is the dark
-           shelf of screen two, and red handing over to black is a cut. */
+           of the core: a soft-edged black spreading from the centre until it has
+           taken the circle. It starts late and runs long, so the first beat of
+           the growth is the disc getting bigger while it is still unmistakably
+           vermilion — that is the shot the whole hero is built around. */
         if (fill) {
           var burn = Math.min(1, Math.max(0, (f - 0.16) / 0.48));
           burn = burn * burn * (3 - 2 * burn);   /* smoothstep */
           fill.style.opacity = Math.min(1, burn * 1.7).toFixed(3);
           fill.style.transform = "scale(" + (0.1 + 0.9 * burn).toFixed(4) + ")";
         }
-        /* THE SWAP: while it is climbing the disc is part of the picture, under
-           the grain and under the sentence. The instant it starts covering, it
-           has to be over both. */
-        de.classList.toggle("sun-up", f > 0);
+        de.classList.toggle("sun-up", r > 0.98);
       }
     });
 
+    /* RE-PLACE ON RESIZE, not just invalidate. Dropping `geo` alone left the
+       last-written numbers on the element until something happened to call
+       place() again — and with nothing scrolled, nothing did. Caught by
+       measurement: after a window resize the mask was still sized 1080x1209 for
+       the old layout while the plate had become 1510x564, so the silhouette and
+       the drawing were registered to different boxes. One rAF of debounce keeps
+       a drag-resize from writing on every intermediate width. */
+    var replace = 0;
+    addEventListener("resize", function () {
+      geo = null;
+      if (replace) cancelAnimationFrame(replace);
+      replace = requestAnimationFrame(function () { replace = 0; place(); });
+    }, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+    addEventListener("load", place);
+    place();
+
     /* No fade on the hero copy. GSAP would capture its start opacity while the
        WAAPI entrance is still mid-flight and animate 0 -> 0, blanking the hero.
-       It isn't needed either: the disc sits above the copy once it floods. */
+       It isn't needed either: the sun sits above the copy once it floods. */
   })();
 
   /* ---------- the ink comes alive ----------
@@ -304,7 +471,7 @@
     if (!hero || !wrap) return;
 
     var G = 2000, AIR = 0.9985, BOUNCE = 0.4, GRIP = 0.72, SLEEP = 6;
-    var bodies = [], raf = 0, prev = 0, still = 0;
+    var bodies = [], raf = 0, prev = 0, still = 0, floor = 0;
 
     /* The ink used to pile up along the painted ridge. With the painting gone
        the only line left on the sheet is the foot rule, so that is where it
@@ -348,7 +515,10 @@
     function step(t) {
       var dt = Math.min(0.032, (t - prev) / 1000 || 0.016);
       prev = t;
-      var W = hero.offsetWidth, F = floorY(), moving = 0, i, j;
+      /* floorY() reads two bounding rects; at 60fps that is 120 forced layouts a
+         second for a line that does not move while the marks fall. Measured once
+         per burst instead, and re-measured on resize (see the handler below). */
+      var W = hero.offsetWidth, F = floor, moving = 0, i, j;
 
       for (i = 0; i < bodies.length; i++) {
         var b = bodies[i];
@@ -357,7 +527,16 @@
 
         if (b.y + b.r > F) {
           if (b.vy > 260) splat(b);
-          b.y = F - b.r; b.vy = -b.vy * BOUNCE; b.vx *= GRIP;
+          b.y = F - b.r;
+          /* A REST THRESHOLD, or this never stops. Gravity adds 32/frame and the
+             bounce returns 40% of it, so a mark lying on the floor settles into
+             a fixed point at v = -0.4(v+32) = -9.14 — forever. Measured against
+             SLEEP = 6 that reads as "still moving" on every frame, so `still`
+             resets, the rAF loop never exits, and the page burns a frame budget
+             on sixteen dots that are visually motionless. Below 40 the bounce
+             is under half a pixel; take it as landed. */
+          if (Math.abs(b.vy) < 40) { b.vy = 0; b.vx *= 0.5; }
+          else { b.vy = -b.vy * BOUNCE; b.vx *= GRIP; }
         }
         if (b.x - b.r < 0) { b.x = b.r; b.vx = -b.vx * BOUNCE; }
         if (b.x + b.r > W) { b.x = W - b.r; b.vx = -b.vx * BOUNCE; }
@@ -409,6 +588,7 @@
                         duration: 0.28, ease: "power2.out" });
       });
       still = 0; prev = performance.now();
+      floor = floorY();                       /* once per burst, not per frame */
       if (!raf) raf = requestAnimationFrame(step);
     }
 
@@ -418,67 +598,48 @@
     addEventListener("resize", function () {
       if (raf) { cancelAnimationFrame(raf); raf = 0; }
       bodies.forEach(function (b) { b.el.style.transform = ""; delete b.el.__body; });
-      bodies = [];
+      bodies = []; floor = 0;
     }, { passive: true });
   })();
 
   /* ---------- screen two arrives out of the ink ----------
-     The sideways slide is gone. Sliding a block of type in from the left is the
-     move every scroll library ships with, and next to a shelf being loaded it
-     read as a different hand entirely — which is what "the text animation is
-     bad" was pointing at.
-     What replaces it: the statement rides UP from behind its own edge, one line
-     at a time, each line clipped by its own box (see .shelf-line .ln). Nothing
-     travels sideways, nothing crosses the marker, and the eye ends where the
-     reading starts. The marker and the note only breathe in — they are margin
-     notes, they should not perform.
-     Then the panels are set onto the shelf, and they land in the SAME language
-     as the hover flick: a short overshoot past the resting position and a
-     settle back, so the entrance and the interaction are obviously the same
-     hand at work. */
+     THE HEAD MOVES THE WAY THE REFERENCE'S DOES, read out of its IX2 data
+     rather than guessed at: two blocks start at opacity 0 and x -300 / +300 and
+     travel to 0 over 500ms on `ease`, fired by SCROLL_INTO_VIEW. The marker
+     comes in from the left, the text block from the right, and they close on
+     each other. It is a CSS transition toggled by one class — the whole move is
+     two properties, and GSAP has nothing to add to it.
+     The per-line masked reveal that used to live here is gone with the layout
+     that needed it. So is the third column: the statement and its paragraph
+     were side by side, which is precisely what the reference does not do.
+     The panels still land in the SAME language as the hover flick — a short
+     overshoot past the resting position and a settle back — so the entrance and
+     the interaction are obviously the same hand at work. */
   (function () {
     var sec = document.querySelector(".products");
     if (!sec) return;
     var head = sec.querySelector(".shelf-head"),
-        eb   = sec.querySelector(".shelf-eyebrow"),
-        note = sec.querySelector(".shelf-note"),
-        lines= gsap.utils.toArray(sec.querySelectorAll(".shelf-line .ln > span")),
-        slots= gsap.utils.toArray(sec.querySelectorAll(".slot")),
-        open = sec.querySelector(".shelf-open"),
-        art  = sec.querySelector(".product-art"),
-        body = sec.querySelectorAll(".product-body > *");
+        slots= gsap.utils.toArray(sec.querySelectorAll(".slot"));
     if (!head) return;
 
     /* every .rise inside the shelf is ours to reveal now that it is out of the
        generic handler — miss one and it stays invisible forever, because the
        CSS gate hides it and nothing else is coming for it */
-    var claimed = [head, open, art].concat([].slice.call(body));
-    var rest = gsap.utils.toArray(sec.querySelectorAll(".rise")).filter(function (el) {
-      return claimed.indexOf(el) < 0;
-    });
+    var rest = gsap.utils.toArray(sec.querySelectorAll(".rise"));
 
-    /* the head itself is shown immediately — only its PARTS are staged, so a
-       half-built headline is never on screen */
-    gsap.set(head, { autoAlpha: 1 });
-    gsap.set(art, { autoAlpha: 0 });
-    gsap.set(body, { autoAlpha: 0 });
-    if (lines.length) gsap.set(lines, { yPercent: 108 });
-    if (eb) gsap.set(eb, { autoAlpha: 0, y: 10 });
-    if (note) gsap.set(note, { autoAlpha: 0, y: 14 });
-    if (open) gsap.set(open, { autoAlpha: 0 });
     if (slots.length) gsap.set(slots, { autoAlpha: 0, y: 46 });
     if (rest.length) gsap.set(rest, { autoAlpha: 0 });
 
+    /* the head is CSS's job; this only says when */
+    ScrollTrigger.create({
+      trigger: head, start: "top 82%", once: true,
+      onEnter: function () { head.classList.add("is-in"); }
+    });
+
     var tl = gsap.timeline({ scrollTrigger: { trigger: head, start: "top 82%", once: true } });
-    if (eb) tl.to(eb, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0);
-    /* 108, not 100: the clip box carries a little padding for the descenders,
-       so a flat 100% leaves the tail of a g showing above the edge */
-    if (lines.length) {
-      tl.to(lines, { yPercent: 0, duration: 0.95, ease: "expo.out", stagger: 0.09 }, 0.06);
-    }
-    if (note) tl.to(note, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.34);
-    /* Set onto the shelf, left to right. The overshoot is small (a 4px dip past
-       zero) — enough to feel like a hand placing something, not a bounce. */
+    /* Set onto the shelf, left to right, after the head has closed. The
+       overshoot is small (a 5px dip past zero) — enough to feel like a hand
+       placing something, not a bounce. */
     if (slots.length) {
       tl.to(slots, {
         keyframes: [
@@ -488,13 +649,10 @@
         stagger: 0.1
       }, 0.42);
     }
-    if (open) tl.to(open, { autoAlpha: 1, duration: 0.6, ease: "power2.out" }, 1.0);
-    tl.fromTo(art, { y: 46 }, { y: 0, autoAlpha: 1, duration: 1.1, ease: "expo.out" }, 1.06)
-      .fromTo(body, { y: 30 }, { y: 0, autoAlpha: 1, duration: 0.85, ease: "expo.out", stagger: 0.075 }, 1.16);
-    if (rest.length) tl.fromTo(rest, { y: 22 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out", stagger: 0.055 }, 1.3);
+    if (rest.length) tl.fromTo(rest, { y: 22 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: "expo.out", stagger: 0.055 }, 0.6);
     /* hand the panels back to CSS once they are placed: a lingering will-change
        on six elements is not worth keeping for a one-shot entrance */
-    tl.add(function () { [head, art].concat(slots).concat(lines).forEach(settle); }, 2.6);
+    tl.add(function () { slots.forEach(settle); }, 1.8);
   })();
 
   /* ---------- the flick ----------
@@ -574,16 +732,15 @@
         scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: true } });
     });
 
-    /* Light mouse parallax over the hero. It rides on the BRUSH SKIN inside the
-       disc, never on `.sun` itself: the scroll gesture writes y and scale on the
-       wrapper every frame, and two hands on one transform is how the plate's
-       centring bug shipped last time — GSAP read a CSS translateX(-50%) as
-       x = -897px and the pointer offset ADDED to it, walking half the horizon
-       off screen on the first mouse move. Nothing in the hero is centred by a
-       transform any more (flexbox does it), and the two writers now own two
-       different elements, so that class of bug cannot recur here. */
+    /* Light mouse parallax across the plate. Plain x now, with no special case:
+       the plate's centring moved out of `transform` and into a negative margin
+       (see .hz in the stylesheet), so the transform holds nothing but this
+       offset. The old version had to write xPercent and carry a -50 base
+       because GSAP had read the CSS translateX(-50%) as x = -897px and would
+       otherwise have added to it — that bug shipped, and it is gone at the
+       source rather than worked around here. */
     if (matchMedia("(pointer: fine)").matches) {
-      var setters = gsap.utils.toArray(".hero [data-depth]").map(function (el) {
+      var setters = gsap.utils.toArray(".hero-ground [data-depth]").map(function (el) {
         var d = parseFloat(el.dataset.depth) || 0.2;
         return { x: gsap.quickTo(el, "x", { duration: 1.0, ease: "power3.out" }),
                  y: gsap.quickTo(el, "y", { duration: 1.0, ease: "power3.out" }), d: d };
@@ -607,11 +764,28 @@
      and decoded MID-SCROLL, which read as the site "stuttering". After this
      warm-up, scrolling never waits on network or decode. */
   addEventListener("load", function () {
+    /* WARMING THE WHOLE PAGE IS NOT A WARM-UP, it is an eager load with extra
+       steps. Flipping every loading="lazy" to eager pulled 556 KB on every
+       visit — osnote-card, kintsugi, zen, potter, branch — and decoding them
+       all at once opened roughly 24 MB of RGBA at peak, on a phone, for images
+       most visitors never scroll to.
+       Now: skipped entirely on save-data or a 2G-class link, limited to what is
+       within two screens of the viewport, and decoded ONE AT A TIME so the
+       bitmap peak is a single image rather than five. */
     function warm() {
-      [].forEach.call(document.images, function (im) {
-        if (im.loading === "lazy") im.loading = "eager";
-        if (im.decode) im.decode().catch(function () {});
+      var c = navigator.connection;
+      if (c && (c.saveData || /(^|-)2g/.test(c.effectiveType || ""))) return;
+      var near = [].filter.call(document.images, function (im) {
+        var r = im.getBoundingClientRect();
+        return r.top < innerHeight * 3 && r.bottom > -innerHeight;
       });
+      (function next(i) {
+        var im = near[i];
+        if (!im) return;
+        if (im.loading === "lazy") im.loading = "eager";
+        var p = im.decode ? im.decode() : Promise.resolve();
+        p.catch(function () {}).then(function () { next(i + 1); });
+      })(0);
     }
     if ("requestIdleCallback" in window) requestIdleCallback(warm, { timeout: 2500 });
     else setTimeout(warm, 1200);
@@ -647,4 +821,13 @@
       }
     });
   }, 2600);
+
+  /* PROOF OF LIFE, and the reason it exists: three entrance gates in the
+     stylesheet — `.js .rise`, `.js .brighten`, `.js .shelf-head [data-slide]` —
+     hide content that only this file ever un-hides. If it 404s, is blocked, or
+     throws on an engine that chokes on something here, every section below the
+     hero stays at opacity 0 forever and the site is a blank scroll. Setting this
+     as the LAST statement means it is only ever set by a clean, complete run;
+     lang-redirect.js watches for it and tears the gates down if it never comes. */
+  document.documentElement.classList.add("js-live");
 })();
