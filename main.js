@@ -221,24 +221,6 @@
       scrollTrigger: { trigger: el, start: "top 88%", once: true }, onComplete: function(){ settle(el); } });
   });
 
-  /* ---------- the spine draws itself down the page ----------
-     Scrubbed, not triggered: the stroke has to be under the reader's thumb, so
-     that scrolling IS the brush moving. A timed reveal would make it a video
-     playing beside the text instead of a mark the reader is laying down.
-     clip-path rather than height, so nothing reflows for 6,000px of scroll —
-     and the mask is a real tapered brush shape, so the stroke thins at both
-     ends the way a stroke does, which a border or a gradient cannot do. */
-  (function () {
-    var spine = document.querySelector(".spine-ink");
-    if (!spine) return;
-    gsap.to(spine, {
-      clipPath: "inset(0% 0% 0% 0%)", ease: "none",
-      scrollTrigger: {
-        trigger: ".spine", start: "top 80%", end: "bottom bottom", scrub: 0.55
-      }
-    });
-  })();
-
   /* ---------- park the chrome while the reader is reading ----------
      Measured before writing this: the opaque capsule ate letters out of seven
      headlines on the way down the page. Four were fixed by capping the measure;
@@ -276,12 +258,56 @@
      The resting state in CSS is INKED; `.js .steps li:not(.is-inked)` is what
      stages them, so no-JS and reduced-motion both show four finished strokes
      and nothing can ever ship blank. */
-  gsap.utils.toArray(".steps li").forEach(function (li) {
-    ScrollTrigger.create({
-      trigger: li, start: "top 86%", once: true,
-      onEnter: function () { li.classList.add("is-inked"); }
+  (function () {
+    var section = document.querySelector(".process"),
+        emaki = document.querySelector(".emaki"),
+        track = document.querySelector(".steps");
+    if (!section || !emaki || !track) return;
+    var items = gsap.utils.toArray(".steps li");
+
+    /* PHONES KEEP THE NATIVE SWIPE ROW. Pinning fights the OS scroll on touch
+       and the guidance is explicit about it, so the pin is desktop-only and the
+       CSS default — a real overflow-x track — is what ships everywhere else.
+       Same content, same gesture, none of the cost. */
+    if (!matchMedia("(min-width: 901px)").matches) {
+      items.forEach(function (li) {
+        ScrollTrigger.create({ trigger: li, start: "top 86%", once: true,
+          onEnter: function () { li.classList.add("is-inked"); } });
+      });
+      return;
+    }
+
+    document.documentElement.classList.add("emaki-pinned");
+    /* measured at refresh, never cached: the track's width depends on fonts and
+       on the viewport, and a stale number here is the classic pinned-horizontal
+       bug where the last panel is unreachable or the scroll dead-ends early */
+    function distance() { return Math.max(0, track.scrollWidth - emaki.clientWidth); }
+
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section, start: "top top",
+        end: function () { return "+=" + (distance() + innerHeight * 0.5); },
+        pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true
+      }
     });
-  });
+    tl.to(track, { x: function () { return -distance(); }, ease: "none" }, 0);
+    /* the strokes are on the same timeline rather than on their own triggers:
+       inside a pinned horizontal track an element's viewport position no longer
+       tracks the reader's progress, so a per-item trigger would fire all four at
+       once. Positions on the scrub timeline are the honest measure of "how far
+       has the scroll opened". */
+    items.forEach(function (li, i) {
+      var mark = li.querySelector(".step-mark");
+      if (mark) tl.to(mark, { clipPath: "inset(0% 0% 0% 0%)", ease: "none", duration: 0.16 }, i * 0.2 + 0.04);
+      tl.add(function () { li.classList.add("is-inked"); }, i * 0.2);
+    });
+
+    /* the pin's length is derived from a measured width, so it has to be
+       recomputed once the webfonts land and the panels settle */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
+    }
+  })();
 
   /* ---------- word-by-word brighten ---------- */
   /* The fallback only fires if --ink fails to resolve, but it was still the

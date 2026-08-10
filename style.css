@@ -931,49 +931,6 @@ html.menu-open.nav-away .nav-links, html.menu-open.nav-away .nav-toggle {
    the cream: its own full-bleed sumi ink, laid inside the section (the deck's
    paper sheet sits a layer below). The framed white print then reads exactly
    as what the eyebrow calls it — a work, hung on a dark wall. */
-/* ---------- THE SPINE ----------
-   The complaint that produced this was the right one: the last pass fixed the
-   ground, the chrome and the contrast, but every section was still eyebrow →
-   headline → paragraph, and repairing a shape is not changing it. Six boxes
-   stacked in a column read as six boxes stacked in a column whatever you paint
-   them.
-   So the deck stops being a stack and gets a spine: ONE brush stroke, generated
-   as a single tapered shape rather than a constant-width rule, running the
-   entire length of the page below the hero and drawn downward as you scroll.
-   Not decoration on the sections — the thing they hang from. It is the same
-   gesture the shelf's rule makes, held for six thousand pixels instead of four
-   hundred, and it is the only element on the page that belongs to no section,
-   which is exactly what makes the sections stop reading as separate documents.
-   The stroke lives in the left gutter, so it needs a gutter to live in: below
-   1100px the band takes the full width and the spine steps out rather than
-   crowding the type. */
-/* `main > .spine`, NOT `.spine` — line 361 sets `main > *:not(.hero)` to
-   position:relative, which is (0,1,1) against a bare class's (0,1,0) and wins
-   on specificity no matter where it sits in the file. Measured the symptom
-   before guessing at it: the element resolved to position relative, z-index 2,
-   height 0, because `bottom` does nothing on a relative box. This file has lost
-   the same argument twice before (see the shelf head), so the fix is to match
-   the weight rather than to out-shout it. */
-main > .spine {
-  position: absolute; z-index: 3; pointer-events: none;
-  left: clamp(16px, 2.1vw, 38px);
-  top: var(--hero-h, 100svh); bottom: 0;
-  width: clamp(9px, 0.95vw, 15px);
-}
-.spine-ink {
-  display: block; width: 100%; height: 100%;
-  background: var(--ink); opacity: 0.62;
-  -webkit-mask: url("assets/spine.svg") center / 100% 100% no-repeat;
-          mask: url("assets/spine.svg") center / 100% 100% no-repeat;
-  /* revealed top-down by scroll; the resting state is DRAWN so that no-JS and
-     reduced-motion get a finished stroke instead of an empty gutter */
-  clip-path: inset(0 0 0 0);
-  will-change: clip-path;
-}
-.js .spine-ink { clip-path: inset(0 0 100% 0); }
-html.no-motion .spine-ink { clip-path: inset(0 0 0 0); }
-@media (max-width: 1100px) { main > .spine { display: none; } }
-
 /* ---------- THE INK WALL ----------
    This used to be `.products::before` and nothing else on the page could reach
    it, which is why the deck reverted to white for 6,110px after the shelf and
@@ -1409,7 +1366,44 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
 /* ---------- 8 · process ---------- */
 .process { max-width: var(--maxw); margin: 0 auto; }
 .process .display { margin-top: 24px; line-height: 1.0; }
-.steps { list-style: none; margin-top: clamp(48px, 7vh, 90px); }
+/* ---------- THE EMAKI ----------
+   An emaki is a Japanese handscroll, and a handscroll is not read down — it is
+   unrolled sideways, one scene at a time, at the reader's own pace. This deck
+   spent nine screens going in one direction with one motion, and the fix for
+   "everything feels flat" was never more decoration on a vertical stack; it was
+   to make one section move differently.
+   So the four stages stop being four rows in a table and become four panels on
+   a scroll that opens as you push into it. It is the only pinned section on the
+   page besides the hero — the guidance is one or two per page and the hero is
+   already sticky, so this spends the last of that budget on the one section
+   whose content is literally a sequence.
+   THE DEFAULT IS A NATIVE SWIPE ROW, not a broken pin: overflow-x on the track
+   means no-JS, reduced-motion and every phone get a row you drag with a thumb,
+   which is the same gesture and none of the cost. The pin is layered on top
+   only where it is an improvement. */
+.emaki {
+  margin-top: clamp(48px, 7vh, 90px);
+  /* full-bleed: the scroll runs off both edges of the paper the way a handscroll
+     runs off the table, so it never reads as a widget parked in a column */
+  width: 100vw; margin-left: calc(50% - 50vw);
+  /* the right inset clears the fixed tate rail — measured, the last panel's
+     title was running under it */
+  padding-left: var(--pad); padding-right: clamp(72px, 9vw, 150px);
+  display: flex; align-items: center; min-height: 44vh;
+  overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none; -ms-overflow-style: none;
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+}
+.emaki::-webkit-scrollbar { display: none; }
+/* once the pin is running the track is driven by scroll position, so the
+   element must stop being a scroller or the two fight each other */
+html.emaki-pinned .emaki { overflow: hidden; scroll-snap-type: none; }
+.steps {
+  list-style: none; display: flex; flex-wrap: nowrap;
+  width: max-content; align-items: stretch;
+  gap: clamp(20px, 2.6vw, 40px);
+}
 /* A FOURTH COLUMN, and it is the section's mechanic.
    The rows used to be `92px | 230px | 1fr`, which left 360px of empty paper —
    28% of the row — under a rule that ran the full width. A ruled table whose
@@ -1422,17 +1416,28 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
    the site where a mark draws itself. That is what makes it read as the same
    hand rather than as a second idea: the deck had one bespoke mechanic in
    nine screens, and this is the second, built from material already here. */
+/* Each stage is a PANEL now, not a row: the number sits at the top like a
+   scene mark, the verb takes the display size the section deserves, and the
+   brush runs along the foot as the join to the next scene. Panels are sized so
+   the next one is always half-visible — that sliver is what tells you the
+   scroll continues sideways, and it is doing the job an arrow or a "swipe"
+   label would otherwise have to do badly. */
 .steps li {
-  display: grid;
-  grid-template-columns: 92px minmax(0, 260px) minmax(0, 46ch) minmax(0, 1fr);
-  gap: clamp(14px, 3vw, 48px); align-items: baseline;
-  padding: clamp(22px, 3vh, 34px) 0;
-  border-top: 1px solid rgba(17,17,17,0.14);
+  /* wide enough that the track is ~1.8x the viewport: the travel IS the
+     mechanic, and at 34vw it only had 512px to give, which reads as a nudge
+     rather than a scroll opening */
+  flex: 0 0 clamp(268px, 44vw, 600px);
+  scroll-snap-align: start;
+  display: flex; flex-direction: column;
+  padding: clamp(26px, 3.4vh, 40px) 0 clamp(22px, 2.6vh, 32px);
+  border-top: 1px solid rgba(17,17,17,0.16);
 }
-.steps li:last-child { border-bottom: 1px solid rgba(17,17,17,0.14); }
+.steps li .step-n { margin-bottom: clamp(26px, 4vh, 54px); }
+.steps li .step-t { margin-bottom: 14px; }
+.steps li .step-d { margin-bottom: auto; max-width: 30ch; }
 .step-mark {
-  grid-column: 4; align-self: center; justify-self: stretch;
-  display: block; height: 16px; min-width: 60px;
+  display: block; height: 16px; width: 100%;
+  margin-top: clamp(30px, 4vh, 52px);
   background: rgba(17,17,17,0.30);
   -webkit-mask: url("assets/brush-rule.svg?v=2") right center / 100% 100% no-repeat;
           mask: url("assets/brush-rule.svg?v=2") right center / 100% 100% no-repeat;
@@ -1451,8 +1456,8 @@ html.no-motion .step-mark { clip-path: inset(0 0 0 0); transition: none; }
 .steps li:nth-child(3) .step-mark { opacity: 0.85; }
 .steps li:nth-child(4) .step-mark { opacity: 1; background: var(--vermilion); }
 @media (max-width: 900px) {
-  .steps li { grid-template-columns: 62px minmax(0, 1fr); }
-  .step-mark { grid-column: 1 / -1; grid-row: 3; height: 12px; margin-top: 14px; }
+  .steps li { flex-basis: clamp(232px, 74vw, 320px); }
+  .step-mark { height: 12px; margin-top: 22px; }
 }
 .step-n { font-size: 14px; font-weight: 700; color: var(--accent-ink); letter-spacing: 0.08em; }
 .step-t { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(26px, 3.3vw, 48px); font-weight: 700; line-height: 1.12; }
