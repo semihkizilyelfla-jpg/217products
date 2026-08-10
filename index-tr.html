@@ -38,7 +38,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/manrope-var.woff2" crossorigin>
   <link rel="preload" as="image" imagesrcset="assets/horizon-900.webp?s=104 900w, assets/horizon-1400.webp?s=104 1400w, assets/horizon.webp?s=104 1920w" imagesizes="(max-width: 1018px) 1080px, 106vw" fetchpriority="high">
   <link rel="preload" as="image" href="assets/sun-ink.webp?s=101" fetchpriority="high">
-  <link rel="stylesheet" href="style.css?v=151">
+  <link rel="stylesheet" href="style.css?v=153">
   <script type="application/ld+json">
   {"@context": "https://schema.org", "@type": "Organization", "name": "217 Products", "url": "https://217products.com/", "logo": "https://217products.com/assets/icon-512.png", "image": "https://217products.com/assets/zen.webp?w=1", "description": "Ankara’dan dünyaya açılan bağımsız bir ürün şirketiyiz. Gördüğümüz boşluklara hızlı, sade ve uzun ömürlü ürünler inşa ediyoruz.", "email": "destek217product@gmail.com", "foundingDate": "2026", "address": {"@type": "PostalAddress", "addressLocality": "Ankara", "addressCountry": "TR"}}
   </script>
@@ -94,7 +94,7 @@
     <div class="hero-run" aria-hidden="true"></div>
 
     <!-- 2 · PRODUCTS -->
-    <section class="products" id="products">
+    <section class="products on-ink" id="products">
       <div class="shelf-head">
         <p class="shelf-eyebrow" data-slide="-1">RAFTA</p>
         <div class="shelf-text" data-slide="1">
@@ -158,7 +158,7 @@
     <!-- 3 · APPROACH -->
     <section class="statement">
       <span class="section-seal" aria-hidden="true" lang="ja">志</span>
-      <p class="eyebrow rise">仕事 · 217 YAKLAŞIMI</p>
+      <p class="eyebrow rise">217 YAKLAŞIMI</p>
       <h2 class="display rise">Yetmeyen yerde <span class="gold">başlarız</span>.</h2>
       <figure class="section-art rise">
         <img loading="lazy" decoding="async" src="assets/kintsugi.webp?w=1" alt="Sumi-e üslubunda kintsugi çay çanağı — çatlakları altınla onarılmış" width="880" height="880">
@@ -168,12 +168,9 @@
     </section>
 
     <!-- 4 · CRAFT (immersive parallax) -->
-    <section class="craft" id="craft">
-      <div class="craft-bg" data-parallax="0.2" aria-hidden="true">
-        <img loading="lazy" decoding="async" src="assets/zen.webp?w=1" alt="" width="1600" height="923">
-      </div>
+    <section class="craft on-ink" id="craft">
+      <span class="section-seal" aria-hidden="true" lang="ja">職人</span>
       <div class="craft-inner">
-        <p class="eyebrow rise">職人 · ÜRÜN STANDARDIMIZ</p>
         <h2 class="display rise">Bugün için değil, <br class="br-lg">sonrası için de <span class="gold">yaparız</span>.</h2>
         <p class="craft-lead rise">Yaptığımız ürünlerin sorumluluğunu taşırız. Teknoloji değiştikçe yeniler, kullanıcı konuştukça dinler ve ihtiyaç ortaya çıktıkça geliştiririz.</p>
       </div>
@@ -189,7 +186,7 @@
 
     <!-- 5 · STUDIO / VALUES -->
     <section class="studio" id="studio">
-      <p class="eyebrow rise">姿勢 · 217 PRODUCTS</p>
+      <p class="eyebrow rise">217 PRODUCTS</p>
       <h2 class="display rise">Başkalarının fikrini değil, <br class="br-lg">kendi ürünlerimizi <span class="gold">kuruyoruz</span>.</h2>
       <figure class="section-art rise">
         <img loading="lazy" decoding="async" src="assets/potter.webp?w=1" alt="Sumi-e üslubunda çömlekçi çarkında çanak şekillendiren eller" width="880" height="880">
@@ -214,13 +211,14 @@
 
     <!-- 6 · PROCESS -->
     <section class="process" id="process">
-      <p class="eyebrow rise">道 · ÜRÜN NASIL DOĞAR</p>
+      <span class="section-seal" aria-hidden="true" lang="ja">道</span>
+      <p class="eyebrow rise">ÜRÜN NASIL DOĞAR</p>
       <h2 class="display rise">Olması gerekeni, <br class="br-lg"><span class="gold">baştan</span> kurarız.</h2>
       <ol class="steps">
-        <li class="rise"><span class="step-n">01</span><span class="step-t">Fark et</span><span class="step-d">İnsanların mecburen katlandığı eksikliği görürüz.</span></li>
-        <li class="rise"><span class="step-n">02</span><span class="step-t">Baştan düşün</span><span class="step-d">Alışılmış çözümü kopyalamak yerine soruyu yeniden kurarız.</span></li>
-        <li class="rise"><span class="step-n">03</span><span class="step-t">İnşa et</span><span class="step-d">Sade, hızlı ve kararlı bir ürün ortaya çıkarırız.</span></li>
-        <li class="rise"><span class="step-n">04</span><span class="step-t">Yanında kal</span><span class="step-d">Yayınladıktan sonra dinler, düzeltir ve geliştirmeye devam ederiz.</span></li>
+        <li class="rise"><span class="step-n">01</span><span class="step-t">Fark et</span><span class="step-d">İnsanların mecburen katlandığı eksikliği görürüz.</span><span class="step-mark" aria-hidden="true"></span></li>
+        <li class="rise"><span class="step-n">02</span><span class="step-t">Baştan düşün</span><span class="step-d">Alışılmış çözümü kopyalamak yerine soruyu yeniden kurarız.</span><span class="step-mark" aria-hidden="true"></span></li>
+        <li class="rise"><span class="step-n">03</span><span class="step-t">İnşa et</span><span class="step-d">Sade, hızlı ve kararlı bir ürün ortaya çıkarırız.</span><span class="step-mark" aria-hidden="true"></span></li>
+        <li class="rise"><span class="step-n">04</span><span class="step-t">Yanında kal</span><span class="step-d">Yayınladıktan sonra dinler, düzeltir ve geliştirmeye devam ederiz.</span><span class="step-mark" aria-hidden="true"></span></li>
       </ol>
     </section>
 
@@ -229,7 +227,7 @@
       <div class="reach-bg" aria-hidden="true"></div>
       <div class="hub-grid">
         <div class="reach-panel">
-          <p class="hub-eyebrow eyebrow">世界 · ERİŞİMİMİZ</p>
+          <p class="hub-eyebrow eyebrow rise">ERİŞİMİMİZ</p>
           <img class="reach-logo" src="assets/logo-full.svg?w=1" alt="217 Products" width="220" height="220">
           <h2 class="reach-head rise">Burada kurulur,<br>her yerde <span class="gold">karşılık</span> bulur.</h2>
           <p class="reach-lead rise">Bir ürünün nerede geliştirildiğinden çok, kimin hayatını kolaylaştırdığına inanıyoruz. Ankara’dan çıkan her ürünü, dünyanın herhangi bir yerinde aynı sadelik ve özenle kullanılabilecek şekilde tasarlıyoruz.</p>
@@ -244,13 +242,18 @@
       <h2 class="display big rise">Finansı yeniden <br class="br-lg">düşünmek için.</h2>
       <p class="final-lead rise">İnsanların parayla kurduğu ilişki, kullandıkları araçtan daha karmaşık olmamalı. Baktığımız yer burası.</p>
       <div class="cta rise">
-        <a class="btn primary" href="#products">Ürünleri gör</a>
+        <!-- The primary was href="#products" — a smooth scroll 5,260px BACK to
+             the three cards the reader had already passed. The one action on
+             the page, at the end of nine screens, undid the visit. It is the
+             real outbound now; talking to us stays as the quiet second. -->
+        <a class="btn primary" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener noreferrer">OSNote'u indir ↗</a>
         <a class="btn quiet" href="mailto:destek217product@gmail.com" data-mail>Merhaba de</a>
       </div>
     </section>
 
     <!-- FOOTER -->
-    <footer class="foot">
+    <footer class="foot on-ink">
+      <span class="foot-seal" aria-hidden="true" lang="ja">二一七</span>
       <img class="foot-logo" src="assets/logo-full.svg?w=1" alt="217 Products" width="300" height="300">
       <nav class="foot-nav" aria-label="Alt bilgi">
         <div class="foot-col">
@@ -280,6 +283,6 @@
   <script src="vendor/gsap.min.js?v=3.15.0"></script>
   <script src="vendor/ScrollTrigger.min.js?v=3.15.0"></script>
   <script src="vendor/lenis.min.js?v=1.3.25"></script>
-  <script src="main.js?v=104"></script>
+  <script src="main.js?v=106"></script>
 </body>
 </html>

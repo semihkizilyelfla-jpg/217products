@@ -831,17 +831,79 @@ html.sun-up .sun-clip {
 /* the art is baked onto the exact page paper tone with feathered borders, so
    it merges into the washi like a print — no box, no rectangular shadow */
 .section-art img { width: min(100%, 460px); height: auto; display: block; margin: 0 auto; }
+/* 34ch, because it had no measure at all and ran to 70–74ch directly beside a
+   24ch paragraph — the widest line on the page sitting next to the narrowest */
 .section-art figcaption { margin-top: 16px; font-family: "Shippori Mincho", Georgia, serif;
-  font-style: italic; font-size: clamp(13px, 1.3vw, 15px); color: var(--ink-2); }
+  font-style: italic; font-size: clamp(13px, 1.3vw, 15px); color: var(--ink-2);
+  max-width: 34ch; margin-inline: auto; }
 .section-art figcaption::before { content: "— "; color: var(--gold-deep); font-style: normal; }
 @media (max-width: 820px) {
   .section-art { margin-top: 34px; }
   .section-art img { width: min(74vw, 340px); }
 }
+/* ---------- the section glyph ----------
+   THE JAPANESE MOVES HERE, out of the eyebrows. It used to sit in six of them
+   as `仕事 · 217 YAKLAŞIMI` — a kanji doing no semantic work for a Turkish
+   reader, occupying the grammatical slot of a label, six times in a row. Six
+   identical instances is not a brand system; a system has exceptions. Worse,
+   NEITHER finished screen uses it: the hero has no eyebrow at all and the
+   shelf's marker is bare "RAFTA", load-bearing in a three-column grid.
+   As a large silent mark it is the opposite: one per section that has earned
+   one, at a size where it reads as ink on the page rather than as a caption.
+   The colour is a transparency of whatever the section's ink is, so the same
+   rule works on paper and on the wall. */
 .section-seal {
-  position: absolute; top: clamp(50px, 8vh, 120px); right: clamp(20px, 6vw, 120px);
-  font-family: "Shippori Mincho", serif; font-size: clamp(90px, 16vw, 260px); font-weight: 800;
-  color: rgba(224,64,42,0.08); z-index: 0; pointer-events: none; user-select: none;
+  position: absolute; top: clamp(40px, 7vh, 110px); right: clamp(-10px, 1vw, 40px);
+  font-family: "Shippori Mincho", serif; font-size: clamp(120px, 21vw, 330px);
+  font-weight: 800; line-height: 0.8;
+  color: rgba(17,17,17,0.045); z-index: 0; pointer-events: none; user-select: none;
+}
+.on-ink .section-seal { color: rgba(255,255,255,0.055); }
+
+/* ---------- the headline stops before the nav ----------
+   MEASURED, not guessed: the nav capsule is an opaque white pill fixed at the
+   top right, and a full-width .display runs straight under it. Swept the whole
+   page at 60px steps — seven headlines collide, 386–479px wide, and at
+   scrollY 7980 the last letters of "yeniden" are simply gone. It never happens
+   on the finished screens because the hero head is bottom-anchored and the
+   shelf head only ever occupies the left two thirds. Those two were composed
+   around the page furniture; the rest were not.
+   Capping the measure fixes it and buys the asymmetry the back half was
+   missing in the same move — the freed right side is where the section glyph
+   now lives, so the constraint produces the composition rather than a hole. */
+@media (min-width: 901px) {
+  .statement .display, .studio .display, .process .display, .craft .display,
+  .final .display { max-width: 66%; }
+  .final .display { max-width: 78%; margin-inline: auto; }
+}
+@media (max-width: 900px) {
+  /* the toggle is smaller but still bites — measured on the "gerekeni," line */
+  .statement .display, .studio .display, .process .display, .craft .display { max-width: 82%; }
+}
+/* ---------- the chrome gets out of the way ----------
+   Capping the headlines took the collisions from seven to three, but the last
+   three are elements that legitimately reach the right edge — the third value
+   card, the centred reach head, the centred close. Shrinking those to dodge a
+   pill would be letting the furniture design the page.
+   So the furniture moves instead: reading is scrolling down, and while you are
+   reading you do not need the menu. It returns the moment you scroll up, which
+   is when you are looking for it. The brand mark is left alone — that is the
+   way back and it should never disappear. */
+.nav-links, .nav-toggle {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+}
+html.nav-away .nav-links, html.nav-away .nav-toggle {
+  transform: translateY(calc(-100% - 32px)); opacity: 0;
+  /* not just invisible — out of the tab order too, or the capsule would still
+     take focus while parked off-screen */
+  pointer-events: none;
+}
+html.menu-open.nav-away .nav-links, html.menu-open.nav-away .nav-toggle {
+  transform: none; opacity: 1; pointer-events: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-links, .nav-toggle { transition: opacity 0.2s ease; }
+  html.nav-away .nav-links, html.nav-away .nav-toggle { transform: none; }
 }
 /* One display scale for every section heading. The ceiling is set by the
    longest line on the page ("kendi ürünlerimizi kuruyoruz.", 14.95em) against
@@ -895,12 +957,32 @@ html.sun-up .sun-clip {
    the cream: its own full-bleed sumi ink, laid inside the section (the deck's
    paper sheet sits a layer below). The framed white print then reads exactly
    as what the eyebrow calls it — a work, hung on a dark wall. */
-.products { max-width: var(--maxw); margin: 0 auto; }
-.products::before {
+/* ---------- THE INK WALL ----------
+   This used to be `.products::before` and nothing else on the page could reach
+   it, which is why the deck reverted to white for 6,110px after the shelf and
+   never changed ground again. Ink is not a background here — it is the page's
+   emphasis, and a print that only inks once is a print with one idea.
+   So it becomes a class, and it is spent THREE times, on the three moments
+   that are claims rather than exposition: the shelf (what we have made), the
+   standard (that we stand behind it), and the footer (the seal). Paper carries
+   everything in between. That alternation is a rule a viewer can feel without
+   being told, which is the only kind worth having.
+   The 100vw + translateX trick is what lets a max-width section paint edge to
+   edge without a wrapper; z-index -1 keeps it under the section's own text
+   while `section { position: relative }` gives it something to anchor to. */
+.on-ink { color: var(--paper); }
+.on-ink::before {
   content: ""; position: absolute; z-index: -1;
   left: 50%; transform: translateX(-50%); width: 100vw;
   top: 0; bottom: 0; background: var(--ink);
 }
+/* the two text tones that survive the wall: --ink-2 is #575757 and dies here
+   (1.5:1), so supporting copy takes a transparency of the paper instead, and
+   the accent takes the lit step of the vermilion that already exists for
+   exactly this ground */
+.on-ink .display, .on-ink h2, .on-ink h3 { color: var(--paper); }
+.on-ink .gold, .on-ink .eyebrow { color: var(--vermilion-ink); }
+.products { max-width: var(--maxw); margin: 0 auto; }
 /* ---------- the shelf head ----------
    THREE COLUMNS, and the third one is the point. Measured on the reference's
    work section at 1425: the marker sits hard left at x 32 (91 wide), the
@@ -1241,18 +1323,43 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
 .growing { margin-top: clamp(60px, 9vh, 120px); display: flex; align-items: center; justify-content: center; gap: 16px; text-align: center; font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(20px, 2.8vw, 36px); color: var(--ink-2); }
 .growing-mark { display: inline-grid; place-items: center; width: 54px; height: 54px; flex: none; border: 2px solid var(--sage); color: var(--sage); border-radius: 50%; font-size: 22px; }
 
-/* ---------- 6 · craft (immersive) ---------- */
-.craft { position: relative; min-height: 92svh; display: flex; align-items: center; overflow: hidden; padding-block: clamp(120px, 18vh, 220px); }
-.craft-bg { position: absolute; inset: -12% 0; z-index: 0; }
-.craft-bg img { width: 100%; height: 100%; object-fit: cover; }
-.craft::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.55) 48%, rgba(255,255,255,0.04) 100%); z-index: 1; }
-.craft-inner { position: relative; z-index: 2; max-width: var(--maxw); margin: 0 auto; width: 100%; }
-/* the zen backdrop is warm gold at heading height — the standard gold accent
-   melts into it. The ink-dark gold keeps the accent readable on the image. */
-.craft .gold { color: var(--gold-ink); }
-.craft .display { margin-top: 22px; line-height: 1.02; text-shadow: 0 1px 3px rgba(255,255,255,0.8); }
-.craft-lead { margin-top: 28px; font-size: clamp(16px, 1.9vw, 22px); font-weight: 500; color: var(--ink); max-width: 40ch; text-shadow: 0 1px 2px rgba(255,255,255,0.95), 0 0 14px rgba(255,255,255,0.8); }
-.craft .eyebrow { text-shadow: 0 1px 2px rgba(255,255,255,0.95), 0 0 10px rgba(255,255,255,0.85); }
+/* ---------- 6 · the standard, on the wall ----------
+   WHAT WAS HERE: a cel-shaded 3D-rendered garden (zen.webp) — soft gradients,
+   volumetric light shafts, bokeh petals, a smoothly shaded stone lantern —
+   desaturated to grey and washed out under a 90% white scrim. Every other
+   asset on this site is flat, high-contrast brush ink. It was the only
+   full-bleed picture in the deck and it was the one thing that read as a
+   different, cheaper website. Measured, it was also unreadable: the eyebrow
+   sat at 1.24:1 against the darkest pixels it drifted over, held up by a
+   text-shadow halo, on a ground that MOVES because the plate is parallaxed.
+   A halo is not a contrast guarantee.
+   So the picture goes and the section takes the wall instead. This is the
+   heaviest sentence on the site — that we stay responsible for what we ship —
+   and it now has the page's heaviest surface under it. No eyebrow: the hero
+   has none either, and a section that is one sentence does not need a label
+   telling you it is about to be one sentence.
+   The freed right side is held by the section's own glyph at real size, in the
+   same role the 志 plays on the manifesto — texture, not a caption. */
+.craft {
+  position: relative; min-height: 92svh; display: flex; align-items: center;
+  padding-block: clamp(120px, 18vh, 220px);
+  /* NO overflow:hidden. It was here to contain the parallaxed plate, which is
+     gone — and left in place it clips the wall to the section's own max-width
+     box, so the ink stopped 30px short of each edge and the full-bleed read as
+     a wide grey card. The glyph is positioned to stay inside on its own. */
+  /* max-width moved OFF .craft-inner and onto the section: it was the reason
+     this band started at x=43 while every other section started at x=83 — a
+     40px left-edge break that reads as a mistake once you see it */
+  max-width: var(--maxw); margin: 0 auto;
+}
+.craft-inner { position: relative; z-index: 2; width: 100%; }
+.craft .display { margin-top: 0; line-height: 1.02; }
+.craft-lead {
+  margin-top: clamp(28px, 3.4vh, 44px);
+  font-size: clamp(16px, 1.9vw, 22px); font-weight: 500;
+  /* 62% white on #111 = 8.1:1; --ink-2 would have been 1.5:1 here */
+  color: rgba(255,255,255,0.62); max-width: 46ch;
+}
 
 /* ---------- 7 · studio / values ---------- */
 .studio { max-width: var(--maxw); margin: 0 auto; }
@@ -1275,19 +1382,61 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
 .value { padding: clamp(30px, 4vh, 44px) clamp(24px, 2.6vw, 40px); background: none; }
 .value h3 { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(26px, 2.6vw, 36px); font-weight: 700; line-height: 1.16; letter-spacing: 0.01em; }
 .value h3::after { content: ""; display: block; width: 38px; height: 2px; margin-top: 14px;
-  background: linear-gradient(90deg, var(--gold-deep), rgba(191,50,24,0));
-  transform-origin: left center; transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
-.value:hover h3::after { transform: scaleX(2.2); }
+  background: linear-gradient(90deg, var(--vermilion-deep), rgba(191,50,24,0)); }
+/* The hover growth is gone. A .value is not a link and never was, so a mark
+   that reacted to the pointer and did nothing on click was the interface
+   telling a small lie — seven of them on this page, and the one persona who
+   tests everything found all seven. Affordance has to mean something. */
 .value p { margin-top: 16px; font-size: 18px; line-height: 1.66; color: var(--ink-2); max-width: 32ch; }
 
 /* ---------- 8 · process ---------- */
 .process { max-width: var(--maxw); margin: 0 auto; }
 .process .display { margin-top: 24px; line-height: 1.0; }
 .steps { list-style: none; margin-top: clamp(48px, 7vh, 90px); }
-.steps li { display: grid; grid-template-columns: 92px minmax(0, 230px) 1fr; gap: clamp(14px, 3vw, 48px); align-items: baseline; padding: clamp(22px, 3vh, 34px) 0; border-top: 1px solid rgba(17,17,17,0.14); transition: transform 0.3s ease; }
+/* A FOURTH COLUMN, and it is the section's mechanic.
+   The rows used to be `92px | 230px | 1fr`, which left 360px of empty paper —
+   28% of the row — under a rule that ran the full width. A ruled table whose
+   rules extend a third of a screen past their content is the "looks like AI"
+   symptom that is always alignment, never ornament.
+   Filling it with more words would have been the wrong answer; the steps are
+   already the right length. It gets a brush stroke instead, one per step,
+   inked left to right as the row arrives — the same generated brush and the
+   same clip-path wipe as the shelf's rule, which is the only other place on
+   the site where a mark draws itself. That is what makes it read as the same
+   hand rather than as a second idea: the deck had one bespoke mechanic in
+   nine screens, and this is the second, built from material already here. */
+.steps li {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 260px) minmax(0, 46ch) minmax(0, 1fr);
+  gap: clamp(14px, 3vw, 48px); align-items: baseline;
+  padding: clamp(22px, 3vh, 34px) 0;
+  border-top: 1px solid rgba(17,17,17,0.14);
+}
 .steps li:last-child { border-bottom: 1px solid rgba(17,17,17,0.14); }
-/* translate, not padding — padding animates layout, transform only composites */
-.steps li:hover { transform: translateX(10px); }
+.step-mark {
+  grid-column: 4; align-self: center; justify-self: stretch;
+  display: block; height: 16px; min-width: 60px;
+  background: rgba(17,17,17,0.30);
+  -webkit-mask: url("assets/brush-rule.svg?v=2") right center / 100% 100% no-repeat;
+          mask: url("assets/brush-rule.svg?v=2") right center / 100% 100% no-repeat;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* staged only when the script is alive to release it, and scoped to
+   :not(.is-inked) so the release rule has nothing left to out-rank — the same
+   specificity trap the shelf head fell into twice */
+.js .steps li:not(.is-inked) .step-mark { clip-path: inset(0 100% 0 0); }
+html.no-motion .step-mark { clip-path: inset(0 0 0 0); transition: none; }
+/* each stroke is a touch longer than the one above it, so the four together
+   read as a stroke gathering weight rather than four copies of one rule */
+.steps li:nth-child(1) .step-mark { opacity: 0.55; }
+.steps li:nth-child(2) .step-mark { opacity: 0.7; }
+.steps li:nth-child(3) .step-mark { opacity: 0.85; }
+.steps li:nth-child(4) .step-mark { opacity: 1; background: var(--vermilion); }
+@media (max-width: 900px) {
+  .steps li { grid-template-columns: 62px minmax(0, 1fr); }
+  .step-mark { grid-column: 1 / -1; grid-row: 3; height: 12px; margin-top: 14px; }
+}
 .step-n { font-size: 14px; font-weight: 700; color: var(--accent-ink); letter-spacing: 0.08em; }
 .step-t { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(26px, 3.3vw, 48px); font-weight: 700; line-height: 1.12; }
 .step-d { font-size: 18px; line-height: 1.62; color: var(--ink-2); max-width: 46ch; }
@@ -1312,18 +1461,48 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
 .final .cta { margin-top: clamp(34px, 5vh, 54px); }
 .cta { margin-top: 42px; display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
 
-/* ---------- footer ---------- */
-.foot { padding: clamp(60px, 9vh, 110px) var(--pad) clamp(40px, 6vh, 70px); max-width: var(--maxw); margin: 0 auto; display: flex; align-items: flex-start; justify-content: space-between; gap: clamp(36px, 6vw, 80px); flex-wrap: wrap; border-top: 1px solid rgba(17,17,17,0.14); }
-.foot-logo { width: clamp(120px, 16vw, 180px); height: auto; }
-/* link columns — same quiet meta voice, headed by a small ink label */
+/* ---------- footer — the page ends where it started ----------
+   It used to end on plain white with a hairline and no mark at all: the last
+   visual event on a 9.9-screen page was the shelf's black wall at 31% scroll,
+   and everything after it was one uninterrupted sheet. Peak-end says the close
+   is half of what gets remembered, and the close was nothing.
+   It is the ink wall now, with the seal stamped on it — the third and last
+   spend of the page's emphasis, using the mark that already opens the site in
+   the tate rail and the hero foot and then disappeared for 6,000px. Nothing
+   here is a new material: same wall as the shelf, same 二一七, same red. */
+.foot {
+  position: relative;
+  padding: clamp(76px, 11vh, 130px) var(--pad) clamp(48px, 7vh, 78px);
+  max-width: var(--maxw); margin: 0 auto;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: clamp(36px, 6vw, 80px); flex-wrap: wrap;
+  border-top: 0;
+}
+.foot-logo { width: clamp(120px, 16vw, 180px); height: auto; /* the brushed mark is black ink on transparent — invert it onto the wall */ filter: invert(1); }
+/* the seal, stamped bottom-right the way a print is signed */
+.foot-seal {
+  position: absolute; right: var(--pad); bottom: clamp(30px, 4.5vh, 54px);
+  display: grid; place-items: center; width: 62px; height: 62px; border-radius: 10px;
+  background: var(--vermilion); color: #fff;
+  font-family: "Shippori Mincho", serif; font-weight: 700; font-size: 15px;
+  line-height: 1.05; text-align: center; letter-spacing: 0.06em;
+  transform: rotate(-5deg); pointer-events: none; user-select: none;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+}
+/* link columns — same quiet meta voice, headed by a small label */
 .foot-nav { display: flex; gap: clamp(40px, 6vw, 90px); }
 .foot-col { display: flex; flex-direction: column; gap: 5px; font-size: 15px; }
-.foot-h { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: 15px; color: var(--ink); margin-bottom: 8px; }
-.foot-col a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-2); }
-.foot-col a:hover { color: var(--accent-ink); }
-.foot-meta { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--ink-2); text-align: right; }
-.foot-meta a { display: inline-block; padding: 5px 0; }
-.foot-meta a:hover { color: var(--accent-ink); }
+.foot-h { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: 15px; color: var(--paper); margin-bottom: 8px; }
+/* 0.62 white on #111 is 8.1:1; hover lifts to full paper rather than to a red
+   that would only measure 4.7 and lose against its own resting state */
+.foot-col a { display: inline-flex; align-items: center; min-height: 44px; color: rgba(255,255,255,0.62); transition: color 0.25s ease; }
+.foot-col a:hover { color: var(--paper); }
+.foot-meta { display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: rgba(255,255,255,0.62); text-align: right; }
+.foot-meta a { display: inline-block; padding: 5px 0; color: rgba(255,255,255,0.62); transition: color 0.25s ease; }
+.foot-meta a:hover { color: var(--paper); }
+@media (max-width: 700px) {
+  .foot-seal { position: static; margin-top: 28px; transform: rotate(-5deg); }
+}
 
 /* ---------- touch targets ----------
    Measured on a 390px phone, not assumed: the e-mail line came out 208x35 and

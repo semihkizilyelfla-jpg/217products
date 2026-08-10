@@ -145,6 +145,9 @@
        IS the release — set it here too or the reduced-motion page keeps the
        head shoved off to one side */
     [].forEach.call(document.querySelectorAll(".shelf-head"), function (h) { h.classList.add("is-in"); });
+    /* same contract for the process strokes: the class is the release, so
+       without it the four brush marks stay wiped to zero width forever */
+    [].forEach.call(document.querySelectorAll(".steps li"), function (li) { li.classList.add("is-inked"); });
     document.documentElement.classList.add("js-live");
     return;
   }
@@ -216,6 +219,50 @@
   belowRise.forEach(function (el) {
     gsap.to(el, { autoAlpha: 1, y: 0, duration: 1.2, ease: "power3.out",
       scrollTrigger: { trigger: el, start: "top 88%", once: true }, onComplete: function(){ settle(el); } });
+  });
+
+  /* ---------- park the chrome while the reader is reading ----------
+     Measured before writing this: the opaque capsule ate letters out of seven
+     headlines on the way down the page. Four were fixed by capping the measure;
+     the last three reach the right edge for good reasons, so the menu yields
+     instead of the type. Threshold and floor both matter — 6px of travel stops
+     it flickering on trackpad jitter, and it never hides inside the hero, where
+     it is the only navigation on screen. */
+  (function () {
+    var de = document.documentElement, last = 0, ticking = false;
+    function apply() {
+      ticking = false;
+      var y = window.scrollY || 0;
+      var d = y - last;
+      if (Math.abs(d) < 6) return;
+      if (y < 260 || de.classList.contains("menu-open")) de.classList.remove("nav-away");
+      else de.classList.toggle("nav-away", d > 0);
+      last = y;
+    }
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(apply); }
+    }, { passive: true });
+  })();
+
+  /* ---------- the process inks itself in ----------
+     The deck had exactly ONE bespoke mechanic in nine screens — the shelf — and
+     every other section shared a single fade-up: 24 elements, same 1.2s, same
+     power3.out, same trigger. That sameness is most of why the back half read
+     as a template.
+     This is the second mechanic, and deliberately not a new idea: the same
+     generated brush and the same left-to-right clip-path wipe the shelf's rule
+     uses, one per step, so the four strokes lay down in sequence as the list
+     arrives. Stagger comes from each row having its own trigger rather than
+     from a timeline — the reader controls the pace by scrolling, which is what
+     makes it feel like the page is being written rather than played.
+     The resting state in CSS is INKED; `.js .steps li:not(.is-inked)` is what
+     stages them, so no-JS and reduced-motion both show four finished strokes
+     and nothing can ever ship blank. */
+  gsap.utils.toArray(".steps li").forEach(function (li) {
+    ScrollTrigger.create({
+      trigger: li, start: "top 86%", once: true,
+      onEnter: function () { li.classList.add("is-inked"); }
+    });
   });
 
   /* ---------- word-by-word brighten ---------- */
