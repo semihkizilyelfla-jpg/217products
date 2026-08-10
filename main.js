@@ -221,6 +221,24 @@
       scrollTrigger: { trigger: el, start: "top 88%", once: true }, onComplete: function(){ settle(el); } });
   });
 
+  /* ---------- the spine draws itself down the page ----------
+     Scrubbed, not triggered: the stroke has to be under the reader's thumb, so
+     that scrolling IS the brush moving. A timed reveal would make it a video
+     playing beside the text instead of a mark the reader is laying down.
+     clip-path rather than height, so nothing reflows for 6,000px of scroll —
+     and the mask is a real tapered brush shape, so the stroke thins at both
+     ends the way a stroke does, which a border or a gradient cannot do. */
+  (function () {
+    var spine = document.querySelector(".spine-ink");
+    if (!spine) return;
+    gsap.to(spine, {
+      clipPath: "inset(0% 0% 0% 0%)", ease: "none",
+      scrollTrigger: {
+        trigger: ".spine", start: "top 80%", end: "bottom bottom", scrub: 0.55
+      }
+    });
+  })();
+
   /* ---------- park the chrome while the reader is reading ----------
      Measured before writing this: the opaque capsule ate letters out of seven
      headlines on the way down the page. Four were fixed by capping the measure;

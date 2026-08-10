@@ -492,7 +492,7 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    Not on `main`: `.hero-run` is deliberately transparent so the flooding disc
    shows through it, and a background there would be painted under the hero
    rather than over it — the run would go white and swallow the flood. */
-.products, .statement, .craft, .studio, .process, .hub, .final, .foot {
+.products, .statement, .craft, .studio, .process, .final, .foot {
   background-color: var(--paper);
 }
 
@@ -924,32 +924,6 @@ html.menu-open.nav-away .nav-links, html.menu-open.nav-away .nav-toggle {
    #767676 is 4.54:1 and the reveal is visually identical. */
 .brighten .w { color: #767676; }
 
-/* ---------- 4 · our reach ----------
-   The WebGL globe that used to hold the right half of this section is gone,
-   along with Three.js. What carried the section was never the sphere anyway —
-   it was the field of ink behind it, so that steps forward and the statement
-   sits centred on it. One column, one mark, one sentence. */
-.hub { padding: 0; position: relative; overflow: hidden; }
-.reach-bg {
-  position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url("assets/reach-ink.webp?w=1") no-repeat center center / cover;
-  /* it is the section's only picture now, so it is allowed to be seen */
-  opacity: 0.17;
-}
-.hub-grid {
-  position: relative; z-index: 1; min-height: 78svh;
-  display: grid; place-items: center;
-  padding: clamp(96px, 13vh, 150px) var(--pad);
-}
-.hub-eyebrow { position: relative; z-index: 3; }
-.reach-panel {
-  max-width: 640px; text-align: center;
-  display: flex; flex-direction: column; align-items: center;
-  gap: clamp(20px, 3.2vh, 38px);
-}
-.reach-logo { width: clamp(150px, 15vw, 208px); height: auto; }
-.reach-head { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: clamp(32px, 4.4vw, 62px); line-height: 1.14; letter-spacing: -0.008em; color: var(--ink); text-wrap: balance; }
-.reach-lead { font-size: clamp(17px, 1.6vw, 20px); line-height: 1.66; color: var(--ink-2); max-width: 52ch; text-wrap: pretty; }
 
 /* ---------- 5 · products ---------- */
 /* ---------- 217 ESERLERİ — the gallery wall ----------
@@ -957,6 +931,49 @@ html.menu-open.nav-away .nav-links, html.menu-open.nav-away .nav-toggle {
    the cream: its own full-bleed sumi ink, laid inside the section (the deck's
    paper sheet sits a layer below). The framed white print then reads exactly
    as what the eyebrow calls it — a work, hung on a dark wall. */
+/* ---------- THE SPINE ----------
+   The complaint that produced this was the right one: the last pass fixed the
+   ground, the chrome and the contrast, but every section was still eyebrow →
+   headline → paragraph, and repairing a shape is not changing it. Six boxes
+   stacked in a column read as six boxes stacked in a column whatever you paint
+   them.
+   So the deck stops being a stack and gets a spine: ONE brush stroke, generated
+   as a single tapered shape rather than a constant-width rule, running the
+   entire length of the page below the hero and drawn downward as you scroll.
+   Not decoration on the sections — the thing they hang from. It is the same
+   gesture the shelf's rule makes, held for six thousand pixels instead of four
+   hundred, and it is the only element on the page that belongs to no section,
+   which is exactly what makes the sections stop reading as separate documents.
+   The stroke lives in the left gutter, so it needs a gutter to live in: below
+   1100px the band takes the full width and the spine steps out rather than
+   crowding the type. */
+/* `main > .spine`, NOT `.spine` — line 361 sets `main > *:not(.hero)` to
+   position:relative, which is (0,1,1) against a bare class's (0,1,0) and wins
+   on specificity no matter where it sits in the file. Measured the symptom
+   before guessing at it: the element resolved to position relative, z-index 2,
+   height 0, because `bottom` does nothing on a relative box. This file has lost
+   the same argument twice before (see the shelf head), so the fix is to match
+   the weight rather than to out-shout it. */
+main > .spine {
+  position: absolute; z-index: 3; pointer-events: none;
+  left: clamp(16px, 2.1vw, 38px);
+  top: var(--hero-h, 100svh); bottom: 0;
+  width: clamp(9px, 0.95vw, 15px);
+}
+.spine-ink {
+  display: block; width: 100%; height: 100%;
+  background: var(--ink); opacity: 0.62;
+  -webkit-mask: url("assets/spine.svg") center / 100% 100% no-repeat;
+          mask: url("assets/spine.svg") center / 100% 100% no-repeat;
+  /* revealed top-down by scroll; the resting state is DRAWN so that no-JS and
+     reduced-motion get a finished stroke instead of an empty gutter */
+  clip-path: inset(0 0 0 0);
+  will-change: clip-path;
+}
+.js .spine-ink { clip-path: inset(0 0 100% 0); }
+html.no-motion .spine-ink { clip-path: inset(0 0 0 0); }
+@media (max-width: 1100px) { main > .spine { display: none; } }
+
 /* ---------- THE INK WALL ----------
    This used to be `.products::before` and nothing else on the page could reach
    it, which is why the deck reverted to white for 6,110px after the shelf and
@@ -1547,8 +1564,7 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
 /* small-viewport-unit fallback (older iOS / Android) */
 @supports not (height: 100svh) {
   .hero { min-height: 100vh; }
-  .hub-grid { min-height: 100vh; }
-  .craft { min-height: 92vh; }
+    .craft { min-height: 92vh; }
   .final { min-height: 88vh; }
 }
 
@@ -1558,9 +1574,7 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
   .section-seal { font-size: clamp(80px, 22vw, 180px); }
   /* one centred column already, so the phone only needs to stop reserving a
      screen for a panel that no longer exists */
-  .hub-grid { min-height: auto; }
-  .reach-panel { max-width: 460px; }
-}
+    }
 
 /* ---------- phones ---------- */
 @media (max-width: 600px) {
@@ -1624,7 +1638,7 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
 
   /* one comfortable reading size for every supporting paragraph, so the page
      stops alternating between shouting and whispering */
-  .craft-lead, .reach-lead, .final-lead { font-size: 17.5px; line-height: 1.6; max-width: 36ch; }
+  .craft-lead, .final-lead { font-size: 17.5px; line-height: 1.6; max-width: 36ch; }
   .value p, .step-d { font-size: 17px; line-height: 1.6; }
 
   /* section markers and captions sit closer to what they label */
