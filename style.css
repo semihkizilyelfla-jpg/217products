@@ -911,6 +911,46 @@ html.menu-open.nav-away .nav-links, html.menu-open.nav-away .nav-toggle {
    read as one system. The hero stays alone at the top of the hierarchy. */
 .statement .display, .studio .display, .process .display, .craft .display { font-size: clamp(34px, 5.2vw, 78px); }
 .statement .display { margin-top: 24px; line-height: 1.0; position: relative; }
+
+/* ---------- KINTSUGI ----------
+   The section is called "we begin where things fall short", the artwork beside
+   it is a bowl whose break was filled with gold, and the caption spells the
+   word out. The headline was the only part of it sitting still.
+   So the sentence is a broken object: two pieces that arrive slightly out of
+   true — one lifted and turned a fraction anticlockwise, the other dropped and
+   turned the other way, the way halves of a bowl never quite meet — and then a
+   seam is laid along the join and pulls them home. The seam is generated as a
+   real fracture rather than a rule: it changes angle at every segment, swells
+   and thins along its length, and forks twice, because a break does not travel
+   in a straight line.
+   VERMILION, NOT GOLD. Gold was retired from this palette on purpose and
+   bringing it back for one flourish would reopen it; the literal gold is
+   already in the photograph two inches away, doing that job better than a CSS
+   colour could. Here the mend is the brand's own red — the repair is ours.
+   The resting state is MENDED, so a reader with no JS or reduced motion gets a
+   whole sentence with a seam through it, which is the finished picture. */
+.kin-piece { display: block; transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+.kin-b { padding-left: 1.15em; }
+.kin-seam {
+  display: block; width: min(96%, 13.5em); height: 0.34em;
+  margin: 0.05em 0 0.03em;
+  background: var(--vermilion);
+  -webkit-mask: url("assets/seam.svg") left center / 100% 100% no-repeat;
+          mask: url("assets/seam.svg") left center / 100% 100% no-repeat;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.18s;
+}
+/* staged only while the script is alive to release it, and scoped to
+   :not(.is-mended) so the release has nothing to out-rank */
+.js .kintsugi:not(.is-mended) .kin-seam { clip-path: inset(0 100% 0 0); }
+.js .kintsugi:not(.is-mended) .kin-a { transform: translate(-0.10em, -0.09em) rotate(-0.55deg); }
+.js .kintsugi:not(.is-mended) .kin-b { transform: translate(0.13em, 0.10em) rotate(0.45deg); }
+html.no-motion .kin-seam { clip-path: inset(0 0 0 0); transition: none; }
+html.no-motion .kin-piece { transform: none; transition: none; }
+@media (max-width: 620px) {
+  .kin-b { padding-left: 0.55em; }
+  .kin-seam { width: min(100%, 9em); height: 0.30em; }
+}
 .brighten {
   margin-top: clamp(40px, 6vh, 84px); position: relative;
   font-family: "Shippori Mincho", Georgia, serif;
@@ -944,6 +984,27 @@ html.menu-open.nav-away .nav-links, html.menu-open.nav-away .nav-toggle {
    The 100vw + translateX trick is what lets a max-width section paint edge to
    edge without a wrapper; z-index -1 keeps it under the section's own text
    while `section { position: relative }` gives it something to anchor to. */
+/* ---------- THE BLEED EDGE ----------
+   The wall used to start on a ruler line, which is the one thing ink never
+   does. Sumi on washi climbs the fibres: short fingers where the paper is
+   tight, long runs where it is loose, and a few islands that broke away from
+   the edge entirely. The mask is generated with exactly that in mind — long
+   waves for the sheet's own grain, short ones for capillary draw, and 25
+   detached blots above the line.
+   It sits ABOVE the section it belongs to, solid edge down against the ink and
+   fingers reaching up into the paper, so the wall reads as something the page
+   soaked up rather than a div that changed colour. Same z-index as the wall
+   itself, so it is under every piece of type. */
+.bleed {
+  position: absolute; z-index: -1; pointer-events: none;
+  left: 50%; width: 100vw;
+  height: clamp(30px, 4vh, 62px);
+  background: var(--ink);
+  -webkit-mask: url("assets/bleed.svg") bottom center / 100% 100% no-repeat;
+          mask: url("assets/bleed.svg") bottom center / 100% 100% no-repeat;
+}
+.bleed-top { top: 0; transform: translateX(-50%) translateY(-99%); }
+
 .on-ink { color: var(--paper); }
 .on-ink::before {
   content: ""; position: absolute; z-index: -1;

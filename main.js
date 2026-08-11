@@ -148,6 +148,8 @@
     /* same contract for the process strokes: the class is the release, so
        without it the four brush marks stay wiped to zero width forever */
     [].forEach.call(document.querySelectorAll(".steps li"), function (li) { li.classList.add("is-inked"); });
+    /* and the same for the mended headline — the class IS the release */
+    [].forEach.call(document.querySelectorAll(".kintsugi"), function (h) { h.classList.add("is-mended"); });
     document.documentElement.classList.add("js-live");
     return;
   }
@@ -258,6 +260,14 @@
      The resting state in CSS is INKED; `.js .steps li:not(.is-inked)` is what
      stages them, so no-JS and reduced-motion both show four finished strokes
      and nothing can ever ship blank. */
+  /* the broken sentence pulls itself together and the seam runs along the join */
+  gsap.utils.toArray(".kintsugi").forEach(function (h) {
+    ScrollTrigger.create({
+      trigger: h, start: "top 82%", once: true,
+      onEnter: function () { h.classList.add("is-mended"); }
+    });
+  });
+
   (function () {
     var section = document.querySelector(".process"),
         emaki = document.querySelector(".emaki"),
