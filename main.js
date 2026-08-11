@@ -150,6 +150,7 @@
     [].forEach.call(document.querySelectorAll(".steps li"), function (li) { li.classList.add("is-inked"); });
     /* and the same for the mended headline — the class IS the release */
     [].forEach.call(document.querySelectorAll(".kintsugi"), function (h) { h.classList.add("is-mended"); });
+    [].forEach.call(document.querySelectorAll(".value"), function (v) { v.classList.add("is-spoked"); });
     document.documentElement.classList.add("js-live");
     return;
   }
@@ -260,6 +261,29 @@
      The resting state in CSS is INKED; `.js .steps li:not(.is-inked)` is what
      stages them, so no-JS and reduced-motion both show four finished strokes
      and nothing can ever ship blank. */
+  /* ---------- the wheel turns ----------
+     Scrubbed and small: 26 degrees across the section, not a spin. A wheel a
+     reader can SEE spinning is a loader; a wheel that has moved while you read
+     is a wheel being worked. The ensō's open end makes the rotation legible at
+     that amplitude — without it, a symmetrical ring turning 26 degrees would be
+     invisible and the whole thing would be wasted work. */
+  (function () {
+    var ring = document.querySelector(".wheel-ring"), studio = document.querySelector(".studio");
+    if (!ring || !studio) return;
+    gsap.fromTo(ring, { rotate: -13 }, {
+      rotate: 13, ease: "none",
+      scrollTrigger: { trigger: studio, start: "top bottom", end: "bottom top", scrub: 0.8 }
+    });
+  })();
+
+  /* each principle's spoke inks back toward the hub as it arrives */
+  gsap.utils.toArray(".value").forEach(function (v) {
+    ScrollTrigger.create({
+      trigger: v, start: "top 88%", once: true,
+      onEnter: function () { v.classList.add("is-spoked"); }
+    });
+  });
+
   /* the broken sentence pulls itself together and the seam runs along the join */
   gsap.utils.toArray(".kintsugi").forEach(function (h) {
     ScrollTrigger.create({

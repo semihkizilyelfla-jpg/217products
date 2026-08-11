@@ -1402,19 +1402,69 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
 /* Three principles, so never two-up: auto-fit left an orphan on the second row
    at tablet width (two tall cards, one short one below). Three across or one
    per row — no in-between. */
-.values { margin-top: clamp(56px, 8vh, 110px); display: grid; grid-template-columns: 1fr; gap: 0;
-  border-top: 1px solid rgba(17,17,17,0.14); border-bottom: 1px solid rgba(17,17,17,0.14); }
-.value + .value { border-top: 1px solid rgba(17,17,17,0.14); }
-@media (min-width: 940px) {
-  .values { grid-template-columns: repeat(3, 1fr); }
-  .value + .value { border-top: 0; border-left: 1px solid rgba(17,17,17,0.14); }
-  .value:first-child { padding-left: 0; }
-  .value:last-child { padding-right: 0; }
+/* ---------- THE WHEEL ----------
+   The section says we build our own things and the picture beside it is a pair
+   of hands throwing a bowl — and the wheel, the one object in the frame whose
+   whole purpose is to turn, was the only thing standing still.
+   It turns now: an ensō drawn behind the hands, rotating with the scroll. Not a
+   circle — `border-radius` gives a closed ring of constant width, which is
+   geometry, not printing. This is generated as one brush pass: it starts, swells,
+   thins, dries out at the tail, wanders a few pixels off true radius the way a
+   hand does, and stops 24 degrees short of its own beginning. That open end is
+   the point of an ensō and it is the point of this section. */
+.wheel { position: relative; display: grid; place-items: center; }
+.wheel-ring {
+  position: absolute; z-index: 0; pointer-events: none;
+  /* 0.10 was invisible in the render — the ring has to be legible AS a ring or
+     the rotation is spent on nothing, and it sits behind an illustration that
+     is itself grey. Wide enough that the rim clears the hands rather than
+     hiding under them. */
+  width: min(132%, 660px); aspect-ratio: 1;
+  color: rgba(17,17,17,0.17);
+  background: currentColor;
+  -webkit-mask: url("assets/enso.svg") center / contain no-repeat;
+          mask: url("assets/enso.svg") center / contain no-repeat;
+  will-change: transform;
 }
+.wheel .section-art { position: relative; z-index: 1; }
+
+/* ---------- the three principles come off the rim ----------
+   They used to be three identical columns of equal height inside one hairline
+   band — the shape the parent skill bans by name, and the shape the process
+   list next door had too, which is why the two read as one continuous list.
+   The band is gone and so is the grid's equality: each principle sits at its
+   own height on a shallow arc under the wheel, with a short spoke running back
+   toward the hub. Same three facts, arranged as points on a rim instead of as
+   cells in a table. */
+.values {
+  margin-top: clamp(40px, 5.5vh, 76px);
+  display: grid; grid-template-columns: 1fr; gap: clamp(30px, 4vh, 48px);
+}
+@media (min-width: 940px) {
+  .values { grid-template-columns: repeat(3, 1fr); column-gap: clamp(28px, 3vw, 56px); align-items: start; }
+  /* the arc: the middle point rides highest, nearest the rim it came off */
+  .value[data-spoke="1"] { margin-top: clamp(26px, 3.4vh, 52px); }
+  .value[data-spoke="2"] { margin-top: 0; }
+  .value[data-spoke="3"] { margin-top: clamp(32px, 4.2vh, 64px); }
+}
+/* the spoke — a tick back toward the centre, inked when the principle arrives.
+   Lengths differ per position so the three never line up into a rule. */
+.spoke {
+  display: block; width: 1px; background: rgba(17,17,17,0.30);
+  margin-bottom: clamp(14px, 1.8vh, 22px);
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.value[data-spoke="1"] .spoke { height: clamp(26px, 4.4vh, 62px); }
+.value[data-spoke="2"] .spoke { height: clamp(44px, 7.2vh, 104px); }
+.value[data-spoke="3"] .spoke { height: clamp(20px, 3.4vh, 48px); }
+.value[data-spoke="2"] .spoke { background: var(--vermilion); }
+.js .value:not(.is-spoked) .spoke { clip-path: inset(0 0 100% 0); }
+html.no-motion .spoke { clip-path: inset(0 0 0 0); transition: none; }
 /* Editorial trio — no boxes, no badges. Three columns inside one hairline
    band, divided by thin rules like a magazine colophon; each principle is a
    big serif word with a short gold brush-breath beneath it. Quiet, printed. */
-.value { padding: clamp(30px, 4vh, 44px) clamp(24px, 2.6vw, 40px); background: none; }
+.value { padding: 0; background: none; }
 .value h3 { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(26px, 2.6vw, 36px); font-weight: 700; line-height: 1.16; letter-spacing: 0.01em; }
 .value h3::after { content: ""; display: block; width: 38px; height: 2px; margin-top: 14px;
   background: linear-gradient(90deg, var(--vermilion-deep), rgba(191,50,24,0)); }
