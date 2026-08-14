@@ -19,4 +19,18 @@
     <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/index-tr.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/"/>
   </url>
+  <url>
+    <loc>https://217products.com/privacy.html</loc>
+    <lastmod>2026-08-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/gizlilik.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/privacy.html"/>
+  </url>
+  <url>
+    <loc>https://217products.com/gizlilik.html</loc>
+    <lastmod>2026-08-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/gizlilik.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/privacy.html"/>
+  </url>
 </urlset>
