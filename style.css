@@ -379,7 +379,7 @@ main::after {
   background-size: 180px 180px; opacity: 0.035;
 }
 section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
-.eyebrow, .kicker { font-family: "Manrope", "Shippori Mincho", system-ui, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.3em; color: var(--accent-ink); }
+.eyebrow { font-family: "Manrope", "Shippori Mincho", system-ui, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.3em; color: var(--accent-ink); }
 .big { font-size: clamp(44px, 8.4vw, 128px); }
 
 /* ---------- right rail ----------
@@ -541,7 +541,27 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    the sun behind it are the first thing on the screen, which is the whole
    point of the composition. */
 @media (max-width: 820px) {
-  .hz { left: 0; margin-left: 0; }
+  /* AND SIZED OFF THE SHORT AXIS, because a px floor stops being a floor and
+     starts being a ceiling. Above 1018px the plate is 106vw, and on a landscape
+     desktop that lands it at 63% of the viewport height every time — that ratio
+     IS the composition: painting in the lower two thirds, sky above it for the
+     disc, the sentence sitting on the mist near its foot.
+     Below 1018px the width was pinned to a flat 1080px, so the painting stopped
+     scaling with the screen while the copy stayed anchored to the bottom of it.
+     Measured at 375x812: the plate came out 403px, only 49.6% of the screen, so
+     half the phone was bare paper AND the sentence landed 195px down the plate
+     (against 169 of 507 on a 1280 desktop) — i.e. further into the ink, which is
+     the "type tangled in the mountain" everyone sees on a phone. On an 820x1180
+     tablet the same 403px was 34% and the headline sat ABOVE the ridge.
+     Sizing the floor off svh restores the desktop ratio at any phone shape. The
+     px floor stays under it so a short screen can never starve the plate.
+     THE 1300px CEILING IS THE SUN, not the picture. The disc is parked at
+     data-sun-x = 0.220 of the PLATE's width, so a plate that grows with height
+     walks it rightwards on a screen whose width did not change. Unbounded,
+     168svh on a tall narrow phone pushes the disc past the right edge and it
+     gets clipped; the cap holds it on screen at every width down to 320. */
+  .hz { left: 0; margin-left: 0; width: max(106%, 1080px, min(168svh, 1300px)); }
+  @supports not (height: 100svh) { .hz { width: max(106%, 1080px, min(168vh, 1300px)); } }
 }
 
 /* ---------- the skyline cut ----------
@@ -636,6 +656,17 @@ html.sun-up .sun-clip {
    restart if anything ever re-parented the hero. Inline opacity beats this. */
 @media (prefers-reduced-motion: no-preference) {
   .img-wait .hz { opacity: 0; }
+  /* THE DISC WAITS FOR ITS MOUNTAIN. sun-ink is 7 KB and preloaded high, the
+     mask is 9 KB, the plate is 59 KB and has to decode — so the disc was ready
+     first, and main.js showed it the moment it could place it, with no fade of
+     its own. Captured at 200ms on a phone: blank paper, no mountain, and a
+     bright vermilion crescent hanging in the middle of the screen, cut to a
+     silhouette that had not arrived yet. The whole point of the opening is that
+     the sun is BEHIND the range; for the first half second it was in front of
+     nothing at all. Gated on the same class the plate uses, so the disc cannot
+     appear before the painting whichever of the two finishes first, and
+     lang-redirect fades it on the plate's own curve. */
+  .img-wait .sun { opacity: 0; }
 }
 
 /* ---------- the lattice ----------
@@ -872,8 +903,9 @@ html.sun-up .sun-clip {
    missing in the same move — the freed right side is where the section glyph
    now lives, so the constraint produces the composition rather than a hole. */
 @media (min-width: 901px) {
-  .statement .display, .studio .display, .process .display, .craft .display,
-  .final .display { max-width: 66%; }
+  /* .final is centred and gets its own, wider measure on the next line — it was
+     in this list too, so the 66% here was overwritten before it ever applied. */
+  .statement .display, .studio .display, .process .display, .craft .display { max-width: 66%; }
   .final .display { max-width: 78%; margin-inline: auto; }
 }
 @media (max-width: 900px) {
@@ -1355,7 +1387,8 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
    sheet is the worse failure of the two, because the corners cut to triangles
    rather than simply hanging over. */
 
-.growing { margin-top: clamp(60px, 9vh, 120px); display: flex; align-items: center; justify-content: center; gap: 16px; text-align: center; font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(20px, 2.8vw, 36px); color: var(--ink-2); }
+/* `.growing` — the standalone closing line this mark used to sit in — is gone;
+   .growing-mark survives inside the final section's eyebrow. */
 .growing-mark { display: inline-grid; place-items: center; width: 54px; height: 54px; flex: none; border: 2px solid var(--sage); color: var(--sage); border-radius: 50%; font-size: 22px; }
 
 /* ---------- 6 · the standard, on the wall ----------
@@ -1504,6 +1537,16 @@ html.no-motion .spoke { clip-path: inset(0 0 0 0); transition: none; }
   overflow-x: auto; overflow-y: hidden;
   scrollbar-width: none; -ms-overflow-style: none;
   scroll-snap-type: x proximity;
+  /* THE GUTTER, OR THE SNAP EATS IT. `scroll-snap-align: start` aligns a panel
+     to the SNAPPORT, and the snapport is the scrollport — the padding box —
+     unless scroll-padding says otherwise. So the browser rested this track at
+     scrollLeft: 18, exactly cancelling the padding-left above, and panel 01 sat
+     flush against the edge of the screen with zero margin while every other
+     block on the page kept its --pad. Measured on a 375px phone: item 1 left
+     edge at x=0, the "01" and its rule clipped by the viewport.
+     Matching the scroll-padding to the padding puts the snap where the gutter
+     is, so the resting position is 0 and the panel lines up with the column. */
+  scroll-padding-left: var(--pad);
   overscroll-behavior-x: contain;
 }
 .emaki::-webkit-scrollbar { display: none; }
@@ -1574,13 +1617,8 @@ html.no-motion .step-mark { clip-path: inset(0 0 0 0); transition: none; }
 .step-t { font-family: "Shippori Mincho", Georgia, serif; font-size: clamp(26px, 3.3vw, 48px); font-weight: 700; line-height: 1.12; }
 .step-d { font-size: 18px; line-height: 1.62; color: var(--ink-2); max-width: 46ch; }
 
-/* ---------- 9 · stats ---------- */
-.stats { max-width: var(--maxw); margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: clamp(24px, 4vw, 60px); padding-block: clamp(70px, 10vh, 130px); border-top: 1px solid rgba(17,17,17,0.14); border-bottom: 1px solid rgba(17,17,17,0.14); text-align: center; }
-.stat-n { display: block; font-family: "Shippori Mincho", serif; font-weight: 800; font-size: clamp(44px, 6vw, 84px); line-height: 1; color: var(--vermilion); }
-/* the ∞ comes from a fallback face and renders optically small next to the big
-   Shippori digits — compensate so all four stats read the same weight */
-.stat-inf { font-size: clamp(58px, 7.9vw, 110px); line-height: 0.76; font-weight: 700; }
-.stat-l { display: block; margin-top: 10px; font-size: 14px; letter-spacing: 0.08em; color: var(--ink-2); }
+/* The stats band (.stats/.stat-n/.stat-inf/.stat-l) was removed from the deck
+   and its rules are gone with it — they matched nothing in either page. */
 
 /* ---------- 10 · final ---------- */
 .final { position: relative; max-width: var(--maxw); margin: 0 auto; text-align: center; min-height: 88svh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
@@ -1653,15 +1691,13 @@ html.no-motion .step-mark { clip-path: inset(0 0 0 0); transition: none; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 820px) {
-  .steps li { grid-template-columns: 54px 1fr; grid-row-gap: 6px; }
-  .step-d { grid-column: 1 / -1; }
+  /* `.steps li` became a flex column when the emaki track was built; the grid
+     properties that used to shape it here (grid-template-columns, grid-row-gap
+     and .step-d's grid-column) have had no effect since and are gone. */
   .foot { flex-direction: column; align-items: center; text-align: center; }
   .foot-nav { justify-content: center; text-align: left; }
   .foot-meta { text-align: center; }
   .craft::after { background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.92) 100%); }
-}
-@media (max-width: 560px) {
-  .pl-branch { width: 46vw; }
 }
 
 /* ---------- reduced motion ---------- */
@@ -1689,21 +1725,45 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
   .hero { padding-top: clamp(104px, 15vh, 150px); }
   .section-seal { font-size: clamp(80px, 22vw, 180px); }
   /* one centred column already, so the phone only needs to stop reserving a
-     screen for a panel that no longer exists */
-    }
+     screen for a panel that no longer exists.
+     THE RULE THIS COMMENT DESCRIBES WAS NEVER WRITTEN — the block sat empty
+     under it while `min-height: 92svh` / `88svh` stayed in force. Measured on a
+     375x812 phone: .craft held 217px of content inside a 747px box and .final
+     held 330px inside 715px, so each band cost most of a screen of scrolling
+     for one headline and one paragraph.
+     .craft's height was composed around a side panel and a plate that are both
+     gone, so off it comes; the padding decides instead, which on phones is the
+     density block further down, already tuned for exactly this.
+     .final KEEPS ITS RESERVED HEIGHT, and the reason is worth writing down
+     because it does not look like a height problem. That section centres its
+     column (`justify-content: center`) while .final-branch is pinned `top: 4%`
+     of the SECTION. The tall box is what pushes the column down clear of the
+     branch — measured at 375, 88svh puts the copy 190px from the top and the
+     branch ends at 166px, so the clearance is 24px and deliberate. Dropped to
+     min-height 0 the section came in at 489px, the copy rose to 78px, and the
+     branch landed across "UFUKTA" and the top of the headline. So this one is
+     not reserved space, it is the composition.
+     The hero keeps its 100svh too: that one IS the screen. */
+  .craft { min-height: 0; }
+}
 
 /* ---------- phones ---------- */
 @media (max-width: 600px) {
-  /* 9vw, NOT 10.8. Each .hero-line is a block and the design is two of them;
-     when one wraps you get a three-line stack broken mid-phrase, and on this
-     hero the extra line lands on the black of the mountain — black type on
-     black ink. Measured in the real face at every phone width, the longest
-     line needs 9.10–9.25vw to hold one line, so 9vw clears it everywhere with
-     the 29px floor covering 320.
-     This was already wrong before the copy changed: the old second line ran
-     404px into a 346px measure at 390. It was simply never looked at on a
-     phone. The rule is the ordinary one — the viewport is part of the design,
-     so the type fits the measure rather than the measure being wished away. */
+  /* 9vw, and it cannot go higher. Each .hero-line is a block and the design is
+     two of them; when one wraps you get a three-line stack broken mid-phrase,
+     and on this hero the extra line lands on the black of the mountain — black
+     type on black ink.
+     Re-measured in the real face on the CURRENT copy, both languages, at
+     320 / 340 / 360 / 375 / 390 / 412 / 430. English is what binds — its second
+     line, "We build a product.", is the proportionally longest line on either
+     page — and it holds one line only up to
+     30.5 / 32.5 / 34.5 / 36.5 / 37.5 / 40 / 42px, i.e. ~9.53vw at the tightest.
+     9vw therefore runs at about 94% of the wrap limit everywhere, which is the
+     whole budget: anything at 10vw wraps the English hero at every width, and
+     9.4vw leaves 0.4px at 320. If this headline ever has to get bigger, the
+     English sentence has to get shorter first — the type cannot buy it.
+     The rule is the ordinary one: the viewport is part of the design, so the
+     type fits the measure rather than the measure being wished away. */
   .hero-head { font-size: clamp(29px, 9vw, 54px); line-height: 1.04; letter-spacing: -0.024em; }
   .btn { padding: 12px 20px; font-size: 13px; }
   .statement .display, .studio .display, .process .display, .craft .display { font-size: clamp(33px, 9.2vw, 54px); }
@@ -1711,21 +1771,28 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
   .brighten { font-size: clamp(20px, 5.8vw, 29px); max-width: 100%; }
   .marquee-row span { font-size: 15px; }
   .marquee-row { gap: 20px; }
-  .stats { grid-template-columns: 1fr 1fr; gap: 32px 18px; }
   .values { gap: 22px; }
-  .steps li { grid-template-columns: 46px 1fr; }
   .foot-logo { width: 128px; }
-  .growing { flex-direction: column; gap: 12px; }
 }
 
 /* ---------- very small ---------- */
 @media (max-width: 380px) {
   :root { --pad: 18px; }
-  /* 29, not 33: --pad drops to 18 here so the measure is 284px at 320, and the
-     longest hero line needs 29.2px to hold one line in the real face. 33 put it
-     37px over and wrapped it. */
-  .hero-head { font-size: 29px; }
+  /* THE FLAT 29px THAT WAS HERE IS GONE. It was measured against the OLD hero
+     copy — the note above it ("33 put it 37px over and wrapped it") no longer
+     describes this sentence; re-measured on the current one, 320px holds a
+     single line up to 35px. Because the rule was a fixed size and this query is
+     `max-width: 380`, it did not just protect 320 — it flattened 360 and 375 to
+     29px too, and 375 is one of the commonest phone widths there is. That put
+     the H1 below every H2 on the page and left a 29 → 35.1px cliff across the
+     375/390 boundary, which the clamp above never had.
+     The clamp handles the whole range on its own: 9vw is 28.8px at 320, so the
+     29px floor still catches the narrow end exactly as intended. */
   .brand-mark { height: 26px; }
+  /* and the shorter mark is what took the capsule under a finger: 26 + 8 + 8
+     came out 42px measured, against the 44 the touch-target block upholds
+     everywhere else. One pixel of padding a side, and the mark does not move. */
+  .brand { padding-block: 9px; }
 }
 
 /* ================= PHONE DENSITY =================
@@ -1758,7 +1825,7 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
   .value p, .step-d { font-size: 17px; line-height: 1.6; }
 
   /* section markers and captions sit closer to what they label */
-  .eyebrow, .kicker { margin-bottom: 14px; }
+  .eyebrow { margin-bottom: 14px; }
   .section-art { margin-top: 26px; }
   .section-art figcaption { margin-top: 12px; }
 

@@ -1,2 +1,7 @@
 themes/
 .DS_Store
+
+# Claude Code calisma dosyalari — repo koku GitHub Pages'te YAYINLANIYOR,
+# bunlar 217products.com/CLAUDE.md olarak internete cikmasin.
+CLAUDE.md
+.claude/

@@ -48,6 +48,18 @@
   (function () {
     var nav = document.querySelector(".nav");
     var de = document.documentElement;
+    /* --hero-h IS CACHED, NOT RE-READ PER SCROLL EVENT. This used to call
+       getComputedStyle(de).getPropertyValue("--hero-h") inside the handler.
+       getComputedStyle flushes pending style, and on this page style is dirty
+       on every frame of a scroll — GSAP writes the sun's transform, Lenis
+       writes the scroll position — so the read could never be served from cache
+       and each scroll event paid a full style recalc for a number that only
+       changes on resize. The block above writes --hero-h on exactly three
+       events; this listens to the same three. */
+    var heroH = 0;
+    function readHeroH() {
+      heroH = parseInt(getComputedStyle(de).getPropertyValue("--hero-h"), 10) || 0;
+    }
     function onScroll() {
       var y = window.scrollY || 0;
       var past = y > 40;
@@ -55,9 +67,13 @@
       de.classList.toggle("scrolled", past);
       /* the wordmark and the mist band belong to the opening screen and step
          away once the ink has taken the page; the capsule and the rail stay */
-      de.classList.toggle("past-hero", y > (parseInt(getComputedStyle(de).getPropertyValue("--hero-h"), 10) || innerHeight) * 0.55);
+      de.classList.toggle("past-hero", y > (heroH || innerHeight) * 0.55);
     }
+    readHeroH();
     addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", function () { readHeroH(); onScroll(); }, { passive: true });
+    addEventListener("load", function () { readHeroH(); onScroll(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(readHeroH);
     onScroll();
   })();
 
@@ -206,8 +222,10 @@
   });
   function settle(el){ el.style.willChange = "auto"; }
 
-  /* flipped decorative images owned by GSAP */
-  gsap.set(".pl-branch-r, .final-branch", { scaleX: -1 });
+  /* flipped decorative image owned by GSAP — it also carries data-parallax, so
+     the flip has to live on the same transform GSAP drives (`.pl-branch-r` went
+     with the plate section and is no longer in either page) */
+  gsap.set(".final-branch", { scaleX: -1 });
 
   /* ---------- rise reveals ----------
      The hero entrance is pure CSS (it starts with the first paint, before any
@@ -545,9 +563,15 @@
         var x0 = 1 - Math.cos(U0), y0 = Math.sin(U0);
         var ax = (geo.apexX - geo.restX) * ((1 - Math.cos(u)) - x0) / (1 - x0);
         var ay = -(geo.rest - geo.apexY) * (Math.sin(u) - y0) / (1 - y0);
+        /* neededScale() reads a LIVE rect, which forces layout. Its result is
+           multiplied by f — and f is exactly 0 for the whole first HOLD (45%)
+           of the ride, the stretch the disc spends climbing its arc. So during
+           the climb every scrub frame was forcing a layout to compute a term
+           that could not move the answer off 1. The disc is at rest size until
+           the flood starts; ask for the measurement then. */
         gsap.set(sun, {
           x: ax, y: ay,
-          scale: 1 + (neededScale() - 1) * f,
+          scale: f > 0 ? 1 + (neededScale() - 1) * f : 1,
           force3D: true
         });
         /* BURN — the ink does not crossfade over the whole disc, it blooms out

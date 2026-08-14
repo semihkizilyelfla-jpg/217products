@@ -124,6 +124,10 @@
        composed every time, never "pop". */
     var pls = [].slice.call(document.querySelectorAll(".hero-ground .hz"));
     var delays = { "hz": 120 };
+    /* the disc is not a separate arrival — it is part of the painting, so it
+       rides the plate's own fade rather than snapping on whenever main.js
+       happens to finish placing it (see `.img-wait .sun` in the stylesheet) */
+    var disc = document.querySelector(".sun");
     if (!pls.length) { imgsGo(); return; }
     var left = pls.length;
     function done() { if (--left <= 0) imgsGo(); }
@@ -137,6 +141,12 @@
           var d = 0;
           Object.keys(delays).forEach(function (k) { if (im.classList.contains(k)) d = delays[k]; });
           bootAnims.push(im.animate([{ opacity: 0 }, { opacity: rest }],
+            { duration: 1800, delay: d, easing: EASE_FADE, fill: "backwards" }));
+          /* same duration, same delay, same curve — one arrival, not two.
+             `fill: backwards` holds the disc at 0 through the delay, and no
+             forwards fill, so when it ends the element simply returns to its
+             stylesheet opacity of 1. */
+          if (disc) bootAnims.push(disc.animate([{ opacity: 0 }, { opacity: 1 }],
             { duration: 1800, delay: d, easing: EASE_FADE, fill: "backwards" }));
         }
         done();
