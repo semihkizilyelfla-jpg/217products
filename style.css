@@ -559,9 +559,39 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
      data-sun-x = 0.220 of the PLATE's width, so a plate that grows with height
      walks it rightwards on a screen whose width did not change. Unbounded,
      168svh on a tall narrow phone pushes the disc past the right edge and it
-     gets clipped; the cap holds it on screen at every width down to 320. */
-  .hz { left: 0; margin-left: 0; width: max(106%, 1080px, min(168svh, 1300px)); }
-  @supports not (height: 100svh) { .hz { width: max(106%, 1080px, min(168vh, 1300px)); } }
+     gets clipped; the cap holds it on screen at every width down to 320.
+     AND LIFTED OFF THE FLOOR. Bottom-glued, the painting put its fog in the
+     dead band under the headline and its sky over the whole top 40% of the
+     screen. The lift pins the plate's TOP at 19svh instead (tuned by eye on a
+     real phone: 22 read as low, 17 as crowding the nav) — the sky becomes a
+     constant band on every phone shape, because
+     bottom = 100svh − 19svh − plateH. The multiplier is
+     the drawing's own aspect (717/1920 = 0.37344), so the height term tracks
+     the width rule above it; change one, change the other. max(0px, …) lets
+     short screens (plate taller than 78svh) fall back to the old bottom
+     anchor instead of pushing the painting off the top.
+     THE MOVE IS LAYOUT, NOT TRANSFORM, deliberately: main.js reads the
+     plate's offset box to park the sun and register the skyline mask, so a
+     bottom offset carries the disc and the cut with it for free — a transform
+     would leave both registered to a box the picture no longer occupies. */
+  .hz {
+    left: 0; margin-left: 0;
+    width: max(106%, 1080px, min(168svh, 1300px));
+    bottom: max(0px, 81svh - max(106vw, 1080px, min(168svh, 1300px)) * 0.37344);
+  }
+  @supports not (height: 100svh) {
+    .hz {
+      width: max(106%, 1080px, min(168vh, 1300px));
+      bottom: max(0px, 81vh - max(106vw, 1080px, min(168vh, 1300px)) * 0.37344);
+    }
+  }
+  /* the sentence follows the painting up: off the raised fog line rather than
+     parked in the pit the lift opened. 16svh keeps the head's top on the last,
+     near-transparent band of the mist on common phones (596 against a 623
+     plate-bottom at 812) and just under it on tall ones. The desktop pair
+     (17vh) stays untouched above 820. */
+  .hero { padding-bottom: clamp(84px, 16svh, 168px); }
+  @supports not (height: 100svh) { .hero { padding-bottom: clamp(84px, 16vh, 168px); } }
 }
 
 /* ---------- the skyline cut ----------
@@ -1749,22 +1779,32 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
 
 /* ---------- phones ---------- */
 @media (max-width: 600px) {
-  /* 9vw, and it cannot go higher. Each .hero-line is a block and the design is
+  /* ONE LINE PER .hero-line IS THE LAW HERE. Each is a block and the design is
      two of them; when one wraps you get a three-line stack broken mid-phrase,
-     and on this hero the extra line lands on the black of the mountain — black
-     type on black ink.
-     Re-measured in the real face on the CURRENT copy, both languages, at
-     320 / 340 / 360 / 375 / 390 / 412 / 430. English is what binds — its second
-     line, "We build a product.", is the proportionally longest line on either
-     page — and it holds one line only up to
-     30.5 / 32.5 / 34.5 / 36.5 / 37.5 / 40 / 42px, i.e. ~9.53vw at the tightest.
-     9vw therefore runs at about 94% of the wrap limit everywhere, which is the
-     whole budget: anything at 10vw wraps the English hero at every width, and
-     9.4vw leaves 0.4px at 320. If this headline ever has to get bigger, the
-     English sentence has to get shorter first — the type cannot buy it.
-     The rule is the ordinary one: the viewport is part of the design, so the
-     type fits the measure rather than the measure being wished away. */
-  .hero-head { font-size: clamp(29px, 9vw, 54px); line-height: 1.04; letter-spacing: -0.024em; }
+     and on this hero the extra line lands black-on-black across the mountain.
+     Every size below is measured against that limit, per width, per language —
+     re-measure before touching any of them. */
+  /* TWO EXTRA POINTS OF SIZE, PAID FOR HONESTLY. The wrap limit is a budget:
+     size × line-length must fit the measure. Growing the type therefore means
+     growing the measure or shortening the line, so the head bleeds 8px into
+     each gutter (355px of measure at 375 — display type reads fine closer to
+     the edge than body text, and it is still 10px clear of the glass) and the
+     tracking tightens 6 thousandths, which is invisible at this scale but
+     buys ~2% of line. Both are scoped to this block: the desktop head keeps
+     its own measure and tracking. */
+  .hero-head {
+    font-size: clamp(29px, 9.6vw, 54px); line-height: 1.04; letter-spacing: -0.03em;
+    margin-inline: -8px;
+  }
+  /* THE TURKISH PAGE RUNS BIGGER, because its sentence is shorter. The vw
+     above is set by the ENGLISH second line ("We build a product."), the
+     proportionally longest line on either page; Turkish's longest wraps more
+     than a vw later. One clamp for both languages was quietly costing the TR
+     page 13% of its headline for a wrap that can only happen in English.
+     Both values are measured against the widened measure and the tightened
+     tracking, at 320/340/360/375/390/412/430, and sit at 92-94% of the wrap
+     limit everywhere — re-measure before touching either. */
+  html[lang="tr"] .hero-head { font-size: clamp(30px, 11vw, 56px); }
   .btn { padding: 12px 20px; font-size: 13px; }
   .statement .display, .studio .display, .process .display, .craft .display { font-size: clamp(33px, 9.2vw, 54px); }
   .final .display.big { font-size: clamp(37px, 10.6vw, 58px); }
@@ -1773,6 +1813,13 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
   .marquee-row { gap: 20px; }
   .values { gap: 22px; }
   .foot-logo { width: 128px; }
+}
+/* The thinnest wrap margins live at the narrow end (4.9% at 320 against 5.5-6.5%
+   everywhere else) — and 320-class devices are old iPhones, i.e. the one
+   rasterizer this was NOT measured on. Half a vw of insurance there only. */
+@media (max-width: 345px) {
+  .hero-head { font-size: clamp(29px, 9.3vw, 54px); }
+  html[lang="tr"] .hero-head { font-size: clamp(30px, 10.6vw, 56px); }
 }
 
 /* ---------- very small ---------- */
