@@ -8,15 +8,26 @@
 /* ---------- self-hosted fonts (subset to the site's glyphs, preloaded) ----------
    Served from our own origin like the pros do: no third-party connection, no
    two-step CSS->woff2 fetch, headline font ready at first paint. Manrope is a
-   single variable file covering 400-800. */
+   single variable file covering 400-800.
+   THE ?v= ON THESE URLS IS NOT DECORATION. style.css carries its own cache-bust
+   in the <link>, but that does nothing for the font files it points at — they
+   are their own URLs, cached by GitHub Pages for ten minutes and by the browser
+   for far longer. Bump this token whenever the subsets are regenerated, and
+   bump it in the two preload hrefs in both HTML files in the same commit: a
+   preload whose URL differs from the @font-face URL by one byte downloads the
+   file a second time instead of serving it.
+   v2 = rebuilt from the upstream families with Turkish letters composed in
+   (Shippori ships none: no s-cedilla, no g-breve, no dotted-I) and with the six
+   kanji/kana the previous subset had dropped. Smaller than v1 despite that,
+   because the old subset still carried glyphs from retired copy. */
 @font-face {
   font-family: "Manrope";
-  src: url("assets/fonts/manrope-var.woff2") format("woff2");
+  src: url("assets/fonts/manrope-var.woff2?v=2") format("woff2");
   font-weight: 400 800; font-style: normal; font-display: swap;
 }
-@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-500.woff2") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-800.woff2") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-500.woff2?v=2") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-700.woff2?v=2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-800.woff2?v=2") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
 
 :root {
   /* SUMI ON WHITE. The sheet was a warm cream (#F3ECDC) with a warm-black ink
