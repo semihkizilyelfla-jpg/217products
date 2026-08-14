@@ -94,9 +94,16 @@
   (function () {
     var t = document.getElementById("navToggle"), n = document.getElementById("navLinks");
     if (!t || !n) return;
+    /* .skip-link and .brand are in this list for the same reason #main is: the
+       drawer is a full-screen sheet at z-index 50 and both of those sit UNDER
+       it, so without inert they are focusable while invisible. Measured: click
+       the drawer's empty ground, activeElement becomes <body>, the first/last
+       wrap below never engages because activeElement is neither, and the next
+       Tab walks out of the drawer into the skip link. */
     var main = document.getElementById("main"),
         rail = document.querySelector(".tate"),
-        outside = [main, rail].filter(Boolean),
+        outside = [main, rail, document.querySelector(".skip-link"),
+                   document.querySelector(".brand")].filter(Boolean),
         canInert = "inert" in HTMLElement.prototype;
 
     function focusables() {
@@ -131,6 +138,22 @@
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     });
+
+    /* THE DRAWER HAD NO WAY OUT OF ITS OWN BREAKPOINT. Everything above is
+       bound once, at load: a click, a per-link click, and a keydown. Nothing
+       watches the width. So open the drawer on a narrow window — or on a tablet
+       held in portrait — then widen it or rotate to landscape, and the media
+       query takes the toggle away (`display: none` above 900px) while
+       `menu-open` is still scroll-locking <html> and `inert` is still switched
+       on across #main. The page is frozen, the control that would unfreeze it
+       has been removed, and nothing the visitor can do brings it back except
+       finding one of the drawer's own links.
+       Same class of bug as the emaki pin further down: a decision taken at one
+       width and never revisited. */
+    var wide = matchMedia("(min-width: 901px)");
+    var onWide = function () { if (wide.matches) close(false); };
+    if (wide.addEventListener) wide.addEventListener("change", onWide);
+    else if (wide.addListener) wide.addListener(onWide);
   })();
 
   /* split brighten paragraphs into words */
@@ -167,6 +190,14 @@
     /* and the same for the mended headline — the class IS the release */
     [].forEach.call(document.querySelectorAll(".kintsugi"), function (h) { h.classList.add("is-mended"); });
     [].forEach.call(document.querySelectorAll(".value"), function (v) { v.classList.add("is-spoked"); });
+    /* The ink-shake is bound far below this early return, so on this path the
+       button exists, takes hover, takes focus and announces itself — and does
+       nothing at all. A visitor who asked for reduced motion is exactly the
+       visitor least able to guess that a control is decorative. Remove it
+       rather than leave a dead affordance; the foot row is already a
+       two-element layout under 1080px, so nothing reflows oddly. */
+    var deadTap = document.getElementById("inkTap");
+    if (deadTap && deadTap.parentNode) deadTap.parentNode.removeChild(deadTap);
     document.documentElement.classList.add("js-live");
     return;
   }
@@ -359,6 +390,26 @@
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
     }
+
+    /* THE PIN IS ENTERED ONCE AND WAS NEVER LEFT. `emaki-pinned` goes on the
+       root above and nothing took it off, but the stylesheet reads it as
+       `overflow: hidden; scroll-snap-type: none` on .emaki — which is exactly
+       the state the note at the top of this block says touch must never be in.
+       Load an iPad in landscape, rotate to portrait: the pin keeps driving the
+       track from vertical scroll while the native swipe the phone layout
+       depends on has been switched off, so the handscroll can only be moved by
+       a gesture the layout no longer offers. */
+    var wideEmaki = matchMedia("(min-width: 901px)");
+    var onEmaki = function () {
+      if (wideEmaki.matches) return;
+      document.documentElement.classList.remove("emaki-pinned");
+      if (tl.scrollTrigger) tl.scrollTrigger.kill(true);
+      gsap.set(track, { clearProps: "transform,x" });
+      items.forEach(function (li) { li.classList.add("is-inked"); });
+      ScrollTrigger.refresh();
+    };
+    if (wideEmaki.addEventListener) wideEmaki.addEventListener("change", onEmaki);
+    else if (wideEmaki.addListener) wideEmaki.addListener(onEmaki);
   })();
 
   /* ---------- word-by-word brighten ---------- */
@@ -754,7 +805,20 @@
        marks fall back to their CSS places rather than freeze somewhere wrong */
     addEventListener("resize", function () {
       if (raf) { cancelAnimationFrame(raf); raf = 0; }
-      bodies.forEach(function (b) { b.el.style.transform = ""; delete b.el.__body; });
+      /* clearProps, not a raw transform wipe. shake() also writes an OPACITY
+         (0.78-0.94, so a falling mark reads as real ink) and the old handler
+         never took it back — the resting values in the stylesheet are 0.09-0.34.
+         On a phone the resize that triggers this is the URL bar collapsing on
+         the very next scroll, so tapping "shake the ink" once left sixteen
+         specks about six times too dark for the rest of the visit.
+         killTweensOf first, or an in-flight splat tween re-applies scale after
+         the clear; and clearProps is what also drops GSAP's transform cache,
+         which a raw style.transform = "" leaves stale. */
+      bodies.forEach(function (b) {
+        gsap.killTweensOf(b.el);
+        gsap.set(b.el, { clearProps: "transform,opacity,scale,x,y" });
+        delete b.el.__body;
+      });
       bodies = []; floor = 0;
     }, { passive: true });
   })();
@@ -956,7 +1020,11 @@
   /* ---------- marquee (paused while off-screen to save compositing) ---------- */
   var marq = document.getElementById("marqRow");
   if (marq) {
-    var marqTween = gsap.to(marq, { xPercent: -50, duration: 26, ease: "none", repeat: -1 });
+    /* paused:true is what makes the label above true. onToggle only fires on a
+       CHANGE of state, and the marquee starts life off-screen — so the trigger
+       was already inactive when it was created, no toggle ever fired, and the
+       tween ran from load to unload no matter where the reader was. */
+    var marqTween = gsap.to(marq, { xPercent: -50, duration: 26, ease: "none", repeat: -1, paused: true });
     ScrollTrigger.create({ trigger: ".marquee", start: "top bottom", end: "bottom top",
       onToggle: function (self) { self.isActive ? marqTween.play() : marqTween.pause(); } });
   }

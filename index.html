@@ -38,12 +38,12 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/manrope-var.woff2" crossorigin>
   <link rel="preload" as="image" imagesrcset="assets/horizon-900.webp?s=104 900w, assets/horizon-1400.webp?s=104 1400w, assets/horizon.webp?s=104 1920w" imagesizes="(max-width: 1018px) 1400px, 106vw" fetchpriority="high">
   <link rel="preload" as="image" href="assets/sun-ink.webp?s=101" fetchpriority="high">
-  <link rel="stylesheet" href="style.css?v=165">
+  <link rel="stylesheet" href="style.css?v=166">
   <script type="application/ld+json">
-  {"@context": "https://schema.org", "@type": "Organization", "name": "217 Products", "url": "https://217products.com/", "logo": "https://217products.com/assets/icon-512.png", "image": "https://217products.com/assets/zen.webp?w=1", "description": "An independent product company reaching from Ankara to the world. Where we see a gap, we build products that are fast, simple, and made to last.", "email": "destek217product@gmail.com", "foundingDate": "2026", "address": {"@type": "PostalAddress", "addressLocality": "Ankara", "addressCountry": "TR"}}
+  {"@context": "https://schema.org", "@type": "Organization", "@id": "https://217products.com/#organization", "name": "217 Products", "alternateName": ["217", "217products"], "url": "https://217products.com/", "logo": "https://217products.com/assets/icon-512.png", "image": "https://217products.com/assets/zen.webp?w=1", "description": "An independent product company reaching from Ankara to the world. Where we see a gap, we build products that are fast, simple, and made to last.", "email": "destek217product@gmail.com", "foundingDate": "2026", "sameAs": ["https://play.google.com/store/apps/developer?id=217+Products"], "contactPoint": {"@type": "ContactPoint", "contactType": "customer support", "email": "destek217product@gmail.com", "availableLanguage": ["tr", "en"]}, "address": {"@type": "PostalAddress", "addressLocality": "Ankara", "addressRegion": "Ankara", "addressCountry": "TR"}}
   </script>
   <script type="application/ld+json">
-  {"@context": "https://schema.org", "@type": "MobileApplication", "name": "OSNote", "operatingSystem": "Android", "applicationCategory": "ProductivityApplication", "url": "https://play.google.com/store/apps/details?id=com.kurapika.onscreennote", "installUrl": "https://play.google.com/store/apps/details?id=com.kurapika.onscreennote", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "TRY"}, "publisher": {"@type": "Organization", "name": "217 Products", "url": "https://217products.com/"}}
+  {"@context": "https://schema.org", "@type": "MobileApplication", "@id": "https://217products.com/#osnote", "name": "OSNote", "description": "Write over any screen on Android, switch to a full notebook mode, and draw with a stylus engine built for pressure and palm rejection.", "operatingSystem": "Android", "applicationCategory": "ProductivityApplication", "screenshot": "https://217products.com/assets/osnote-card.webp?s=100bdcba", "url": "https://play.google.com/store/apps/details?id=com.kurapika.onscreennote", "installUrl": "https://play.google.com/store/apps/details?id=com.kurapika.onscreennote", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "TRY"}, "publisher": {"@id": "https://217products.com/#organization"}}
   </script>
 </head>
 <body>
@@ -56,13 +56,13 @@
       <img class="brand-mark" src="assets/logo-217.svg?w=1" alt="217 Products" width="75" height="40">
     </a>
     <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-controls="navLinks" aria-expanded="false"><img class="toggle-brush" src="assets/menu-brush.svg?w=1" alt="" width="178" height="150"><span></span><span></span><span></span></button>
-    <nav class="nav-links" id="navLinks">
+    <nav class="nav-links" id="navLinks" aria-label="Main">
       <a href="#products">Products</a>
       <a href="#craft">Standard</a>
       <a href="#studio">Company</a>
       <a href="#process">Process</a>
       <a class="nav-cta" href="mailto:destek217product@gmail.com" data-mail>Say hello</a>
-      <a class="nav-alt" href="index-tr.html" hreflang="tr" lang="tr" data-lang="tr" aria-label="Türkçe">TR</a>
+      <a class="nav-alt" href="index-tr.html" hreflang="tr" lang="tr" data-lang="tr" aria-label="TR — Türkçe">TR</a>
     </nav>
   </header>
 
@@ -98,7 +98,12 @@
       <div class="shelf-head">
         <p class="shelf-eyebrow" data-slide="-1">ON THE SHELF</p>
         <div class="shelf-text" data-slide="1">
-          <h2 class="shelf-line"><span class="ln">A shelf with three slots.</span><span class="ln">Today <em>one</em> is filled.</span></h2>
+          <!-- the newline between the two .ln blocks is load-bearing: without it
+               textContent reads "…three slots.Today one is filled." for anything
+               that parses the raw HTML. Both are display:block, so the whitespace
+               is collapsed away and nothing moves. -->
+          <h2 class="shelf-line"><span class="ln">A shelf with three slots.</span>
+            <span class="ln">Today <em>one</em> is filled.</span></h2>
           <span class="shelf-rule" aria-hidden="true"></span>
         </div>
         <p class="shelf-note" data-slide="1">We don’t promise a product a year. When the gap is real we start; when it isn’t, the slot stays empty.</p>
@@ -119,7 +124,10 @@
               <li>Write over any screen</li><li>Notebook mode</li><li>Stylus engine</li><li>Android</li>
             </ul>
           </div>
-          <a class="slot-hit" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener noreferrer"><span class="sr-only">OSNote — open on Google Play</span></a>
+          <!-- noopener only, no noreferrer: the referrer is how Play Console
+               attributes an install back to this site, and the page-level
+               referrer policy already trims it to the bare origin. -->
+          <a class="slot-hit" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener"><span class="sr-only">OSNote — open on Google Play</span></a>
         </article>
 
         <article class="slot is-soon">
@@ -159,10 +167,11 @@
     <section class="statement">
       <span class="section-seal" aria-hidden="true" lang="ja">志</span>
       <p class="eyebrow rise">THE 217 APPROACH</p>
-      <h2 class="display rise kintsugi"><span class="kin-piece kin-a">We</span><span class="kin-seam" aria-hidden="true"></span><span class="kin-piece kin-b"><span class="gold">begin</span> where things fall short.</span></h2>
+      <h2 class="display rise kintsugi"><span class="kin-piece kin-a">We</span><span class="kin-seam" aria-hidden="true"></span>
+        <span class="kin-piece kin-b"><span class="gold">begin</span> where things fall short.</span></h2>
       <figure class="section-art rise">
         <img loading="lazy" decoding="async" src="assets/kintsugi.webp?w=1" alt="A sumi-e kintsugi tea bowl, its cracks mended with gold" width="880" height="880">
-        <figcaption>金継ぎ · Kintsugi — mending the break with gold</figcaption>
+        <figcaption><span lang="ja">金継ぎ</span> · Kintsugi — mending the break with gold</figcaption>
       </figure>
       <p class="brighten" data-brighten>When a category is stuck with dated products, tangled experiences, or bad habits, we see an opening. We build our own answer and ship it.</p>
     </section>
@@ -187,20 +196,20 @@
     <!-- 5 · STUDIO / VALUES -->
     <section class="studio" id="studio">
       <p class="eyebrow rise">217 PRODUCTS</p>
-      <h2 class="display rise">We build <span class="gold">our own</span> products, <br class="br-lg">not someone else's idea.</h2>
+      <h2 class="display rise">We build <span class="gold">our own</span> products, <br class="br-lg">not someone else’s idea.</h2>
       <div class="wheel rise"><span class="wheel-ring" aria-hidden="true"></span><figure class="section-art rise">
-        <img loading="lazy" decoding="async" src="assets/potter.webp?w=1" alt="Sumi-e hands shaping a bowl at the potter's wheel" width="880" height="880">
-        <figcaption>手仕事 · Built at the wheel, by hand</figcaption>
+        <img loading="lazy" decoding="async" src="assets/potter.webp?w=1" alt="Sumi-e hands shaping a bowl at the potter’s wheel" width="880" height="880">
+        <figcaption><span lang="ja">手仕事</span> · Built at the wheel, by hand</figcaption>
       </figure></div>
-      <p class="brighten" data-brighten>For us, independence isn't doing whatever we please — it's owning the outcome of everything we do. We hand off neither the decision nor the responsibility.</p>
+      <p class="brighten" data-brighten>For us, independence isn’t doing whatever we please — it’s owning the outcome of everything we do. We hand off neither the decision nor the responsibility.</p>
       <div class="values">
         <article class="value rise" data-spoke="1"><span class="spoke" aria-hidden="true"></span>
           <h3>Meticulous</h3>
-          <p>We know it's the small details no one ever notices that make a product good.</p>
+          <p>We know it’s the small details no one ever notices that make a product good.</p>
         </article>
         <article class="value rise" data-spoke="2"><span class="spoke" aria-hidden="true"></span>
           <h3>Focused</h3>
-          <p>We don't chase every idea — we concentrate where we can make a real difference.</p>
+          <p>We don’t chase every idea — we concentrate where we can make a real difference.</p>
         </article>
         <article class="value rise" data-spoke="3"><span class="spoke" aria-hidden="true"></span>
           <h3>Forward-looking</h3>
@@ -217,7 +226,7 @@
       <div class="emaki"><ol class="steps">
         <li class="rise"><span class="step-n">01</span><span class="step-t">Notice</span><span class="step-d">We spot the shortfall people put up with because they must.</span><span class="step-mark" aria-hidden="true"></span></li>
         <li class="rise"><span class="step-n">02</span><span class="step-t">Rethink</span><span class="step-d">Instead of copying the usual fix, we reframe the question.</span><span class="step-mark" aria-hidden="true"></span></li>
-        <li class="rise"><span class="step-n">03</span><span class="step-t">Build</span><span class="step-d">We craft a product that's simple, fast, and stable.</span><span class="step-mark" aria-hidden="true"></span></li>
+        <li class="rise"><span class="step-n">03</span><span class="step-t">Build</span><span class="step-d">We craft a product that’s simple, fast, and stable.</span><span class="step-mark" aria-hidden="true"></span></li>
         <li class="rise"><span class="step-n">04</span><span class="step-t">Stay with it</span><span class="step-d">After launch we listen, fix, and keep improving.</span><span class="step-mark" aria-hidden="true"></span></li>
       </ol></div>
     </section>
@@ -231,7 +240,7 @@
       <p class="final-lead rise">The relationship people have with money shouldn’t be more complicated than the tools they use for it. That’s where we’re looking.</p>
       <div class="cta rise">
         <!-- see the Turkish file: the primary used to scroll backwards -->
-        <a class="btn primary" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener noreferrer">Get OSNote ↗</a>
+        <a class="btn primary" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener">Get OSNote ↗</a>
         <a class="btn quiet" href="mailto:destek217product@gmail.com" data-mail>Say hello</a>
       </div>
     </section>
@@ -248,7 +257,7 @@
           <span class="foot-h">Explore</span>
           <a href="#products">Products</a>
           <a href="#studio">Company</a>
-          <a href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener noreferrer">Google Play ↗</a>
+          <a href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener">Google Play ↗</a>
         </div>
         <div class="foot-col">
           <span class="foot-h">Connect</span>
@@ -271,6 +280,6 @@
   <script src="vendor/gsap.min.js?v=3.15.0"></script>
   <script src="vendor/ScrollTrigger.min.js?v=3.15.0"></script>
   <script src="vendor/lenis.min.js?v=1.3.25"></script>
-  <script src="main.js?v=112"></script>
+  <script src="main.js?v=113"></script>
 </body>
 </html>

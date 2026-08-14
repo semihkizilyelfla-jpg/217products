@@ -94,7 +94,10 @@ body {
   .js .rise { opacity: 0; }
   .js .brighten { color: #767676; }
 }
-::selection { background: var(--vermilion); color: var(--paper); }
+/* the deep step, not the bright one: white on --vermilion measures 4.25:1 and
+   selected text is body text, which needs 4.5. --vermilion-deep gives 5.70:1.
+   Same reasoning the filled button and the 404 page already follow. */
+::selection { background: var(--vermilion-deep); color: var(--paper); }
 a { color: inherit; text-decoration: none; }
 :focus-visible { outline: 2px solid var(--vermilion); outline-offset: 4px; border-radius: 2px; }
 /* Scroll targets get tabindex="-1" from the anchor handler so focus can actually
@@ -380,7 +383,11 @@ main::after {
 }
 section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
 .eyebrow { font-family: "Manrope", "Shippori Mincho", system-ui, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.3em; color: var(--accent-ink); }
-.big { font-size: clamp(44px, 8.4vw, 128px); }
+/* `.big` had exactly one user, `.final .display.big`, and both the desktop rule
+   for `.final .display` and the phone rule for `.final .display.big` out-rank it
+   at every width — measured 96px at 1440 where this would have given 120.96.
+   The size lives with the section that uses it; this shorthand only looked like
+   a knob. */
 
 /* ---------- right rail ----------
    A small washi tab clipped to the edge of the sheet, carrying the studio
@@ -880,7 +887,13 @@ html.sun-up .sun-clip {
   .statement .display, .studio .display { grid-column: 1 / -1; }
   .statement .section-art { grid-column: 1; grid-row: 3; }
   .statement .brighten    { grid-column: 2; grid-row: 3; }
-  .studio .section-art    { grid-column: 2; grid-row: 3; }
+  /* .wheel, not .section-art — in .studio the figure is nested INSIDE .wheel
+     (the ensō ring's box), so placing the figure placed a grid item that is not
+     a grid child of this container and the ring was left to auto-flow. Measured
+     at 1440px while potter.webp was still lazy-loading: figure centre x=1128.7,
+     ring centre x=1041.6 — the ring sat 87px off the drawing it is drawn around.
+     .statement above is untouched: there the figure really is a direct child. */
+  .studio .wheel          { grid-column: 2; grid-row: 3; }
   .studio .brighten       { grid-column: 1; grid-row: 3; }
   .statement .brighten, .studio .brighten { align-self: center; margin-top: clamp(30px, 4.5vh, 60px); padding-bottom: 8px; }
   .section-art { align-self: center; margin-top: clamp(30px, 4.5vh, 60px); }
@@ -952,16 +965,29 @@ html.sun-up .sun-clip {
    is when you are looking for it. The brand mark is left alone — that is the
    way back and it should never disappear. */
 .nav-links, .nav-toggle {
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease,
+              visibility 0s linear 0s;
 }
 html.nav-away .nav-links, html.nav-away .nav-toggle {
   transform: translateY(calc(-100% - 32px)); opacity: 0;
-  /* not just invisible — out of the tab order too, or the capsule would still
-     take focus while parked off-screen */
-  pointer-events: none;
+  /* THE COMMENT HERE USED TO CLAIM "out of the tab order too" AND IT WAS NOT
+     TRUE. pointer-events only stops a mouse; it has never affected sequential
+     focus. A keyboard visitor reading down the page — the state that puts the
+     bar away in the first place — would Tab straight into the parked capsule
+     and the hamburger, and the vermilion focus ring would be drawn 32px above
+     the top of the screen. On a phone that is the site's ONLY navigation
+     control, so the one control they were reaching for is the one that
+     disappears under them.
+     `visibility: hidden` is what actually removes an element from the tab
+     order, and it is in the transition list with a delay so it flips only
+     AFTER the fade finishes — the exit still animates. This is the same
+     pattern .brand already uses two hundred lines up. */
+  pointer-events: none; visibility: hidden;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease,
+              visibility 0s linear 0.4s;
 }
 html.menu-open.nav-away .nav-links, html.menu-open.nav-away .nav-toggle {
-  transform: none; opacity: 1; pointer-events: auto;
+  transform: none; opacity: 1; pointer-events: auto; visibility: visible;
 }
 @media (prefers-reduced-motion: reduce) {
   .nav-links, .nav-toggle { transition: opacity 0.2s ease; }
@@ -1628,6 +1654,15 @@ html.emaki-pinned .emaki { overflow: hidden; scroll-snap-type: none; }
   clip-path: inset(0 0 0 0);
   transition: clip-path 0.85s cubic-bezier(0.22, 1, 0.36, 1);
 }
+/* On the phone this transition IS the stroke laying itself down, one trigger
+   per row. Under the desktop pin it is the opposite of that: the scrub writes a
+   fresh inline clip-path on every frame, and each write restarts an 0.85s
+   transition, so a tween declared `ease: "none"` renders eased and a beat
+   behind the scroll it is supposed to be locked to. Scoped to the pinned state
+   only — the mobile mechanic keeps its transition. Paired with the teardown in
+   main.js: without that, a tablet rotated to portrait would keep this rule and
+   lose the stroke animation entirely. */
+html.emaki-pinned .step-mark { transition: none; }
 /* staged only when the script is alive to release it, and scoped to
    :not(.is-inked) so the release rule has nothing left to out-rank — the same
    specificity trap the shelf head fell into twice */
@@ -1727,7 +1762,10 @@ html.no-motion .step-mark { clip-path: inset(0 0 0 0); transition: none; }
   .foot { flex-direction: column; align-items: center; text-align: center; }
   .foot-nav { justify-content: center; text-align: left; }
   .foot-meta { text-align: center; }
-  .craft::after { background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.92) 100%); }
+  /* `.craft::after` is never generated — it has no `content`, measured as
+     `content: "none"` live. It was a white scrim over the retired zen.webp
+     background; .craft is an ink wall now, so a white 60-92% veil would be
+     wrong even if it did render. Removed rather than completed. */
 }
 
 /* ---------- reduced motion ---------- */
