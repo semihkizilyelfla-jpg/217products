@@ -271,7 +271,17 @@ html.past-hero .brand {
 }
 /* toggle: three sumi-e brush strokes (三, HGF vector) that hand over to an X */
 .nav-toggle { display: none; position: relative; width: 48px; height: 48px; background: none; border: 0; padding: 0; cursor: pointer; align-items: center; justify-content: center; z-index: 60; }
-.toggle-brush { width: auto; height: 26px; transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
+/* A BACKGROUND, NOT AN <img>, AND THE URL LIVES IN THE PHONE BLOCK ONLY.
+   The toggle is display:none above 900px, but `display:none` on an ancestor
+   does not stop the parser fetching an <img src>: measured on desktop at 1280px,
+   menu-brush.svg came down (10.6 KB gzipped) in the first request wave around
+   900ms, decoded to 178px wide, and was then painted into a 0x0 box. Pure loss,
+   on every desktop visit, in the critical path. `loading="lazy"` was measured
+   too and does NOT fix it. A CSS background declared inside the phone media
+   query is never even a candidate resource on a wide screen.
+   Sized explicitly because the box no longer comes from the file: 178x150 at
+   26px tall is 30.85px wide. */
+.toggle-brush { display: block; width: 30.9px; height: 26px; transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
 .nav-toggle.is-open .toggle-brush { opacity: 0; transform: rotate(90deg) scale(0.55); }
 /* the X: two ink bars, hidden until the menu opens */
 .nav-toggle span { position: absolute; left: 50%; top: 50%; width: 24px; height: 2px; margin: -1px 0 0 -12px; background: var(--ink); border-radius: 2px; opacity: 0; transition: opacity 0.25s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
@@ -286,6 +296,8 @@ html.menu-open, html.menu-open body { overflow: hidden; }
 
 @media (max-width: 900px) {
   .nav-toggle { display: flex; }
+  /* the only place the brush file is ever named — see .toggle-brush above */
+  .toggle-brush { background: url("assets/menu-brush.svg?w=1") center / contain no-repeat; }
   /* phones get the same floating language: no ribbon, just the mark and the
      toggle each sitting on their own small washi seal */
   /* pointer-events: none, EXACTLY as the desktop block does at 901px+ and for
@@ -1034,8 +1046,8 @@ html.menu-open.nav-away .nav-links, html.menu-open.nav-away .nav-toggle {
   display: block; width: min(96%, 13.5em); height: 0.34em;
   margin: 0.05em 0 0.03em;
   background: var(--vermilion);
-  -webkit-mask: url("assets/seam.svg") left center / 100% 100% no-repeat;
-          mask: url("assets/seam.svg") left center / 100% 100% no-repeat;
+  -webkit-mask: url("assets/seam.svg?w=1") left center / 100% 100% no-repeat;
+          mask: url("assets/seam.svg?w=1") left center / 100% 100% no-repeat;
   clip-path: inset(0 0 0 0);
   transition: clip-path 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.18s;
 }
@@ -1099,8 +1111,8 @@ html.no-motion .kin-piece { transform: none; transition: none; }
   left: 50%; width: 100vw;
   height: clamp(30px, 4vh, 62px);
   background: var(--ink);
-  -webkit-mask: url("assets/bleed.svg") bottom center / 100% 100% no-repeat;
-          mask: url("assets/bleed.svg") bottom center / 100% 100% no-repeat;
+  -webkit-mask: url("assets/bleed.svg?w=1") bottom center / 100% 100% no-repeat;
+          mask: url("assets/bleed.svg?w=1") bottom center / 100% 100% no-repeat;
 }
 .bleed-top { top: 0; transform: translateX(-50%) translateY(-99%); }
 
@@ -1209,9 +1221,12 @@ html.no-motion .shelf-rule { clip-path: inset(0 0 0 0); transition: none; }
    it should have been 20. With `:not(.is-in)` the staged rules simply STOP
    MATCHING once the class lands, so there is nothing left to out-rank. */
 .shelf-head [data-slide] {
-  will-change: transform, opacity;
   transition: transform 0.5s ease, opacity 0.5s ease;
 }
+/* The hint is worth paying for on the way in and worth nothing afterwards: this
+   is a one-time entrance, and `.is-in` is its release, so scoping the hint to
+   the pre-entrance state drops the layer the moment the head has landed. */
+.shelf-head:not(.is-in) [data-slide] { will-change: transform, opacity; }
 .js .shelf-head:not(.is-in) [data-slide] { opacity: 0; }
 .js .shelf-head:not(.is-in) [data-slide="-1"] { transform: translateX(-300px); }
 .js .shelf-head:not(.is-in) [data-slide="1"]  { transform: translateX(300px); }
@@ -1372,9 +1387,19 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
   pointer-events: none;
   /* it hangs over its neighbours, so it needs to cast onto them */
   box-shadow: 0 40px 90px rgba(0,0,0,0.55);
-  /* three elements on the page, each running a compound transform on hover */
-  will-change: transform, opacity;
 }
+/* WILL-CHANGE ONLY WHILE THE POINTER IS ACTUALLY THERE. It used to be declared
+   unconditionally, and the three panels then held composited layers for the
+   whole visit while sitting at opacity 0: measured at scrollY 4417, three layers
+   of 667x718, 657x718 and 643x718 — 1.41 MPx together — with paints=0. Layers
+   that never paint are not free; everything drawn above them gets promoted too,
+   for "Overlap", and six large Overlap layers were counted on that screen.
+   Hover is the correct moment to promote: it arrives before the flick, which is
+   the entire purpose of the hint, and it costs nothing on a page nobody is
+   pointing at. Bound with :hover/:focus-within on the slot, not the panel,
+   because the panel is pointer-events: none. */
+.slot:hover .slot-media,
+.slot:focus-within .slot-media { will-change: transform, opacity; }
 /* No GSAP (or reduced motion): a plain crossfade, no tilt, no overshoot.
    Scoped to those cases only so it can never fight the inline styles GSAP
    writes on the same element. */
@@ -1392,7 +1417,7 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
 /* the two waiting slots: our own ink field, no invented product shot */
 .slot-wash {
   grid-area: 1 / 1; width: 100%; height: 100%;
-  background: url("assets/reach-ink.webp?w=1") no-repeat center center / cover;
+  background: url("assets/reach-ink.webp?w=2") no-repeat center center / cover;
   /* the plate is sumi on white; inverted it is the same wave in white on black.
      Held at 0.15 so the mark reads over it rather than fighting it. */
   filter: invert(1); opacity: 0.15;
@@ -1522,8 +1547,8 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
   width: min(132%, 660px); aspect-ratio: 1;
   color: rgba(17,17,17,0.17);
   background: currentColor;
-  -webkit-mask: url("assets/enso.svg") center / contain no-repeat;
-          mask: url("assets/enso.svg") center / contain no-repeat;
+  -webkit-mask: url("assets/enso.svg?w=1") center / contain no-repeat;
+          mask: url("assets/enso.svg?w=1") center / contain no-repeat;
   will-change: transform;
 }
 .wheel .section-art { position: relative; z-index: 1; }

@@ -34,10 +34,11 @@
 
     <h2>Bu site ne saklıyor</h2>
     <p>Tek bir değer, tarayıcınızın yerel deposunda, <code>lang217</code> anahtarıyla.
-      İçinde ya <code>en</code> ya <code>tr</code> yazar ve yalnızca menüdeki dil
-      anahtarını kullandığınızda yazılır. Tek amacı, bir sonraki ziyaretinizde sizi yanlış
-      dile göndermemektir. Bir tanımlayıcı değildir, başkası tarafından okunmaz ve
-      cihazınızdan hiç çıkmaz.</p>
+      İçinde ya <code>en</code> ya <code>tr</code> yazar. İki durumda yazılır: menüdeki dil
+      anahtarını kullandığınızda ve — yalnızca ilk ziyarette — tarayıcınız Türkçe istediği
+      için sizi Türkçe sayfaya gönderdiğimizde, bir sonraki ziyaretin yeniden tahmin
+      etmesine gerek kalmasın diye. Tek amacı sizi yanlış dile göndermemektir. Bir
+      tanımlayıcı değildir, başkası tarafından okunmaz ve cihazınızdan hiç çıkmaz.</p>
     <p>Tarayıcınızın site verisi ayarlarından dilediğiniz zaman silebilirsiniz. Sildiğinizde
       hiçbir şey bozulmaz — site yalnızca tarayıcınızın diline yeniden bakar.</p>
 
@@ -49,8 +50,13 @@
       <li><strong>Çerez koymuyor</strong> ve cihazınızda hiçbir şey saklamıyor.</li>
       <li>Profil oluşturmuyor, sizi siteler arasında izlemiyor ve kimliğinizi
         belirlemiyor. Cloudflare bireysel ziyaretçileri izlemediğini açıkça beyan ediyor.</li>
-      <li>Kaydettiği şeyler: sayfa adresi, yönlendiren sayfa, tarayıcınız ve işletim
-        sisteminiz, ekran boyutunuz, ülkeniz ve sayfanın ne kadar hızlı yüklendiği. IP
+      <li>Sayfanın gönderdiği şeyler: sayfa adresi ve geldiğiniz adres, gezinmenin nasıl
+        başladığı, bir dizi yüklenme hızı ölçümü (sunucunun ne kadar sürdüğü, sayfanın ilk
+        ne zaman boyandığı, en büyük öğesi, yüklenirken ne kadar kaydığı, ilk dokunuşunuza ne
+        kadar çabuk yanıt verdiği), aktarılan bayt miktarı, tarayıcı sekmesinin ne kadar
+        belleği olduğuna dair kaba bir okuma ve yalnızca o tek sayfa görüntülemesi boyunca
+        yaşayan, siz ayrılınca kaybolan rastgele bir tanımlayıcı. Tarayıcınız, işletim
+        sisteminiz ve ülkeniz isteğin kendisinden Cloudflare tarafından çıkarılır — IP
         adresiniz ülkeyi belirlemek için kullanılır, tarafımızca saklanmaz.</li>
       <li>Reklam yok, yeniden pazarlama yok, veri satışı yok — Cloudflare bunu yalnızca
         bizim adımıza ve başka hiçbir amaçla işlemiyor.</li>

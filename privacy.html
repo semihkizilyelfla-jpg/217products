@@ -34,10 +34,12 @@
 
     <h2>What this site stores</h2>
     <p>One value, in your browser’s local storage, under the key
-      <code>lang217</code>. It holds either <code>en</code> or <code>tr</code>, and it is
-      written only when you use the language switch in the menu. Its entire purpose is to
-      stop sending you to the wrong language on your next visit. It is not an identifier,
-      it is not read by anyone else, and it never leaves your device.</p>
+      <code>lang217</code>. It holds either <code>en</code> or <code>tr</code>. It is
+      written in two situations: when you use the language switch in the menu, and — on a
+      first visit only — when your browser asks for Turkish and we send you to the Turkish
+      page, so the next visit does not have to guess again. Its entire purpose is to stop
+      sending you to the wrong language. It is not an identifier, it is not read by anyone
+      else, and it never leaves your device.</p>
     <p>You can clear it at any time through your browser’s site-data settings. Nothing
       breaks if you do — the site simply asks your browser’s language again.</p>
 
@@ -49,9 +51,14 @@
       <li>It sets <strong>no cookie</strong> and stores nothing on your device.</li>
       <li>It does not build a profile, does not follow you between sites, and does not
         identify you. Cloudflare states plainly that it does not track individual visitors.</li>
-      <li>What it records is the page address, the referring page, your browser and
-        operating system, your screen size, your country, and how quickly the page loaded.
-        Your IP address is used to derive the country and is not stored by us.</li>
+      <li>What the page sends is: the page address and the address you arrived from, how the
+        navigation started, a set of load-speed measurements (how long the server took, when
+        the page first painted, its largest element, how much it shifted while loading, how
+        quickly it answered your first tap), the number of bytes transferred, a rough reading
+        of how much memory the browser tab has available, and a random identifier that exists
+        only for that single page view and is gone the moment you leave. Your browser, your
+        operating system and your country are derived by Cloudflare from the request itself —
+        your IP address is used to work out the country and is not stored by us.</li>
       <li>There is no advertising, no remarketing and no data sale — Cloudflare processes
         this on our behalf and for nothing else.</li>
     </ul>

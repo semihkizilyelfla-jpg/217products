@@ -280,11 +280,18 @@
      instead of the type. Threshold and floor both matter — 6px of travel stops
      it flickering on trackpad jitter, and it never hides inside the hero, where
      it is the only navigation on screen. */
+  /* scrollY IS READ IN THE LISTENER, NOT IN THE rAF. Reading it inside the
+     animation frame is a forced style recalculation: by then GSAP's ticker has
+     already written transforms for this frame, so the layout is dirty and the
+     read has to flush it. Traced over a 5.2s full-page scroll at 1280x800, this
+     callback was 277 forced-layout entries / 7.0ms — small next to Lenis's own
+     211/26.2ms, but it is pure waste, and it is waste in the exact frames the
+     page is least able to afford. In a passive scroll listener the value is
+     already there and costs nothing. */
   (function () {
-    var de = document.documentElement, last = 0, ticking = false;
+    var de = document.documentElement, last = 0, ticking = false, y = 0;
     function apply() {
       ticking = false;
-      var y = window.scrollY || 0;
       var d = y - last;
       if (Math.abs(d) < 6) return;
       if (y < 260 || de.classList.contains("menu-open")) de.classList.remove("nav-away");
@@ -292,6 +299,7 @@
       last = y;
     }
     window.addEventListener("scroll", function () {
+      y = window.scrollY || 0;
       if (!ticking) { ticking = true; requestAnimationFrame(apply); }
     }, { passive: true });
   })();
@@ -1046,6 +1054,56 @@
       }
     });
   }, 2600);
+
+  /* ---------- nothing scrolled, so open the gates ----------
+     A renderer that never scrolls never sees anything behind these gates. That
+     is not a hypothetical: measured in headless Chrome with JS on and scrollY 0,
+     294 of the English page's 444 words and 214 of the Turkish page's 341 stay
+     hidden — about two thirds of the copy — and everything from `.products` down
+     is 73-100% invisible. A tall viewport does NOT rescue it, which was the
+     assumption worth testing: the pinned sections define their scroll distance
+     in vh, so the document grows with the viewport and the first hidden `.rise`
+     never comes closer than ~1.8 viewports while the trigger fires at 0.88.
+     Raising the viewport from 800px to 30000px moved that ratio from 3.11 to
+     1.81 and no further.
+     This releases the SAME list the reduced-motion branch above already
+     releases, and it keys on BEHAVIOUR — nothing scrolled, nothing touched,
+     nothing moved — not on the user agent. A person and a crawler are held to
+     one rule, so there is no cloaking here and no second version of the page.
+     It touches nothing in the hero and adds no CSS animation or transition;
+     the opening choreography stays in lang-redirect.js under WAAPI.
+     FOUR SECONDS IS A JUDGEMENT SQUEEZED FROM BOTH SIDES, and it costs
+     something. Below it: the hero's own opening runs to ~2.5s (the foot line
+     lands last), and a reader watching it has not scrolled yet — the audit
+     proposed 3s, which is half a second after the curtain and too eager. Above
+     it: a rendering pipeline that snapshots the DOM around the five-second mark
+     gains nothing from a release that fires at six, and that was the first
+     version of this — measured at a 5s settle it still read 66.2% hidden, i.e.
+     the timer was correct and useless. Four sits 1.5s past the opening and a
+     second inside a 5s budget.
+     The cost is real and only this: a visitor who lands and sits perfectly
+     still for four seconds loses the entrance animations below the fold and
+     scrolls down to content already in place. Nothing above the fold changes.
+     Pointer motion counts as a person, which on a desktop cancels it for
+     nearly everyone. */
+  (function () {
+    var touched = false;
+    ["wheel", "scroll", "touchstart", "touchmove", "keydown", "pointerdown", "pointermove", "mousemove"]
+      .forEach(function (t) {
+        addEventListener(t, function () { touched = true; }, { once: true, passive: true });
+      });
+    setTimeout(function () {
+      if (touched || (window.scrollY || 0) > 0) return;
+      var below = gsap.utils.toArray(".rise").filter(function (el) { return !el.closest(".hero"); });
+      gsap.set(below.concat(gsap.utils.toArray(".products .slot")), { autoAlpha: 1, y: 0 });
+      /* for these four the CLASS is the release contract, exactly as in the
+         reduced-motion branch — same selectors, same order */
+      [].forEach.call(document.querySelectorAll(".shelf-head"), function (h) { h.classList.add("is-in"); });
+      [].forEach.call(document.querySelectorAll(".steps li"), function (li) { li.classList.add("is-inked"); });
+      [].forEach.call(document.querySelectorAll(".kintsugi"), function (h) { h.classList.add("is-mended"); });
+      [].forEach.call(document.querySelectorAll(".value"), function (v) { v.classList.add("is-spoked"); });
+    }, 4000);
+  })();
 
   /* PROOF OF LIFE, and the reason it exists: three entrance gates in the
      stylesheet — `.js .rise`, `.js .brighten`, `.js .shelf-head [data-slide]` —
