@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- lastmod is a promise, not decoration: a date that stops matching the file
      teaches the crawler to ignore the field. Bump it in the same commit that
-     changes index.html / index-tr.html, or delete the element. changefreq and
+     changes index.html / tr.html, or delete the element. changefreq and
      priority are gone — Google has ignored both for years. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
@@ -9,28 +9,28 @@
     <loc>https://217products.com/</loc>
     <lastmod>2026-08-15</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/"/>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/index-tr.html"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/tr"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/"/>
   </url>
   <url>
-    <loc>https://217products.com/index-tr.html</loc>
+    <loc>https://217products.com/tr</loc>
     <lastmod>2026-08-15</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/"/>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/index-tr.html"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/tr"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/"/>
   </url>
   <url>
-    <loc>https://217products.com/privacy.html</loc>
+    <loc>https://217products.com/privacy</loc>
     <lastmod>2026-08-15</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/privacy.html"/>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/gizlilik.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/privacy"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/gizlilik"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/privacy"/>
   </url>
   <url>
-    <loc>https://217products.com/gizlilik.html</loc>
+    <loc>https://217products.com/gizlilik</loc>
     <lastmod>2026-08-15</lastmod>
-    <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/privacy.html"/>
-    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/gizlilik.html"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/privacy"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/gizlilik"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/privacy"/>
   </url>
 </urlset>

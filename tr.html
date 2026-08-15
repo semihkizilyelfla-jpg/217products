@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- TWO ORIGINS, AND ONLY TWO. Cloudflare Web Analytics is the single
+       third-party this site talks to: the beacon loads from
+       static.cloudflareinsights.com and reports to cloudflareinsights.com.
+       Everything else stays 'self'. It was chosen over GA4/Firebase because it
+       sets no cookie and no persistent identifier, so it needs no consent
+       banner — and a consent banner on this design is a UI addition the design
+       has twice refused. The automatic (proxy-injected) install was NOT used:
+       this zone is DNS-only and must stay that way or GitHub cannot issue the
+       certificate, so the JS-snippet install is the only correct one here. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <script src="lang-redirect.js?v=17"></script>
+  <meta name="theme-color" content="#F0F0F3">
+  <meta name="robots" content="index, follow">
+  <!-- The title has to carry a word somebody would type. "Bağımsız Ürün
+       Şirketi" is what we call ourselves, not what anyone searches; the bare
+       brand competes with 217productions.com and a wall of part numbers. OSNote,
+       Android and Ankara are the three tokens this domain can honestly own. -->
+  <title>217 Products — OSNote ve Ankara’dan Android uygulamaları</title>
+  <meta name="description" content="Ankara’da bağımsız bir ürün şirketi. Ekranın üstüne yazmanızı sağlayan Android uygulaması OSNote’u geliştiriyoruz; yetmeyen yerden başlıyoruz.">
+  <link rel="canonical" href="https://217products.com/tr">
+  <link rel="alternate" hreflang="en" href="https://217products.com/">
+  <link rel="alternate" hreflang="tr" href="https://217products.com/tr">
+  <link rel="alternate" hreflang="x-default" href="https://217products.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="217 Products">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:url" content="https://217products.com/tr">
+  <meta property="og:title" content="217 Products — OSNote ve Ankara’dan Android uygulamaları">
+  <meta property="og:description" content="Ankara’da bağımsız bir ürün şirketi. Ekranın üstüne yazmanızı sağlayan Android uygulaması OSNote’u geliştiriyoruz; yetmeyen yerden başlıyoruz.">
+  <meta property="og:image" content="https://217products.com/assets/zen.webp?w=1">
+  <meta property="og:image:width" content="1600">
+  <meta property="og:image:height" content="923">
+  <meta property="og:image:alt" content="217 Products">
+  <meta name="twitter:image" content="https://217products.com/assets/zen.webp?w=1">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="217 Products — OSNote ve Ankara’dan Android uygulamaları">
+  <meta name="twitter:description" content="Ankara’da bağımsız bir ürün şirketi. Ekranın üstüne yazmanızı sağlayan Android uygulaması OSNote’u geliştiriyoruz; yetmeyen yerden başlıyoruz.">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  <link rel="manifest" href="/site-tr.webmanifest">
+  <!-- ?v= must match the @font-face URLs in style.css byte for byte, or the
+       preload misses and the file is fetched twice. -->
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/shippori-800.woff2?v=2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/manrope-var.woff2?v=2" crossorigin>
+  <link rel="preload" as="image" imagesrcset="assets/horizon-900.webp?s=104 900w, assets/horizon-1400.webp?s=104 1400w, assets/horizon.webp?s=104 1920w" imagesizes="(max-width: 1018px) 1400px, 106vw" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/sun-ink.webp?s=101" fetchpriority="high">
+  <link rel="stylesheet" href="style.css?v=167">
+  <script type="application/ld+json">
+  {"@context": "https://schema.org", "@type": "Organization", "@id": "https://217products.com/#organization", "name": "217 Products", "alternateName": ["217", "217products"], "url": "https://217products.com/", "logo": "https://217products.com/assets/icon-512.png", "image": "https://217products.com/assets/zen.webp?w=1", "description": "Ankara’dan dünyaya açılan bağımsız bir ürün şirketiyiz. Gördüğümüz boşluklara hızlı, sade ve uzun ömürlü ürünler inşa ediyoruz.", "email": "destek217product@gmail.com", "foundingDate": "2026", "sameAs": ["https://play.google.com/store/apps/developer?id=217+Products"], "contactPoint": {"@type": "ContactPoint", "contactType": "customer support", "email": "destek217product@gmail.com", "availableLanguage": ["tr", "en"]}, "address": {"@type": "PostalAddress", "addressLocality": "Ankara", "addressRegion": "Ankara", "addressCountry": "TR"}}
+  </script>
+  <script type="application/ld+json">
+  {"@context": "https://schema.org", "@type": "MobileApplication", "@id": "https://217products.com/#osnote", "name": "OSNote", "description": "Android’de her ekranın üstüne yazın, defter moduna geçin ve basınç ile avuç reddi için kurulmuş kalem motoruyla çizin.", "operatingSystem": "Android", "applicationCategory": "ProductivityApplication", "screenshot": "https://217products.com/assets/osnote-card.webp?s=100bdcba", "url": "https://play.google.com/store/apps/details?id=com.kurapika.onscreennote", "installUrl": "https://play.google.com/store/apps/details?id=com.kurapika.onscreennote", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "TRY"}, "publisher": {"@id": "https://217products.com/#organization"}}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">İçeriğe geç</a>
+  <div class="scroll-ink" aria-hidden="true"></div>
+
+
+  <header class="nav">
+    <a class="brand" href="/tr" aria-label="217 Products ana sayfa">
+      <img class="brand-mark" src="assets/logo-217.svg?w=1" alt="217 Products" width="75" height="40">
+    </a>
+    <button type="button" class="nav-toggle" id="navToggle" aria-label="Menüyü aç" aria-controls="navLinks" aria-expanded="false"><img class="toggle-brush" src="assets/menu-brush.svg?w=1" alt="" width="178" height="150"><span></span><span></span><span></span></button>
+    <nav class="nav-links" id="navLinks" aria-label="Ana menü">
+      <a href="#products">Ürünler</a>
+      <a href="#craft">Standart</a>
+      <a href="#studio">Şirket</a>
+      <a href="#process">Süreç</a>
+      <a class="nav-cta" href="mailto:destek217product@gmail.com" data-mail>Merhaba de</a>
+      <a class="nav-alt" href="/" hreflang="en" lang="en" data-lang="en" aria-label="EN — English">EN</a>
+    </nav>
+  </header>
+
+  <aside class="tate" aria-hidden="true"><span class="seal" lang="ja">二一七</span><span class="tate-t">ANKARA</span></aside>
+
+  <main id="main">
+
+    <!-- 1 · HERO — the plate at the foot, the sun behind it -->
+    <section class="hero">
+      <div class="hero-ground" id="scene" aria-hidden="true">
+        <span class="sun-clip"><span class="sun" id="sun"><img class="sun-ink" src="assets/sun-ink.webp?s=101" alt="" width="320" height="320" decoding="sync" fetchpriority="high"><i class="sun-fill"></i></span></span>
+        <img decoding="async" class="hz" data-depth="0.22" data-sun-x="0.220" data-ridge="0.229" src="assets/horizon.webp?s=104" srcset="assets/horizon-900.webp?s=104 900w, assets/horizon-1400.webp?s=104 1400w, assets/horizon.webp?s=104 1920w" sizes="(max-width: 1018px) 1400px, 106vw" alt="" width="1920" height="717" fetchpriority="high">
+      </div>
+      <div class="specks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+      <h1 class="hero-head rise">
+        <span class="hero-line">Bir boşluk görür,</span>
+        <span class="hero-line">bir <em>ürün</em> kurarız.</span>
+      </h1>
+
+      <div class="hero-foot">
+        <p class="foot-l rise"><span class="seal" lang="ja">二一七</span> · ANKARA, TR</p>
+        <p class="foot-c rise">Acele etmeyiz. Eksik bırakmayız.</p>
+        <button class="foot-r rise" type="button" id="inkTap">Mürekkebi silkele</button>
+      </div>
+    </section>
+
+    <!-- the hero keeps the screen while the disc burns and floods -->
+    <div class="hero-run" aria-hidden="true"></div>
+
+    <!-- 2 · PRODUCTS -->
+    <section class="products on-ink" id="products"><i class="bleed bleed-top" aria-hidden="true"></i>
+      <div class="shelf-head">
+        <p class="shelf-eyebrow" data-slide="-1">RAFTA</p>
+        <div class="shelf-text" data-slide="1">
+          <!-- the newline between the two .ln blocks is load-bearing: without it
+               textContent reads "…bir raf.Bugün biri dolu." for anything that
+               parses the raw HTML. Both are display:block, so the whitespace is
+               collapsed away and nothing moves. -->
+          <h2 class="shelf-line"><span class="ln">Üç yuvalı bir raf.</span>
+            <span class="ln">Bugün <em>biri</em> dolu.</span></h2>
+          <span class="shelf-rule" aria-hidden="true"></span>
+        </div>
+        <p class="shelf-note" data-slide="1">Her yıl bir ürün çıkarma sözü vermiyoruz. Gördüğümüz boşluk gerçekse başlarız; gerçek değilse raf boş kalır.</p>
+      </div>
+
+      <div class="slots">
+        <article class="slot is-live">
+          <span class="slot-media" aria-hidden="true">
+            <img src="assets/osnote-card.webp?s=100bdcba" alt="" width="900" height="1206" loading="lazy" decoding="async">
+            <span class="slot-seal" lang="ja">壱</span>
+          </span>
+          <div class="slot-top">
+            <p class="slot-n">01 / 03</p>
+            <h3 class="slot-name">OSNote</h3>
+          </div>
+          <div class="slot-foot">
+            <ul class="slot-tags">
+              <li>Ekran üstüne yazma</li><li>Defter modu</li><li>Kalem motoru</li><li>Android</li>
+            </ul>
+          </div>
+          <!-- noopener only, no noreferrer: the referrer is how Play Console
+               attributes an install back to this site, and the page-level
+               referrer policy already trims it to the bare origin. -->
+          <a class="slot-hit" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener"><span class="sr-only">OSNote — Google Play’de aç</span></a>
+        </article>
+
+        <article class="slot is-soon">
+          <span class="slot-media" aria-hidden="true">
+            <span class="slot-wash"></span>
+            <span class="slot-mark" lang="ja">仕込</span>
+            <span class="slot-say">Üzerinde çalışıyoruz.</span>
+          </span>
+          <div class="slot-top">
+            <p class="slot-n">02 / 03</p>
+            <h3 class="slot-name">Finans</h3>
+          </div>
+          <div class="slot-foot">
+            <ul class="slot-tags"><li>Araştırma</li><li>Erken tasarım</li></ul>
+          </div>
+        </article>
+
+        <article class="slot is-open">
+          <span class="slot-media" aria-hidden="true">
+            <span class="slot-wash"></span>
+            <span class="slot-mark" lang="ja">空</span>
+            <span class="slot-say">Doğru boşluğu bekliyoruz.</span>
+          </span>
+          <div class="slot-top">
+            <p class="slot-n">03 / 03</p>
+            <h3 class="slot-name">Boş yuva</h3>
+          </div>
+          <div class="slot-foot">
+            <ul class="slot-tags"><li>Açık</li></ul>
+          </div>
+        </article>
+      </div>
+
+    </section>
+
+    <!-- 3 · APPROACH -->
+    <section class="statement">
+      <span class="section-seal" aria-hidden="true" lang="ja">志</span>
+      <p class="eyebrow rise">217 YAKLAŞIMI</p>
+      <h2 class="display rise kintsugi"><span class="kin-piece kin-a">Yetmeyen yerde</span><span class="kin-seam" aria-hidden="true"></span>
+        <span class="kin-piece kin-b"><span class="gold">başlarız</span>.</span></h2>
+      <figure class="section-art rise">
+        <img loading="lazy" decoding="async" src="assets/kintsugi.webp?w=1" alt="Sumi-e üslubunda kintsugi çay çanağı — çatlakları altınla onarılmış" width="880" height="880">
+        <figcaption><span lang="ja">金継ぎ</span> · Kırığı altınla onarma sanatı</figcaption>
+      </figure>
+      <p class="brighten" data-brighten>Bir kategori eski ürünlere, karmaşık deneyimlere veya kötü alışkanlıklara sıkıştıysa bunu fırsat sayarız. Kendi çözümümüzü kurar ve yayınlarız.</p>
+    </section>
+
+    <!-- 4 · CRAFT (immersive parallax) -->
+    <section class="craft on-ink" id="craft"><i class="bleed bleed-top" aria-hidden="true"></i>
+      <span class="section-seal" aria-hidden="true" lang="ja">職人</span>
+      <div class="craft-inner">
+        <h2 class="display rise">Bugün için değil, sonrası için de <span class="gold">yaparız</span>.</h2>
+        <p class="craft-lead rise">Yaptığımız ürünlerin sorumluluğunu taşırız. Teknoloji değiştikçe yeniler, kullanıcı konuştukça dinler ve ihtiyaç ortaya çıktıkça geliştiririz.</p>
+      </div>
+    </section>
+
+    <!-- 2 · MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-row" id="marqRow">
+        <span>独立 · BAĞIMSIZ</span><span class="dot">✦</span><span>職人 · ZANAAT</span><span class="dot">✦</span><span>製品 · ÜRÜNLER</span><span class="dot">✦</span><span>長期 · UZUN VADE</span><span class="dot">✦</span><span>誠実 · DÜRÜST</span><span class="dot">✦</span>
+        <span>独立 · BAĞIMSIZ</span><span class="dot">✦</span><span>職人 · ZANAAT</span><span class="dot">✦</span><span>製品 · ÜRÜNLER</span><span class="dot">✦</span><span>長期 · UZUN VADE</span><span class="dot">✦</span><span>誠実 · DÜRÜST</span><span class="dot">✦</span>
+      </div>
+    </div>
+
+    <!-- 5 · STUDIO / VALUES -->
+    <section class="studio" id="studio">
+      <p class="eyebrow rise">217 PRODUCTS</p>
+      <h2 class="display rise">Başkalarının fikrini değil, kendi ürünlerimizi <span class="gold">kuruyoruz</span>.</h2>
+      <div class="wheel rise"><span class="wheel-ring" aria-hidden="true"></span><figure class="section-art rise">
+        <img loading="lazy" decoding="async" src="assets/potter.webp?w=1" alt="Sumi-e üslubunda çömlekçi çarkında çanak şekillendiren eller" width="880" height="880">
+        <figcaption><span lang="ja">手仕事</span> · Çarkta, elle kurulur</figcaption>
+      </figure></div>
+      <p class="brighten" data-brighten>Bağımsızlık bizim için istediğimizi yapmak değil, yaptığımız her şeyin sonucunu üstlenmektir. Kararı da sorumluluğu da başkasına bırakmayız.</p>
+      <div class="values">
+        <article class="value rise" data-spoke="1"><span class="spoke" aria-hidden="true"></span>
+          <h3>Özenli</h3>
+          <p>Bir ürünü iyi yapanın, kimsenin fark etmediği küçük ayrıntılar olduğunu biliriz.</p>
+        </article>
+        <article class="value rise" data-spoke="2"><span class="spoke" aria-hidden="true"></span>
+          <h3>Odaklı</h3>
+          <p>Her fikrin peşinden koşmaz, gerçek fark yaratabileceğimiz işe yoğunlaşırız.</p>
+        </article>
+        <article class="value rise" data-spoke="3"><span class="spoke" aria-hidden="true"></span>
+          <h3>İleriye dönük</h3>
+          <p>Hedeflerimizi büyütürken odağımızı ve bizi biz yapan değerleri koruruz.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 6 · PROCESS -->
+    <section class="process" id="process">
+      <span class="section-seal" aria-hidden="true" lang="ja">道</span>
+      <p class="eyebrow rise">ÜRÜN NASIL DOĞAR</p>
+      <h2 class="display rise">Olması gerekeni, <br class="br-lg"><span class="gold">baştan</span> kurarız.</h2>
+      <div class="emaki"><ol class="steps">
+        <li class="rise"><span class="step-n">01</span><span class="step-t">Fark et</span><span class="step-d">İnsanların mecburen katlandığı eksikliği görürüz.</span><span class="step-mark" aria-hidden="true"></span></li>
+        <li class="rise"><span class="step-n">02</span><span class="step-t">Baştan düşün</span><span class="step-d">Alışılmış çözümü kopyalamak yerine soruyu yeniden kurarız.</span><span class="step-mark" aria-hidden="true"></span></li>
+        <li class="rise"><span class="step-n">03</span><span class="step-t">İnşa et</span><span class="step-d">Sade, hızlı ve kararlı bir ürün ortaya çıkarırız.</span><span class="step-mark" aria-hidden="true"></span></li>
+        <li class="rise"><span class="step-n">04</span><span class="step-t">Yanında kal</span><span class="step-d">Yayınladıktan sonra dinler, düzeltir ve geliştirmeye devam ederiz.</span><span class="step-mark" aria-hidden="true"></span></li>
+      </ol></div>
+    </section>
+
+
+    <!-- 8 · FINAL -->
+    <section class="final">
+      <img class="final-branch" loading="lazy" decoding="async" src="assets/branch.webp?w=1" alt="" aria-hidden="true" data-parallax="0.16" width="684" height="555">
+      <p class="eyebrow rise"><span class="growing-mark" aria-hidden="true" lang="ja">芽</span>UFUKTA</p>
+      <h2 class="display big rise">Finansı yeniden <br class="br-lg">düşünmek için.</h2>
+      <p class="final-lead rise">İnsanların parayla kurduğu ilişki, kullandıkları araçtan daha karmaşık olmamalı. Baktığımız yer burası.</p>
+      <div class="cta rise">
+        <!-- The primary was href="#products" — a smooth scroll 5,260px BACK to
+             the three cards the reader had already passed. The one action on
+             the page, at the end of nine screens, undid the visit. It is the
+             real outbound now; talking to us stays as the quiet second. -->
+        <a class="btn primary" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener">OSNote’u indir ↗</a>
+        <a class="btn quiet" href="mailto:destek217product@gmail.com" data-mail>Merhaba de</a>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="foot on-ink"><i class="bleed bleed-top" aria-hidden="true"></i>
+      <span class="foot-seal" aria-hidden="true" lang="ja">二一七</span>
+      <!-- 69 KB of brushed path data for a 128px mark at the very bottom of the
+           page: it has no business on the opening request. The idle warm-up in
+           main.js promotes it well before anyone scrolls this far. -->
+      <img class="foot-logo" src="assets/logo-full.svg?w=1" alt="217 Products" width="300" height="300" loading="lazy" decoding="async">
+      <nav class="foot-nav" aria-label="Alt bilgi">
+        <div class="foot-col">
+          <span class="foot-h">Keşfet</span>
+          <a href="#products">Ürünler</a>
+          <a href="#studio">Şirket</a>
+          <a href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener">Google Play ↗</a>
+        </div>
+        <div class="foot-col">
+          <span class="foot-h">Bağlantı</span>
+          <a href="mailto:destek217product@gmail.com" data-mail>İletişim</a>
+          <!-- ON THE DOMAIN NOW, and it matters twice over. A github.io user
+               page is bound to the ACCOUNT NAME: rename or delete the account
+               and semihkizilyelfla-jpg.github.io becomes claimable, at which
+               point the live corporate footer would link "Gizlilik Politikası"
+               to a page somebody else controls. It is also the one page an
+               outside property (the Play listing) can legitimately link to, and
+               that link should land on this domain, not on another host. -->
+          <a href="/gizlilik">Gizlilik</a>
+          <!-- Kullanım Koşulları: sayfa hazır olunca buraya bağlanacak -->
+          <!-- LinkedIn: şirket profili URL'i hazır olunca buraya bağlanacak -->
+        </div>
+      </nav>
+      <div class="foot-meta">
+        <span>Bağımsız Ürün Şirketi</span>
+        <span>Ankara, Türkiye</span>
+        <a href="mailto:destek217product@gmail.com" data-mail data-mail-text>destek217product@gmail.com</a>
+        <span>© 2026 217 Products</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="vendor/gsap.min.js?v=3.15.0"></script>
+  <script src="vendor/ScrollTrigger.min.js?v=3.15.0"></script>
+  <script src="vendor/lenis.min.js?v=1.3.25"></script>
+  <script src="main.js?v=113"></script>
+  <!-- Cloudflare Web Analytics. type='module' defers on its own, so it cannot
+       block the opening choreography. Deliberately NOT on privacy.html /
+       gizlilik.html: those keep script-src 'none', which is a claim worth more
+       than knowing how many people read the policy. -->
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "d9107c4dfead4c3daf2514b746a87726"}'></script>
+</body>
+</html>

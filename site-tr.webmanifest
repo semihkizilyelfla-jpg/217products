@@ -3,7 +3,7 @@
   "short_name": "217",
   "description": "Ankara’da bağımsız bir ürün şirketi. Ekranın üstüne yazmanızı sağlayan Android uygulaması OSNote’u geliştiriyoruz; yetmeyen yerden başlıyoruz.",
   "lang": "tr",
-  "start_url": "/index-tr.html",
+  "start_url": "/tr",
   "scope": "/",
   "display": "standalone",
   "background_color": "#F0F0F3",

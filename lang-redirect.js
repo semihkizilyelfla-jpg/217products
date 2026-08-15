@@ -97,14 +97,33 @@
     /* hero copy — one synchronized rise, held for the webfonts. The foot line
        comes in a beat later and travels less: it's a margin note, not the
        headline, and giving it the same 26px lift made the screen arrive as one
-       undifferentiated block. */
+       undifferentiated block.
+       THE HEADLINE'S DURATION IS A CORE WEB VITALS BUDGET, NOT A TASTE CALL.
+       "We build a product." is the biggest thing on a desktop screen, so it is
+       the LCP element, and Chrome does not stamp LCP when an animating element
+       first appears — it stamps it when the element stops changing. Measured on
+       this hero, three runs each: 2400ms travel put LCP at 2768ms, 1400ms at
+       1780ms, 1100ms at 1592ms, 900ms at 1300ms. Live, where first paint costs
+       600-1400ms instead of 200, the 2400ms version measured LCP 3180ms at
+       1920px and 4016ms at 1280px, against a 2500ms threshold.
+       It is NOT specifically the opacity ramp. Splitting fade from travel was
+       tried first and moved nothing (2788ms): swapping the two durations gave
+       the same 2792ms, and only shortening BOTH moved the number. Whichever
+       animation on the element ends last is the one the metric waits for.
+       So the headline gets ~1s and the slowness stays where it costs nothing:
+       the plate keeps its 2s settle and the foot line still arrives at 2.5s.
+       The opening is still layered — the headline just stops being the last
+       thing in the room to sit down. */
     [].forEach.call(document.querySelectorAll(".hero .rise"), function (el) {
       var foot = !!el.closest(".hero-foot");
+      var lift = foot ? 10 : 26;
+      var travel = foot ? 1600 : 1000;
+      var delay = foot ? 900 : 200;
       el.style.opacity = "1"; /* resting state — the animation covers the ride */
       var a = el.animate(
-        [{ opacity: 0, transform: "translateY(" + (foot ? 10 : 26) + "px)" },
+        [{ opacity: 0, transform: "translateY(" + lift + "px)" },
          { opacity: 1, transform: "translateY(0)" }],
-        { duration: foot ? 1600 : 2400, delay: foot ? 900 : 200, easing: EASE_FADE, fill: "backwards" });
+        { duration: travel, delay: delay, easing: EASE_FADE, fill: "backwards" });
       if (!fontsReady) { a.pause(); textAnims.push(a); }
       bootAnims.push(a);
     });
@@ -187,7 +206,7 @@
      later visit, forever, by the very branch whose comment claimed to respect
      their choice. Only "en" is a reason to stay.
      No loop risk: the function has already returned above unless this page is
-     the English one, so index-tr.html never reaches here. */
+     the English one, so /tr never reaches here. */
   var chosen = null;
   try { chosen = localStorage.getItem(KEY); } catch (_) {}
   if (chosen === "en") return;
@@ -198,11 +217,15 @@
      hook this site relies on) was silently stripped on any Turkish browser. */
   var carry = location.search + location.hash;
 
-  if (chosen === "tr") { location.replace("index-tr.html" + carry); return; }
+  /* "/tr", not "index-tr.html". GitHub Pages serves a root .html file at its
+     extensionless path too, so tr.html answers at /tr — and the canonical, the
+     hreflang pair and the sitemap all name /tr. Sending the redirect to the old
+     address would land visitors on the stub, which then bounces them again. */
+  if (chosen === "tr") { location.replace("/tr" + carry); return; }
 
   var primary = (navigator.language || (navigator.languages && navigator.languages[0]) || "").toLowerCase();
   if (/^tr/.test(primary)) {
     try { localStorage.setItem(KEY, "tr"); } catch (_) {}
-    location.replace("index-tr.html" + carry);
+    location.replace("/tr" + carry);
   }
 })();
