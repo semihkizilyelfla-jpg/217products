@@ -198,6 +198,11 @@
        two-element layout under 1080px, so nothing reflows oddly. */
     var deadTap = document.getElementById("inkTap");
     if (deadTap && deadTap.parentNode) deadTap.parentNode.removeChild(deadTap);
+    /* Same reasoning for the band's hold control: the marquee is driven by GSAP,
+       which never starts on this path, so the band is already still. A pause
+       button over motionless type is a control that answers nothing. */
+    var deadHold = document.getElementById("marqHold");
+    if (deadHold && deadHold.parentNode) deadHold.parentNode.removeChild(deadHold);
     document.documentElement.classList.add("js-live");
     return;
   }
@@ -1033,8 +1038,29 @@
        was already inactive when it was created, no toggle ever fired, and the
        tween ran from load to unload no matter where the reader was. */
     var marqTween = gsap.to(marq, { xPercent: -50, duration: 26, ease: "none", repeat: -1, paused: true });
-    ScrollTrigger.create({ trigger: ".marquee", start: "top bottom", end: "bottom top",
-      onToggle: function (self) { self.isActive ? marqTween.play() : marqTween.pause(); } });
+    /* `held` outranks the scroll trigger. Without it the visitor's pause would
+       last only until the band left the screen and came back, because onToggle
+       would call play() on the way in — the control would look broken rather
+       than be broken, which is worse. */
+    var held = false;
+    var marqST = ScrollTrigger.create({ trigger: ".marquee", start: "top bottom", end: "bottom top",
+      onToggle: function (self) { if (held) return; self.isActive ? marqTween.play() : marqTween.pause(); } });
+    /* Both labels come off the element. This file has no language branch in it
+       anywhere else and should not gain its first one for two strings — the
+       site's copy lives in the two HTML files, and that is where the translator
+       looks. */
+    var hold = document.getElementById("marqHold");
+    if (hold) {
+      var labelPause = hold.getAttribute("aria-label");
+      var labelPlay = hold.getAttribute("data-label-play") || labelPause;
+      hold.addEventListener("click", function () {
+        held = !held;
+        hold.setAttribute("aria-pressed", held ? "true" : "false");
+        hold.setAttribute("aria-label", held ? labelPlay : labelPause);
+        if (held) marqTween.pause();
+        else if (marqST.isActive) marqTween.play();
+      });
+    }
   }
 
   /* The reach section has no moving part of its own — its copy rides the shared

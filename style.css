@@ -883,7 +883,45 @@ html.sun-up .sun-clip {
 .btn:active { transform: translateY(0) scale(0.97); }
 
 /* ---------- 2 · marquee ---------- */
-.marquee { overflow: hidden; border-top: 1px solid rgba(17,17,17,0.14); border-bottom: 1px solid rgba(17,17,17,0.14); background: var(--paper-2); padding: 16px 0; }
+.marquee { position: relative; overflow: hidden; border-top: 1px solid rgba(17,17,17,0.14); border-bottom: 1px solid rgba(17,17,17,0.14); background: var(--paper-2); padding: 16px 0; }
+/* WCAG 2.2.2, and the reason it is a real control rather than a hover trick:
+   the band moves on its own at about 52 px/s for as long as it is on screen,
+   and a visitor who has not set prefers-reduced-motion has no way to stop it.
+   Hover does not count — it does not exist on a phone, and the rule asks for a
+   mechanism, not a gesture.
+   It is drawn in the band's own language instead of being an added ornament:
+   no box, no icon file, two hairline bars in ink, resting at low contrast and
+   coming up on hover or focus. The paper gradient lets the type slide out of
+   sight under it rather than colliding with it. 72x44 is the hit area; the mark
+   inside it is 8px wide. */
+/* LEFT EDGE, not right: the fixed `.tate` seal (二一七 · ANKARA) lives against
+   the right margin and the first attempt put the control directly underneath
+   it. The band starts here anyway, so the mark reads as the start of the strip
+   rather than as something stuck on the end of it. */
+.marq-hold {
+  position: absolute; left: 0; top: 0; bottom: 0; z-index: 2;
+  /* WIDE ENOUGH THAT THE TYPE IS GONE BEFORE THE MARK. At 72px the fade still
+     had legible letters running under the two bars and the strip read
+     "‖EPENDENT". The mark needs clear paper around it, so the fade is the
+     control's real width and the glyph sits at the far left of it. */
+  width: clamp(104px, 12vw, 156px);
+  display: flex; align-items: center; justify-content: flex-start;
+  padding: 0 0 0 18px; border: 0; cursor: pointer; color: var(--ink);
+  background: linear-gradient(to left, rgba(244,244,243,0) 0%, var(--paper-2) 58%);
+}
+.marq-hold::before {
+  content: ""; width: 8px; height: 12px;
+  border-left: 2px solid currentColor; border-right: 2px solid currentColor;
+  opacity: 0.38; transition: opacity 0.25s ease;
+}
+.marq-hold:hover::before, .marq-hold:focus-visible::before { opacity: 0.85; }
+.marq-hold:focus-visible { outline: 2px solid var(--vermilion); outline-offset: -4px; }
+/* held: the two bars become a single play mark */
+.marq-hold[aria-pressed="true"]::before {
+  width: 0; height: 0; border: 0;
+  border-left: 9px solid currentColor; border-top: 6px solid transparent; border-bottom: 6px solid transparent;
+  opacity: 0.5;
+}
 .marquee-row { display: inline-flex; align-items: center; gap: 26px; white-space: nowrap; will-change: transform; }
 /* 700, NOT 600, and the reason is a 124 KB download. Shippori Mincho has no
    variable cut, so every weight is its own file — and 600 was carried by this
