@@ -15,7 +15,15 @@
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="doc.css?v=1">
+  <!-- Preloaded because they were not: without this the faces are only
+       discovered once doc.css has parsed, the swap lands after first paint and
+       the headline reflows the column under it. Measured on 1280x800, three
+       consecutive runs: CLS 0.0322 with no preload, and the mobile layout did
+       not show it — which is why it was only caught by the telemetry series,
+       not by a single spot check. -->
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/shippori-800.woff2?v=2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/manrope-var.woff2?v=2" crossorigin>
+  <link rel="stylesheet" href="doc.css?v=2">
 </head>
 <body>
   <main class="doc">
