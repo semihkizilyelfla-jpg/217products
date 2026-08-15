@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Privacy — 217 Products</title>
-  <meta name="description" content="What 217 Products stores when you visit 217products.com: one language preference, no cookies, no analytics, no third-party requests.">
+  <meta name="description" content="What 217 Products stores when you visit 217products.com: one language preference, no cookies at all, and cookieless visitor measurement that does not identify you.">
   <link rel="canonical" href="https://217products.com/privacy.html">
   <link rel="alternate" hreflang="en" href="https://217products.com/privacy.html">
   <link rel="alternate" hreflang="tr" href="https://217products.com/gizlilik.html">
@@ -23,7 +23,7 @@
        not by a single spot check. -->
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/shippori-800.woff2?v=2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/manrope-var.woff2?v=2" crossorigin>
-  <link rel="stylesheet" href="doc.css?v=2">
+  <link rel="stylesheet" href="doc.css?v=3">
 </head>
 <body>
   <main class="doc">
@@ -41,15 +41,32 @@
     <p>You can clear it at any time through your browser’s site-data settings. Nothing
       breaks if you do — the site simply asks your browser’s language again.</p>
 
-    <h2>What this site does not do</h2>
+    <h2>Audience measurement</h2>
+    <p>The two main pages load <strong>Cloudflare Web Analytics</strong>, so we can see how
+      many people visit and which pages they reach. It is deliberately the least invasive
+      option we could find:</p>
     <ul>
-      <li>No cookies.</li>
-      <li>No analytics, no tag manager, no pixels, no session recording.</li>
+      <li>It sets <strong>no cookie</strong> and stores nothing on your device.</li>
+      <li>It does not build a profile, does not follow you between sites, and does not
+        identify you. Cloudflare states plainly that it does not track individual visitors.</li>
+      <li>What it records is the page address, the referring page, your browser and
+        operating system, your screen size, your country, and how quickly the page loaded.
+        Your IP address is used to derive the country and is not stored by us.</li>
+      <li>There is no advertising, no remarketing and no data sale — Cloudflare processes
+        this on our behalf and for nothing else.</li>
+    </ul>
+    <p>This page and its Turkish counterpart carry no script at all — their content security
+      policy is <code>script-src 'none'</code> — so reading the policy is not measured.</p>
+
+    <h2>What this site still does not do</h2>
+    <ul>
+      <li>No cookies, of any kind.</li>
+      <li>No tag manager, no advertising pixels, no session or screen recording.</li>
       <li>No advertising and no profiling.</li>
       <li>No accounts, no forms, and no data submitted to us through this site.</li>
-      <li>No third-party requests. Every font, script, stylesheet and image is served from
-        217products.com itself, and the site’s content security policy blocks connections
-        anywhere else.</li>
+      <li>No third-party requests beyond the two Cloudflare hosts named above. Every font,
+        script, stylesheet and image is served from 217products.com itself, and the site’s
+        content security policy blocks connections anywhere else.</li>
     </ul>
 
     <h2>Server logs</h2>
