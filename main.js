@@ -287,36 +287,18 @@
       scrollTrigger: { trigger: el, start: "top 88%", once: true }, onComplete: function(){ settle(el); } });
   });
 
-  /* ---------- park the chrome while the reader is reading ----------
-     Measured before writing this: the opaque capsule ate letters out of seven
-     headlines on the way down the page. Four were fixed by capping the measure;
-     the last three reach the right edge for good reasons, so the menu yields
-     instead of the type. Threshold and floor both matter — 6px of travel stops
-     it flickering on trackpad jitter, and it never hides inside the hero, where
-     it is the only navigation on screen. */
-  /* scrollY IS READ IN THE LISTENER, NOT IN THE rAF. Reading it inside the
-     animation frame is a forced style recalculation: by then GSAP's ticker has
-     already written transforms for this frame, so the layout is dirty and the
-     read has to flush it. Traced over a 5.2s full-page scroll at 1280x800, this
-     callback was 277 forced-layout entries / 7.0ms — small next to Lenis's own
-     211/26.2ms, but it is pure waste, and it is waste in the exact frames the
-     page is least able to afford. In a passive scroll listener the value is
-     already there and costs nothing. */
-  (function () {
-    var de = document.documentElement, last = 0, ticking = false, y = 0;
-    function apply() {
-      ticking = false;
-      var d = y - last;
-      if (Math.abs(d) < 6) return;
-      if (y < 260 || de.classList.contains("menu-open")) de.classList.remove("nav-away");
-      else de.classList.toggle("nav-away", d > 0);
-      last = y;
-    }
-    window.addEventListener("scroll", function () {
-      y = window.scrollY || 0;
-      if (!ticking) { ticking = true; requestAnimationFrame(apply); }
-    }, { passive: true });
-  })();
+  /* THE CHROME NO LONGER PARKS ITSELF. It used to slide the capsule and the
+     hamburger off the top whenever the reader scrolled down, and bring them
+     back on the way up. The reason was real — the opaque capsule was measured
+     eating letters out of headlines that run to the right edge — but the cure
+     cost more than the disease: navigation that vanishes on the gesture people
+     use most, and on a phone the hamburger IS the only navigation, so the one
+     control they were reaching for was the one that left. Reported as a bug,
+     which is the honest verdict on any control that hides while you use it.
+     The overlap is handled where it belongs, in the type's own measure, and is
+     re-checked after this change rather than assumed. Removing it also stops a
+     class from being toggled on <html> during scroll, which invalidated style
+     for the whole document every time it flipped. */
 
   /* ---------- the process inks itself in ----------
      The deck had exactly ONE bespoke mechanic in nine screens — the shelf — and

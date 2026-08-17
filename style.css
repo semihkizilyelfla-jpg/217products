@@ -1038,31 +1038,9 @@ html.sun-up .sun-clip {
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease,
               visibility 0s linear 0s;
 }
-html.nav-away .nav-links, html.nav-away .nav-toggle {
-  transform: translateY(calc(-100% - 32px)); opacity: 0;
-  /* THE COMMENT HERE USED TO CLAIM "out of the tab order too" AND IT WAS NOT
-     TRUE. pointer-events only stops a mouse; it has never affected sequential
-     focus. A keyboard visitor reading down the page — the state that puts the
-     bar away in the first place — would Tab straight into the parked capsule
-     and the hamburger, and the vermilion focus ring would be drawn 32px above
-     the top of the screen. On a phone that is the site's ONLY navigation
-     control, so the one control they were reaching for is the one that
-     disappears under them.
-     `visibility: hidden` is what actually removes an element from the tab
-     order, and it is in the transition list with a delay so it flips only
-     AFTER the fade finishes — the exit still animates. This is the same
-     pattern .brand already uses two hundred lines up. */
-  pointer-events: none; visibility: hidden;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease,
-              visibility 0s linear 0.4s;
-}
-html.menu-open.nav-away .nav-links, html.menu-open.nav-away .nav-toggle {
-  transform: none; opacity: 1; pointer-events: auto; visibility: visible;
-}
-@media (prefers-reduced-motion: reduce) {
-  .nav-links, .nav-toggle { transition: opacity 0.2s ease; }
-  html.nav-away .nav-links, html.nav-away .nav-toggle { transform: none; }
-}
+/* `.nav-away` and everything that hid the bar on scroll-down is gone — see the
+   note in main.js. The transition above stays: it is what the mobile drawer
+   opens and closes on. */
 /* One display scale for every section heading. The ceiling is set by the
    longest line on the page ("kendi ürünlerimizi kuruyoruz.", 14.95em) against
    the narrowest headline container, so no section can overflow and all four
@@ -1167,7 +1145,19 @@ html.no-motion .kin-piece { transform: none; transition: none; }
   -webkit-mask: url("assets/bleed.svg?w=1") bottom center / 100% 100% no-repeat;
           mask: url("assets/bleed.svg?w=1") bottom center / 100% 100% no-repeat;
 }
-.bleed-top { top: 0; transform: translateX(-50%) translateY(-99%); }
+/* THE OVERLAP IS IN PIXELS, NOT PERCENT, AND THAT IS THE FIX FOR THE HAIRLINE
+   AT THE INK'S EDGE. It was `-99%`, which on a 37.88px band leaves the torn
+   sheet overlapping the wall it belongs to by 0.37px. A section's top almost
+   never lands on a whole device pixel — measured at 1919x947 the boundary sat
+   at y=229.77 — so the ink layer's first row is drawn with partial coverage,
+   and a sub-pixel overlap cannot reliably cover a partially-covered row. In
+   this renderer the residue is 1/255 and invisible; on other GPUs and at
+   fractional display scaling the same arithmetic is what shows up as a straight
+   grey line lying across the ragged edge, which is exactly how it was reported.
+   `calc(-100% + 2px)` gives a whole-pixel overlap at every zoom, scale factor
+   and section height, so there is nothing left to round wrong. 2px, because 1px
+   is still one rounding step away from zero. */
+.bleed-top { top: 0; transform: translateX(-50%) translateY(calc(-100% + 2px)); }
 
 .on-ink { color: var(--paper); }
 .on-ink::before {
