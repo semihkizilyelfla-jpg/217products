@@ -190,15 +190,11 @@
     /* and the same for the mended headline — the class IS the release */
     [].forEach.call(document.querySelectorAll(".kintsugi"), function (h) { h.classList.add("is-mended"); });
     [].forEach.call(document.querySelectorAll(".value"), function (v) { v.classList.add("is-spoked"); });
-    /* The ink-shake is bound far below this early return, so on this path the
-       button exists, takes hover, takes focus and announces itself — and does
-       nothing at all. A visitor who asked for reduced motion is exactly the
-       visitor least able to guess that a control is decorative. Remove it
-       rather than leave a dead affordance; the foot row is already a
-       two-element layout under 1080px, so nothing reflows oddly. */
-    var deadTap = document.getElementById("inkTap");
-    if (deadTap && deadTap.parentNode) deadTap.parentNode.removeChild(deadTap);
-    /* Same reasoning for the band's hold control: the marquee is driven by GSAP,
+    /* The hero's third foot slot used to hold the ink-shake, which had to be
+       torn out on this path because it did nothing without GSAP. It is a plain
+       anchor to #products now, so it works on every path and nothing needs
+       removing. */
+    /* The band's hold control still does: the marquee is driven by GSAP,
        which never starts on this path, so the band is already still. A pause
        button over motionless type is a control that answers nothing. */
     var deadHold = document.getElementById("marqHold");
@@ -215,7 +211,20 @@
 
   var lenis = null;
   if (window.Lenis) {
-    lenis = new Lenis({ lerp: 0.12 }); /* tighter, more responsive glide */
+    /* LERP IS THE "IT STUTTERS ON FAST SCROLL" DIAL, and it was set too loose.
+       Reported as jank; measured, it is not jank at all — frame intervals held a
+       flat 18ms with 1 dropped frame in 358. What the eye reads as a stall is
+       INPUT LAG: flick the wheel twelve times in 200ms and at the moment your
+       hand stops the page has travelled 1841px, then keeps coasting on its own
+       for another 5359px and does not come to rest for 1218ms. A page still
+       sliding more than a second after you stopped asking it to does not feel
+       smooth, it feels like it is not listening.
+       Measured settle time after the wheel stops: lerp 0.12 -> 1218ms,
+       0.20 -> 801ms, 0.28 -> 850ms, 0.40 -> 534ms. 0.25 is the middle of that
+       curve: it roughly halves the coast while keeping the glide the design
+       wants. This is one number — if it should feel silkier, lower it; if it
+       should feel welded to the wheel, raise it. */
+    lenis = new Lenis({ lerp: 0.25 });
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
@@ -478,6 +487,7 @@
     if (!sun || !plate) return;
     var fill = sun.querySelector(".sun-fill");
     var de = document.documentElement;
+    var placedOnce = false;   /* the disc's entrance runs once — see place() */
 
     /* Read off the PLATE, not written here. The drawing is the only thing that
        knows where its own skyline runs and which column stands high enough with
@@ -551,7 +561,30 @@
          than the screen, so anchoring the sun to a viewport percentage would
          drift it off its own peak on every window shape */
       sun.style.left = (geo.restX - geo.d / 2).toFixed(1) + "px";
+      /* THE DISC FADES IN WHEN IT BECOMES VISIBLE, NOT WHEN THE PLATE DECODES,
+         and that is the whole difference between arriving and appearing.
+         The fade used to be started in lang-redirect.js alongside the plate's,
+         which is the right tempo but the wrong clock: the disc is
+         `visibility: hidden` until this function has measured the plate and
+         written its resting top/left, and an opacity animation on a hidden
+         element still runs — it just runs where nobody can see it. Measured on
+         slow 4G with 4x CPU: the fade started at 2.7s and this line ran at
+         4.0s, by which point the animation was at opacity 0.95. The disc
+         therefore snapped into existence at almost full strength while the
+         mountain beside it had faded in over a second and a half. Reported as
+         "the sun arrives with a bang".
+         Same duration and same curve as the plate's fade in lang-redirect.js —
+         they are one arrival, so if you change one, change both. Guarded by a
+         flag because place() also runs on resize, and a window drag must not
+         restage the opening. */
       sun.style.visibility = "visible";
+      if (!placedOnce) {
+        placedOnce = true;
+        if (sun.animate) {
+          sun.animate([{ opacity: 0 }, { opacity: 1 }],
+            { duration: 1800, easing: "cubic-bezier(0.45, 0.05, 0.25, 1)", fill: "backwards" });
+        }
+      }
       /* THE CUT, registered to the painting. The mask is the plate's own alpha
          inverted, so it has to sit exactly where the plate sits — same width,
          same left edge, and its bottom band aligned to the plate's bottom. The
@@ -675,166 +708,14 @@
        It isn't needed either: the sun sits above the copy once it floods. */
   })();
 
-  /* ---------- the ink comes alive ----------
-     The reference's toy takes the decorations already scattered on its hero and
-     drops them into a physics world, where they tumble and pile up. That is why
-     it lands: it doesn't spawn a separate effect, it makes the page you are
-     already looking at fall over.
-     Ours does the same with the sumi specks. Tap the ink and every mark on the
-     sheet lets go, falls, bounces off the others and settles along the ridge.
-     Hand-rolled instead of pulling in a physics library: every mark here is a
-     circle, and circle-against-circle is the one collision case that is three
-     lines of maths. Tap again and they get thrown back up. */
-  (function () {
-    var hero = document.querySelector(".hero");
-    var wrap = document.querySelector(".specks");
-    var btn = document.getElementById("inkTap");
-    if (!hero || !wrap) return;
-
-    var G = 2000, AIR = 0.9985, BOUNCE = 0.4, GRIP = 0.72, SLEEP = 6;
-    var bodies = [], raf = 0, prev = 0, still = 0, floor = 0;
-
-    /* The ink used to pile up along the painted ridge. With the painting gone
-       the only line left on the sheet is the foot rule, so that is where it
-       lands — which is better anyway: the marks settle ON the credo instead of
-       on a horizon that was never quite where the pile ended up. */
-    function floorY() {
-      var hb = hero.getBoundingClientRect();
-      var foot = document.querySelector(".hero-foot");
-      if (foot) return foot.getBoundingClientRect().top - hb.top - 6;
-      return hero.offsetHeight - 70;
-    }
-
-    /* Read a mark's resting place ONCE and keep driving it with a transform
-       delta from there. Rewriting left/top per frame would run layout on every
-       mark on every frame; a transform stays on the compositor. */
-    function adopt(el) {
-      if (el.__body) return el.__body;
-      if (getComputedStyle(el).display === "none") return null;
-      var hb = hero.getBoundingClientRect(), r = el.getBoundingClientRect();
-      var grow = 1.7 + Math.random() * 0.9;   /* a resting speck is a whisper; a
-                                                 falling one has to be real ink */
-      var b = {
-        el: el, r: (r.width / 2) * grow, grow: grow,
-        hx: r.left - hb.left + r.width / 2, hy: r.top - hb.top + r.height / 2,
-        vx: 0, vy: 0, hit: 0
-      };
-      b.x = b.hx; b.y = b.hy;
-      el.__body = b; bodies.push(b);
-      return b;
-    }
-
-    /* a drop that lands hard flattens for a moment, the way ink does */
-    function splat(b) {
-      if (b.hit) return;
-      b.hit = 1;
-      gsap.fromTo(b.el, { scaleX: b.grow * 1.34, scaleY: b.grow * 0.62 },
-        { scaleX: b.grow, scaleY: b.grow, duration: 0.42, ease: "elastic.out(1, 0.55)",
-          onComplete: function () { b.hit = 0; } });
-    }
-
-    function step(t) {
-      var dt = Math.min(0.032, (t - prev) / 1000 || 0.016);
-      prev = t;
-      /* floorY() reads two bounding rects; at 60fps that is 120 forced layouts a
-         second for a line that does not move while the marks fall. Measured once
-         per burst instead, and re-measured on resize (see the handler below). */
-      var W = hero.offsetWidth, F = floor, moving = 0, i, j;
-
-      for (i = 0; i < bodies.length; i++) {
-        var b = bodies[i];
-        b.vy += G * dt; b.vx *= AIR; b.vy *= AIR;
-        b.x += b.vx * dt; b.y += b.vy * dt;
-
-        if (b.y + b.r > F) {
-          if (b.vy > 260) splat(b);
-          b.y = F - b.r;
-          /* A REST THRESHOLD, or this never stops. Gravity adds 32/frame and the
-             bounce returns 40% of it, so a mark lying on the floor settles into
-             a fixed point at v = -0.4(v+32) = -9.14 — forever. Measured against
-             SLEEP = 6 that reads as "still moving" on every frame, so `still`
-             resets, the rAF loop never exits, and the page burns a frame budget
-             on sixteen dots that are visually motionless. Below 40 the bounce
-             is under half a pixel; take it as landed. */
-          if (Math.abs(b.vy) < 40) { b.vy = 0; b.vx *= 0.5; }
-          else { b.vy = -b.vy * BOUNCE; b.vx *= GRIP; }
-        }
-        if (b.x - b.r < 0) { b.x = b.r; b.vx = -b.vx * BOUNCE; }
-        if (b.x + b.r > W) { b.x = W - b.r; b.vx = -b.vx * BOUNCE; }
-      }
-      /* separate overlapping pairs so they stack instead of merging into one
-         black dot at the bottom of the screen */
-      for (i = 0; i < bodies.length; i++) {
-        for (j = i + 1; j < bodies.length; j++) {
-          var a = bodies[i], c = bodies[j];
-          var dx = c.x - a.x, dy = c.y - a.y, d2 = dx * dx + dy * dy;
-          var min = a.r + c.r + 1;
-          if (d2 > 0 && d2 < min * min) {
-            var d = Math.sqrt(d2), push = (min - d) / 2, nx = dx / d, ny = dy / d;
-            a.x -= nx * push; a.y -= ny * push; c.x += nx * push; c.y += ny * push;
-            var p = (a.vx - c.vx) * nx + (a.vy - c.vy) * ny;
-            if (p > 0) {
-              a.vx -= p * nx * BOUNCE; a.vy -= p * ny * BOUNCE;
-              c.vx += p * nx * BOUNCE; c.vy += p * ny * BOUNCE;
-            }
-          }
-        }
-      }
-      /* Position is written on the transform, scale is left to GSAP's splat
-         tween — so the translate goes through gsap.set on x/y rather than a
-         raw style write, or the two would overwrite each other. */
-      for (i = 0; i < bodies.length; i++) {
-        var m = bodies[i];
-        gsap.set(m.el, { x: m.x - m.hx, y: m.y - m.hy });
-        if (Math.abs(m.vx) + Math.abs(m.vy) > SLEEP) moving++;
-      }
-
-      still = moving ? 0 : still + 1;
-      if (still > 26) {                       /* everything has come to rest */
-        raf = 0;
-        return;
-      }
-      raf = requestAnimationFrame(step);
-    }
-
-    function shake() {
-      [].forEach.call(wrap.children, adopt);
-      [].forEach.call(hero.querySelectorAll(".ink-drop"), adopt);
-      bodies = bodies.filter(Boolean);
-      if (!bodies.length) return;
-      bodies.forEach(function (b) {
-        b.vx = (Math.random() - 0.5) * 460;
-        b.vy = -160 - Math.random() * 520;
-        gsap.to(b.el, { opacity: 0.78 + Math.random() * 0.16, scale: b.grow,
-                        duration: 0.28, ease: "power2.out" });
-      });
-      still = 0; prev = performance.now();
-      floor = floorY();                       /* once per burst, not per frame */
-      if (!raf) raf = requestAnimationFrame(step);
-    }
-
-    if (btn) btn.addEventListener("click", shake);
-    /* a resize invalidates every resting position; drop the world and let the
-       marks fall back to their CSS places rather than freeze somewhere wrong */
-    addEventListener("resize", function () {
-      if (raf) { cancelAnimationFrame(raf); raf = 0; }
-      /* clearProps, not a raw transform wipe. shake() also writes an OPACITY
-         (0.78-0.94, so a falling mark reads as real ink) and the old handler
-         never took it back — the resting values in the stylesheet are 0.09-0.34.
-         On a phone the resize that triggers this is the URL bar collapsing on
-         the very next scroll, so tapping "shake the ink" once left sixteen
-         specks about six times too dark for the rest of the visit.
-         killTweensOf first, or an in-flight splat tween re-applies scale after
-         the clear; and clearProps is what also drops GSAP's transform cache,
-         which a raw style.transform = "" leaves stale. */
-      bodies.forEach(function (b) {
-        gsap.killTweensOf(b.el);
-        gsap.set(b.el, { clearProps: "transform,opacity,scale,x,y" });
-        delete b.el.__body;
-      });
-      bodies = []; floor = 0;
-    }, { passive: true });
-  })();
+  /* THE INK-SHAKE IS GONE, AND SO IS ITS PHYSICS ENGINE. A tap on the hero used
+     to let every sumi speck fall, bounce off its neighbours and pile along the
+     foot rule — 160 lines of hand-rolled circle collision. It was a toy: it
+     said nothing about what this company does, and it was the one control on
+     the opening screen, which made the most prominent affordance on the page
+     the least useful one. Its slot now carries a link into the work itself.
+     Removing it also retires 16 permanently composited layers: `.specks i`
+     carried will-change for the sake of this animation and nothing else.
 
   /* ---------- screen two arrives out of the ink ----------
      THE HEAD MOVES THE WAY THE REFERENCE'S DOES, read out of its IX2 data
