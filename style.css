@@ -30,6 +30,17 @@
 @font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-800.woff2?v=2") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
 
 :root {
+  /* ANDROID'S AUTO DARK THEME IS AN ALGORITHM, AND IT EATS THIS PAGE.
+     Chrome on Android can force-invert any site that has not said which schemes
+     it supports. Measured with the real flag (--force-dark-mode
+     --enable-features=WebContentsForceDark, not a CDP media override), Pixel 7
+     UA, live site: mean page brightness fell from 215.4 to 43.8 out of 255 —
+     the mountain sinks into the ground, the mist disappears, the dot grid turns
+     to polka dots. The ukiyo-e sheet IS the design; there is no dark variant of
+     it to fall back to, so the honest declaration is that this page has one
+     scheme. `only light` is the strong form: it opts out of the forced
+     inversion rather than merely stating a preference. */
+  color-scheme: only light;
   /* SUMI ON WHITE. The sheet was a warm cream (#F3ECDC) with a warm-black ink
      and a gilt third colour, which is what made the page read yellow — the
      bars, the plate and every scrim carried the same cast. It is now a true
@@ -921,7 +932,26 @@ html.sun-up .sun-clip {
 .marq-hold::before {
   content: ""; width: 8px; height: 12px;
   border-left: 2px solid currentColor; border-right: 2px solid currentColor;
-  opacity: 0.38; transition: opacity 0.25s ease;
+  /* 0.46, NOT 0.38, BECAUSE THIS IS A CONTROL. WCAG 1.4.11 asks 3:1 of the
+     visual indicator of a control, not of text. #111 at 0.38 over --paper-2
+     composites to rgb(158,158,157) and measures 2.44:1 — read off the rendered
+     PNG, not from a DOM walk. 0.46 lands at rgb(140,140,139) and 3.06:1. The
+     mark is two 8x12px bars inside a 44px target; below the threshold they are
+     the only cue and they disappear on a bright screen. */
+  opacity: 0.46; transition: opacity 0.25s ease;
+}
+/* WINDOWS HIGH CONTRAST STRIPS BACKGROUNDS, AND THIS BUTTON WAS ONLY A
+   BACKGROUND. Its whole visual presence is the paper gradient that clears the
+   scrolling type; forced-colors removes background-image, so the two bars ended
+   up drawn straight on top of the moving band — the site's only WCAG 2.2.2
+   mechanism, invisible to the people most likely to need it. A system-colour
+   fill and a border give it a body again, and forced-color-adjust: none on the
+   bars keeps them from being repainted into the fill they sit on. */
+@media (forced-colors: active) {
+  .marq-hold { background: Canvas; border: 1px solid ButtonText; }
+  .marq-hold::before { opacity: 1; forced-color-adjust: none;
+    border-left-color: ButtonText; border-right-color: ButtonText; }
+  .marq-hold[aria-pressed="true"]::before { border-left-color: ButtonText; }
 }
 .marq-hold:hover::before, .marq-hold:focus-visible::before { opacity: 0.85; }
 .marq-hold:focus-visible { outline: 2px solid var(--vermilion); outline-offset: -4px; }
@@ -1048,51 +1078,28 @@ html.sun-up .sun-clip {
 .statement .display, .studio .display, .process .display, .craft .display { font-size: clamp(34px, 5.2vw, 78px); }
 .statement .display { margin-top: 24px; line-height: 1.0; position: relative; }
 
-/* ---------- KINTSUGI ----------
-   The section is called "we begin where things fall short", the artwork beside
-   it is a bowl whose break was filled with gold, and the caption spells the
-   word out. The headline was the only part of it sitting still.
-   So the sentence is a broken object: two pieces that arrive slightly out of
-   true — one lifted and turned a fraction anticlockwise, the other dropped and
-   turned the other way, the way halves of a bowl never quite meet — and then a
-   seam is laid along the join and pulls them home. The seam is generated as a
-   real fracture rather than a rule: it changes angle at every segment, swells
-   and thins along its length, and forks twice, because a break does not travel
-   in a straight line.
-   VERMILION, NOT GOLD. Gold was retired from this palette on purpose and
-   bringing it back for one flourish would reopen it; the literal gold is
-   already in the photograph two inches away, doing that job better than a CSS
-   colour could. Here the mend is the brand's own red — the repair is ours.
-   The resting state is MENDED, so a reader with no JS or reduced motion gets a
-   whole sentence with a seam through it, which is the finished picture. */
-.kin-piece { display: block; transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
-.kin-b { padding-left: 1.15em; }
-/* THE SEAM IS A MEND, NOT A RULE. At 13.5em against a display-size face this
-   ran to nearly the full measure, so it read as a horizontal divider parked
-   under a stray "We" — which is what it was reported as. A kintsugi seam only
-   makes sense at the break, and the break here is the joint between the two
-   pieces: "We" ends around 2.2em and "begin" starts at the 1.15em indent below
-   it, so a stroke a little past 3em covers the joint and stops. */
-.kin-seam {
-  display: block; width: min(44%, 3.5em); height: 0.34em;
-  margin: 0.05em 0 0.03em;
-  background: var(--vermilion);
-  -webkit-mask: url("assets/seam.svg?w=1") left center / 100% 100% no-repeat;
-          mask: url("assets/seam.svg?w=1") left center / 100% 100% no-repeat;
-  clip-path: inset(0 0 0 0);
-  transition: clip-path 1.05s cubic-bezier(0.22, 1, 0.36, 1) 0.18s;
-}
-/* staged only while the script is alive to release it, and scoped to
-   :not(.is-mended) so the release has nothing to out-rank */
-.js .kintsugi:not(.is-mended) .kin-seam { clip-path: inset(0 100% 0 0); }
-.js .kintsugi:not(.is-mended) .kin-a { transform: translate(-0.10em, -0.09em) rotate(-0.55deg); }
-.js .kintsugi:not(.is-mended) .kin-b { transform: translate(0.13em, 0.10em) rotate(0.45deg); }
-html.no-motion .kin-seam { clip-path: inset(0 0 0 0); transition: none; }
-html.no-motion .kin-piece { transform: none; transition: none; }
-@media (max-width: 620px) {
-  .kin-b { padding-left: 0.55em; }
-  .kin-seam { width: min(52%, 2.6em); height: 0.30em; }
-}
+/* ---------- THE KINTSUGI HEADLINE IS GONE, AND WHY IT WENT ----------
+   The idea was good on paper: the section says "we begin where things fall
+   short", the artwork beside it is a bowl mended along its break, so the
+   sentence was built as a broken object — two pieces arriving slightly out of
+   true, a generated fracture laid along the join to pull them home.
+   In the page it did not read as a mend. It read as a stray "We" on its own
+   line with a horizontal rule parked under it, and it was reported as broken
+   three separate times. The first attempt kept the structure and shortened the
+   seam from 13.5em to 3.5em; still broken, because the seam was never the
+   problem — the ORPHAN was. A single word alone on a line above a line is a
+   typographic accident, and no amount of styling the accident makes it read as
+   intent.
+   So the sentence is one sentence again, and the accent it already had does the
+   work: `.gold` (a legacy class name for the brand vermilion — gold was retired
+   from this palette on purpose) carries "begin". The bowl two inches away still
+   spells the metaphor out, in the medium that can actually hold it.
+   Removed with it: .kin-piece, .kin-a, .kin-b, .kin-seam, the .is-mended release
+   in main.js and its ScrollTrigger. That leaves assets/seam.svg with NO users at
+   all — grepped, zero references outside this note. It stays in the repo for now
+   because it costs nothing to serve a file nobody requests, but it is dead
+   weight and the honest thing is to say so rather than imply someone still
+   needs it. */
 .brighten {
   margin-top: clamp(40px, 6vh, 84px); position: relative;
   font-family: "Shippori Mincho", Georgia, serif;

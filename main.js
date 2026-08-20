@@ -187,8 +187,6 @@
     /* same contract for the process strokes: the class is the release, so
        without it the four brush marks stay wiped to zero width forever */
     [].forEach.call(document.querySelectorAll(".steps li"), function (li) { li.classList.add("is-inked"); });
-    /* and the same for the mended headline — the class IS the release */
-    [].forEach.call(document.querySelectorAll(".kintsugi"), function (h) { h.classList.add("is-mended"); });
     [].forEach.call(document.querySelectorAll(".value"), function (v) { v.classList.add("is-spoked"); });
     /* The hero's third foot slot used to hold the ink-shake, which had to be
        torn out on this path because it did nothing without GSAP. It is a plain
@@ -272,6 +270,19 @@
      with the plate section and is no longer in either page) */
   gsap.set(".final-branch", { scaleX: -1 });
 
+  /* IF THE WATCHDOG ALREADY GAVE UP, DO NOT PUT THE CURTAINS BACK.
+     lang-redirect.js removes `.js` after six seconds without `js-live`, which
+     tears every CSS entrance gate down and leaves the page in its readable
+     no-JS presentation. That is the right call — but this file used to arrive
+     afterwards and stage everything again, so on a slow connection the page
+     filled in at 6.6s and then EMPTIED, and stayed empty until the unrelated
+     4-second no-scroll failsafe happened to release it. Measured on slow 3G
+     (400 kbps / 400ms RTT) with 6x CPU: 26 of 29 blocks visible at 6596ms, then
+     hidden again a beat later. A failsafe that fires and is then quietly undone
+     is worse than no failsafe, because it teaches you the page recovered.
+     If the watchdog has fired, the entrance is forfeit and the content stays. */
+  var watchdogFired = !document.documentElement.classList.contains("js");
+
   /* ---------- rise reveals ----------
      The hero entrance is pure CSS (it starts with the first paint, before any
      CDN script arrives) — GSAP only drives the below-fold, scroll-gated reveals. */
@@ -281,7 +292,7 @@
   var belowRise = gsap.utils.toArray(".rise").filter(function (el) {
     return !el.closest(".hero") && !el.closest(".products");
   });
-  gsap.set(belowRise, { autoAlpha: 0, y: 26 });
+  if (!watchdogFired) gsap.set(belowRise, { autoAlpha: 0, y: 26 });
   belowRise.forEach(function (el) {
     gsap.to(el, { autoAlpha: 1, y: 0, duration: 1.2, ease: "power3.out",
       scrollTrigger: { trigger: el, start: "top 88%", once: true }, onComplete: function(){ settle(el); } });
@@ -337,13 +348,9 @@
     });
   });
 
-  /* the broken sentence pulls itself together and the seam runs along the join */
-  gsap.utils.toArray(".kintsugi").forEach(function (h) {
-    ScrollTrigger.create({
-      trigger: h, start: "top 82%", once: true,
-      onEnter: function () { h.classList.add("is-mended"); }
-    });
-  });
+  /* The kintsugi headline's mend animation lived here and is gone with it — the
+     broken-sentence treatment read as a stray word above a rule rather than as a
+     repair, and it is one sentence now. See the note in style.css. */
 
   (function () {
     var section = document.querySelector(".process"),
@@ -724,8 +731,8 @@
        CSS gate hides it and nothing else is coming for it */
     var rest = gsap.utils.toArray(sec.querySelectorAll(".rise"));
 
-    if (slots.length) gsap.set(slots, { autoAlpha: 0, y: 46 });
-    if (rest.length) gsap.set(rest, { autoAlpha: 0 });
+    if (!watchdogFired && slots.length) gsap.set(slots, { autoAlpha: 0, y: 46 });
+    if (!watchdogFired && rest.length) gsap.set(rest, { autoAlpha: 0 });
 
     /* the head is CSS's job; this only says when */
     ScrollTrigger.create({
@@ -985,11 +992,10 @@
       if (touched || (window.scrollY || 0) > 0) return;
       var below = gsap.utils.toArray(".rise").filter(function (el) { return !el.closest(".hero"); });
       gsap.set(below.concat(gsap.utils.toArray(".products .slot")), { autoAlpha: 1, y: 0 });
-      /* for these four the CLASS is the release contract, exactly as in the
+      /* for these three the CLASS is the release contract, exactly as in the
          reduced-motion branch — same selectors, same order */
       [].forEach.call(document.querySelectorAll(".shelf-head"), function (h) { h.classList.add("is-in"); });
       [].forEach.call(document.querySelectorAll(".steps li"), function (li) { li.classList.add("is-inked"); });
-      [].forEach.call(document.querySelectorAll(".kintsugi"), function (h) { h.classList.add("is-mended"); });
       [].forEach.call(document.querySelectorAll(".value"), function (v) { v.classList.add("is-spoked"); });
     }, 4000);
   })();

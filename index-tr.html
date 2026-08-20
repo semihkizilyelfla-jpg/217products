@@ -10,7 +10,13 @@
        to Search Console and Bing — letting a submitted URL start 404ing is a
        worse signal than a slow redirect. Delete it once both consoles show /tr
        indexed and this one crawled. -->
-  <meta name="robots" content="noindex, follow">
+  <!-- NO `noindex` HERE, AND THAT IS DELIBERATE. It used to carry
+       `noindex, follow` alongside the canonical, and the two cancel: a page
+       Google will not index is a page whose canonical it will not consolidate,
+       so the signal this stub exists to forward — /index-tr.html was submitted
+       to Search Console and Bing before the move — never reached /tr. The
+       canonical and the refresh together are the move; noindex only severed
+       it. -->
   <link rel="canonical" href="https://217products.com/tr">
   <meta http-equiv="refresh" content="0; url=/tr">
   <title>217 Products</title>

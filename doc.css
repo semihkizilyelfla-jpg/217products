@@ -46,9 +46,18 @@ a:hover { color: var(--accent-ink); }
 :focus-visible { outline: 2px solid var(--vermilion-deep); outline-offset: 3px; border-radius: 2px; }
 
 .doc {
-  /* 68ch is the long end of a comfortable measure; legal prose is scanned
-     more than it is read, so it gets the roomier setting. */
-  max-width: 68ch; margin: 0 auto;
+  /* NOT `ch`, AND THAT UNIT WAS THE WHOLE LAYOUT SHIFT. `ch` is the advance of
+     the "0" glyph in the element's CURRENT font, so the container measured one
+     width in the fallback face and a different one the moment the webfont
+     swapped — the whole column re-laid out under the reader. Measured before
+     this change, twelve runs across three viewports: /gizlilik at 1024x768 hit
+     CLS 0.3185, four times Google's 0.1 "good" line and past the 0.25 "poor"
+     one, and every single shift traced to one node — MAIN.doc going 587 -> 664.
+     Preloading the fonts (added earlier) treated the symptom by shortening the
+     window; it could not remove the re-measure. 664px is what 68ch resolved to
+     in Shippori/Manrope at this size, so the measure is unchanged to the eye
+     and can no longer move. */
+  max-width: 664px; margin: 0 auto;
   padding: clamp(48px, 9vh, 96px) var(--pad) clamp(64px, 12vh, 120px);
 }
 .doc-eyebrow {
