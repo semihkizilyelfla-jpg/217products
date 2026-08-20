@@ -1814,7 +1814,16 @@ html.no-motion .step-mark { clip-path: inset(0 0 0 0); transition: none; }
    the tate rail and the hero foot and then disappeared for 6,000px. Nothing
    here is a new material: same wall as the shelf, same 二一七, same red. */
 .foot {
-  position: relative;
+  /* z-index: 2 IS LOAD-BEARING, and it used to be inherited from
+     `main > *:not(.hero)`. When the footer moved out of <main> to give the page
+     a real `contentinfo` landmark, it kept position:relative and silently lost
+     the z-index — and z-index:auto means no stacking context, so `.on-ink::before`
+     at z-index:-1 escaped the footer entirely and was painted behind the body's
+     own --paper background. The ink wall was still being drawn; it was drawn
+     under the page. Result on the live site: white type on white, the wordmark
+     invisible, the seal floating on nothing. Measured: position relative,
+     z-index "auto", pseudo background rgb(17,17,17), colour rgb(255,255,255). */
+  position: relative; z-index: 2;
   padding: clamp(76px, 11vh, 130px) var(--pad) clamp(48px, 7vh, 78px);
   max-width: var(--maxw); margin: 0 auto;
   display: flex; align-items: flex-start; justify-content: space-between;
