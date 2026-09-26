@@ -7,14 +7,14 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://217products.com/</loc>
-    <lastmod>2026-08-15</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/"/>
     <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/tr"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/"/>
   </url>
   <url>
     <loc>https://217products.com/tr</loc>
-    <lastmod>2026-08-15</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/"/>
     <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/tr"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/"/>
@@ -32,5 +32,21 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/privacy"/>
     <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/gizlilik"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/privacy"/>
+  </url>
+  <!-- The app policies below are indexable pages that Play listings link to.
+       Their canonicals carry the .html extension (the pages declare it that
+       way), so the sitemap uses exactly those addresses — a sitemap URL that
+       disagrees with the page's own canonical is a mixed signal. -->
+  <url>
+    <loc>https://217products.com/osnote/privacy.html</loc>
+    <lastmod>2026-08-20</lastmod>
+  </url>
+  <url>
+    <loc>https://217products.com/osnote/hesap-silme.html</loc>
+    <lastmod>2026-08-20</lastmod>
+  </url>
+  <url>
+    <loc>https://217products.com/decidora/privacy.html</loc>
+    <lastmod>2026-09-26</lastmod>
   </url>
 </urlset>

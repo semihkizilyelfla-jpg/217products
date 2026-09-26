@@ -106,8 +106,15 @@
                    document.querySelector(".brand")].filter(Boolean),
         canInert = "inert" in HTMLElement.prototype;
 
+    /* THE CLOSE BUTTON IS PART OF THE DRAWER even though it lives outside
+       #navLinks. Querying only `n` dropped it from the cycle: measured with real
+       key events, forward Tab looped the six links and never reached the X —
+       a visible control a keyboard user could not get to unless they already
+       knew Escape. It goes LAST, after the links. */
     function focusables() {
-      return [].filter.call(n.querySelectorAll("a[href], button:not([disabled])"), function (el) {
+      var list = [].slice.call(n.querySelectorAll("a[href], button:not([disabled])"));
+      list.push(t);
+      return list.filter(function (el) {
         return el.offsetWidth || el.offsetHeight || el.getClientRects().length;
       });
     }
@@ -132,11 +139,17 @@
       if (!n.classList.contains("open")) return;
       if (e.key === "Escape") { close(true); return; }
       if (e.key !== "Tab") return;
+      /* Tab is driven explicitly, not left to DOM order: the toggle sits BEFORE
+         the nav in the document, so a native Tab from the last link would walk
+         forward into the inert page and out to the browser chrome instead of
+         reaching the X. */
       var f = focusables();
       if (!f.length) return;
-      var first = f[0], last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      var i = f.indexOf(document.activeElement);
+      e.preventDefault();
+      var next = e.shiftKey ? (i <= 0 ? f.length - 1 : i - 1)
+                            : (i < 0 || i === f.length - 1 ? 0 : i + 1);
+      f[next].focus();
     });
 
     /* THE DRAWER HAD NO WAY OUT OF ITS OWN BREAKPOINT. Everything above is
@@ -359,23 +372,43 @@
     if (!section || !emaki || !track) return;
     var items = gsap.utils.toArray(".steps li");
 
-    /* PHONES KEEP THE NATIVE SWIPE ROW. Pinning fights the OS scroll on touch
-       and the guidance is explicit about it, so the pin is desktop-only and the
-       CSS default — a real overflow-x track — is what ships everywhere else.
-       Same content, same gesture, none of the cost. */
-    if (!matchMedia("(min-width: 901px)").matches) {
+    /* TOUCH KEEPS THE NATIVE SWIPE ROW — and "touch" is asked, not guessed from
+       width. The note here always said pinning fights the OS scroll on touch,
+       but the gate only checked min-width: 901px, so a phone held sideways
+       (932x430) and every iPad in landscape got the pin anyway. Measured with
+       real touch events: the horizontal drag did nothing, and on a 430px-tall
+       screen the step texts sat below the fold for the whole pin. The pointer
+       query is the question the comment was always asking. */
+    var PIN_MQ = "(min-width: 901px) and (hover: hover) and (pointer: fine)";
+    function nativeRow() {
       items.forEach(function (li) {
         ScrollTrigger.create({ trigger: li, start: "top 86%", once: true,
           onEnter: function () { li.classList.add("is-inked"); } });
       });
-      return;
     }
+    /* THE CONTENT BOX, NOT clientWidth. clientWidth includes padding, but the
+       track starts at padding-left, so the old sum stopped the scroll exactly
+       padding-left short and never honoured padding-right at all — the inset
+       the stylesheet put there, by measurement, to keep the last panel out from
+       under the tate rail. Measured end positions before this: the last panel's
+       right edge 38px off-screen at 1280, 44px at 1440, 46px at 1920 —
+       padding-left every time, to the pixel.
+       Measured at refresh, never cached: the width depends on fonts and on the
+       viewport, and a stale number is the classic pinned-horizontal bug. */
+    function distance() {
+      var cs = getComputedStyle(emaki);
+      var inner = emaki.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      return Math.max(0, track.scrollWidth - inner);
+    }
+    /* NO JOURNEY, NO PIN. The panels saturate at their clamp() maximum, so the
+       track stops growing at 2520px; on screens that wide there is nothing to
+       travel, yet the pin still claimed distance + half a viewport of scroll.
+       Measured at 2560 and 3440: 720px of scrolling during which the page did
+       not move and the track's transform read 0 at all seven samples. A short
+       travel is not worth a long freeze either, hence a floor, not zero. */
+    if (!matchMedia(PIN_MQ).matches || distance() < 240) { nativeRow(); return; }
 
     document.documentElement.classList.add("emaki-pinned");
-    /* measured at refresh, never cached: the track's width depends on fonts and
-       on the viewport, and a stale number here is the classic pinned-horizontal
-       bug where the last panel is unreachable or the scroll dead-ends early */
-    function distance() { return Math.max(0, track.scrollWidth - emaki.clientWidth); }
 
     var tl = gsap.timeline({
       scrollTrigger: {
@@ -410,7 +443,7 @@
        track from vertical scroll while the native swipe the phone layout
        depends on has been switched off, so the handscroll can only be moved by
        a gesture the layout no longer offers. */
-    var wideEmaki = matchMedia("(min-width: 901px)");
+    var wideEmaki = matchMedia(PIN_MQ);
     var onEmaki = function () {
       if (wideEmaki.matches) return;
       document.documentElement.classList.remove("emaki-pinned");

@@ -333,6 +333,12 @@ html.menu-open, html.menu-open body { overflow: hidden; }
      traps, and cheap to composite) */
   .nav-links {
     position: fixed; inset: 0; width: 100%;
+    /* The drawer is exactly one screen tall, and on a phone held sideways one
+       screen is not enough: measured at 812x375, 667x375 and 740x360 the last
+       item (the language switch) ran 1-8px past the bottom edge, and
+       position:fixed with overflow visible left that part unreachable. It only
+       scrolls when it has to; where it fits, nothing changes. */
+    overflow-y: auto; overscroll-behavior: contain;
     flex-direction: column; align-items: flex-start; justify-content: center;
     gap: clamp(6px, 1.6vh, 16px);
     padding: calc(var(--pad) + 40px) calc(var(--pad) + 8px) var(--pad);
@@ -482,6 +488,17 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    ============================================================ */
 .hero {
   position: sticky; top: 0; z-index: 0; min-height: 100svh;
+  /* THE ADDRESS-BAR BAND. svh is the height with the mobile address bar SHOWN;
+     once it retracts the screen grows to lvh, the sticky hero stays at 100svh,
+     and the strip between the two showed whatever sits behind — the page's
+     #FFFFFF against the hero's #F0F0F3. Measured in exact iPhone 14 geometry
+     (hero 754px in an 844px screen): a hard-edged 90px band under the foot
+     line. svh is still right — dvh would drag the bottom-anchored headline up
+     and down with the bar — so the fix is paint, not size: a zero-blur,
+     zero-spread shadow extends the hero's own paper 16svh down, more than the
+     lvh/svh gap on any phone. Static; no animation or transition, so it does
+     not touch the pin rule, and it composites with the hero it belongs to. */
+  box-shadow: 0 16svh 0 0 var(--hero-paper);
   display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
   text-align: center;
   /* The sentence is bottom-anchored, not centred. A headline parked in the
