@@ -10,7 +10,7 @@
                 /[?&]motion=reduce/.test(location.search);
 
   /* ---------- contact e-mail: ONE place to change ----------
-     When the corporate mailbox on the domain is ready, update this constant —
+     When the mailbox on the domain is ready, update this constant —
      every a[data-mail] link (nav, closing CTA, footer) and the printed address
      (a[data-mail][data-mail-text]) follow automatically. The mailto in the
      HTML is only the no-JS fallback. */
@@ -19,6 +19,46 @@
     a.href = "mailto:" + CONTACT_EMAIL;
     if (a.hasAttribute("data-mail-text")) a.textContent = CONTACT_EMAIL;
   });
+
+  /* ---------- a window being dragged is not a reader acting ----------
+     Both of these run before anything else listens for resize, so every other
+     handler measures a page already in its new state. */
+  (function () {
+    var de = document.documentElement;
+    /* THE SHORT-WINDOW RULE WITHOUT THE STEP. style.css shrinks the opening's
+       headline and padding in windows 660px tall or less, and as a media query
+       that is a step: a window dragged across 660px watched the headline lose a
+       third of its size in one frame (108 -> 72px at 1440 wide). This writes
+       how far the window is between the two layouts — 0 at 650px of height or
+       less, 1 at 670 or more, a straight line between — and the stylesheet
+       blends the two with it (html.tall-js). Outside that 20px band both are
+       exactly what they were; without this script the step stays.
+       clientHeight, not innerHeight: it is the height the media query itself
+       reads, and a phone's address bar does not move it. */
+    function tall() {
+      var t = (de.clientHeight - 650) / 20;
+      de.style.setProperty("--tall", (t <= 0 ? 0 : t >= 1 ? 1 : t).toFixed(3));
+    }
+    tall();
+    de.classList.add("tall-js");
+    /* TRANSITIONS ANSWER THE READER, NOT THE WINDOW. A breakpoint crossed in
+       the middle of a drag started the nav capsule's 0.45s fade, so the links
+       dissolved and came back while the edge was still moving. For as long as
+       the window keeps changing, html.resizing turns every transition off; a
+       change of state that happens under it simply lands. */
+    var lastW = window.innerWidth, off = 0;
+    function coarse() { return !!(window.matchMedia && window.matchMedia("(pointer: coarse)").matches); }
+    addEventListener("resize", function () {
+      tall();
+      var w = window.innerWidth;
+      /* a phone's address bar sliding is not a window being dragged */
+      if (w === lastW && coarse()) return;
+      lastW = w;
+      de.classList.add("resizing");
+      clearTimeout(off);
+      off = setTimeout(function () { de.classList.remove("resizing"); }, 300);
+    }, { passive: true });
+  })();
 
   /* ---------- deck backdrop offset ----------
      The paper sheet that slides over the parked hero starts exactly at the
@@ -239,7 +279,142 @@
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
     gsap.ticker.lagSmoothing(0);
+    /* THE SCROLLBAR WINS. While Lenis glides a wheel turn out (about half a
+       second at this lerp) it ignores every native scroll and keeps writing its
+       own position — so a scrollbar grabbed inside that half second was fought
+       frame by frame. Measured: three wheel notches, then the thumb dragged
+       down; the page jumped 70 to 250px back and forth five times before the
+       glide ran out. A touchpad makes that the common case, because its
+       momentum keeps the glide alive after the fingers lift. Any scroll Lenis
+       did not write itself (the scrollbar, the keyboard, find-in-page, a text
+       selection pulling the page) now ends the glide where the page actually
+       is, and Lenis follows the native scroll from there, as it does when idle. */
+    addEventListener("scroll", function () {
+      if (lenis.isScrolling !== "smooth") return;
+      if (Math.abs((window.scrollY || 0) - lenis.animatedScroll) < 2) return;
+      lenis.scrollTo(window.scrollY || 0, { immediate: true, force: true });
+    }, { passive: true });
   }
+
+  /* ---------- the reader stays where they were when the window changes ----------
+     RESIZING THREW THE READER OUT OF THE PAGE. ScrollTrigger re-measures by
+     scrolling to 0, laying the page out and scrolling back to the same PIXEL —
+     and across a breakpoint it does not even do that: a gsap.matchMedia context
+     changing (821px for the parallax, 861px for the flick) reverts its triggers
+     first, the next refresh then skips recording the position, and the page is
+     left at the top. Measured: parked at 3605px on an 800px window, widened past
+     821 — scrollY 0. Even when it does restore, a pixel is the wrong unit: the
+     sections above grow or shrink with the width, so the same pixel is a
+     different paragraph.
+     So the position is kept as CONTENT: which block is at the top of the screen
+     and how far into it. It is read while the reader scrolls (never during a
+     refresh, when the page is momentarily at 0), held still for the length of a
+     window drag, and written back after every refresh. The opening — the sticky
+     hero plus its empty run — is kept as the sun's own progress while the sun
+     is riding, and as a fraction of the opening's length in the black stretch
+     after it, so the sun picks up at the same point of its climb. */
+  /* While a window drag holds the reader on the sun's ride, this is the ride's
+     progress they are held at, unrounded. The scroll written back is a whole
+     pixel, and in the flood one pixel is 3% of the disc's size — redrawn from
+     the rounded scroll on every frame of a drag, the sun visibly breathed. */
+  var rideHold = null;
+  /* Layout decisions that have to be taken for the new window BEFORE the page is
+     re-measured on a resize (see below) — the process band registers its pin
+     decision here. */
+  var layoutHooks = [];
+  (function () {
+    var run = document.querySelector(".hero-run");
+    var blocks = [].slice.call(document.querySelectorAll("main > section:not(.hero), main > .marquee, body > footer"));
+    /* a pinned section's real extent is its spacer: the section itself sits at
+       top 0 for the whole pin */
+    function box(el) { var p = el.parentElement; return p && p.classList.contains("pin-spacer") ? p : el; }
+    function read() {
+      var y = window.scrollY || 0;
+      if (run) {
+        var end = run.getBoundingClientRect().bottom + y;
+        if (y < end) {
+          /* on the sun's ride the place IS the sun's progress (see liveP) */
+          var ride = innerHeight * INK_RIDE;
+          if (y <= ride) return { el: null, p: ride > 0 ? y / ride : 0 };
+          return { el: null, f: end > 0 ? y / end : 0 };
+        }
+      }
+      for (var i = 0; i < blocks.length; i++) {
+        var r = box(blocks[i]).getBoundingClientRect();
+        if (r.bottom > 0 && r.height > 0) return { el: blocks[i], f: -r.top / r.height };
+      }
+      return null;
+    }
+    function write() {
+      if (!anchor) return;
+      var y = window.scrollY || 0, t;
+      if (!anchor.el) {
+        if (!run) return;
+        t = anchor.p != null ? anchor.p * innerHeight * INK_RIDE
+          : anchor.f * (run.getBoundingClientRect().bottom + y);
+      } else {
+        if (!anchor.el.isConnected) return;
+        var r = box(anchor.el).getBoundingClientRect();
+        t = r.top + y + anchor.f * r.height;
+      }
+      t = Math.round(Math.max(0, Math.min(t, document.documentElement.scrollHeight - innerHeight)));
+      if (Math.abs(t - y) < 2) return;
+      /* Lenis re-measures the page 250ms after a resize; until then it clamps a
+         target to the OLD page's length, so a window grown taller near the end
+         of the page would be put back short of where the reader was */
+      if (lenis) { lenis.resize(); lenis.scrollTo(t, { immediate: true, force: true }); }
+      else window.scrollTo(0, t);
+    }
+    var anchor = null, held = false, raf = 0, calm = 0;
+    addEventListener("scroll", function () {
+      if (raf) return;
+      raf = requestAnimationFrame(function () {
+        raf = 0;
+        if (!held && !ScrollTrigger.isRefreshing) anchor = read();
+      });
+    }, { passive: true });
+    /* a drag delivers dozens of resize events and several refreshes; the anchor
+       taken before the first one is the only honest one.
+       AND IT IS WRITTEN IN EVERY ONE OF THEM, not only after the refresh. The
+       refresh waits until 0.2s after the last resize event, so the page slid for
+       the whole of a drag and jumped when it was let go. Measured with the top
+       edge pulled down from 804 to 504px and the shelf at the top of the screen:
+       the shelf slid 528px up, then came back in one jump 0.2s after release;
+       mid-page the jump was 800px. The browser runs resize handlers before it
+       paints the frame, so writing here keeps the reader still while the window
+       moves.
+       AND THE PAGE IS RE-MEASURED IN EVERY ONE OF THEM TOO. Keeping the reader
+       still was not enough while everything ScrollTrigger had measured — the
+       process band's pin and its spacer, every scrubbed position — stayed as the
+       OLD window had it until the same 0.2s after release. Filmed: the process
+       track slid 130px sideways after the hand let go, and at the foot of the
+       page the reader drifted 337px during the drag and snapped back after it.
+       A refresh costs 3-10ms on this page (measured), well inside a frame, so
+       the page is laid out, decided (layoutHooks: the process band's pin) and
+       measured for the new window before that window is ever painted. */
+    var lastW = window.innerWidth;
+    addEventListener("resize", function () {
+      var w = window.innerWidth;
+      /* a phone's address bar sliding away is a height-only resize in the middle
+         of a swipe: ScrollTrigger ignores it (ignoreMobileResize) and so does
+         this, or the page would be pulled back under the finger */
+      if (w === lastW && window.matchMedia && window.matchMedia("(pointer: coarse)").matches) return;
+      lastW = w;
+      held = true;
+      if (anchor && anchor.p != null) rideHold = anchor.p;
+      clearTimeout(calm);
+      calm = setTimeout(release, 900);
+      layoutHooks.forEach(function (fn) { fn(); });
+      ScrollTrigger.refresh();   /* fires "refresh", which writes the anchor */
+      write();
+    }, { passive: true });
+    function release() { held = false; rideHold = null; }
+    /* the reader taking the scroll back ends the hold at once */
+    ["wheel", "touchstart", "keydown", "pointerdown"].forEach(function (t) {
+      addEventListener(t, release, { passive: true });
+    });
+    ScrollTrigger.addEventListener("refresh", write);
+  })();
 
   /* in-page anchors glide with Lenis instead of teleporting */
   /* SCROLLING IS NOT NAVIGATING. preventDefault kills the browser's own jump,
@@ -378,11 +553,19 @@
        (932x430) and every iPad in landscape got the pin anyway. Measured with
        real touch events: the horizontal drag did nothing, and on a 430px-tall
        screen the step texts sat below the fold for the whole pin. The pointer
-       query is the question the comment was always asking. */
-    var PIN_MQ = "(min-width: 901px) and (hover: hover) and (pointer: fine)";
+       query is the question the comment was always asking.
+       AND THE WIDTH GATE IS GONE FROM IT. A mouse cannot drag a row sideways,
+       and the row hides its scrollbar, so a desktop window narrower than 901px
+       got a handscroll whose last two panels no pointer could reach. The pin is
+       the only way a mouse reads the whole sequence, so it runs at any width a
+       mouse can be at. */
+    var PIN_MQ = "(hover: hover) and (pointer: fine)";
+    var root = document.documentElement;
+    var tl = null, rowTriggers = [];
     function nativeRow() {
-      items.forEach(function (li) {
-        ScrollTrigger.create({ trigger: li, start: "top 86%", once: true,
+      if (rowTriggers.length) return;
+      rowTriggers = items.map(function (li) {
+        return ScrollTrigger.create({ trigger: li, start: "top 86%", once: true,
           onEnter: function () { li.classList.add("is-inked"); } });
       });
     }
@@ -406,54 +589,81 @@
        Measured at 2560 and 3440: 720px of scrolling during which the page did
        not move and the track's transform read 0 at all seven samples. A short
        travel is not worth a long freeze either, hence a floor, not zero. */
-    if (!matchMedia(PIN_MQ).matches || distance() < 240) { nativeRow(); return; }
-
-    document.documentElement.classList.add("emaki-pinned");
-
-    var tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: section, start: "top top",
-        end: function () { return "+=" + (distance() + innerHeight * 0.5); },
-        pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true
+    function pin() {
+      rowTriggers.forEach(function (t) { t.kill(); });
+      rowTriggers = [];
+      root.classList.add("emaki-pinned");
+      tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          /* A SECTION TALLER THAN THE WINDOW PINS BY ITS FOOT. Pinned by its top,
+             a short window held the heading on screen and the moving track
+             below the fold for the whole pin — the only part of the section
+             that does anything, out of sight while it did it. */
+          start: function () { return section.offsetHeight > innerHeight ? "bottom bottom" : "top top"; },
+          end: function () { return "+=" + (distance() + innerHeight * 0.5); },
+          pin: true, scrub: 0.6, anticipatePin: 1, invalidateOnRefresh: true
+        }
+      });
+      tl.to(track, { x: function () { return -distance(); }, ease: "none" }, 0);
+      /* the strokes are on the same timeline rather than on their own triggers:
+         inside a pinned horizontal track an element's viewport position no longer
+         tracks the reader's progress, so a per-item trigger would fire all four at
+         once. Positions on the scrub timeline are the honest measure of "how far
+         has the scroll opened". */
+      items.forEach(function (li, i) {
+        var mark = li.querySelector(".step-mark");
+        if (mark) tl.to(mark, { clipPath: "inset(0% 0% 0% 0%)", ease: "none", duration: 0.16 }, i * 0.2 + 0.04);
+        tl.add(function () { li.classList.add("is-inked"); }, i * 0.2);
+      });
+    }
+    /* Leaving the pin hands the row back finished: the track to its resting
+       place, every stroke inked, and no inline clip-path left behind to
+       out-rank the stylesheet's own resting state. */
+    function unpin() {
+      root.classList.remove("emaki-pinned");
+      if (tl) {
+        if (tl.scrollTrigger) tl.scrollTrigger.kill(true);
+        tl.kill();
+        tl = null;
       }
-    });
-    tl.to(track, { x: function () { return -distance(); }, ease: "none" }, 0);
-    /* the strokes are on the same timeline rather than on their own triggers:
-       inside a pinned horizontal track an element's viewport position no longer
-       tracks the reader's progress, so a per-item trigger would fire all four at
-       once. Positions on the scrub timeline are the honest measure of "how far
-       has the scroll opened". */
-    items.forEach(function (li, i) {
-      var mark = li.querySelector(".step-mark");
-      if (mark) tl.to(mark, { clipPath: "inset(0% 0% 0% 0%)", ease: "none", duration: 0.16 }, i * 0.2 + 0.04);
-      tl.add(function () { li.classList.add("is-inked"); }, i * 0.2);
-    });
+      gsap.set(track, { clearProps: "transform,x" });
+      items.forEach(function (li) {
+        li.classList.add("is-inked");
+        var mark = li.querySelector(".step-mark");
+        if (mark) gsap.set(mark, { clearProps: "clipPath" });
+      });
+    }
+    /* THE DECISION IS TAKEN AGAIN WHENEVER THE WINDOW CHANGES, both ways. It used
+       to be taken once, at load: a window opened narrow never got the pin when
+       widened (measured: 1694px of pin missing, the row stuck as a hidden
+       scroller), and the tear-down only ran in one direction. Returns whether
+       the page's geometry changed, so the caller knows to re-measure. */
+    function decide() {
+      var want = matchMedia(PIN_MQ).matches && distance() >= 240;
+      if (want && !tl) { pin(); return true; }
+      if (!want && tl) { unpin(); nativeRow(); return true; }
+      if (!want) nativeRow();
+      return false;
+    }
+    decide();
 
     /* the pin's length is derived from a measured width, so it has to be
        recomputed once the webfonts land and the panels settle */
     if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
+      document.fonts.ready.then(function () { decide(); ScrollTrigger.refresh(); });
     }
 
-    /* THE PIN IS ENTERED ONCE AND WAS NEVER LEFT. `emaki-pinned` goes on the
-       root above and nothing took it off, but the stylesheet reads it as
-       `overflow: hidden; scroll-snap-type: none` on .emaki — which is exactly
-       the state the note at the top of this block says touch must never be in.
-       Load an iPad in landscape, rotate to portrait: the pin keeps driving the
-       track from vertical scroll while the native swipe the phone layout
-       depends on has been switched off, so the handscroll can only be moved by
-       a gesture the layout no longer offers. */
-    var wideEmaki = matchMedia(PIN_MQ);
-    var onEmaki = function () {
-      if (wideEmaki.matches) return;
-      document.documentElement.classList.remove("emaki-pinned");
-      if (tl.scrollTrigger) tl.scrollTrigger.kill(true);
-      gsap.set(track, { clearProps: "transform,x" });
-      items.forEach(function (li) { li.classList.add("is-inked"); });
-      ScrollTrigger.refresh();
-    };
-    if (wideEmaki.addEventListener) wideEmaki.addEventListener("change", onEmaki);
-    else if (wideEmaki.addListener) wideEmaki.addListener(onEmaki);
+    function reconsider() { if (decide()) ScrollTrigger.refresh(); }
+    var pointerMQ = matchMedia(PIN_MQ);
+    if (pointerMQ.addEventListener) pointerMQ.addEventListener("change", reconsider);
+    else if (pointerMQ.addListener) pointerMQ.addListener(reconsider);
+    /* the travel depends on the width: a window widened until the track fits
+       drops the pin, one narrowed again takes it back — decided in the same
+       frame as the resize, just before the page is re-measured (the anchor's
+       resize handler runs the hooks, then refreshes). It used to wait 120ms
+       after the drag ended, so the band switched modes after the hand let go. */
+    layoutHooks.push(decide);
   })();
 
   /* ---------- word-by-word brighten ---------- */
@@ -647,65 +857,88 @@
     }
 
     var RIDE = INK_RIDE, HOLD = INK_HOLD;
+    function render(p) {
+      if (!geo) place();
+      if (!geo) return;
+      /* LINEAR along the arc, deliberately. This used to be power2-out, and
+         measured on the page that put 71% of the whole climb inside the first
+         6% of a viewport of scroll — the curve was there but nobody could see
+         it go. The trig below already shapes the motion; easing the parameter
+         on top of it only front-loads the same shape twice. */
+      var r = Math.min(1, p / HOLD);
+      /* FLOOD — nothing until the arc is done, then a straight ramp */
+      var f = p <= HOLD ? 0 : (p - HOLD) / (1 - HOLD);
+      /* IT TRAVELS THE WAY A SUN DOES: an ellipse quadrant from where it
+         broke the skyline to the top centre of the screen, not a lift
+         straight up.
+         THE OFFSET IS THE POINT. Run the quadrant from 0 and the disc leaves
+         the ridge dead vertical and only turns right at the end — a fountain,
+         not a sunrise. Starting a third of the way into the quadrant and
+         renormalising both axes back onto the endpoints keeps the arrival
+         horizontal (which is what an apex is) while giving the departure a
+         real diagonal: measured, it leaves the range about two and a half
+         times steeper than it travels sideways, which is roughly what a sun
+         does at this latitude. */
+      var U0 = 0.35 * Math.PI / 2, U1 = Math.PI / 2;
+      var u = U0 + (U1 - U0) * r;
+      var x0 = 1 - Math.cos(U0), y0 = Math.sin(U0);
+      var ax = (geo.apexX - geo.restX) * ((1 - Math.cos(u)) - x0) / (1 - x0);
+      var ay = -(geo.rest - geo.apexY) * (Math.sin(u) - y0) / (1 - y0);
+      /* neededScale() reads a LIVE rect, which forces layout. Its result is
+         multiplied by f — and f is exactly 0 for the whole first HOLD (45%)
+         of the ride, the stretch the disc spends climbing its arc. So during
+         the climb every scrub frame was forcing a layout to compute a term
+         that could not move the answer off 1. The disc is at rest size until
+         the flood starts; ask for the measurement then. */
+      /* POSITION FIRST, THEN MEASURE. neededScale() reads where the disc sits,
+         and asking it before the new x/y are written measured last frame's
+         position. While scrolling that is one frame behind and nobody sees it;
+         after a jump — a resize, the reader's position being restored — there is
+         no next frame to catch up in, and the flood froze at the wrong size:
+         measured 2.80 on screen against the 3.24 the same scroll gives when
+         loaded fresh. */
+      gsap.set(sun, { x: ax, y: ay, force3D: true });
+      gsap.set(sun, { scale: f > 0 ? 1 + (neededScale() - 1) * f : 1 });
+      /* BURN — the ink does not crossfade over the whole disc, it blooms out
+         of the core: a soft-edged black spreading from the centre until it has
+         taken the circle. It starts late and runs long, so the first beat of
+         the growth is the disc getting bigger while it is still unmistakably
+         vermilion — that is the shot the whole hero is built around. */
+      if (fill) {
+        var burn = Math.min(1, Math.max(0, (f - 0.16) / 0.48));
+        burn = burn * burn * (3 - 2 * burn);   /* smoothstep */
+        fill.style.opacity = Math.min(1, burn * 1.7).toFixed(3);
+        fill.style.transform = "scale(" + (0.1 + 0.9 * burn).toFixed(4) + ")";
+      }
+      de.classList.toggle("sun-up", r > 0.98);
+    }
+    /* THE RIDE'S PROGRESS IS READ LIVE, from the scroll and the window as they
+       are now, not from the trigger. Between a resize and ScrollTrigger's
+       refresh — held until 0.2s after a drag ends — the trigger still divides by
+       the OLD window's height: pulling the top edge of the window down, the disc
+       slid back along its arc for the whole drag and leapt forward on release.
+       With start 0 and end innerHeight * RIDE this is the trigger's own formula,
+       so between resizes the two are the same number. During a drag it is the
+       progress the reader is held at (rideHold), not the rounded scroll. */
+    function liveP() {
+      if (rideHold != null) return rideHold;
+      var end = window.innerHeight * RIDE;
+      return end > 0 ? Math.min(1, Math.max(0, (window.scrollY || 0) / end)) : 0;
+    }
     /* one scrubbed trigger for the whole gesture: three beats read off a single
        progress value, so the hands can never drift apart */
     ScrollTrigger.create({
       start: 0,
       end: function () { return window.innerHeight * RIDE; },
       scrub: true, invalidateOnRefresh: true,
-      onRefresh: function () { place(); },
-      onUpdate: function (self) {
-        if (!geo) place();
-        if (!geo) return;
-        var p = self.progress;
-        /* LINEAR along the arc, deliberately. This used to be power2-out, and
-           measured on the page that put 71% of the whole climb inside the first
-           6% of a viewport of scroll — the curve was there but nobody could see
-           it go. The trig below already shapes the motion; easing the parameter
-           on top of it only front-loads the same shape twice. */
-        var r = Math.min(1, p / HOLD);
-        /* FLOOD — nothing until the arc is done, then a straight ramp */
-        var f = p <= HOLD ? 0 : (p - HOLD) / (1 - HOLD);
-        /* IT TRAVELS THE WAY A SUN DOES: an ellipse quadrant from where it
-           broke the skyline to the top centre of the screen, not a lift
-           straight up.
-           THE OFFSET IS THE POINT. Run the quadrant from 0 and the disc leaves
-           the ridge dead vertical and only turns right at the end — a fountain,
-           not a sunrise. Starting a third of the way into the quadrant and
-           renormalising both axes back onto the endpoints keeps the arrival
-           horizontal (which is what an apex is) while giving the departure a
-           real diagonal: measured, it leaves the range about two and a half
-           times steeper than it travels sideways, which is roughly what a sun
-           does at this latitude. */
-        var U0 = 0.35 * Math.PI / 2, U1 = Math.PI / 2;
-        var u = U0 + (U1 - U0) * r;
-        var x0 = 1 - Math.cos(U0), y0 = Math.sin(U0);
-        var ax = (geo.apexX - geo.restX) * ((1 - Math.cos(u)) - x0) / (1 - x0);
-        var ay = -(geo.rest - geo.apexY) * (Math.sin(u) - y0) / (1 - y0);
-        /* neededScale() reads a LIVE rect, which forces layout. Its result is
-           multiplied by f — and f is exactly 0 for the whole first HOLD (45%)
-           of the ride, the stretch the disc spends climbing its arc. So during
-           the climb every scrub frame was forcing a layout to compute a term
-           that could not move the answer off 1. The disc is at rest size until
-           the flood starts; ask for the measurement then. */
-        gsap.set(sun, {
-          x: ax, y: ay,
-          scale: f > 0 ? 1 + (neededScale() - 1) * f : 1,
-          force3D: true
-        });
-        /* BURN — the ink does not crossfade over the whole disc, it blooms out
-           of the core: a soft-edged black spreading from the centre until it has
-           taken the circle. It starts late and runs long, so the first beat of
-           the growth is the disc getting bigger while it is still unmistakably
-           vermilion — that is the shot the whole hero is built around. */
-        if (fill) {
-          var burn = Math.min(1, Math.max(0, (f - 0.16) / 0.48));
-          burn = burn * burn * (3 - 2 * burn);   /* smoothstep */
-          fill.style.opacity = Math.min(1, burn * 1.7).toFixed(3);
-          fill.style.transform = "scale(" + (0.1 + 0.9 * burn).toFixed(4) + ")";
-        }
-        de.classList.toggle("sun-up", r > 0.98);
-      }
+      /* DRAWN AGAIN FOR THE NEW WINDOW, not only re-placed. place() moves the
+         disc's resting box, but the arc offset and the flood scale on its
+         transform were written for the old window, and nothing redrew them
+         until the next scroll. Measured after a 1440x900 -> 1100x760 drag with
+         the flood under way: scale 5.61 on screen where the new window needs
+         6.75, so the ink stopped short of the corners. */
+      onRefresh: function () { place(); render(liveP()); },
+      onUpdate: function () { render(liveP()); }
     });
 
     /* RE-PLACE ON RESIZE, not just invalidate. Dropping `geo` alone left the
@@ -714,12 +947,17 @@
        measurement: after a window resize the mask was still sized 1080x1209 for
        the old layout while the plate had become 1510x564, so the silhouette and
        the drawing were registered to different boxes. One rAF of debounce keeps
-       a drag-resize from writing on every intermediate width. */
+       a drag-resize from writing on every intermediate width, and the disc is
+       redrawn in the same frame so it follows the drag instead of waiting for
+       the release. */
     var replace = 0;
     addEventListener("resize", function () {
       geo = null;
       if (replace) cancelAnimationFrame(replace);
-      replace = requestAnimationFrame(function () { replace = 0; place(); });
+      replace = requestAnimationFrame(function () {
+        replace = 0; place();
+        render(liveP());
+      });
     }, { passive: true });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
     addEventListener("load", place);
@@ -733,7 +971,7 @@
   /* THE INK-SHAKE IS GONE, AND SO IS ITS PHYSICS ENGINE. A tap on the hero used
      to let every sumi speck fall, bounce off its neighbours and pile along the
      foot rule — 160 lines of hand-rolled circle collision. It was a toy: it
-     said nothing about what this company does, and it was the one control on
+     said nothing about what this studio does, and it was the one control on
      the opening screen, which made the most prominent affordance on the page
      the least useful one. Its slot now carries a link into the work itself.
      Removing it also retires 16 permanently composited layers: `.specks i`
@@ -972,6 +1210,30 @@
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
   }
+
+  /* ---------- the page grows late: re-measure ----------
+     Every trigger below a block is measured against that block's height, and
+     some blocks only learn their height late — a lazy image decoding mid-scroll,
+     a face that lands after the fonts-ready refresh. The studio's figure was
+     the one caught (fixed at its source in style.css), but it was caught only
+     because a window resize happened to re-measure the page; nothing else would
+     have. This watches main's own height and re-measures when it moves.
+     Its own refreshes do not re-trigger it (the height is recorded after each
+     one), and a window resize is left to ScrollTrigger, which already handles
+     that event. */
+  (function () {
+    var main = document.getElementById("main");
+    if (!main || !window.ResizeObserver) return;
+    var lastH = main.offsetHeight, sizedAt = 0, t = 0;
+    addEventListener("resize", function () { sizedAt = Date.now(); }, { passive: true });
+    ScrollTrigger.addEventListener("refresh", function () { lastH = main.offsetHeight; });
+    new ResizeObserver(function () {
+      if (ScrollTrigger.isRefreshing || Date.now() - sizedAt < 600) return;
+      if (Math.abs(main.offsetHeight - lastH) < 2) return;
+      clearTimeout(t);
+      t = setTimeout(function () { ScrollTrigger.refresh(); }, 150);
+    }).observe(main);
+  })();
 
   /* Absolute failsafe: nothing in the hero stays invisible past ~2.6s, whatever
      happens with GSAP timing, decode, or an initially-hidden tab. Plain inline

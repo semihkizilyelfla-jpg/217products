@@ -26,7 +26,10 @@
   font-weight: 400 800; font-style: normal; font-display: swap;
 }
 @font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-500.woff2?v=2") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-700.woff2?v=2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+/* v=3: the 700 cut carries 弐 (U+5F10) for the second shelf seal, merged in
+   from the full face as a single glyph — re-subsetting from the source would
+   drop the Turkish letters this file was hand-built to hold. */
+@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-700.woff2?v=3") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
 @font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-800.woff2?v=2") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
 
 :root {
@@ -506,7 +509,17 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
      low leaves the top of the sheet for the disc — and it is what the reference
      does too, its block sitting at 377-742 of a 900 screen. The bottom padding
      holds it off the foot line. */
-  padding: clamp(96px, 13vh, 172px) var(--pad) clamp(126px, 17vh, 200px);
+  padding: clamp(96px, 13vh, 172px) var(--pad) min(clamp(126px, 17vh, 200px), max(10.63vw, 108.3px));
+  /* THE SECOND TERM KEEPS THE SENTENCE IN THE MIST, NOT ON THE MOUNTAIN. The
+     plate is sized off the WIDTH (max(106%, 1080px) at 2.464:1) but 17vh is
+     height, so in a window taller than the reference the sentence climbed into
+     the painting: at 1140x1080 or a half-screen 960x1040 the first letter sat on
+     the black ridge and half of it went into the ink (measured on 124 window
+     sizes, 860-1540px wide). max(10.63vw, 108.3px) is 24.7% of the plate's own
+     height — exactly where 17vh puts the sentence at 1440x900 — so a tall window
+     now keeps the reference composition, and min() leaves every window that was
+     already clear (the reference, wider, shorter) exactly as it was. The foot
+     line keeps 40px+ at the narrowest tall window. */
   /* The reference's exact sheet, and it is a tint rather than white for a
      reason that shows up two elements away: the nav capsule floats because it
      is a half-step LIGHTER than what it floats over. On pure white that
@@ -1618,7 +1631,17 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
           mask: url("assets/enso.svg?w=1") center / contain no-repeat;
   will-change: transform;
 }
-.wheel .section-art { position: relative; z-index: 1; }
+/* A DEFINITE WIDTH, OR THE FIGURE WAITS FOR ITS PICTURE. `.wheel` centres its
+   items, so the figure shrink-wraps its content — and the image's width is a
+   percentage of that same figure, which cannot resolve until the file has
+   decoded and brought its own size. Measured at 1000px: the figure stood 187px
+   wide (the caption's width) while potter.webp was lazy, then jumped to 456px
+   when it arrived mid-scroll. That 192px of growth landed under every scroll
+   trigger below it — the handscroll's pin, the brighten, the progress line all
+   ran 192px early until the next window resize re-measured them, which is
+   exactly when the page was seen to jump. Full width of the ring's box is
+   what the figure grew to anyway; now it starts there. */
+.wheel .section-art { position: relative; z-index: 1; width: 100%; }
 /* THE PLATE IS OPAQUE, SO IT HAS TO BE MULTIPLIED ONTO THE PAPER. potter.webp
    is an RGB file with no alpha and pure white corners (checked: mode=RGB,
    corner pixels 255,255,255), so its bounding box was painting a white square
@@ -2063,3 +2086,34 @@ html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
   .hero { padding: clamp(74px, 12vh, 120px) var(--pad) clamp(84px, 20vh, 170px); }
   .hero-head { font-size: clamp(34px, 5.4vw, 72px); }
 }
+/* ...AND NOT A STEP WHILE THE WINDOW MOVES. As a media query alone the rule
+   above is a step: a window dragged across 660px of height watched the headline
+   lose a third of its size in one frame (108 -> 72px at 1440 wide). main.js
+   writes --tall — 0 at 650px of height or less, 1 at 670 or more, a line
+   between — and these blend the short values into the full ones across that
+   20px band. Every term is the exact clamp() of the rule it stands for (the
+   full ones are .hero / .hero-head above, and the 820px block's for the
+   narrower windows), so outside the band nothing changes; without the script
+   (html.tall-js) the step above stays. */
+@media (min-width: 701px) {
+  html.tall-js .hero-head {
+    font-size: calc(var(--tall) * clamp(40px, 7.5vw, 112px) + (1 - var(--tall)) * clamp(34px, 5.4vw, 72px));
+  }
+}
+@media (min-width: 821px) {
+  html.tall-js .hero {
+    padding-top: calc(var(--tall) * clamp(96px, 13vh, 172px) + (1 - var(--tall)) * clamp(74px, 12vh, 120px));
+    padding-bottom: calc(var(--tall) * min(clamp(126px, 17vh, 200px), max(10.63vw, 108.3px)) + (1 - var(--tall)) * clamp(84px, 20vh, 170px));
+  }
+}
+@media (min-width: 701px) and (max-width: 820px) {
+  html.tall-js .hero {
+    padding-top: calc(var(--tall) * clamp(104px, 15vh, 150px) + (1 - var(--tall)) * clamp(74px, 12vh, 120px));
+    padding-bottom: calc(var(--tall) * clamp(84px, 16svh, 168px) + (1 - var(--tall)) * clamp(84px, 20vh, 170px));
+  }
+}
+
+/* A window being dragged: every transition off until it rests (main.js sets
+   and clears the class). A breakpoint crossed mid-drag used to start the nav
+   capsule's fade, so its links dissolved and returned while the edge moved. */
+html.resizing *, html.resizing *::before, html.resizing *::after { transition: none !important; }

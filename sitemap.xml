@@ -7,31 +7,74 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://217products.com/</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-09-27</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/"/>
     <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/tr"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/"/>
   </url>
   <url>
     <loc>https://217products.com/tr</loc>
-    <lastmod>2026-09-26</lastmod>
+    <lastmod>2026-09-27</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/"/>
     <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/tr"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/"/>
   </url>
+  <!-- The product pages: one per app and language, paired like the home page. -->
+  <url>
+    <loc>https://217products.com/osnote/</loc>
+    <lastmod>2026-09-27</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/osnote/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/osnote/tr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/osnote/"/>
+  </url>
+  <url>
+    <loc>https://217products.com/osnote/tr</loc>
+    <lastmod>2026-09-27</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/osnote/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/osnote/tr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/osnote/"/>
+  </url>
+  <url>
+    <loc>https://217products.com/decidora/</loc>
+    <lastmod>2026-09-27</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/decidora/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/decidora/tr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/decidora/"/>
+  </url>
+  <url>
+    <loc>https://217products.com/decidora/tr</loc>
+    <lastmod>2026-09-27</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/decidora/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/decidora/tr"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/decidora/"/>
+  </url>
   <url>
     <loc>https://217products.com/privacy</loc>
-    <lastmod>2026-08-15</lastmod>
+    <lastmod>2026-09-27</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/privacy"/>
     <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/gizlilik"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/privacy"/>
   </url>
   <url>
     <loc>https://217products.com/gizlilik</loc>
-    <lastmod>2026-08-15</lastmod>
+    <lastmod>2026-09-27</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/privacy"/>
     <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/gizlilik"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/privacy"/>
+  </url>
+  <url>
+    <loc>https://217products.com/terms</loc>
+    <lastmod>2026-09-27</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/terms"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/kosullar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/terms"/>
+  </url>
+  <url>
+    <loc>https://217products.com/kosullar</loc>
+    <lastmod>2026-09-27</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://217products.com/terms"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://217products.com/kosullar"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://217products.com/terms"/>
   </url>
   <!-- The app policies below are indexable pages that Play listings link to.
        Their canonicals carry the .html extension (the pages declare it that

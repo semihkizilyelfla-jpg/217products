@@ -1,0 +1,364 @@
+/* ============================================================
+   217 Products — product pages (/osnote/, /decidora/ and their /tr twins)
+   ------------------------------------------------------------
+   A SEPARATE SHEET, for the same reason doc.css is one: style.css is ~120 KB
+   of scroll choreography for the nine-screen home page, and a product page is
+   four quiet sections. Faces, palette and measure are read off style.css's
+   :root so the two never drift into different brands.
+   The page is the shelf card taken off the shelf: the same print, the same
+   seal, hung beside its label — and then the label's longer text underneath.
+   ============================================================ */
+@font-face {
+  font-family: "Manrope";
+  src: url("/assets/fonts/manrope-var.woff2?v=2") format("woff2");
+  font-weight: 400 800; font-style: normal; font-display: swap;
+}
+@font-face { font-family: "Shippori Mincho"; src: url("/assets/fonts/shippori-500.woff2?v=2") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("/assets/fonts/shippori-700.woff2?v=3") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("/assets/fonts/shippori-800.woff2?v=2") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
+
+:root {
+  color-scheme: only light;          /* same opt-out of Android's forced dark as the home page */
+  --paper: #FFFFFF;
+  --hero-paper: #F0F0F3;
+  --ink: #111111;
+  --ink-2: #575757;
+  --vermilion: #E0402A;
+  --vermilion-deep: #BF3218;         /* under white text: 5.34:1 */
+  --vermilion-ink: #E14B36;          /* a mark on the #111 wall: 4.73:1 */
+  --accent-ink: #A82C15;             /* small accent text on paper: 6.9:1 */
+  --rule: rgba(17, 17, 17, 0.14);
+  --pad: clamp(20px, 3vw, 46px);
+  --maxw: 1360px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; background: var(--paper); }
+html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
+body {
+  font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 400; line-height: 1.65; color: var(--ink); background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; }
+::selection { background: var(--vermilion-deep); color: var(--paper); }
+:focus-visible { outline: 2px solid var(--vermilion); outline-offset: 4px; border-radius: 2px; }
+.skip-link {
+  position: fixed; top: 10px; left: 10px; z-index: 100;
+  display: inline-flex; align-items: center; min-height: 44px; padding: 10px 18px; border-radius: 8px;
+  background: var(--ink); color: var(--paper); font-size: 14px; font-weight: 600; text-decoration: none;
+  transform: translateY(-160%); transition: transform 0.2s ease;
+}
+.skip-link:focus { transform: translateY(0); }
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+/* ---------- the bar ----------
+   Not the home page's fixed capsule and drawer: this page has two things to
+   offer in its header — the other language and the store — so it gets exactly
+   those, in the same white capsule, and scrolls away with the page. */
+.pbar {
+  position: relative; z-index: 5;
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: 24px 32px;
+}
+.pbar .brand { display: inline-flex; min-height: 44px; align-items: center; }
+.pbar .brand img { width: auto; height: 41px; }
+.pbar-links {
+  display: flex; align-items: center; gap: 0;
+  padding: 12px 12px 12px 22px; border-radius: 999px; background: #FFFFFF;
+  box-shadow: 0 18px 48px rgba(17,17,26,0.14), 0 6px 18px rgba(17,17,26,0.10), inset 0 0 0 1px rgba(17,17,17,0.08);
+}
+.pbar-links a { text-decoration: none; font-size: 14px; font-weight: 600; letter-spacing: 0.03em; }
+.pbar-alt {
+  display: inline-flex; align-items: center; min-height: 44px; min-width: 44px;
+  padding-right: 18px; color: var(--accent-ink);
+}
+.pbar-alt:hover { color: var(--ink); }
+/* INLINE, NOT FLEX. As a flex box every text run and span became its own
+   item, and flex items drop the spaces at their edges — the label rendered
+   "Get it onGoogle Play↗". Inline text keeps the markup's spaces, and keeps
+   the Turkish "Google Play’den" joined where the markup joins it. */
+.pbar-cta {
+  display: inline-block; height: 50px; line-height: 50px; padding: 0 24px; border-radius: 999px;
+  white-space: nowrap;
+  background: var(--vermilion-deep); color: #fff;
+  box-shadow: 0 4px 14px rgba(191,50,24,0.28);
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+.pbar-cta:hover { background: #A02611; transform: translateY(-1px); }
+/* the bar's button carries the same words as the hero's; on the narrowest
+   phones only the store's name stays visible, and the full label is still
+   what a screen reader hears */
+@media (max-width: 440px) { .pbar-cta-more { display: none; } }
+@media (max-width: 520px) {
+  .pbar { padding: 16px var(--pad); }
+  .pbar .brand img { height: 34px; }
+  .pbar-links { padding: 6px 6px 6px 14px; }
+  .pbar-alt { padding-right: 10px; }
+  .pbar-cta { height: 44px; line-height: 44px; padding: 0 16px; font-size: 13px; }
+}
+
+/* ---------- the print and its label ----------
+   The hero sheet is the home page's own: --hero-paper with the 9-unit square
+   dot on a 30px step, fading out a third of the way down, and the same 4% of
+   washi fibre over it. Two columns, deliberately unequal — the print is an
+   object hung on the sheet, the label is a column of type beside it. */
+/* The sheet runs up behind the bar: pulled up by the bar's own height and
+   padded back down by it, so the capsule floats on the hero paper exactly as
+   the home page's does. --bar-h is the bar's real height (24 + 74 + 24). */
+:root { --bar-h: 122px; }
+@media (max-width: 520px) { :root { --bar-h: 88px; } }
+.phero {
+  position: relative; isolation: isolate;
+  background: var(--hero-paper);
+  margin-top: calc(var(--bar-h) * -1);
+  padding: calc(var(--bar-h) + clamp(24px, 5vh, 72px)) var(--pad) clamp(72px, 11vh, 132px);
+}
+.phero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: url("data:image/svg+xml,<svg%20xmlns='http%3A//www.w3.org/2000/svg'%20width='82'%20height='82'><rect%20x='36'%20y='36'%20width='9'%20height='9'%20fill='%23D8D8DC'/></svg>");
+  background-size: 30px 30px;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 34%, transparent 70%);
+          mask-image: linear-gradient(180deg, #000 0%, #000 34%, transparent 70%);
+}
+.phero::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: url("data:image/svg+xml,<svg%20xmlns='http%3A//www.w3.org/2000/svg'%20width='180'%20height='180'><filter%20id='w'><feTurbulence%20type='fractalNoise'%20baseFrequency='0.9'%20numOctaves='3'%20stitchTiles='stitch'/><feColorMatrix%20type='saturate'%20values='0'/></filter><rect%20width='180'%20height='180'%20filter='url%28%23w%29'/></svg>");
+  background-size: 180px 180px; opacity: 0.04;
+}
+.phero-in {
+  max-width: 1180px; margin: 0 auto;
+  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(40px, 7vw, 110px); align-items: center;
+}
+/* the print: the shelf's own card, laid down at a slight turn with the seal
+   stamped on its corner — the one gesture this page repeats from the shelf */
+/* The label comes first in the markup — name, line, store button — so a phone
+   and a screen reader both meet it before the picture. On a wide screen the
+   print takes the left column back. */
+.print {
+  position: relative; margin: 0; justify-self: center;
+  grid-column: 1; grid-row: 1;
+  width: min(100%, 440px);
+  transform: rotate(-3deg);
+}
+.plabel { grid-column: 2; grid-row: 1; }
+.print img {
+  width: 100%; height: auto; aspect-ratio: 900 / 1206; object-fit: cover;
+  background: #0C0C0C;
+  box-shadow: 0 30px 70px rgba(17,17,26,0.30), 0 8px 20px rgba(17,17,26,0.18);
+}
+.seal {
+  position: absolute; top: -16px; right: -16px;
+  width: 58px; height: 58px; display: grid; place-items: center; border-radius: 10px;
+  background: var(--vermilion); color: #fff;
+  font-family: "Shippori Mincho", serif; font-weight: 700; font-size: 26px; line-height: 1;
+  transform: rotate(-6deg); box-shadow: 0 10px 24px rgba(191,50,24,0.35);
+  user-select: none;
+}
+/* it stamps on once, as it does when a shelf card opens — the only motion here */
+@media (prefers-reduced-motion: no-preference) {
+  .seal { animation: stamp 0.5s cubic-bezier(0.34, 1.4, 0.5, 1) 0.35s both; }
+  @keyframes stamp { from { transform: rotate(-6deg) scale(0.4); opacity: 0; } to { transform: rotate(-6deg) scale(1); opacity: 1; } }
+}
+
+.plabel { max-width: 36rem; }
+.pnum {
+  display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.16em; color: var(--accent-ink);
+}
+.pnum::after { content: ""; width: 26px; height: 1px; background: currentColor; opacity: 0.6; }
+.pname {
+  font-family: "Shippori Mincho", Georgia, serif; font-weight: 800;
+  font-size: clamp(58px, 8.4vw, 124px); line-height: 0.98; letter-spacing: -0.02em;
+}
+/* the brush under the statement, from the shelf head — filled, tapered, laid
+   down rather than drawn */
+.prule {
+  display: block; width: min(64%, 300px); height: 22px; margin: clamp(16px, 2vw, 24px) 0 0;
+  background: var(--vermilion);
+  -webkit-mask: url("/assets/brush-rule.svg?v=2") left center / 100% 100% no-repeat;
+          mask: url("/assets/brush-rule.svg?v=2") left center / 100% 100% no-repeat;
+}
+.plead {
+  margin-top: clamp(20px, 2.4vw, 30px);
+  font-family: "Shippori Mincho", Georgia, serif; font-weight: 500;
+  font-size: clamp(21px, 2.1vw, 28px); line-height: 1.45; color: var(--ink);
+  text-wrap: pretty;
+}
+.pcta { margin-top: clamp(26px, 3vw, 38px); display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 9px; min-height: 50px; padding: 0 28px; border-radius: 999px;
+  font-size: 15px; font-weight: 700; text-decoration: none;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+.btn.primary { background: var(--vermilion-deep); color: #fff; box-shadow: 0 14px 30px rgba(191,50,24,0.28); }
+.btn.primary:hover { transform: translateY(-2px); background: #A02611; }
+.btn:active { transform: translateY(0) scale(0.97); }
+/* the facts a store page buries: a hairline-ruled row, each one a label over a value */
+.pfacts {
+  margin-top: clamp(30px, 3.4vw, 44px); padding-top: 18px; border-top: 1px solid var(--rule);
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr)); gap: 16px 22px;
+}
+.pfacts div { min-width: 0; }
+.pfacts dt { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
+.pfacts dd { margin-top: 4px; font-size: 15px; font-weight: 600; color: var(--ink); line-height: 1.4; }
+
+@media (max-width: 900px) {
+  .phero-in { grid-template-columns: 1fr; }
+  .plabel { max-width: none; grid-column: 1; grid-row: auto; }
+  .print { width: min(78%, 360px); margin-top: 8px; grid-column: 1; grid-row: auto; }
+}
+
+/* ---------- the wall ----------
+   The ink wall and its torn top edge are the home page's (.on-ink + .bleed):
+   the section is drawn by a full-width layer behind it, the brush-edge mask
+   sits on its top with a whole-pixel overlap. */
+.pwall { position: relative; z-index: 1; color: var(--paper); padding: clamp(96px, 14vh, 170px) var(--pad); }
+.pwall::before {
+  content: ""; position: absolute; z-index: -1; left: 50%; transform: translateX(-50%);
+  width: 100vw; top: 0; bottom: 0; background: var(--ink);
+}
+.bleed {
+  position: absolute; z-index: -1; pointer-events: none; left: 50%; width: 100vw; top: 0;
+  height: clamp(30px, 4vh, 62px); background: var(--ink);
+  transform: translateX(-50%) translateY(calc(-100% + 2px));
+  -webkit-mask: url("/assets/bleed.svg?w=1") bottom center / 100% 100% no-repeat;
+          mask: url("/assets/bleed.svg?w=1") bottom center / 100% 100% no-repeat;
+}
+.pwall-in { max-width: 1180px; margin: 0 auto; }
+.phead {
+  font-family: "Shippori Mincho", Georgia, serif; font-weight: 700;
+  font-size: clamp(33px, 4.4vw, 62px); line-height: 1.1; letter-spacing: -0.005em;
+  max-width: 20ch; text-wrap: balance;
+}
+.pwall .phead em { font-style: italic; color: var(--vermilion-ink); }
+.tools {
+  margin-top: clamp(44px, 6vw, 84px);
+  display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  gap: clamp(28px, 4vw, 64px);
+}
+.tool { border-top: 1px solid rgba(255,255,255,0.18); padding-top: 22px; }
+.tool h3 { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: clamp(24px, 2.2vw, 32px); line-height: 1.2; }
+.tool p { margin-top: 12px; font-size: 16px; line-height: 1.7; color: rgba(255,255,255,0.72); max-width: 46ch; }
+/* two modes rather than three tools */
+.tools.two, .cols.two { --cols: 2; }
+.pnote {
+  margin-top: clamp(40px, 5vw, 64px); max-width: 62ch;
+  font-family: "Shippori Mincho", Georgia, serif; font-weight: 500;
+  font-size: clamp(19px, 1.8vw, 24px); line-height: 1.5; color: rgba(255,255,255,0.86);
+}
+/* real screens, as the store shows them — no frame drawn around them, the
+   screenshot's own dark edge is the device */
+.screens {
+  margin-top: clamp(48px, 6vw, 88px);
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(18px, 3vw, 44px);
+  max-width: 980px;
+}
+.screens figure { margin: 0; }
+.screens img {
+  width: 100%; height: auto; aspect-ratio: 576 / 1024; border-radius: 18px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.12), 0 24px 60px rgba(0,0,0,0.5);
+}
+.screens figcaption { margin-top: 14px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.62); }
+@media (max-width: 900px) {
+  .tools { grid-template-columns: 1fr; }
+}
+/* On a phone the three screens become a strip you swipe; the strip scrolls,
+   the page does not. Scroll-snap so a flick lands on a whole screen. */
+@media (max-width: 700px) {
+  .screens {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px;
+    margin-left: calc(var(--pad) * -1); margin-right: calc(var(--pad) * -1);
+    padding: 0 var(--pad) 12px; scrollbar-width: none;
+  }
+  .screens::-webkit-scrollbar { display: none; }
+  .screens figure { flex: 0 0 62%; scroll-snap-align: center; }
+}
+
+/* ---------- the colophon ----------
+   The home page's values band: one hairline, columns, a big serif head with a
+   short red breath under it. Used here for what the app costs and asks of you. */
+.pband { padding: clamp(88px, 13vh, 150px) var(--pad) 0; }
+.pband-in { max-width: 1180px; margin: 0 auto; }
+.pband .phead { color: var(--ink); }
+.cols {
+  margin-top: clamp(36px, 5vw, 64px); padding-top: clamp(28px, 3vw, 40px);
+  border-top: 1px solid var(--rule);
+  display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: clamp(28px, 4vw, 64px);
+}
+.cols h3 { font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: clamp(24px, 2.4vw, 34px); line-height: 1.16; }
+.cols h3::after { content: ""; display: block; width: 38px; height: 2px; margin-top: 14px; background: var(--vermilion); border-radius: 2px; }
+.cols p { margin-top: 16px; font-size: 17px; line-height: 1.7; color: var(--ink-2); max-width: 40ch; }
+.pfine { margin-top: 28px; font-size: 14px; color: var(--ink-2); }
+/* a finger's 44px, like every other target on the site */
+.pfine a { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent-ink); text-underline-offset: 0.2em; }
+@media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+
+/* ---------- questions ---------- */
+/* Same 1180 band and the same left edge as every section above it — only the
+   list itself is held to a reading measure. Centring the block instead moved
+   its heading 150px off the line the other three headings stand on. */
+.pfaq { padding: clamp(88px, 13vh, 150px) var(--pad) clamp(110px, 15vh, 180px); }
+.pfaq-in { max-width: 1180px; margin: 0 auto; }
+.faq { margin-top: clamp(28px, 4vw, 44px); border-top: 1px solid var(--rule); max-width: 820px; }
+.faq details { border-bottom: 1px solid var(--rule); }
+.faq summary {
+  list-style: none; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  min-height: 64px; padding: 16px 0;
+  font-family: "Shippori Mincho", Georgia, serif; font-weight: 700; font-size: clamp(18px, 1.7vw, 22px); line-height: 1.35;
+}
+.faq summary::-webkit-details-marker { display: none; }
+/* a plus drawn in the seal red that turns into a cross — two bars, no icon font */
+.faq summary::after {
+  content: ""; flex: none; width: 16px; height: 16px;
+  background:
+    linear-gradient(var(--vermilion-deep), var(--vermilion-deep)) center / 16px 2px no-repeat,
+    linear-gradient(var(--vermilion-deep), var(--vermilion-deep)) center / 2px 16px no-repeat;
+  transition: transform 0.25s ease;
+}
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq summary:hover { color: var(--accent-ink); }
+.faq .a { padding: 0 0 22px; max-width: 64ch; }
+.faq .a p { font-size: 16px; line-height: 1.7; color: var(--ink-2); }
+.faq .a p + p { margin-top: 10px; }
+.faq .a a { color: var(--accent-ink); text-underline-offset: 0.2em; }
+
+/* ---------- foot ---------- */
+.pfoot { position: relative; z-index: 1; color: var(--paper); padding: clamp(72px, 10vh, 120px) var(--pad) clamp(40px, 6vh, 64px); }
+.pfoot::before {
+  content: ""; position: absolute; z-index: -1; left: 50%; transform: translateX(-50%);
+  width: 100vw; top: 0; bottom: 0; background: var(--ink);
+}
+.pfoot-in {
+  max-width: 1180px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 32px 60px;
+}
+.pfoot-mark { width: 120px; height: auto; filter: invert(1); }
+.pfoot nav { display: flex; flex-wrap: wrap; gap: 4px 34px; max-width: 560px; }
+.pfoot nav a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  color: rgba(255,255,255,0.62); text-decoration: none; font-size: 15px; transition: color 0.25s ease;
+}
+.pfoot nav a:hover { color: var(--paper); }
+.pfoot-meta { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 6px 26px; font-size: 14px; color: rgba(255,255,255,0.62); }
+.pfoot-meta a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
+.pfoot-meta a:hover { color: var(--paper); }
+/* the home footer's seal at its own size (62px, 15px type) — any smaller and
+   three kanji close up into a red smudge */
+.pfoot-meta .seal-sm {
+  display: inline-grid; place-items: center; width: 62px; height: 62px; border-radius: 10px;
+  background: var(--vermilion); color: #fff; font-family: "Shippori Mincho", serif; font-weight: 700; font-size: 15px;
+  line-height: 1.05; text-align: center; letter-spacing: 0.06em; transform: rotate(-5deg); margin-left: auto;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+}
+.pfoot-meta { align-items: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

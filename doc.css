@@ -96,7 +96,9 @@ code {
   border-top: 1px solid var(--rule);
   font-size: 15px; font-weight: 600;
 }
-.doc-foot a { text-decoration: none; }
+/* 44px tall like every other target on the site — measured at 26 before, the
+   height of the type alone, on the one row a phone reader uses to leave */
+.doc-foot a { text-decoration: none; display: inline-flex; align-items: center; min-height: 44px; }
 .doc-foot a:hover { text-decoration: underline; }
 .doc-date { margin-top: 18px; font-size: 13px; color: var(--ink-dim); }
 
