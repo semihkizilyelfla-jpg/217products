@@ -1,0 +1,16 @@
+{
+  "name": "Decidora: Zar, Yazı Tura, Çark",
+  "short_name": "Decidora",
+  "description": "Zar, yazı tura, çark ve parmak seçici tek uygulamada.",
+  "lang": "tr",
+  "dir": "ltr",
+  "start_url": "./tr",
+  "scope": "./",
+  "display": "browser",
+  "background_color": "#F0F0F3",
+  "theme_color": "#F0F0F3",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

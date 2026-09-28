@@ -12,12 +12,12 @@
    ============================================================ */
 @font-face {
   font-family: "Manrope";
-  src: url("assets/fonts/manrope-var.woff2?v=2") format("woff2");
+  src: url("assets/fonts/manrope-var.woff2?v=3") format("woff2");
   font-weight: 400 800; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: "Shippori Mincho";
-  src: url("assets/fonts/shippori-800.woff2?v=2") format("woff2");
+  src: url("assets/fonts/shippori-800.woff2?v=3") format("woff2");
   font-weight: 800; font-style: normal; font-display: swap;
 }
 

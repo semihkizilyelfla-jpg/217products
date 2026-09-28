@@ -1,0 +1,100 @@
+DECIDORA TANITIM SİTESİ — KAYNAKLAR VE LİSANSLAR
+================================================
+
+Bu sitede kullanılan her dosyanın nereden geldiği, lisansı ve üzerinde
+yapılan işlemler aşağıda. Site hiçbir dış sunucudan yazı tipi, betik,
+görsel ya da ses yüklemez; her şey bu klasörün içindedir.
+
+
+1. UYGULAMANIN KENDİ VARLIKLARI (yayıncının verdiği malzeme)
+------------------------------------------------------------
+- Ekran görüntüleri (assets/img/ekran/): Decidora'nın gerçek mağaza ekran
+  görüntüleri (uygulamanın İngilizce arayüzü). 480 ve 720 px genişliğe
+  küçültülüp AVIF, WebP ve JPEG'e çevrildi. İçerik değiştirilmedi.
+- Uygulama simgesi (assets/img/simge-192.webp, favicon.ico, favicon-32.png,
+  apple-touch-icon.png, icon-192.png, icon-512.png): küçültülmüş kopyalar.
+- Metinler: Türkçe mağaza metni, yayıncının ürün açıklaması ve uygulamanın
+  kendi Türkçe arayüz metinleri ("Dokun ve at", "Çıkanı sil, devam et",
+  "Kararları kaydet", hazır çarkların adları ve içerikleri) esas alındı.
+
+
+2. 217 PRODUCTS MARKA VARLIKLARI
+-------------------------------------------------------------------
+217products.com'un kendi dosyaları; aynı yayıncıya ait, olduğu gibi kopyalandı.
+- logo-217.svg        fırçayla yazılmış 217 logosu (assets/img/marka/)
+- bleed.svg           yırtık kâğıt / mürekkep kenarı; assets/css/site.css içine
+                      veri adresi olarak gömülü (--yirtik), CSS maskesi olarak
+- enso.svg            ensō fırça dairesi; yolu assets/js/cark.js içine gömülü,
+                      çarkın çerçevesi olarak çizilir
+Özgün dosyalar: https://217products.com/assets/ altında aynı adlarla.
+
+
+3. YAZI TİPLERİ — assets/fonts/
+-------------------------------
+Lisans: SIL Open Font License 1.1. Lisans metinleri bu klasörde:
+OFL-ShipporiMincho.txt, OFL-Manrope.txt. İki yazı tipinde de ayrılmış yazı
+tipi adı (Reserved Font Name) beyanı yoktur.
+
+- shippori-500.woff2, shippori-700.woff2, shippori-800.woff2
+    Özgün: Shippori Mincho (The Shippori Mincho Project Authors,
+    https://github.com/fontdasu/ShipporiMincho)
+    217products.com'un alt kümeleri; özgün yazı tipinde bulunmayan Ş ş Ğ ğ İ
+    harfleri o alt kümelerde elle kurulmuş bileşik gliflerdir.
+    Bu sitede 700 kesimine “ ” ‘ işaretleri, Google Fonts deposundaki
+    ShipporiMincho-Bold.ttf'den tek tek eklendi (araclar/glif_ekle.py).
+- manrope-var.woff2
+    Özgün: Manrope (The Manrope Project Authors,
+    https://github.com/sharanda/manrope), değişken yazı tipi.
+    217products.com'un alt kümesi, değiştirilmedi.
+
+
+4. SESLER — assets/ses/ (yalnız "Sıra sende" bölümündeki denemede)
+-------------------------------------------------------------------
+Kaynak: Kenney (https://kenney.nl) ses paketleri
+Lisans: Creative Commons CC0 1.0 (kamu malı; atıf gerekmez, ticari kullanım
+serbest). Dosyalar uygulamanın kendi ses dosyalarıdır (malzeme/sesler).
+
+  Dosya                       Paket              Paketteki özgün dosya
+  zar_tek_1 … zar_tek_4       Casino Audio       die-throw-1 … die-throw-4
+  zar_cok_1 … zar_cok_3       Casino Audio       dice-throw-1 … dice-throw-3
+  para_dus                    Casino Audio       chip-lay-3
+  para_titre                  Casino Audio       chip-lay-1
+  secim                       Casino Audio       chips-collide-2
+  para_fiske                  Impact Sounds      impactMetal_light_003
+  tik                         Interface Sounds   tick_004
+
+  Paket sayfaları:
+  https://kenney.nl/assets/casino-audio
+  https://kenney.nl/assets/impact-sounds
+  https://kenney.nl/assets/interface-sounds
+
+İşlem: .ogg dosyaları olduğu gibi kopyalandı. Ogg Vorbis çalamayan
+tarayıcılar için ffmpeg (libmp3lame, VBR q3, 44.1 kHz mono) ile .mp3
+kopyaları üretildi.
+
+
+5. GOOGLE PLAY LOGOSU — assets/img/google-play-logo.webp
+--------------------------------------------------------
+Kaynak: Google'ın resmi Türkçe rozeti, 27 Eylül 2026'da indirildi:
+https://play.google.com/intl/en_us/badges/static/images/badges/tr_badge_web_generic.png
+(dosyası arsiv/kullanilmayan/google-play-tr.png). 28 Eylül 2026'da sayfadaki
+rozet, sitenin kendi düğmesine çevrildi; düğmedeki logo bu rozetten kesildi.
+Logonun şekli ve renkleri değiştirilmedi, yalnız siyah zemini saydamlaştırıldı.
+Kullanım: Google Play'deki bir uygulamaya bağlantı vermek için.
+Rozet sayfası ve kullanım koşulları: https://play.google.com/intl/en_us/badges/
+Google Play ve Google Play logosu Google LLC'nin ticari markalarıdır.
+Android, Google LLC'nin ticari markasıdır.
+
+
+6. SİTE İÇİN ÜRETİLENLER (dış kaynak yok)
+-----------------------------------------
+- Karekod (assets/img/qr-google-play.svg): Google Play bağlantısından
+  yerelde üretildi (araclar/qr.mjs). Üretimde qrcode-generator (MIT)
+  kullanıldı; kütüphane siteye dahil değildir, yalnız çıktı olan SVG kullanılır.
+- Zarlar, para, çark ve parmak halkaları: tarayıcıda Canvas ile çizilir
+  (assets/js/zar3d.js, cark.js, masa.js, site.js).
+- Paylaşım görseli (assets/img/paylasim.jpg): araclar/og.html sayfasının,
+  sitenin kendi çizim kodu ve yazı tipleriyle alınmış görüntüsü.
+- Kâğıt lifi ve nokta ızgarası: CSS içinde SVG olarak (217products.com'daki
+  ile aynı).
+- Arayüz simgeleri (sayfadaki SVG sembolleri): bu site için çizildi.

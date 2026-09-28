@@ -1,0 +1,16 @@
+{
+  "name": "Decidora: Dice, Coin & Wheel",
+  "short_name": "Decidora",
+  "description": "Dice, coin toss, wheel and finger picker in one app.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "browser",
+  "background_color": "#F0F0F3",
+  "theme_color": "#F0F0F3",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

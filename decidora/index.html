@@ -1,193 +1,565 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="js-yok">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Same two origins as the home page and no others: the Cloudflare beacon's
-       script host and its report host. Everything else is 'self'. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'">
+  <meta charset="utf-8">
+  <!-- Güvenlik: sayfa yalnız kendi dosyalarını yükler (dış istek, form, eklenti, çerçeve yok);
+       satır içi betik yalnız özetiyle çalışır (araclar/csp.mjs), HTML'e metin basan yöntemler
+       Trusted Types ile kapalı. Türkçe sayfanın (index.html) İngilizce ikizi; yapı birebir aynı. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-BMJ8HRcHUpH1uiogtN508seKBLhxVkq7rqwj+noIgbM='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types decidora">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>Decidora: dice, coin and wheel for Android · 217 Products</title>
-  <meta name="description" content="Roll dice from d4 to d100, flip a coin that keeps count, or spin a wheel of your own options. Free, with no ads, no account and no internet.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Decidora: dice, coin toss, wheel and finger picker · Android</title>
+  <meta name="description" content="What’s for dinner, who pays, who goes first? Decidora makes small decisions in one tap: dice, coin toss, wheel and finger picker in one app. Free, no ads, no internet.">
+  <meta name="theme-color" content="#F0F0F3">
+  <meta name="color-scheme" content="only light">
+  <meta name="format-detection" content="telephone=no">
+
   <link rel="canonical" href="https://217products.com/decidora/">
   <link rel="alternate" hreflang="en" href="https://217products.com/decidora/">
   <link rel="alternate" hreflang="tr" href="https://217products.com/decidora/tr">
   <link rel="alternate" hreflang="x-default" href="https://217products.com/decidora/">
   <script src="/lang-route.js?v=1"></script>
-  <script src="/keep-place.js?v=1" defer></script>
-  <meta name="theme-color" content="#F0F0F3">
-  <meta name="robots" content="index, follow">
+
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="217 Products">
+  <meta property="og:url" content="https://217products.com/decidora/">
   <meta property="og:locale" content="en_US">
   <meta property="og:locale:alternate" content="tr_TR">
-  <meta property="og:url" content="https://217products.com/decidora/">
-  <meta property="og:title" content="Decidora: dice, coin and wheel for Android">
-  <meta property="og:description" content="Roll dice from d4 to d100, flip a coin that keeps count, or spin a wheel of your own options. Free, with no ads, no account and no internet.">
-  <meta property="og:image" content="https://217products.com/assets/og-decidora-en.jpg?v=1">
-  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:site_name" content="Decidora">
+  <meta property="og:title" content="Decidora: small decisions, one tap">
+  <meta property="og:description" content="Dice, coin toss, wheel and finger picker in one app. Free, no ads, no internet.">
+  <meta property="og:image" content="https://217products.com/decidora/assets/img/paylasim-en.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Decidora: an ink-painted die whose single pip is the vermilion sun">
+  <meta property="og:image:alt" content="An ink-drawn wheel with a red stamp pressed on it: Pasta">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Decidora: dice, coin and wheel for Android">
-  <meta name="twitter:description" content="Roll dice from d4 to d100, flip a coin that keeps count, or spin a wheel of your own options. Free, with no ads, no account and no internet.">
-  <meta name="twitter:image" content="https://217products.com/assets/og-decidora-en.jpg?v=1">
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
-  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/shippori-800.woff2?v=2" crossorigin>
-  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/manrope-var.woff2?v=2" crossorigin>
-  <link rel="stylesheet" href="/product.css?v=1">
+
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <script>
+    // js ve açılış sınıfları; sunucudan açılınca yazı tiplerini önden yükle, manifesti bağla
+    // (dosyadan açılınca tarayıcı bu CORS isteklerini reddettiği için eklenmez).
+    // Bu betiğin özeti CSP'de yazılı: değiştirirsen `node araclar/csp.mjs --yaz`.
+    (function () {
+      var h = document.documentElement;
+      h.classList.replace('js-yok', 'js');
+      h.classList.add('acilis');
+      if (location.protocol === 'file:') return;
+      [['preload', 'assets/fonts/shippori-800.woff2'], ['preload', 'assets/fonts/manrope-var.woff2'], ['preload', 'assets/fonts/shippori-500.woff2'], ['preload', 'assets/fonts/shippori-700.woff2'], ['manifest', h.lang === 'en' ? 'site-en.webmanifest' : 'site.webmanifest']].forEach(function (b) {
+        var l = document.createElement('link');
+        l.rel = b[0];
+        l.href = b[1];
+        if (b[0] === 'preload') { l.as = 'font'; l.type = 'font/woff2'; l.crossOrigin = 'anonymous'; }
+        document.head.appendChild(l);
+      });
+    })();
+  </script>
+  <link rel="stylesheet" href="assets/css/site.css">
   <script type="application/ld+json">
-  {"@context": "https://schema.org", "@type": "MobileApplication", "@id": "https://217products.com/#decidora", "name": "Decidora", "alternateName": "Decidora: Dice, Coin & Wheel", "description": "Roll dice from d4 to d100, flip a coin that keeps count, or spin a wheel of your own options. Free, with no ads, no account and no internet.", "operatingSystem": "Android", "applicationCategory": "EntertainmentApplication", "image": "https://217products.com/assets/decidora-card.webp?w=1", "screenshot": ["https://217products.com/assets/decidora/dice-2d6.webp?w=1", "https://217products.com/assets/decidora/dice-3d20.webp?w=1", "https://217products.com/assets/decidora/coin.webp?w=1"], "url": "https://217products.com/decidora/", "installUrl": "https://play.google.com/store/apps/details?id=com.kurapikamih.decidora", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "TRY"}, "publisher": {"@type": "Organization", "@id": "https://217products.com/#organization", "name": "217 Products", "url": "https://217products.com/"}}
+  {
+    "@context": "https://schema.org",
+    "@type": "MobileApplication",
+    "name": "Decidora",
+    "alternateName": "Decidora: Dice, Coin & Wheel",
+    "operatingSystem": "Android",
+    "applicationCategory": "EntertainmentApplication",
+    "inLanguage": "en",
+    "description": "Dice, coin toss, wheel and finger picker in one app. Makes small decisions in one tap; free, no ads, no internet.",
+    "installUrl": "https://play.google.com/store/apps/details?id=com.kurapikamih.decidora",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" },
+    "publisher": { "@type": "Organization", "name": "217 Products", "url": "https://217products.com/" }
+  }
   </script>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+<svg class="simgeler" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="i-sag" viewBox="0 0 24 24"><path d="M4.5 12h14.5M13.5 6.5 19 12l-5.5 5.5"/></symbol>
+    <symbol id="i-asagi" viewBox="0 0 24 24"><path d="M12 4.5V19M6.5 13.5 12 19l5.5-5.5"/></symbol>
+    <symbol id="i-arti" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-eksi" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-carpi" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></symbol>
+    <symbol id="i-yenile" viewBox="0 0 24 24"><path d="M19 12.5a7 7 0 1 1-2.1-5"/><path d="M17.8 3.8v4.1h-4.1"/></symbol>
+    <symbol id="i-tam" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+    <symbol id="i-ses" viewBox="0 0 24 24"><path d="M4 9.5h3.4L12 5.6v12.8l-4.6-3.9H4z"/><path d="M15.4 9.2a4 4 0 0 1 0 5.6M17.9 6.7a7.6 7.6 0 0 1 0 10.6"/></symbol>
+    <symbol id="i-ses-yok" viewBox="0 0 24 24"><path d="M4 9.5h3.4L12 5.6v12.8l-4.6-3.9H4z"/><path d="M15.6 9.6l4.8 4.8M20.4 9.6l-4.8 4.8"/></symbol>
+    <symbol id="i-yapistir" viewBox="0 0 24 24"><rect x="5.5" y="4.8" width="13" height="15.7" rx="2"/><path d="M9.3 4.8V3.6h5.4v1.2"/><path d="M8.8 10h6.4M8.8 13.3h6.4M8.8 16.6h3.8"/></symbol>
+  </defs>
+</svg>
 
-  <header class="pbar">
-    <a class="brand" href="/" aria-label="217 Products home"><img src="/assets/logo-217.svg?w=1" alt="217 Products" width="75" height="40"></a>
-    <nav class="pbar-links" aria-label="Decidora">
-      <a class="pbar-alt" href="/decidora/tr" hreflang="tr" lang="tr" data-lang="tr" aria-label="TR — Türkçe">TR</a>
-      <a class="pbar-cta" href="https://play.google.com/store/apps/details?id=com.kurapikamih.decidora" target="_blank" rel="noopener"><span class="pbar-cta-more">Get it on </span>Google Play <span aria-hidden="true">↗</span></a>
-    </nav>
-  </header>
+<a class="atla" href="#icerik">Skip to content</a>
 
-  <main id="main">
-    <section class="phero" aria-labelledby="app-name">
-      <div class="phero-in">
-        <div class="plabel">
-          <p class="pnum">02 / 03 · ON THE SHELF</p>
-          <h1 class="pname" id="app-name">Decidora</h1>
-          <span class="prule" aria-hidden="true"></span>
-          <p class="plead">Roll a die, flip a coin, spin the wheel. Leave the choice to chance.</p>
-          <div class="pcta">
-            <!-- noopener only, no noreferrer: the referrer is how Play Console
-                 attributes an install back to this site, and the page-level
-                 referrer policy already trims it to the bare origin. -->
-            <a class="btn primary" href="https://play.google.com/store/apps/details?id=com.kurapikamih.decidora" target="_blank" rel="noopener">Get it on Google Play <span aria-hidden="true">↗</span></a>
-          </div>
-          <dl class="pfacts">
-            <div><dt>Price</dt><dd>Free</dd></div>
-            <div><dt>Ads</dt><dd>None</dd></div>
-            <div><dt>Account</dt><dd>Not needed</dd></div>
-            <div><dt>Internet</dt><dd>Not needed</dd></div>
-          </dl>
+<!-- ============================================================ ÜST -->
+<header class="ust" id="ust">
+  <a class="marka" href="#basa" aria-label="Decidora, back to top">Decidora</a>
+  <nav class="kapsul" id="kapsul" aria-label="Page sections">
+    <ul class="kapsul__baglar" id="kapsul-baglar">
+      <li><a href="#aksam">Tools</a></li>
+      <li><a href="#dene">Try it</a></li>
+      <li><a href="#defterim">Decision log</a></li>
+      <li><a href="#gizlilik">Privacy</a></li>
+      <li><a href="tr" hreflang="tr" lang="tr" data-lang="tr" aria-label="Türkçe">TR</a></li>
+    </ul>
+    <a class="kapsul__indir" href="https://play.google.com/store/apps/details?id=com.kurapikamih.decidora" rel="noopener">Get it<span class="gorunmez"> (Google Play)</span></a>
+    <button class="kapsul__menu" type="button" aria-expanded="false" aria-controls="kapsul-baglar"><span class="kapsul__menu-cizgi" aria-hidden="true"></span><span class="gorunmez">Menu</span></button>
+  </nav>
+</header>
+
+<main id="icerik">
+
+<!--
+  Sayfa bir akşamı anlatır. Her sahnede bir soru, onu çözen araç ve kırmızı mühürle
+  basılan sonuç var. Sahnelerdeki sonuçlar gerçekten rastgele; ziyaretçi dokununca
+  yeniden çekilir ve deneme bölümündeki deftere "Last night" diye yazılır.
+-->
+
+<!-- ============================================================ 19.40 · ÇARK -->
+<section class="sahne sahne--cark" id="basa" aria-labelledby="s1-soru" data-sahne="cark" data-saat="19.40">
+  <div class="sahne__ic">
+    <div class="sahne__metin" data-hayalet="19.40">
+      <p class="sahne__an"><time>19.40</time><span>Saturday evening</span></p>
+      <h1 class="sahne__soru" id="s1-soru"><span class="kelime">What’s</span> <span class="kelime">for</span> <span class="kelime">dinner?</span></h1>
+      <p class="sahne__hikaye">Six of us, six different ideas. Some nights this question takes longer than the meal.</p>
+      <p class="sahne__cevap" data-sahne-cevap aria-live="polite">The wheel says: <b data-sahne-deger>Pasta</b>.</p>
+    </div>
+    <figure class="sahne__arac">
+      <div class="sahne__cerceve">
+        <div class="sahne__tuval" data-sahne-tuval>
+          <canvas aria-hidden="true"></canvas>
+          <span class="sahne__muhur" data-sahne-muhur aria-hidden="true">Pasta</span>
         </div>
-        <figure class="print">
-          <img src="/assets/decidora-card.webp?w=1" alt="An ink-painted die turning in the dark, its single pip the vermilion sun." width="900" height="1206" fetchpriority="high" decoding="async">
-          <span class="seal" lang="ja" aria-hidden="true">弐</span>
-        </figure>
+        <button class="sahne__dugme" type="button" data-sahne-dugme data-hazir="Spin again" data-mesgul="Spinning…"><svg class="simge"><use href="#i-yenile"/></svg><span data-sahne-dugme-yazi>Spin again</span></button>
       </div>
-    </section>
-
-    <section class="pwall" aria-labelledby="what-h">
-      <i class="bleed" aria-hidden="true"></i>
-      <div class="pwall-in">
-        <h2 class="phead" id="what-h">A coin for two. A die for a number. A <em>wheel</em> for many.</h2>
-        <div class="tools">
-          <article class="tool">
-            <h3>Dice</h3>
-            <p>Pick d4, d6, d8, d10, d12, d20 or d100, roll several at once, and add a bonus to the total.</p>
-          </article>
-          <article class="tool">
-            <h3>Coin</h3>
-            <p>Heads or tails, with a running count of how many of each have come up.</p>
-          </article>
-          <article class="tool">
-            <h3>Wheel</h3>
-            <p>Put your own options on it and spin, or start from a ready-made wheel. Keep the ones you use. After a spin, take the result, or strike it off and spin again.</p>
-          </article>
-        </div>
-        <p class="pnote">Every roll, flip and spin goes into a decision log you can look back on, or switch off whenever you like.</p>
-        <div class="screens">
-          <figure>
-            <img src="/assets/decidora/dice-2d6.webp?w=1" alt="Decidora’s dice table: two six-sided dice showing 6 and 4, a total of 10." width="576" height="1024" loading="lazy" decoding="async">
-            <figcaption>Two d6: 6 and 4 make 10</figcaption>
-          </figure>
-          <figure>
-            <img src="/assets/decidora/dice-3d20.webp?w=1" alt="Three twenty-sided dice showing 7, 9 and 5, a total of 21." width="576" height="1024" loading="lazy" decoding="async">
-            <figcaption>Three d20: 7, 9 and 5 make 21</figcaption>
-          </figure>
-          <figure>
-            <img src="/assets/decidora/coin.webp?w=1" alt="The coin screen: the result is tails, with 11 heads and 7 tails counted so far." width="576" height="1024" loading="lazy" decoding="async">
-            <figcaption>Tails, and the count so far</figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
-
-    <section class="pband" aria-labelledby="free-h">
-      <div class="pband-in">
-        <h2 class="phead" id="free-h">Free, and nothing else.</h2>
-        <div class="cols">
-          <div>
-            <h3>No ads</h3>
-            <p>Decidora is free and shows no ads. There is nothing to buy inside it.</p>
-          </div>
-          <div>
-            <h3>No account</h3>
-            <p>It never asks who you are. Open it and roll.</p>
-          </div>
-          <div>
-            <h3>No internet</h3>
-            <p>It has no network permission at all, so your decisions, your wheels and your settings stay on your phone.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="pfaq" aria-labelledby="faq-h">
-      <div class="pfaq-in">
-        <h2 class="phead" id="faq-h">Questions</h2>
-        <div class="faq">
-          <details>
-            <summary>Are the results really random?</summary>
-            <div class="a"><p>Yes. Every result comes from your phone’s operating-system source of secure randomness, and no roll depends on the one before it.</p></div>
-          </details>
-          <details>
-            <summary>Which dice can I roll?</summary>
-            <div class="a"><p>d4, d6, d8, d10, d12, d20 and d100. You can roll several at once and add a bonus to the total.</p></div>
-          </details>
-          <details>
-            <summary>Does it need an internet connection?</summary>
-            <div class="a"><p>No. Decidora has no internet permission and works fully offline.</p></div>
-          </details>
-          <details>
-            <summary>Where is my data, and how do I delete it?</summary>
-            <div class="a"><p>On your phone only, in the app’s own storage, and it is left out of Android backups. You can clear the decision log, your saved wheels and the coin count in Settings → My data, and uninstalling removes everything.</p></div>
-          </details>
-          <details>
-            <summary>Can I turn the decision log off?</summary>
-            <div class="a"><p>Yes, whenever you like, in the app’s settings.</p></div>
-          </details>
-        </div>
-        <p class="pfine">The details: <a href="/decidora/privacy.html#english">privacy policy</a> · <a href="/terms">terms of use</a> · <a href="mailto:destek217product@gmail.com">destek217product@gmail.com</a></p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="pfoot">
-    <i class="bleed" aria-hidden="true"></i>
-    <div class="pfoot-in">
-      <a href="/" aria-label="217 Products home"><img class="pfoot-mark" src="/assets/logo-217.svg?w=1" alt="" width="75" height="40" loading="lazy" decoding="async"></a>
-      <nav aria-label="Footer">
-        <a href="/#products">Everything on the shelf</a>
-        <a href="/decidora/privacy.html#english">Privacy policy</a>
-        <a href="/terms">Terms of use</a>
-        <a href="mailto:destek217product@gmail.com">Contact</a>
-      </nav>
-      <div class="pfoot-meta">
-        <span>Independent Product Studio</span>
-        <span>Ankara, Türkiye</span>
-        <span>© 2026 217 Products</span>
-        <span class="seal-sm" lang="ja" aria-hidden="true">二一七</span>
+      <figcaption class="sahne__etiket"><span data-sahne-etiket>Wheel · What to eat · 8 options</span></figcaption>
+    </figure>
+    <div class="tanitim">
+      <p>Decidora makes small decisions like this in one tap. Dice, coin toss, wheel and finger picker in one app: free, no ads, no internet.</p>
+      <div class="tanitim__eylem">
+        <a class="magaza" href="https://play.google.com/store/apps/details?id=com.kurapikamih.decidora" rel="noopener">
+          <img class="magaza__logo" src="assets/img/google-play-logo.webp" width="114" height="128" alt="">
+          <span class="magaza__yazi"><small>FREE</small>Get it on Google Play</span>
+        </a>
+        <a class="dugme dugme--cizgi" href="#dene">Try it in your browser <svg class="simge"><use href="#i-asagi"/></svg></a>
       </div>
     </div>
-  </footer>
+  </div>
 
-  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "d9107c4dfead4c3daf2514b746a87726"}'></script>
+  <nav class="aksam" id="aksam" aria-label="Tonight">
+    <p class="aksam__baslik">Tonight</p>
+    <ol>
+      <li><a href="#basa" aria-current="true"><time>19.40</time><span>Wheel</span></a></li>
+      <li><a href="#s-2110"><time>21.10</time><span>Finger picker</span></a></li>
+      <li><a href="#s-2205"><time>22.05</time><span>Dice</span></a></li>
+      <li><a href="#s-2330"><time>23.30</time><span>Coin toss</span></a></li>
+      <li><a href="#gizlilik"><time>00.15</time><span>Privacy</span></a></li>
+      <li><a href="#dene"><time>09.00</time><span>Your turn</span></a></li>
+    </ol>
+  </nav>
+
+  <div class="sahne__alt">
+    <div class="soylesi">
+      <p>What I want isn’t on the wheel.</p>
+      <p>You write the options. If the list is sitting in a group chat, copy it and paste it in one go.</p>
+    </div>
+    <aside class="kenar" aria-labelledby="k-cark">
+      <h2 id="k-cark">Wheel</h2>
+      <ul>
+        <li>Type your options one by one or paste a whole list; a wheel holds 30 options.</li>
+        <li>Save the wheels you use often under a name. Five ready-made ones come with it: What to eat, What to drink, What to do, Yes / No, Film genre.</li>
+        <li>When the result is in, say “Done” or “Remove it, keep going”: that’s how you whittle down a long list.</li>
+      </ul>
+      <a class="kenar__dene" href="#dene" data-arac-ac="cark">Try the wheel <svg class="simge"><use href="#i-sag"/></svg></a>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================================================ 21.10 · PARMAK SEÇİCİ -->
+<section class="sahne sahne--parmak" id="s-2110" aria-labelledby="s2-soru" data-sahne="parmak" data-saat="21.10">
+  <div class="sahne__ic sahne__ic--ters">
+    <div class="sahne__metin" data-hayalet="21.10">
+      <p class="sahne__an"><time>21.10</time><span>The bill arrives</span></p>
+      <h2 class="sahne__soru" id="s2-soru">Who’s paying?</h2>
+      <p class="sahne__hikaye">The waiter left the bill and six hands went for six wallets. At our table this fight lasts half an hour.</p>
+      <p class="sahne__cevap" data-sahne-cevap aria-live="polite">Everyone put a finger down. Tonight the bill is on <b data-sahne-deger>D</b>.</p>
+    </div>
+    <figure class="sahne__arac">
+      <div class="sahne__cerceve">
+        <div class="sahne__tuval" data-sahne-tuval>
+          <canvas aria-hidden="true"></canvas>
+          <span class="sahne__muhur" data-sahne-muhur aria-hidden="true">D</span>
+        </div>
+        <button class="sahne__dugme" type="button" data-sahne-dugme data-hazir="Pick again" data-mesgul="Choosing…"><svg class="simge"><use href="#i-yenile"/></svg><span data-sahne-dugme-yazi>Pick again</span></button>
+      </div>
+      <figcaption class="sahne__etiket"><span data-sahne-etiket>Fingers · Pick · 6 fingers</span></figcaption>
+    </figure>
+  </div>
+  <div class="sahne__alt">
+    <div class="soylesi">
+      <p>It’s rigged.</p>
+      <p>It isn’t. The result comes from the phone’s secure random number source, and all four tools use the same one.</p>
+    </div>
+    <aside class="kenar" aria-labelledby="k-parmak">
+      <h3 id="k-parmak">Finger picker</h3>
+      <ul>
+        <li>Everyone puts a finger on the screen; when the fingers stop, Decidora picks.</li>
+        <li><b>Pick:</b> chooses one to four people.</li>
+        <li><b>Teams:</b> splits everyone into two to four teams.</li>
+        <li><b>Order:</b> gives everyone a turn number.</li>
+      </ul>
+      <a class="kenar__dene" href="#dene" data-arac-ac="parmak">Pick with fingers <svg class="simge"><use href="#i-sag"/></svg></a>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================================================ 22.05 · ZAR -->
+<section class="sahne sahne--zar sahne--gece" id="s-2205" aria-labelledby="s3-soru" data-sahne="zar" data-saat="22.05">
+  <div class="sahne__ic">
+    <div class="sahne__metin" data-hayalet="22.05">
+      <p class="sahne__an"><time>22.05</time><span>At home, over a board game</span></p>
+      <h2 class="sahne__soru" id="s3-soru">Where are the dice?</h2>
+      <p class="sahne__hikaye">The box is open: board, cards, pieces, all there. No dice.</p>
+      <p class="sahne__cevap" data-sahne-cevap aria-live="polite">No problem: two dice, total <b data-sahne-deger>9</b>. Game on.</p>
+    </div>
+    <figure class="sahne__arac">
+      <div class="sahne__cerceve">
+        <div class="sahne__tuval" data-sahne-tuval>
+          <canvas aria-hidden="true"></canvas>
+          <span class="sahne__muhur" data-sahne-muhur aria-hidden="true">9</span>
+        </div>
+        <button class="sahne__dugme" type="button" data-sahne-dugme data-hazir="Roll again" data-mesgul="Rolling…"><svg class="simge"><use href="#i-yenile"/></svg><span data-sahne-dugme-yazi>Roll again</span></button>
+      </div>
+      <figcaption class="sahne__etiket"><span data-sahne-etiket>Dice · 2d6 · 4 and 5</span></figcaption>
+    </figure>
+  </div>
+  <div class="sahne__alt">
+    <div class="soylesi">
+      <p>This game uses three dice, though.</p>
+      <p>Roll up to six. You can even add a bonus to the total, like <code>3d8+2</code>.</p>
+    </div>
+    <aside class="kenar" aria-labelledby="k-zar">
+      <h3 id="k-zar">Dice</h3>
+      <ul>
+        <li>Seven kinds: d4, d6, d8, d10, d12, d20 and d100.</li>
+        <li>Up to six dice at once; three for d100, since each result takes two dice.</li>
+        <li>A bonus from −99 to +99 on top. The total is shown large, each die underneath.</li>
+        <li>With a single die it tells you when you hit the highest or the lowest.</li>
+      </ul>
+      <a class="kenar__dene" href="#dene" data-arac-ac="zar">Try the dice <svg class="simge"><use href="#i-sag"/></svg></a>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================================================ 23.30 · YAZI TURA -->
+<section class="sahne sahne--para sahne--gece" id="s-2330" aria-labelledby="s4-soru" data-sahne="para" data-saat="23.30">
+  <div class="sahne__ic sahne__ic--ters">
+    <div class="sahne__metin" data-hayalet="23.30">
+      <p class="sahne__an"><time>23.30</time><span>It’s getting late</span></p>
+      <h2 class="sahne__soru" id="s4-soru">One more round?</h2>
+      <p class="sahne__hikaye">Half of us want another round, half of us want to go home. Deal: heads, we play; tails, everyone goes home.</p>
+      <p class="sahne__cevap" data-sahne-cevap aria-live="polite"><b data-sahne-deger>Heads</b> it is: <span data-sahne-anlam>one more round.</span></p>
+    </div>
+    <figure class="sahne__arac">
+      <div class="sahne__cerceve">
+        <div class="sahne__tuval" data-sahne-tuval>
+          <canvas aria-hidden="true"></canvas>
+          <span class="sahne__muhur" data-sahne-muhur aria-hidden="true">Heads</span>
+        </div>
+        <button class="sahne__dugme" type="button" data-sahne-dugme data-hazir="Flip again" data-mesgul="Flipping…"><svg class="simge"><use href="#i-yenile"/></svg><span data-sahne-dugme-yazi>Flip again</span></button>
+      </div>
+      <figcaption class="sahne__etiket"><span data-sahne-etiket>Coin</span></figcaption>
+    </figure>
+  </div>
+  <div class="sahne__alt">
+    <div class="soylesi">
+      <p>Best of three?</p>
+      <p>Sure. The app already counts how many heads and how many tails.</p>
+    </div>
+    <aside class="kenar" aria-labelledby="k-para">
+      <h3 id="k-para">Coin toss</h3>
+      <ul>
+        <li>The coin spins through the air, edge flashing, and lands.</li>
+        <li>It counts your heads and tails, and shows the last result on its own.</li>
+        <li>Reset the counter whenever you like.</li>
+      </ul>
+      <a class="kenar__dene" href="#dene" data-arac-ac="para">Flip the coin <svg class="simge"><use href="#i-sag"/></svg></a>
+    </aside>
+  </div>
+</section>
+
+<!-- ============================================================ 00.15 · GİZLİLİK -->
+<section class="gece" id="gizlilik" aria-labelledby="gece-baslik">
+  <div class="kap gece__ic" data-hayalet="00.15">
+    <p class="sahne__an"><time>00.15</time><span>Everyone’s home</span></p>
+    <h2 class="gece__baslik" id="gece-baslik">Tonight’s decisions went nowhere.</h2>
+    <p class="gece__metin">Decidora has no internet permission. It asks for no account and shows no ads; your decisions, wheels and settings stay on your phone.</p>
+    <dl class="gece__olgular">
+      <div><dt>Price</dt><dd>Free</dd></div>
+      <div><dt>Ads</dt><dd>None</dd></div>
+      <div><dt>Account</dt><dd>Not needed</dd></div>
+      <div><dt>Permissions</dt><dd>None</dd></div>
+      <div><dt>Data</dt><dd>On your phone</dd></div>
+    </dl>
+    <p class="gece__not">This site is the same: no cookies, no tracking code, nothing loaded from anywhere else. <a href="https://217products.com/decidora/privacy.html" rel="noopener">The full privacy policy</a></p>
+  </div>
+</section>
+
+<!-- ============================================================ 09.00 · DENE -->
+<section class="dene" id="dene" aria-labelledby="dene-baslik">
+  <i class="yirtik yirtik--kagit" aria-hidden="true"></i>
+  <div class="kap kap--genis">
+    <header class="bolum-bas">
+      <p class="sahne__an"><time>09.00</time><span>The next morning</span></p>
+      <h2 id="dene-baslik" class="baslik">Your turn.</h2>
+      <p class="bolum-bas__on">A rehearsal of all four tools, right in your browser. The results are truly random, and everything you throw goes into the log under “Today”. Last night’s decisions are in there too.</p>
+    </header>
+
+    <div class="masa" id="masa-uygulama" data-arac="zar">
+      <div class="masa__araclar" role="tablist" aria-label="Choose a tool" aria-orientation="vertical">
+        <button class="sekme" type="button" role="tab" id="sekme-zar" data-sekme="zar" aria-selected="true" aria-controls="masa-govde">
+          <span class="sekme__ad">Dice</span><span class="sekme__ne">When you need a number</span>
+        </button>
+        <button class="sekme" type="button" role="tab" id="sekme-para" data-sekme="para" aria-selected="false" aria-controls="masa-govde" tabindex="-1">
+          <span class="sekme__ad">Coin</span><span class="sekme__ne">When it’s down to two</span>
+        </button>
+        <button class="sekme" type="button" role="tab" id="sekme-cark" data-sekme="cark" aria-selected="false" aria-controls="masa-govde" tabindex="-1">
+          <span class="sekme__ad">Wheel</span><span class="sekme__ne">When there are many options</span>
+        </button>
+        <button class="sekme" type="button" role="tab" id="sekme-parmak" data-sekme="parmak" aria-selected="false" aria-controls="masa-govde" tabindex="-1">
+          <span class="sekme__ad">Fingers</span><span class="sekme__ne">When it has to be one person</span>
+        </button>
+      </div>
+
+      <div class="masa__govde" id="masa-govde" role="tabpanel" aria-labelledby="sekme-zar">
+        <div class="tepsi" id="kece" tabindex="0" role="button" aria-describedby="kece-ipucu" aria-label="Tap to roll">
+          <canvas class="tepsi__tuval" id="masa-tuval" aria-hidden="true"></canvas>
+          <p class="masa__ipucu" id="kece-ipucu"><span data-ipucu>Tap to roll</span></p>
+          <button class="ses-anahtar" type="button" data-ses-anahtar aria-pressed="true">
+            <svg class="simge ses-acik-simge"><use href="#i-ses"/></svg>
+            <svg class="simge ses-kapali-simge"><use href="#i-ses-yok"/></svg>
+            <span class="gorunmez">Sound</span>
+          </button>
+          <button class="tepsi__kapat" type="button" data-tam-kapat hidden>
+            <svg class="simge"><use href="#i-carpi"/></svg><span>Exit full screen</span>
+          </button>
+          <noscript><p class="tepsi__noscript">JavaScript needs to be on to try it.</p></noscript>
+        </div>
+
+        <div class="masa__sonuc" aria-live="polite" aria-atomic="true">
+          <p class="sonuc__buyuk" id="sonuc-buyuk">2d6</p>
+          <p class="sonuc__alt" id="sonuc-alt">Tap to roll</p>
+        </div>
+
+        <!-- Zar -->
+        <div class="panel" data-panel="zar">
+          <div class="secici secici--zar" role="radiogroup" aria-label="Dice type" data-zar-turleri>
+            <button type="button" role="radio" aria-checked="false" data-tur="4">d4</button>
+            <button type="button" role="radio" aria-checked="true" data-tur="6">d6</button>
+            <button type="button" role="radio" aria-checked="false" data-tur="8">d8</button>
+            <button type="button" role="radio" aria-checked="false" data-tur="10">d10</button>
+            <button type="button" role="radio" aria-checked="false" data-tur="12">d12</button>
+            <button type="button" role="radio" aria-checked="false" data-tur="20">d20</button>
+            <button type="button" role="radio" aria-checked="false" data-tur="100">d100</button>
+          </div>
+          <div class="sayaclar">
+            <div class="sayac" data-sayac="adet">
+              <button type="button" data-yon="-1" aria-label="Decrease count"><svg class="simge"><use href="#i-eksi"/></svg></button>
+              <p><output id="zar-adet" aria-live="off">2</output><span>Count</span></p>
+              <button type="button" data-yon="1" aria-label="Increase count"><svg class="simge"><use href="#i-arti"/></svg></button>
+            </div>
+            <div class="sayac" data-sayac="ek">
+              <button type="button" data-yon="-1" aria-label="Decrease bonus"><svg class="simge"><use href="#i-eksi"/></svg></button>
+              <p><output id="zar-ek" aria-live="off">+0</output><span>Bonus</span></p>
+              <button type="button" data-yon="1" aria-label="Increase bonus"><svg class="simge"><use href="#i-arti"/></svg></button>
+            </div>
+          </div>
+          <p class="panel__not">Roll: <code id="zar-formul">2d6</code> · Up to six dice at once (three for d100), bonus from −99 to +99.</p>
+        </div>
+
+        <!-- Yazı tura -->
+        <div class="panel" data-panel="para" hidden>
+          <div class="para-sayac">
+            <div class="para-sayac__hucre"><span>Heads</span><strong id="para-yazi">0</strong></div>
+            <div class="para-sayac__hucre para-sayac__hucre--orta"><span>Last</span><strong id="para-son">–</strong></div>
+            <div class="para-sayac__hucre para-sayac__hucre--tura"><span>Tails</span><strong id="para-tura">0</strong></div>
+            <div class="oran" aria-hidden="true"><span class="oran__yazi" id="oran-yazi"></span><span class="oran__tura" id="oran-tura"></span></div>
+          </div>
+          <button class="dugme dugme--kucuk dugme--cizgi" type="button" id="para-sifirla"><svg class="simge"><use href="#i-yenile"/></svg>Reset counter</button>
+        </div>
+
+        <!-- Çark -->
+        <div class="panel" data-panel="cark" hidden>
+          <div class="cark-sonuc" id="cark-sonuc" hidden>
+            <button class="dugme dugme--kucuk dugme--dolu" type="button" id="cark-tamam">Done</button>
+            <button class="dugme dugme--kucuk dugme--cizgi" type="button" id="cark-cikar">Remove it, keep going</button>
+          </div>
+          <div class="cark-duzen" id="cark-duzen">
+            <div class="cark-bilgi">
+              <p class="cark-bilgi__ad"><strong id="cark-ad">What to eat</strong> <span id="cark-sayi">8 options</span></p>
+              <label class="acilir">
+                <span class="gorunmez">Choose a ready-made wheel</span>
+                <select id="cark-hazir">
+                  <option value="" disabled selected>Ready-made wheels</option>
+                </select>
+              </label>
+            </div>
+            <form class="cark-ekle" id="cark-ekle" autocomplete="off">
+              <label class="gorunmez" for="cark-girdi">Add an option</label>
+              <input type="text" id="cark-girdi" placeholder="Type an option" maxlength="24" enterkeyhint="done">
+              <button type="submit" aria-label="Add the option"><svg class="simge"><use href="#i-arti"/></svg></button>
+            </form>
+            <button class="dugme dugme--kucuk dugme--cizgi" type="button" id="cark-toplu-ac" aria-expanded="false" aria-controls="cark-toplu"><svg class="simge"><use href="#i-yapistir"/></svg>Paste a list</button>
+            <div class="cark-toplu" id="cark-toplu" hidden>
+              <label for="cark-toplu-metin">One option per line, or paste a list just as it is.</label>
+              <textarea id="cark-toplu-metin" rows="5" placeholder="Sushi&#10;Pasta&#10;Soup"></textarea>
+              <div class="cark-toplu__dugmeler">
+                <button class="dugme dugme--kucuk dugme--dolu" type="button" id="cark-toplu-ekle">Add to the list</button>
+                <button class="dugme dugme--kucuk dugme--cizgi" type="button" id="cark-toplu-degistir">Replace the list</button>
+              </div>
+            </div>
+            <ol class="cark-liste" id="cark-liste" aria-label="On the wheel"></ol>
+          </div>
+        </div>
+
+        <!-- Parmak -->
+        <div class="panel" data-panel="parmak" hidden>
+          <div class="secici secici--parmak" role="radiogroup" aria-label="Mode" data-parmak-modlari>
+            <button type="button" role="radio" aria-checked="true" data-mod="sec">Pick</button>
+            <button type="button" role="radio" aria-checked="false" data-mod="takim">Teams</button>
+            <button type="button" role="radio" aria-checked="false" data-mod="sira">Order</button>
+          </div>
+          <div class="sayaclar sayaclar--tek" id="parmak-sayac-kutu">
+            <div class="sayac" data-sayac="parmak">
+              <button type="button" data-yon="-1" aria-label="Decrease"><svg class="simge"><use href="#i-eksi"/></svg></button>
+              <p><output id="parmak-sayi" aria-live="off">1</output><span id="parmak-sayi-ad">To pick</span></p>
+              <button type="button" data-yon="1" aria-label="Increase"><svg class="simge"><use href="#i-arti"/></svg></button>
+            </div>
+          </div>
+          <p class="panel__not" id="parmak-yonerge">Everyone puts a finger down and holds still. When the fingers stop, Decidora picks.</p>
+          <div class="parmak-dugmeler">
+            <button class="dugme dugme--kucuk dugme--cizgi" type="button" id="parmak-ekle"><svg class="simge"><use href="#i-arti"/></svg>Add a finger</button>
+            <button class="dugme dugme--kucuk dugme--dolu" type="button" id="parmak-sec">Pick now</button>
+            <button class="dugme dugme--kucuk dugme--cizgi" type="button" id="parmak-temizle"><svg class="simge"><use href="#i-yenile"/></svg>Clear</button>
+            <button class="dugme dugme--kucuk dugme--cizgi" type="button" id="parmak-tam"><svg class="simge"><use href="#i-tam"/></svg>Full screen</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="defterim" id="defterim" aria-labelledby="defterim-baslik">
+        <div class="defterim__bas">
+          <h3 id="defterim-baslik">Decision log</h3>
+          <span class="defterim__sayi" id="defterim-sayi">0 / 200</span>
+        </div>
+        <label class="anahtar">
+          <input type="checkbox" id="defterim-acik" checked>
+          <span class="anahtar__ray" aria-hidden="true"></span>
+          <span class="anahtar__yazi">Keep decisions</span>
+        </label>
+        <ol class="defterim__liste" id="defterim-liste"></ol>
+        <p class="defterim__bos" id="defterim-bos">No decisions yet. Roll a die, flip the coin or spin the wheel.</p>
+        <button class="defterim__temizle" type="button" id="defterim-temizle" hidden>Clear</button>
+        <p class="defterim__not">The log in the app works the same way: it keeps your last 200 decisions, and you can turn it off in Settings.</p>
+      </aside>
+    </div>
+    <p class="dene__not">Nothing is saved in this rehearsal; close the tab and the log goes with it.</p>
+  </div>
+</section>
+
+<!-- ============================================================ İNDİR -->
+<section class="indir" id="indir" aria-labelledby="indir-baslik">
+  <div class="kap">
+    <div class="indir__ic">
+      <div class="indir__metin">
+        <p class="sahne__an"><time>19.40</time><span>Next Saturday</span></p>
+        <h2 id="indir-baslik" class="baslik">Same question again.</h2>
+        <p class="indir__on">This time, keep Decidora in your pocket. It’s free on Google Play; look for this icon in the store.</p>
+        <div class="indir__eylem">
+          <img class="indir__simge" src="assets/img/simge-192.webp" width="192" height="192" alt="Decidora’s app icon" loading="lazy">
+          <a class="magaza magaza--buyuk" href="https://play.google.com/store/apps/details?id=com.kurapikamih.decidora" rel="noopener">
+            <img class="magaza__logo" src="assets/img/google-play-logo.webp" width="114" height="128" alt="" loading="lazy">
+            <span class="magaza__yazi"><small>FREE</small>Get it on Google Play</span>
+          </a>
+        </div>
+      </div>
+      <figure class="karekod">
+        <img src="assets/img/qr-google-play.svg" width="148" height="148" alt="QR code that opens Decidora on Google Play" loading="lazy">
+        <figcaption>On a computer? Scan it with your phone to open the store.</figcaption>
+      </figure>
+    </div>
+
+    <div class="indir__alt">
+      <div class="ekranlar" aria-labelledby="ekranlar-baslik">
+        <p class="ekranlar__baslik" id="ekranlar-baslik">Three screens from the app</p>
+        <div class="ekranlar__sira">
+          <figure>
+            <picture>
+              <source type="image/avif" srcset="assets/img/ekran/zar-2d6-480.avif 480w, assets/img/ekran/zar-2d6-720.avif 720w" sizes="(max-width: 700px) 42vw, 180px">
+              <source type="image/webp" srcset="assets/img/ekran/zar-2d6-480.webp 480w, assets/img/ekran/zar-2d6-720.webp 720w" sizes="(max-width: 700px) 42vw, 180px">
+              <img src="assets/img/ekran/zar-2d6-720.jpg" width="1152" height="2048" loading="lazy" decoding="async" alt="Decidora’s dice screen: two six-sided dice showing 6 and 4, total 10.">
+            </picture>
+            <figcaption>Dice: 6 and 4, total 10</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/avif" srcset="assets/img/ekran/zar-3d20-480.avif 480w, assets/img/ekran/zar-3d20-720.avif 720w" sizes="(max-width: 700px) 42vw, 180px">
+              <source type="image/webp" srcset="assets/img/ekran/zar-3d20-480.webp 480w, assets/img/ekran/zar-3d20-720.webp 720w" sizes="(max-width: 700px) 42vw, 180px">
+              <img src="assets/img/ekran/zar-3d20-720.jpg" width="1152" height="2048" loading="lazy" decoding="async" alt="Three twenty-sided dice showing 7, 9 and 5, total 21; below, the dice type picker and the count and bonus counters.">
+            </picture>
+            <figcaption>Three d20s: total 21</figcaption>
+          </figure>
+          <figure>
+            <picture>
+              <source type="image/avif" srcset="assets/img/ekran/yazi-tura-480.avif 480w, assets/img/ekran/yazi-tura-720.avif 720w" sizes="(max-width: 700px) 42vw, 180px">
+              <source type="image/webp" srcset="assets/img/ekran/yazi-tura-480.webp 480w, assets/img/ekran/yazi-tura-720.webp 720w" sizes="(max-width: 700px) 42vw, 180px">
+              <img src="assets/img/ekran/yazi-tura-720.jpg" width="1152" height="2048" loading="lazy" decoding="async" alt="The coin screen: the result is tails; the counter shows 11 heads and 7 tails.">
+            </picture>
+            <figcaption>Coin: 11 heads, 7 tails</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="son-sorular" aria-labelledby="son-sorular-baslik">
+        <p class="son-sorular__baslik" id="son-sorular-baslik">Last questions from the table</p>
+        <dl>
+          <div><dt>Does it cost anything?</dt><dd>No. It’s free, with no ads.</dd></div>
+          <div><dt>Do I need an account?</dt><dd>No. Download it, open it, use it.</dd></div>
+          <div><dt>Which languages?</dt><dd>English, Turkish, German, Spanish and French. It follows your phone’s language, and you can switch in Settings.</dd></div>
+          <div><dt>Is it on iPhone?</dt><dd>Not for now: Android only, on Google Play.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================ ALT BİLGİ -->
+<footer class="alt">
+  <i class="yirtik" aria-hidden="true"></i>
+  <div class="kap alt__ic">
+    <div class="alt__marka">
+      <a class="alt__217" href="https://217products.com/" rel="noopener" aria-label="217 Products"><img src="assets/img/marka/logo-217.svg" width="120" height="64" alt="" loading="lazy" decoding="async"></a>
+      <p>Decidora is an app by 217 Products.</p>
+    </div>
+    <nav class="alt__baglar" aria-label="Footer">
+      <a href="https://217products.com/decidora/privacy.html" rel="noopener">Privacy policy</a>
+      <a href="https://217products.com/terms" rel="noopener">Terms of use</a>
+      <a href="mailto:destek217product@gmail.com">Contact</a>
+      <a href="https://217products.com/" rel="noopener">217products.com</a>
+      <a href="tr" hreflang="tr" lang="tr" data-lang="tr">Türkçe</a>
+    </nav>
+    <div class="alt__kaynak">
+      <p>Fonts: Shippori Mincho and Manrope (<a href="assets/lisans/OFL-ShipporiMincho.txt">SIL OFL 1.1</a>, <a href="assets/lisans/OFL-Manrope.txt">SIL OFL 1.1</a>). Sounds in the demo: <a href="https://kenney.nl/assets/casino-audio" rel="noopener">Kenney</a> (CC0). <a href="assets/lisans/KAYNAKLAR.txt">All sources</a></p>
+      <p>Google Play and the Google Play logo are trademarks of Google LLC. Android is a trademark of Google LLC.</p>
+    </div>
+    <div class="alt__meta">
+      <span>© <span data-yil>2026</span> 217 Products</span>
+      <span class="muhur muhur--alt" lang="ja" aria-hidden="true">二一七</span>
+    </div>
+  </div>
+</footer>
+
+<!-- zar3d.js, ses.js ve masa.js'i site.js, o bölümlere yaklaşınca yükler -->
+<script src="assets/js/cark.js" defer></script>
+<script src="assets/js/site.js" defer></script>
 </body>
 </html>

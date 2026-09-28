@@ -22,15 +22,15 @@
    because the old subset still carried glyphs from retired copy. */
 @font-face {
   font-family: "Manrope";
-  src: url("assets/fonts/manrope-var.woff2?v=2") format("woff2");
+  src: url("assets/fonts/manrope-var.woff2?v=3") format("woff2");
   font-weight: 400 800; font-style: normal; font-display: swap;
 }
-@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-500.woff2?v=2") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-500.woff2?v=3") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
 /* v=3: the 700 cut carries 弐 (U+5F10) for the second shelf seal, merged in
    from the full face as a single glyph — re-subsetting from the source would
    drop the Turkish letters this file was hand-built to hold. */
-@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-700.woff2?v=3") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-800.woff2?v=2") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-700.woff2?v=4") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("assets/fonts/shippori-800.woff2?v=3") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
 
 :root {
   /* ANDROID'S AUTO DARK THEME IS AN ALGORITHM, AND IT EATS THIS PAGE.
