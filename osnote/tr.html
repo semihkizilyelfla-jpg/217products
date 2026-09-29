@@ -34,8 +34,8 @@
   <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
-  <script src="assets/js/bas.js"></script>
-  <link rel="stylesheet" href="assets/css/site.css">
+  <script src="assets/js/bas.js?v=10603f8d"></script>
+  <link rel="stylesheet" href="assets/css/site.css?v=ef8f5f26">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -595,7 +595,7 @@
           <button type="button" aria-pressed="false" tabindex="-1" data-p="sayfa"><b>Sayfa</b><span>Ekranın üstüne kâğıt serer. Aşağıda deneyebilirsin.</span></button>
           <button type="button" aria-pressed="false" tabindex="-1" data-p="kapat"><b>Kapat</b><span>Kalemi kapatır. Çizimler silineceği için önce sorar.</span></button>
           <button type="button" aria-pressed="false" tabindex="-1" data-p="kucult"><b>Küçült</b><span>Dört düğmelik mini çubuk. Genişlet, Kalem, El ve Silgi.</span></button>
-          <button type="button" aria-pressed="false" tabindex="-1" data-p="daha"><b>⋯ Araçlar</b><span>Geri al, Yinele, Gizle, Döndür (tablette), Temizle, Yakala.</span></button>
+          <button type="button" aria-pressed="false" tabindex="-1" data-p="daha"><b><svg class="simge simge--dolu simge--satir" role="img" aria-label="üç nokta"><use href="#m-more-horiz"/></svg> Araçlar</b><span>Geri al, Yinele, Gizle, Döndür (tablette), Temizle, Yakala.</span></button>
         </div>
       </div>
       <div class="anatomi__sahne">
@@ -621,7 +621,7 @@
           <div class="anatomi__panel" data-anatomi-panel></div>
         </div>
         <p class="anatomi__aciklama" data-anatomi-aciklama aria-live="polite"></p>
-        <p class="cubuk__not">İki çubuk var. <b>Standart</b> çubukta El, Kalem, Silgi, altı renk, Kapat ve ⋯ (geri al, yinele, gizle, tablette döndür, temizle) bulunur. <b>Gelişmiş</b> çubuğa şekiller, sayfa, küçült ve yakala eklenir. Gelişmiş çubuk ücretsiz sürümde de var. Ücretsizde açılırken reklam gösterebilir, Pro’da göstermez.</p>
+        <p class="cubuk__not">İki çubuk var. <b>Standart</b> çubukta El, Kalem, Silgi, altı renk, Kapat ve <svg class="simge simge--dolu simge--satir" role="img" aria-label="üç nokta"><use href="#m-more-horiz"/></svg> (geri al, yinele, gizle, tablette döndür, temizle) bulunur. <b>Gelişmiş</b> çubuğa şekiller, sayfa, küçült ve yakala eklenir. Gelişmiş çubuk ücretsiz sürümde de var. Ücretsizde açılırken reklam gösterebilir, Pro’da göstermez.</p>
       </div>
     </div>
   </div>
@@ -638,7 +638,7 @@
             <div class="t-sayfa">
               <p class="p-bas"><span>TYT Geometri · Deneme 2</span><span>Sayfa 3</span></p>
               <div class="t-soru">
-                <p><b>7.</b> Şekildeki ABC üçgeninde [AB] ⊥ [BC] ve |AC| = 2·|AB| dir.</p>
+                <p><b>7.</b> Şekildeki ABC üçgeninde [AB] <svg class="p-dik" viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1.4v7.2M1.4 8.6h7.2"/></svg> [BC] ve |AC| = 2·|AB| dir.</p>
                 <p>Buna göre ACB açısının ölçüsü kaç derecedir?</p>
                 <svg class="t-cizim" viewBox="0 0 400 260"><path d="M70 40V220H382Z" fill="none" stroke="#202124" stroke-width="2" stroke-linejoin="round"/><path d="M70 204h16v16" fill="none" stroke="#202124" stroke-width="1.5"/><text x="52" y="38">A</text><text x="50" y="238">B</text><text x="388" y="238">C</text></svg>
                 <ol class="p-sik p-sik--yan"><li><b>A)</b> 15</li><li><b>B)</b> 30</li><li><b>C)</b> 45</li><li><b>D)</b> 60</li><li><b>E)</b> 75</li></ol>
@@ -701,7 +701,7 @@
         </dl>
         <div class="yakala" aria-labelledby="yakala-baslik">
           <h3 class="yakala__baslik" id="yakala-baslik">Yakala</h3>
-          <p class="yakala__metin">Saklamak istediğinde ⋯ menüsünden Yakala’ya dokunursun. Kayıt yalnız OSNote’un kütüphanesine gider.</p>
+          <p class="yakala__metin">Saklamak istediğinde <svg class="simge simge--dolu simge--satir" role="img" aria-label="üç nokta"><use href="#m-more-horiz"/></svg> menüsünden Yakala’ya dokunursun. Kayıt yalnız OSNote’un kütüphanesine gider.</p>
           <div class="op op--yakala">
             <p class="op__soru">Ekran görüntüsü kaydedilsin mi?</p>
             <div class="op__secenek">
@@ -940,7 +940,7 @@
           <button type="button" role="tab" aria-selected="false" data-sekme="goruntu" id="ks-goruntu" aria-controls="kutuphane-liste" tabindex="-1">Görüntüler</button>
         </div>
         <ul class="kutuphane__liste" id="kutuphane-liste" role="tabpanel" aria-labelledby="ks-tumu" data-kutuphane-liste></ul>
-        <p class="kutuphane__bos" data-kutuphane-bos hidden>Henüz görüntü yok. Yukarıdaki “Yakala” düğmelerine dokun ya da sayfanın kalemiyle buraya yazıp ⋯ menüsünden yakala.</p>
+        <p class="kutuphane__bos" data-kutuphane-bos hidden>Henüz görüntü yok. Yukarıdaki “Yakala” düğmelerine dokun ya da sayfanın kalemiyle buraya yazıp <svg class="simge simge--dolu simge--satir" role="img" aria-label="üç nokta"><use href="#m-more-horiz"/></svg> menüsünden yakala.</p>
       </aside>
     </div>
     <p class="dene__not">Bu provada hiçbir şey saklanmaz. Sekmeyi kapatınca defter de kütüphane de silinir. Sayfadaki ekran kalemi açıksa, deftere yazmadan önce onu kapat ya da El’e geç.</p>
@@ -961,7 +961,7 @@
         <div><dt>Ekran</dt><dd>Yalnız yakalayınca</dd></div>
         <div><dt>Analitik</dt><dd>Ayarlardan kapanır</dd></div>
       </dl>
-      <p class="gizlilik__not">Kullanım analitiğini ve çökme raporlarını Ayarlar → Gizlilik’ten kapatabilirsin. Android yedeklemen açıksa defterlerin, Google hesabının sana ait şifreli yedeğine girebilir. Bulutla eşitleme yok. <a href="https://217products.com/osnote/privacy.html" rel="noopener">Gizlilik politikasının tamamı</a></p>
+      <p class="gizlilik__not">Kullanım analitiğini ve çökme raporlarını Ayarlar <svg class="simge simge--satir simge--ok" aria-hidden="true"><use href="#i-sag"/></svg> Gizlilik’ten kapatabilirsin. Android yedeklemen açıksa defterlerin, Google hesabının sana ait şifreli yedeğine girebilir. Bulutla eşitleme yok. <a href="https://217products.com/osnote/privacy.html" rel="noopener">Gizlilik politikasının tamamı</a></p>
       <p class="gizlilik__not">Bu sitede çerez ve takip kodu yok, dışarıdan hiçbir şey yüklenmez. Deneme defterine yazdıkların yalnız bu sekmede durur.</p>
     </div>
   </div>
@@ -1014,7 +1014,7 @@
           </ul>
         </div>
       </div>
-      <p class="pro__not">Fiyatlar Google Play’de gösterilir. Aylık aboneliği Google Play → Ödemeler ve abonelikler’den istediğin an iptal edersin. Uygulamada hesabını silmek aboneliği iptal etmez.</p>
+      <p class="pro__not">Fiyatlar Google Play’de gösterilir. Aylık aboneliği Google Play <svg class="simge simge--satir simge--ok" aria-hidden="true"><use href="#i-sag"/></svg> Ödemeler ve abonelikler’den istediğin an iptal edersin. Uygulamada hesabını silmek aboneliği iptal etmez.</p>
     </div>
 
     <div class="sorular" aria-labelledby="sorular-baslik">
@@ -1061,13 +1061,13 @@
   </div>
 </footer>
 
-<script src="assets/js/murekkep.js" defer></script>
-<script src="assets/js/el-yazisi.js" defer></script>
-<script src="assets/js/site.js" defer></script>
-<script src="assets/js/kalem.js" defer></script>
-<script src="assets/js/sahne.js" defer></script>
-<script src="assets/js/videolar.js" defer></script>
-<script src="assets/js/ekranlar.js" defer></script>
-<script src="assets/js/defter.js" defer></script>
+<script src="assets/js/murekkep.js?v=e635d640" defer></script>
+<script src="assets/js/el-yazisi.js?v=06cd669f" defer></script>
+<script src="assets/js/site.js?v=e0acf000" defer></script>
+<script src="assets/js/kalem.js?v=f032352e" defer></script>
+<script src="assets/js/sahne.js?v=b08b6af2" defer></script>
+<script src="assets/js/videolar.js?v=77b42414" defer></script>
+<script src="assets/js/ekranlar.js?v=742a654d" defer></script>
+<script src="assets/js/defter.js?v=70f43d60" defer></script>
 </body>
 </html>

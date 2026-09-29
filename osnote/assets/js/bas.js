@@ -14,10 +14,10 @@
   OSN.dil = function (tr, ing) { return en ? ing : tr; };
   if (location.protocol === 'file:') return;
   var liste = [
-    ['preload', 'assets/fonts/shippori-800.woff2'],
-    ['preload', 'assets/fonts/manrope.woff2'],
-    ['preload', 'assets/fonts/roboto-400.woff2'],
-    ['preload', 'assets/fonts/roboto-500.woff2'],
+    ['preload', 'assets/fonts/shippori-800.woff2?v=ada4e346'],
+    ['preload', 'assets/fonts/manrope.woff2?v=78276c57'],
+    ['preload', 'assets/fonts/roboto-400.woff2?v=9ef3d2aa'],
+    ['preload', 'assets/fonts/roboto-500.woff2?v=f1d41ec1'],
     ['manifest', en ? 'site-en.webmanifest' : 'site.webmanifest']
   ];
   for (var i = 0; i < liste.length; i++) {

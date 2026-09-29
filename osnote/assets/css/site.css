@@ -11,14 +11,14 @@
    tablet 1000×625) ve bütünüyle --k oranında küçültülür.
    ============================================================ */
 
-@font-face { font-family: "Shippori Mincho"; src: url("../fonts/shippori-500.woff2") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "Shippori Mincho"; src: url("../fonts/shippori-700.woff2") format("woff2"); font-weight: 600 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Shippori Mincho"; src: url("../fonts/shippori-800.woff2") format("woff2"); font-weight: 800 900; font-style: normal; font-display: swap; }
-@font-face { font-family: "Manrope"; src: url("../fonts/manrope.woff2") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }
-@font-face { font-family: "Roboto"; src: url("../fonts/roboto-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "Belge"; src: url("../fonts/belge-500.woff2") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "Belge"; src: url("../fonts/belge-600.woff2") format("woff2"); font-weight: 600 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Roboto"; src: url("../fonts/roboto-500.woff2") format("woff2"); font-weight: 500 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("../fonts/shippori-500.woff2?v=b5809f73") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("../fonts/shippori-700.woff2?v=3ecf6220") format("woff2"); font-weight: 600 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("../fonts/shippori-800.woff2?v=ada4e346") format("woff2"); font-weight: 800 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("../fonts/manrope.woff2?v=78276c57") format("woff2"); font-weight: 200 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Roboto"; src: url("../fonts/roboto-400.woff2?v=9ef3d2aa") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Belge"; src: url("../fonts/belge-500.woff2?v=0f059f1d") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Belge"; src: url("../fonts/belge-600.woff2?v=01388cf0") format("woff2"); font-weight: 600 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Roboto"; src: url("../fonts/roboto-500.woff2?v=f1d41ec1") format("woff2"); font-weight: 500 700; font-style: normal; font-display: swap; }
 
 :root {
   color-scheme: only light;
@@ -898,10 +898,17 @@ html.kalem-el .kalem-tuval { pointer-events: none; }
 /* kısa ekranda altı satır sığmaz: başlık ve "Tekrar oynat" bir satırda, altında altı parçalı ilerleme çizgisi,
    onun altında o anki adım (satırların yazısı ekran okuyucuya kalır) */
 @media (min-width: 1101px) and (max-height: 820px) {
+  /* --t: pencerenin 1100 px'i ne kadar geçtiği (0–400 px). Tablet genişlikle büyür, sol sütunun çoğu sabit kalır;
+     1500 px'in altında sütun tablete sığmaz. Bu yüzden oradan 1101 px'e doğru başlık, metin, aralıklar ve rozet
+     azar azar küçülür (sıçramadan): "Tablette şimdi" her genişlikte tabletin alt kenarında biter */
+  .giris { --t: clamp(0px, 100vw - 1100px, 400px); }
   .giris__yazi { align-self: stretch; }
-  .giris__akis { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px 16px; padding-top: 18px; }
+  .giris__akis {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
+    gap: calc(8px + var(--t) * 0.01) 16px; padding-top: calc(8px + var(--t) * 0.025);
+  }
   .giris__akis-bas { grid-column: 1; grid-row: 1; padding: 0; border: 0; }
-  .giris__akis .tekrar { grid-column: 2; grid-row: 1; margin: 0; }
+  .giris__akis .tekrar { grid-column: 2; grid-row: 1; margin: 0; min-height: calc(34px + var(--t) * 0.01); }
   .giris__akis ol { grid-column: 1 / -1; grid-row: 2; display: flex; gap: 4px; }
   .giris__akis li { flex: 1; height: 3px; padding: 0; border: 0; border-radius: 2px; font-size: 0; line-height: 0; background: var(--cizgi-koyu); transition: background-color 0.25s ease; }
   .giris__akis li::before { display: none; }
@@ -932,11 +939,16 @@ html.kalem-el .kalem-tuval { pointer-events: none; }
     grid-template-areas: "baslik sahne" "yazi sahne";
   }
   .giris__baslik {
-    white-space: normal; text-wrap: balance; font-size: clamp(44px, min(4.15vw, 8.8vh), 66px); line-height: 1.02;
+    white-space: normal; text-wrap: balance; line-height: 1.02;
+    /* üçüncü terim 1500 px'te 4.15vw'ye eşit, 1101 px'te 41 px (--t ile aynı aralık) */
+    font-size: clamp(40px, min(4.15vw, 8.8vh, 5.313vw - 17.44px), 66px);
     margin: var(--baslik-ust, 30px) 0 0 var(--baslik-sol, 0px);
   }
   .giris__yazi { align-self: stretch; }
-  .giris__on { margin-top: 26px; }
+  .giris__on { margin-top: calc(18px + var(--t) * 0.02); font-size: clamp(calc(17px + var(--t) * 0.0025), 1.35vw, 20.5px); }
+  .giris__eylem { margin-top: calc(20px + var(--t) * 0.025); }
+  .giris__eylem .play img { height: calc(44px + var(--t) * 0.02); }
+  .giris__meta { margin-top: calc(10px + var(--t) * 0.015); }
   .giris__sahne { grid-row: 1 / 3; padding-top: 46px; }
 }
 /* "Tekrar oynat": yazılı, hafif */
@@ -1081,6 +1093,12 @@ html.kalem-el .kalem-tuval { pointer-events: none; }
 .el-sahne__kontrol .dugme { flex: 1; min-width: 0; padding: 0 12px; }
 .el-sahne__kontrol .dugme[aria-pressed="true"] { background: #fff; color: #111; box-shadow: none; }
 .simge--dolu { fill: currentColor; stroke: none; }
+/* metin içindeki simge: ⋯ (uygulamanın "daha fazla" düğmesi) ve → (yol: Ayarlar → Gizlilik). Yazı tiplerinde bu
+   işaretler yok, sistem yazı tipine düşüyorlardı */
+.simge--satir { display: inline-block; width: 1.1em; height: 1.1em; vertical-align: -0.2em; }
+.simge--ok { width: 1em; height: 1em; vertical-align: -0.16em; stroke-width: 2; }
+/* ⊥ (dik), PDF'in içinde: Belge'de (Lora) yok */
+.p-dik { display: inline-block; width: 0.84em; height: 0.84em; margin: 0 0.04em; vertical-align: -0.06em; fill: none; stroke: currentColor; stroke-width: 1.15; }
 /* ipucu iki satırlık yer tutar (uzayınca sayfa kaymasın) */
 .el-sahne__ipucu {
   margin-top: 26px; padding-top: 16px; min-height: calc(3em + 17px); border-top: 1px solid rgba(255, 255, 255, 0.12);
