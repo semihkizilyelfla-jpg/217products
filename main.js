@@ -719,6 +719,7 @@
     if (!sun || !plate) return;
     var fill = sun.querySelector(".sun-fill");
     var de = document.documentElement;
+    var heroBox = document.querySelector(".hero");
     var placedOnce = false;   /* the disc's entrance runs once — see place() */
 
     /* Read off the PLATE, not written here. The drawing is the only thing that
@@ -788,11 +789,28 @@
       geo = measure();
       if (!geo) return;
       var b = geo.box;
-      sun.style.top = (geo.rest - geo.d / 2).toFixed(1) + "px";
+      /* THE CUT COVERS THE CLIMB, NOT THE WINDOW. A mask over a layer that
+         moves is drawn as its own offscreen pass on every frame the disc moves,
+         and `.sun-clip` was the whole scene, so that pass was window-sized for a
+         disc a fifth of the window across. Measured at glide speed on an
+         integrated GPU: dropping the mask outright took the climb from 3.0% to
+         0.4% late frames. The mask has to stay (it IS the ridge), so the box
+         shrinks to where the masked disc can ever be: the rectangle spanned by
+         its rest and its apex, since the arc is monotonic on both axes and the
+         disc is unscaled until the mask is lifted (sun-up, r > 0.98; the flood
+         starts at HOLD). Every position below is written relative to that box
+         — disc, mask size, mask offset — so on screen nothing moves. */
+      var rad = geo.d / 2, dpr = window.devicePixelRatio || 1;
+      function snap(v, up) { return (up ? Math.ceil(v * dpr) : Math.floor(v * dpr)) / dpr; }
+      var cl = snap(Math.min(geo.restX, geo.apexX) - rad - 2, false);
+      var ct = snap(geo.apexY - rad - 2, false);
+      var cw = snap(Math.max(geo.restX, geo.apexX) + rad + 2, true) - cl;
+      var ch = snap(geo.rest + rad + 2, true) - ct;
+      sun.style.top = (geo.rest - rad - ct).toFixed(2) + "px";
       /* pinned to the PLATE's column, not the viewport's: the plate is wider
          than the screen, so anchoring the sun to a viewport percentage would
          drift it off its own peak on every window shape */
-      sun.style.left = (geo.restX - geo.d / 2).toFixed(1) + "px";
+      sun.style.left = (geo.restX - rad - cl).toFixed(2) + "px";
       /* THE DISC FADES IN WHEN IT BECOMES VISIBLE, NOT WHEN THE PLATE DECODES,
          and that is the whole difference between arriving and appearing.
          The fade used to be started in lang-redirect.js alongside the plate's,
@@ -825,8 +843,11 @@
          instead of vanishing at its edge. */
       var clip = document.querySelector(".sun-clip");
       if (clip) {
+        clip.style.right = clip.style.bottom = "auto";
+        clip.style.left = cl + "px"; clip.style.top = ct + "px";
+        clip.style.width = cw + "px"; clip.style.height = ch + "px";
         var size = b.w.toFixed(1) + "px " + (b.h * 3).toFixed(1) + "px";
-        var pos  = b.left.toFixed(1) + "px " + (b.top - b.h * 2).toFixed(1) + "px";
+        var pos  = (b.left - cl).toFixed(2) + "px " + (b.top - b.h * 2 - ct).toFixed(2) + "px";
         clip.style.webkitMaskSize = size; clip.style.maskSize = size;
         clip.style.webkitMaskPosition = pos; clip.style.maskPosition = pos;
       }
@@ -842,7 +863,18 @@
       var w = sun.offsetWidth;
       if (!w) return 24;
       var r = sun.getBoundingClientRect();
-      var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      /* MEASURED AGAINST THE WINDOW AS THE PARKED HERO SEES IT. The hero is
+         parked at top 0 only for its own stage (see .hero-stage); past it the
+         hero scrolls away, and a refresh down the page (a late image, a resize)
+         would read the disc thousands of px above the window and size the flood
+         for that: measured 19x at scrollY 6000 and 128x after a resize, one
+         composited layer tens of thousands of px across. On the laptop's
+         integrated GPU that starved everything else: back at the top the nav
+         capsule was not drawn at all and the disc only in part. Taking the
+         hero's own offset back out gives the parked answer from anywhere on the
+         page; while the hero IS parked the offset is 0 and nothing changes. */
+      var lift = heroBox ? heroBox.getBoundingClientRect().top : 0;
+      var cx = r.left + r.width / 2, cy = r.top + r.height / 2 - lift;
       var far = Math.max(
         Math.hypot(cx, cy),
         Math.hypot(innerWidth - cx, cy),
@@ -1048,9 +1080,50 @@
      start state immediately, so `opacity: 0` is sitting INLINE on the element,
      and an inline value beats any stylesheet rule — the panel simply never
      opened once the window had been wide at any point. One owner, no race. */
+  /* A PANEL THE PAGE CARRIES UNDER A STILL POINTER IS NOT BEING POINTED AT.
+     Chrome re-hit-tests the pointer while the page scrolls, so a wheel read
+     down the shelf fired mouseenter/mouseleave on whichever panel slid under
+     the cursor — measured: enter at scrollY 1582, leave at 2104, mid-scroll —
+     and each one flicked its sheet open and shut again on the way past: a
+     layer promoted, a 90px shadow rastered, a seven-second zoom started, all
+     for a card that was gone 300ms later. Measured in a real window at 165 Hz
+     that was the worst stretch left on the page (7.2% late frames in the shelf
+     band against 0.4-0.6% everywhere else below the hero).
+     So while the page is moving, entering a panel only marks it; when the
+     scroll has been still for a beat, the panel under the pointer opens. A
+     pointer that actually moves over a panel, or keyboard focus, opens it at
+     once, exactly as before. The hover styles follow the same state
+     (.slot.is-lit), because :hover itself cannot tell the two apart. */
+  var lastScrollAt = -1e9, pointerX = -1, pointerY = -1, flickSets = 0;
+  addEventListener("scroll", function () { lastScrollAt = performance.now(); }, { passive: true });
+  function notePointer(e) { pointerX = e.clientX; pointerY = e.clientY; }
+  /* the wheel and the panel's own enter carry the pointer's place too, so a
+     cursor that has not moved since the page loaded is still known */
+  addEventListener("mousemove", notePointer, { passive: true });
+  addEventListener("wheel", notePointer, { passive: true });
+  document.addEventListener("mouseout", function (e) { if (!e.relatedTarget) pointerX = pointerY = -1; });
   function bindFlick(midTurn, endTurn) {
     return function () {
-      var bound = [];
+      var bound = [], waiting = null, settle = 0;
+      var root = document.documentElement;
+      root.classList.toggle("flick", ++flickSets > 0);
+      function moving() { return performance.now() - lastScrollAt < 150; }
+      /* re-armed by every scroll while a panel is waiting; fires once the page
+         has been still for 160ms and opens the panel the pointer is really on */
+      function arm() {
+        clearTimeout(settle);
+        settle = setTimeout(function () {
+          var s = waiting;
+          waiting = null;
+          if (!s || moving()) { if (s && moving()) { waiting = s; arm(); } return; }
+          var at = pointerX >= 0 ? document.elementFromPoint(pointerX, pointerY) : null;
+          for (var i = 0; i < bound.length; i++) {
+            if (bound[i][0] === s && at && s.contains(at)) bound[i][5]();
+          }
+        }, 160);
+      }
+      function onScroll() { if (waiting) arm(); }
+      addEventListener("scroll", onScroll, { passive: true });
       gsap.utils.toArray(".slot").forEach(function (slot) {
         var media = slot.querySelector(".slot-media");
         if (!media) return;
@@ -1068,25 +1141,43 @@
           .fromTo(media, { opacity: 0 }, { opacity: 1, duration: 0.1, ease: "none" }, 0)
           .to(media, { scale: 1.1, rotation: midTurn, duration: 0.17, ease: "power2.out" }, 0)
           .to(media, { scale: 1, rotation: endTurn, duration: 0.09, ease: "power1.inOut" }, 0.17);
-        var open = function () { tl.play(); };
-        var shut = function () { tl.reverse(); };
+        var lit = false;
+        var open = function () {
+          if (waiting === slot) waiting = null;
+          if (!lit) { lit = true; slot.classList.add("is-lit"); }
+          tl.play();
+        };
+        var shut = function () {
+          if (waiting === slot) waiting = null;
+          if (lit) { lit = false; slot.classList.remove("is-lit"); }
+          tl.reverse();
+        };
+        var enter = function (e) { notePointer(e); if (moving()) { waiting = slot; arm(); } else open(); };
+        var move = function () { if (!lit && !moving()) open(); };
         var blur = function (e) { if (!slot.contains(e.relatedTarget)) shut(); };
-        slot.addEventListener("mouseenter", open);
+        slot.addEventListener("mouseenter", enter);
+        slot.addEventListener("mousemove", move, { passive: true });
         slot.addEventListener("mouseleave", shut);
         /* keyboard reaches the panel through the link stretched over it */
         slot.addEventListener("focusin", open);
         slot.addEventListener("focusout", blur);
-        bound.push([slot, open, shut, blur, tl]);
+        bound.push([slot, enter, shut, blur, tl, open, move]);
       });
       return function () {
+        clearTimeout(settle);
+        removeEventListener("scroll", onScroll);
+        root.classList.toggle("flick", --flickSets > 0);
         bound.forEach(function (b) {
           b[0].removeEventListener("mouseenter", b[1]);
+          b[0].removeEventListener("mousemove", b[6]);
           b[0].removeEventListener("mouseleave", b[2]);
-          b[0].removeEventListener("focusin", b[1]);
+          b[0].removeEventListener("focusin", b[5]);
           b[0].removeEventListener("focusout", b[3]);
+          b[0].classList.remove("is-lit");
           b[4].kill();
         });
         bound = [];
+        waiting = null;
       };
     };
   }

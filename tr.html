@@ -55,7 +55,7 @@
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/manrope-var.woff2?v=3" crossorigin>
   <link rel="preload" as="image" imagesrcset="assets/horizon-900.webp?s=104 900w, assets/horizon-1400.webp?s=104 1400w, assets/horizon.webp?s=104 1920w" imagesizes="(max-width: 1018px) 1400px, 106vw" fetchpriority="high">
   <link rel="preload" as="image" href="assets/sun-ink.webp?s=101" fetchpriority="high">
-  <link rel="stylesheet" href="style.css?v=179">
+  <link rel="stylesheet" href="style.css?v=180">
   <script type="application/ld+json">
   {"@context": "https://schema.org", "@type": "Organization", "@id": "https://217products.com/#organization", "name": "217 Products", "alternateName": ["217", "217products"], "url": "https://217products.com/", "logo": "https://217products.com/assets/icon-512.png", "image": "https://217products.com/assets/og-tr.jpg?v=1", "description": "Ankara’dan dünyaya açılan bağımsız bir ürün stüdyosuyuz. Gördüğümüz boşluklara hızlı, sade ve uzun ömürlü ürünler inşa ediyoruz.", "email": "destek217product@gmail.com", "foundingDate": "2026", "sameAs": ["https://play.google.com/store/apps/developer?id=217+Products", "https://www.linkedin.com/company/217-products"], "contactPoint": {"@type": "ContactPoint", "contactType": "customer support", "email": "destek217product@gmail.com", "availableLanguage": ["tr", "en"]}, "address": {"@type": "PostalAddress", "addressLocality": "Ankara", "addressRegion": "Ankara", "addressCountry": "TR"}}
   </script>
@@ -93,7 +93,10 @@
 
   <main id="main">
 
-    <!-- 1 · HERO — the plate at the foot, the sun behind it -->
+    <!-- 1 · HERO — the plate at the foot, the sun behind it. The stage is the
+         hero's sticky range: parked for its own ride, then it leaves with the
+         page instead of being drawn under all of it (see .hero-stage). -->
+    <div class="hero-stage">
     <section class="hero">
       <div class="hero-ground" id="scene" aria-hidden="true">
         <span class="sun-clip"><span class="sun" id="sun"><img class="sun-ink" src="assets/sun-ink.webp?s=101" alt="" aria-hidden="true" width="320" height="320" decoding="sync" fetchpriority="high"><i class="sun-fill"></i></span></span>
@@ -115,6 +118,7 @@
 
     <!-- the hero keeps the screen while the disc burns and floods -->
     <div class="hero-run" aria-hidden="true"></div>
+    </div>
 
     <!-- 2 · PRODUCTS -->
     <section class="products on-ink" id="products"><i class="bleed bleed-top" aria-hidden="true"></i>
@@ -322,7 +326,7 @@
   <script src="vendor/gsap.min.js?v=3.15.0"></script>
   <script src="vendor/ScrollTrigger.min.js?v=3.15.0"></script>
   <script src="vendor/lenis.min.js?v=1.3.25"></script>
-  <script src="main.js?v=124"></script>
+  <script src="main.js?v=125"></script>
   <!-- Cloudflare Web Analytics. type='module' defers on its own, so it cannot
        block the opening choreography. Deliberately NOT on privacy.html /
        gizlilik.html: those keep script-src 'none', which is a claim worth more

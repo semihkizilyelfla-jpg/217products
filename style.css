@@ -404,7 +404,7 @@ main { position: relative; z-index: 2; }
    full-bleed sheet of paper behind everything after the hero. The marquee is
    the first block over the hero, so it carries that sheet and extends it all
    the way down; later sections paint their own art on top of it. */
-main > *:not(.hero) { position: relative; z-index: 2; }
+main > *:not(.hero-stage) { position: relative; z-index: 2; }
 /* One full-bleed sheet of paper covering everything below the hero. It has to
    live on `main`: the marquee (the first block over the hero) is
    `overflow: hidden`, which would clip any backdrop drawn inside it. */
@@ -546,8 +546,31 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
    past to reach the shelf. */
 .no-motion .hero-run { height: 0; }
 @media (prefers-reduced-motion: reduce) { .hero-run { height: 0; } }
+/* ---------- the stage: the hero's sticky range ----------
+   THE HERO USED TO BE STICKY FOR THE WHOLE OF main, and that was the stutter.
+   Parked at top 0 behind every section, it stayed on screen for the full
+   9,000px of the deck — covered, never seen, and still composited under every
+   frame: the sheet, the plate, the grain overlay and a flooded disc scaled to
+   the size of the window. Measured in a real window on a 165 Hz laptop screen
+   driven by an integrated GPU (where Chrome draws by default even when a
+   discrete card is fitted): every frame from the shelf to the footer took two
+   vsyncs (12.1ms, 82 fps) with the GPU main thread ~83% busy, and hiding the
+   hero alone put the same scroll back at 6.1ms.
+   The stage is the hero plus its run, so `sticky` parks it for exactly the ride
+   and no further. Past the run it scrolls away with the deck — by then the
+   flood has turned it solid black (it completes at INK_RIDE 0.68 of a
+   viewport, the run is 0.76) and the shelf rising under it is the same black
+   wall, so black leaves over black and nothing on screen changes. The stage has
+   no position or z-index of its own (it is excluded from the rule above), so
+   the hero keeps its z-index 0 in main's stacking context exactly as before.
+   With no motion the run is 0, so the stage is the hero alone and it scrolls
+   off like any block instead of being covered in place. */
+.hero-stage { display: block; }
 
 /* ---------- the deck states its own sheet ----------
+   (Written when the hero was sticky for the whole of main; it is now parked
+   only for its own stage, see .hero-stage. The sheets stay: they are what the
+   sections are drawn on, and on the shelf they are what the wall sits over.)
    THE HERO IS STICKY FOR THE WHOLE OF main. Its box never leaves the top of the
    screen, which means its sheet is painting behind every section below it, all
    the way to the footer — and every one of those sections was transparent.
@@ -603,7 +626,18 @@ section { padding: clamp(96px, 15vh, 210px) var(--pad); position: relative; }
      `offsetLeft` reports where the plate truly is. */
   margin-left: calc(max(106%, 1080px) / -2);
   --o: 1; opacity: var(--o);
-  z-index: 3; will-change: transform, opacity;
+  /* NO will-change, and the grain is why. A plate forced onto a layer of its
+     own also forces the washi grain above it (::after, z 4) onto one — a second
+     full-window sheet blended on every frame of the ride. Measured at glide
+     speed (40px a frame, 165 Hz, integrated GPU), that sheet alone was the
+     difference between 7.0% and 2.8% late frames; a flat tint in its place cost
+     the same, so it is the extra layer, not the noise. Without the hint the
+     plate, the grain, the specks and the type are drawn as one layer (4.5%).
+     Nothing is lost for the motion: the opening fade is a Web Animation, which
+     Chrome composites by itself while it runs, and GSAP's parallax tweens run
+     on translate3d, which does the same for as long as the pointer moves —
+     measured, circling the pointer over the hero stays at 0-1.3% late frames. */
+  z-index: 3;
 }
 /* PHONES: LEFT-ALIGNED, NOT CENTRED. The plate has a 1080px floor, so on a
    390px screen it hangs 345px off each side — and the mountain lives in its
@@ -1390,7 +1424,11 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
 }
 .slot:nth-child(2) { flex-grow: 0.956; }
 .slot:nth-child(3) { flex-grow: 1.031; }
-.slot:hover, .slot:focus-within {
+/* `html.flick` is set while main.js drives the flick (a real hover pointer):
+   then "pointed at" is its .is-lit, not :hover, which also fires on a panel
+   the page merely scrolls under a still cursor (see the note in main.js).
+   Everywhere else — no script, reduced motion, touch — :hover is as it was. */
+html:not(.flick) .slot:hover, .slot.is-lit, .slot:focus-within {
   background: rgba(255,255,255,0.055); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16);
   z-index: 3;
 }
@@ -1478,7 +1516,7 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
    the entire purpose of the hint, and it costs nothing on a page nobody is
    pointing at. Bound with :hover/:focus-within on the slot, not the panel,
    because the panel is pointer-events: none. */
-.slot:hover .slot-media,
+html:not(.flick) .slot:hover .slot-media, .slot.is-lit .slot-media,
 .slot:focus-within .slot-media { will-change: transform, opacity; }
 /* No GSAP (or reduced motion): a plain crossfade, no tilt, no overshoot.
    Scoped to those cases only so it can never fight the inline styles GSAP
@@ -1493,7 +1531,8 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
      element and its own property, so it never collides with the GSAP tween. */
   transform: scale(1.04); transition: transform 7s linear;
 }
-.slot:hover .slot-media img, .slot:focus-within .slot-media img { transform: scale(1.15); }
+html:not(.flick) .slot:hover .slot-media img, .slot.is-lit .slot-media img,
+.slot:focus-within .slot-media img { transform: scale(1.15); }
 /* the two waiting slots: our own ink field, no invented product shot */
 .slot-wash {
   grid-area: 1 / 1; width: 100%; height: 100%;
@@ -1524,7 +1563,8 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
   transform: rotate(-6deg) scale(0.4); opacity: 0;
   transition: transform 0.5s cubic-bezier(0.34, 1.4, 0.5, 1) 0.16s, opacity 0.3s ease 0.16s;
 }
-.slot:hover .slot-seal, .slot:focus-within .slot-seal { transform: rotate(-6deg) scale(1); opacity: 1; }
+html:not(.flick) .slot:hover .slot-seal, .slot.is-lit .slot-seal,
+.slot:focus-within .slot-seal { transform: rotate(-6deg) scale(1); opacity: 1; }
 /* the whole panel is the target, not just the title */
 .slot-hit { position: absolute; inset: 0; z-index: 8; }
 .slot-hit:focus-visible { outline: 2px solid var(--vermilion); outline-offset: -6px; }
@@ -1545,9 +1585,10 @@ html.no-motion .shelf-head [data-slide] { transition: none; }
   .slot { overflow: hidden; }
   .slot-media { transform: none; transition: opacity 0.2s ease; }
   .slot:hover .slot-media, .slot:focus-within .slot-media { opacity: 1; transform: none; }
-  .slot-media img, .slot:hover .slot-media img { transform: scale(1.04); transition: none; }
+  /* html:not(.flick) matches the gated hover rules above, so these still win */
+  .slot-media img, html:not(.flick) .slot:hover .slot-media img { transform: scale(1.04); transition: none; }
   .slot-seal { transition: opacity 0.2s ease; transform: rotate(-6deg); }
-  .slot:hover .slot-seal { transform: rotate(-6deg); }
+  html:not(.flick) .slot:hover .slot-seal { transform: rotate(-6deg); }
 }
 @media (max-width: 860px) {
   .slots { flex-direction: column; gap: 16px; }
@@ -1855,7 +1896,7 @@ html.no-motion .step-mark { clip-path: inset(0 0 0 0); transition: none; }
    here is a new material: same wall as the shelf, same 二一七, same red. */
 .foot {
   /* z-index: 2 IS LOAD-BEARING, and it used to be inherited from
-     `main > *:not(.hero)`. When the footer moved out of <main> to give the page
+     `main > *:not(.hero-stage)`. When the footer moved out of <main> to give the page
      a real `contentinfo` landmark, it kept position:relative and silently lost
      the z-index — and z-index:auto means no stacking context, so `.on-ink::before`
      at z-index:-1 escaped the footer entirely and was painted behind the body's
