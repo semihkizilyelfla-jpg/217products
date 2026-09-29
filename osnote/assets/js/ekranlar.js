@@ -400,7 +400,7 @@
       k3.style.transform = 'translate(' + T.cx.toFixed(1) + 'px,' + T.cy.toFixed(1) + 'px) perspective(' + PERS + 'px) rotateX(' + (T.ax * 180 / Math.PI).toFixed(3) + 'deg) rotateZ(' + (T.az * 180 / Math.PI).toFixed(3) + 'deg) scale(' + T.o.toFixed(4) + ') translate(-192px,-402px)';
       cam.style.transform = 'translateZ(' + T.zc.toFixed(2) + 'px)';
       cubukK.style.transform = 'translateZ(' + T.zu.toFixed(2) + 'px)';
-      k3.style.setProperty('--e', d.e.toFixed(3));
+      cam.style.setProperty('--e', d.e.toFixed(3));
       // uygulamalar: şimdiki ortada, geçişte yandaki kayarak gelir (Android'deki gibi hafif küçülerek)
       for (var j = 0; j < uyglar.length; j++) {
         var x = j - d.an, g = Math.abs(x) < 0.999;
@@ -432,12 +432,11 @@
       if (izCizgi && !hd) { izCizgi.style.opacity = '0'; izNokta.style.opacity = '0'; }
       if (izCizgi && hd) {
         var ust = izdus(T, hd[0] + 12, hd[1] + 12, T.zc), alt = izdus(T, hd[0] + 12, hd[1] + 12, 0);
-        izCizgi.setAttribute('d', 'M' + ust[0].toFixed(1) + ' ' + ust[1].toFixed(1) + 'L' + alt[0].toFixed(1) + ' ' + alt[1].toFixed(1));
-        izCizgi.style.stroke = RENK[d.renk];
+        hat(izCizgi, ust[0], ust[1], alt[0], alt[1], true);
+        izCizgi.style.color = RENK[d.renk];
         izCizgi.style.opacity = (gor * izg * 0.85).toFixed(3);
-        izNokta.setAttribute('cx', alt[0].toFixed(1));
-        izNokta.setAttribute('cy', alt[1].toFixed(1));
-        izNokta.style.stroke = RENK[d.renk];
+        noktaKoy(izNokta, alt[0], alt[1]);
+        izNokta.style.color = RENK[d.renk];
         izNokta.style.opacity = (gor * izg * 0.9).toFixed(3);
       }
       sutun = Math.min(sutun, s.w - s.etiketEn - 6);
@@ -447,15 +446,22 @@
         y = ly;
         etiket[a].style.transform = 'translate(' + sutun.toFixed(1) + 'px,' + (ly + 6 * (1 - gor)).toFixed(1) + 'px)';
         etiket[a].style.opacity = gor.toFixed(3);
-        cizgi[a].setAttribute('d', 'M' + (P[a][0] + 4).toFixed(1) + ' ' + P[a][1].toFixed(1) + 'L' + (sutun - 12).toFixed(1) + ' ' + (ly + 11).toFixed(1));
+        hat(cizgi[a], P[a][0] + 4, P[a][1], sutun - 12, ly + 11);
         cizgi[a].style.opacity = (gor * 0.5).toFixed(3);
         if (nokta[a]) {
-          nokta[a].setAttribute('cx', (P[a][0] + 4).toFixed(1));
-          nokta[a].setAttribute('cy', P[a][1].toFixed(1));
+          noktaKoy(nokta[a], P[a][0] + 4, P[a][1]);
           nokta[a].style.opacity = (gor * 0.8).toFixed(3);
         }
       });
     }
+    // çizgi (x0,y0)→(x1,y1) ve nokta: yalnız dönüşüm. Kesik çizginin deseni uzamasın diye boyu genişlikle verilir.
+    function hat(el, x0, y0, x1, y1, kesik) {
+      var dx = x1 - x0, dy = y1 - y0, u = Math.hypot(dx, dy), yon = 'rotate(' + Math.atan2(dy, dx).toFixed(4) + 'rad)';
+      var yer = 'translate(' + x0.toFixed(1) + 'px,' + y0.toFixed(1) + 'px) ';
+      if (kesik) { el.style.width = u.toFixed(1) + 'px'; el.style.transform = yer + yon; }
+      else el.style.transform = yer + yon + ' scaleX(' + u.toFixed(1) + ')';
+    }
+    function noktaKoy(el, x, y) { el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)'; }
     var aciklama = uzay.querySelector('[data-k-aciklama]');
     function boyut() {
       s.w = uzay.clientWidth;
@@ -749,6 +755,7 @@
       cancelAnimationFrame(d.ornekKare);
       S.ucYuvada(c);
       yuzey.sifirla([]);
+      c.murekkepAnahtar = null;
       d.v = 0; d.durum = 'durdu'; d.cizdi = false; d.elGecti = false; d.izlendi = false; d.renk = -1;
       mod('el');
       videoCiz();
@@ -1070,7 +1077,7 @@
           poz: function (tt) { var e = M.yumusak(M.sinirla((tt - x.t0) / x.s, 0, 1)); return { x: x.a[0] + (x.b[0] - x.a[0]) * e, y: x.a[1] + (x.b[1] - x.a[1]) * e, h: 0, yaz: true }; }
         };
       }), Y ? { yuva: Y } : { x: c.W + 90, y: c.H * 0.72, h: 60 }, Y ? { yuva: Y } : { x: c.W + 90, y: c.H * 0.72, h: 60, gizli: true }, 1.0, 0.9, c);
-      var bas = 0;
+      var bas = 0, vAnahtar = null;
       var yap = function (z) {
         if (!bas) bas = z;
         var tt = (z - bas) / 1000, w = null;
@@ -1082,7 +1089,8 @@
           w = x.cizim ? M.sekilKur('ucgen', ax, ay, px, py) : M.tutamacTasi('ucgen', w, x.i, px, py);
         }
         v = w;
-        ciz();
+        var vk = w ? w.map(function (n) { return Math.round(n * 4); }).join(',') : '';
+        if (vk !== vAnahtar) { vAnahtar = vk; ciz(); }
         S.ucKoy(c, yol(tt), tt);
         if (tt < yol.son) { kare = requestAnimationFrame(yap); return; }
         oynuyor = false;

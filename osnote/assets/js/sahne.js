@@ -299,12 +299,14 @@
     this.olcek = r.width / this.W;
     if (this.tuval) {
       var d = M.dpr(), w = Math.round(this.W * this.olcek * d), h = Math.round(this.H * this.olcek * d);
-      if (this.tuval.width !== w) this.tuval.width = w;
-      if (this.tuval.height !== h) this.tuval.height = h;
+      if (this.tuval.width !== w) { this.tuval.width = w; this.murekkepAnahtar = null; }
+      if (this.tuval.height !== h) { this.tuval.height = h; this.murekkepAnahtar = null; }
     }
     return true;
   };
+  // tuvali temizler (tuvalde ne olduğunu bilen kalmaz: Senaryo'nun "değişmediyse çizme"si sıfırlanır)
   Cihaz.prototype.baglam = function () {
+    this.murekkepAnahtar = null;
     var c = this.ctx, s = this.tuval.width / this.W;
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.clearRect(0, 0, this.tuval.width, this.tuval.height);
@@ -516,9 +518,22 @@
     if (s >= 1 && this.cikisGizli) return { x: cikis.x, y: cikis.y, h: cikis.h, gizli: true };
     return gecis(durakSon(sonD), cikis, s);
   };
+  // mürekkebin t anındaki hâli: her çizginin ne kadarı yazıldı (bitenler ve başlamayanlar sabit)
+  Senaryo.prototype.murekkepAnahtari = function (t) {
+    var k = '';
+    for (var i = 0; i < this.adimlar.length; i++) {
+      var a = this.adimlar[i];
+      if (a.tur !== 'ciz' || a.t > t) continue;
+      var yer = t - a.o.bas, bit = a.o.ara.length ? a.o.ara[a.o.ara.length - 1][1] : 0;
+      k += (yer <= 0 ? '0' : yer >= bit ? 'T' : Math.round(yer * 1000)) + ',';
+    }
+    return k;
+  };
   Senaryo.prototype.ciz = function (t) {
     var c = this.c, d = { el: this.ilk.el, arac: this.ilk.arac, renk: this.ilk.renk };
-    var ctx = c.baglam();
+    // mürekkep yalnız değişince yeniden çizilir: kalem yolda ya da dokunurken tuval aynı kalır
+    var mk = this.murekkepAnahtari(t), ctx = null;
+    if (c.murekkepAnahtar !== mk || c.murekkepSahibi !== this) { ctx = c.baglam(); c.murekkepAnahtar = mk; c.murekkepSahibi = this; }
     for (var i = 0; i < this.adimlar.length; i++) {
       var a = this.adimlar[i];
       if (a.tur === 'her') { a.f(t - a.t, t); continue; }
@@ -527,7 +542,7 @@
         if (a.el != null) d.el = a.el;
         if (a.arac) d.arac = a.arac;
         if (a.renk != null) d.renk = a.renk;
-      } else if (a.tur === 'ciz') ogeCiz(ctx, a.o, t);
+      } else if (a.tur === 'ciz' && ctx) ogeCiz(ctx, a.o, t);
     }
     c.ocDurum(d);
     if (this.ucVar) ucKoy(c, this.ucDurus(t), t);
@@ -580,24 +595,39 @@
     ucKoy(c, Y ? yuvaDurus(Y) : null, 0);
   }
 
-  /* ---------------------------------------------------------- oynatma döngüsü */
+  /* ---------------------------------------------------------- oynatma döngüsü
+     Ekranda olmayan sahne çizilmez ve saati durur; görünür olunca kaldığı yerden devam eder (hızlı kaydırırken
+     arkada üç dört sahne birden çiziliyordu). Hiçbiri görünmüyorsa döngü de durur, gözcü yeniden başlatır. */
   var calisan = [];
   var kare = 0;
+  var gorunur = new WeakMap();
+  var gozcu = 'IntersectionObserver' in window ? new IntersectionObserver(function (g) {
+    for (var i = 0; i < g.length; i++) gorunur.set(g[i].target, g[i].isIntersecting);
+    if (!kare && calisan.some(ekranda)) kare = requestAnimationFrame(dongu);
+  }, { rootMargin: '60px 0px' }) : null;
+  function ekranda(o) {
+    var el = o.sen.c && o.sen.c.kok;
+    return !gozcu || !el || gorunur.get(el) !== false; // henüz ölçülmediyse çizilir
+  }
   function dongu(z) {
     kare = 0;
+    var devam = false;
     for (var i = calisan.length - 1; i >= 0; i--) {
       var o = calisan[i];
+      if (!ekranda(o)) { if (o.bas != null && o.durdu == null) o.durdu = z; continue; }
+      if (o.durdu != null) { o.bas += z - o.durdu; o.durdu = null; }
       if (o.bas == null) o.bas = z;
       var t = (z - o.bas) / 1000 - o.gecikme;
-      if (t < 0) continue;
       if (t >= o.sen.son) { o.sen.ciz(o.sen.son); calisan.splice(i, 1); if (o.bitti) o.bitti(); continue; }
-      o.sen.ciz(t);
+      devam = true;
+      if (t >= 0) o.sen.ciz(t);
     }
-    if (calisan.length) kare = requestAnimationFrame(dongu);
+    if (devam) kare = requestAnimationFrame(dongu);
   }
   function oynat(sen, gecikme, bitti) {
     durdur(sen);
-    calisan.push({ sen: sen, gecikme: gecikme || 0, bas: null, bitti: bitti });
+    if (gozcu && sen.c && sen.c.kok) gozcu.observe(sen.c.kok);
+    calisan.push({ sen: sen, gecikme: gecikme || 0, bas: null, durdu: null, bitti: bitti });
     if (!kare) kare = requestAnimationFrame(dongu);
   }
   function durdur(sen) {
