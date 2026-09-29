@@ -1,177 +1,1073 @@
-<!DOCTYPE html>
-<html lang="tr">
+<!doctype html>
+<html lang="tr" class="js-yok">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Same two origins as the home page and no others: the Cloudflare beacon's
-       script host and its report host. Everything else is 'self'. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'self'; form-action 'none'; manifest-src 'self'">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self'; connect-src 'none'; media-src 'none'; manifest-src 'self'; object-src 'none'; frame-src 'none'; worker-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>OSNote: ekranın üstüne yaz, defter tut · 217 Products</title>
-  <meta name="description" content="Android’de her uygulamanın üstüne yazın, çizin, işaretleyin; notlarınızı çizgili, kareli ya da noktalı sayfalı defterlerde tutun. Ücretsiz indirin; Pro aylık ya da ömür boyu.">
+  <title>OSNote: her uygulamanın üstüne yaz · Android ekran kalemi</title>
+  <meta name="description" content="OSNote, Android’de açık olan her uygulamanın üstüne kalemle yazmanı sağlar: video, PDF, harita, sohbet. El moduna geçince uygulama çalışır, yazdığın ekranda kalır. Defterleri de var. Ücretsiz.">
+  <meta name="theme-color" content="#F0F0F3">
+  <meta name="color-scheme" content="only light">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- yayındaki yer: 217products.com/osnote/tr (İngilizcesi /osnote/, araclar/yayinla.mjs) -->
   <link rel="canonical" href="https://217products.com/osnote/tr">
   <link rel="alternate" hreflang="en" href="https://217products.com/osnote/">
   <link rel="alternate" hreflang="tr" href="https://217products.com/osnote/tr">
   <link rel="alternate" hreflang="x-default" href="https://217products.com/osnote/">
   <script src="/lang-route.js?v=1"></script>
-  <script src="/keep-place.js?v=1" defer></script>
-  <meta name="theme-color" content="#F0F0F3">
-  <meta name="robots" content="index, follow">
+
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="217 Products">
+  <meta property="og:url" content="https://217products.com/osnote/tr">
   <meta property="og:locale" content="tr_TR">
   <meta property="og:locale:alternate" content="en_US">
-  <meta property="og:url" content="https://217products.com/osnote/tr">
-  <meta property="og:title" content="OSNote: ekranın üstüne yaz, defter tut">
-  <meta property="og:description" content="Android’de her uygulamanın üstüne yazın, çizin, işaretleyin; notlarınızı çizgili, kareli ya da noktalı sayfalı defterlerde tutun. Ücretsiz indirin; Pro aylık ya da ömür boyu.">
-  <meta property="og:image" content="https://217products.com/assets/og-osnote-tr.jpg?v=1">
-  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:site_name" content="OSNote">
+  <meta property="og:title" content="OSNote: her uygulamanın üstüne yaz">
+  <meta property="og:description" content="Android için ekran kalemi ve defter. Hangi uygulama açıksa üstüne yaz; El’e dokununca uygulamayı kullanmaya devam et.">
+  <meta property="og:image" content="https://217products.com/osnote/assets/img/paylasim.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="OSNote: karanlıkta, aydınlık bir levhaya vermilyon bir çizgi çeken el">
+  <meta property="og:image:alt" content="Ekranı ikiye bölünmüş bir tablet: solda ders videosu, sağda ödev PDF’i. İkisinin üstünde OSNote’un kalem çubuğu; sarı bir ok videodan PDF’e uzanıyor, PDF’e maviyle çözüm yazılmış.">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="OSNote: ekranın üstüne yaz, defter tut">
-  <meta name="twitter:description" content="Android’de her uygulamanın üstüne yazın, çizin, işaretleyin; notlarınızı çizgili, kareli ya da noktalı sayfalı defterlerde tutun. Ücretsiz indirin; Pro aylık ya da ömür boyu.">
-  <meta name="twitter:image" content="https://217products.com/assets/og-osnote-tr.jpg?v=1">
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
-  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/shippori-800.woff2?v=3" crossorigin>
-  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/manrope-var.woff2?v=3" crossorigin>
-  <link rel="stylesheet" href="/product.css?v=1">
+
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <script src="assets/js/bas.js"></script>
+  <link rel="stylesheet" href="assets/css/site.css">
   <script type="application/ld+json">
-  {"@context": "https://schema.org", "@type": "MobileApplication", "@id": "https://217products.com/#osnote", "name": "OSNote", "alternateName": "OSNote: Draw on Screen", "description": "Android’de her ekranın üstüne yazın ve çizin; çizgili, kareli ve noktalı sayfalarla defter tutun; avucunuz ekrana dayansa da yalnız kalem yazsın.", "operatingSystem": "Android 8.0+", "applicationCategory": "ProductivityApplication", "image": "https://217products.com/assets/osnote-card.webp?s=100bdcba", "url": "https://217products.com/osnote/tr", "installUrl": "https://play.google.com/store/apps/details?id=com.kurapika.onscreennote", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "TRY"}, "publisher": {"@type": "Organization", "@id": "https://217products.com/#organization", "name": "217 Products", "url": "https://217products.com/"}}
+  {
+    "@context": "https://schema.org",
+    "@type": "MobileApplication",
+    "name": "OSNote",
+    "alternateName": "OSNote: Draw on Screen",
+    "operatingSystem": "Android 8.0+",
+    "applicationCategory": "ProductivityApplication",
+    "inLanguage": ["tr", "en"],
+    "description": "Android’de her uygulamanın üstüne kalemle yaz: video, PDF, harita, sohbet. Notlarını çizgili, kareli ya da noktalı sayfalı defterlerde tut.",
+    "installUrl": "https://play.google.com/store/apps/details?id=com.kurapika.onscreennote",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" },
+    "publisher": { "@type": "Organization", "name": "217 Products", "url": "https://217products.com/" }
+  }
   </script>
 </head>
 <body>
-  <a class="skip-link" href="#main">İçeriğe geç</a>
+<svg class="simgeler" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <symbol id="i-sag" viewBox="0 0 24 24"><path d="M4.5 12h14.5M13.5 6.5 19 12l-5.5 5.5"/></symbol>
+    <symbol id="i-asagi" viewBox="0 0 24 24"><path d="M12 4.5v14.5M6.5 13.5 12 19l5.5-5.5"/></symbol>
+    <symbol id="i-sol" viewBox="0 0 24 24"><path d="M19.5 12H5M10.5 6.5 5 12l5.5 5.5"/></symbol>
+    <symbol id="i-arti" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-yenile" viewBox="0 0 24 24"><path d="M19 12.5a7 7 0 1 1-2.1-5"/><path d="M17.8 3.8v4.1h-4.1"/></symbol>
+    <symbol id="i-uc" viewBox="0 0 24 24"><path d="M12 2.8 17.3 10l-3.1 7.6H9.8L6.7 10z"/><path d="M12 2.8v8.6"/><circle cx="12" cy="13" r="1.1"/><path d="M9.6 20.8h4.8"/></symbol>
+    <symbol id="i-kalem" viewBox="0 0 24 24"><path d="M4.2 19.8l1.1-4.5L15.7 4.9a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L8.7 18.7z"/><path d="M13.6 7l3.4 3.4"/></symbol>
+    <symbol id="i-silgi" viewBox="0 0 24 24"><path d="M9.5 20h10"/><path d="M5.6 15.3l8.9-8.9a2 2 0 0 1 2.8 0l2.3 2.3a2 2 0 0 1 0 2.8L12.2 19.4a2 2 0 0 1-1.4.6H8.5a2 2 0 0 1-1.4-.6l-1.5-1.3a2 2 0 0 1 0-2.8z"/><path d="M10 10.9l5.1 5.1"/></symbol>
+    <symbol id="i-sekiller" viewBox="0 0 24 24"><rect x="3.8" y="3.8" width="9.4" height="9.4" rx="1.2"/><circle cx="15.6" cy="15.6" r="4.6"/></symbol>
+    <symbol id="i-geri" viewBox="0 0 24 24"><path d="M9 14.2 4.2 9.4 9 4.6"/><path d="M4.5 9.4h10a5.2 5.2 0 0 1 0 10.4h-3.3"/></symbol>
+    <symbol id="i-ileri" viewBox="0 0 24 24"><path d="M15 14.2l4.8-4.8L15 4.6"/><path d="M19.5 9.4h-10a5.2 5.2 0 0 0 0 10.4h3.3"/></symbol>
+    <symbol id="i-temizle" viewBox="0 0 24 24"><path d="M4.5 7h15M10 11v6M14 11v6M6.4 7l.9 11.3A1.9 1.9 0 0 0 9.2 20h5.6a1.9 1.9 0 0 0 1.9-1.7L17.6 7M9.4 7V4.6h5.2V7"/></symbol>
+    <symbol id="i-kagit" viewBox="0 0 24 24"><path d="M6.6 3.6h7.3l3.9 3.9v12.6a.8.8 0 0 1-.8.8H6.6a.8.8 0 0 1-.8-.8V4.4a.8.8 0 0 1 .8-.8z"/><path d="M13.9 3.6v3.9h3.9M9 12h6M9 15.6h6"/></symbol>
+    <symbol id="i-kement" viewBox="0 0 24 24"><ellipse cx="12.4" cy="9.2" rx="8.3" ry="5.4" stroke-dasharray="2.6 2.4"/><path d="M8.3 14c-1.4 1.2-1.6 3-.4 4.1 1.3 1.1 3.3.4 3.4-1.4.1-1.4-1.1-2.2-2.2-1.6M11.3 17.3l1.6 3.2"/></symbol>
+    <symbol id="i-fosforlu" viewBox="0 0 24 24"><path d="M15 4.4l4.6 4.6-7.5 7.5-4.6-4.6z"/><path d="M7.5 11.9l-1.4 4.9 2.3 2.3 4.9-1.4M3.8 20.4h5.5"/></symbol>
+    <symbol id="i-disa" viewBox="0 0 24 24"><path d="M12 15V4M7.8 8.2 12 4l4.2 4.2"/><path d="M5 13.2v5.3A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5v-5.3"/></symbol>
+    <symbol id="i-indir" viewBox="0 0 24 24"><path d="M12 4v11M7.8 10.8 12 15l4.2-4.2"/><path d="M5 19.5h14"/></symbol>
+    <symbol id="i-s-cizgi" viewBox="0 0 24 24"><path d="M5 19 19 5"/></symbol>
+    <symbol id="i-s-ok" viewBox="0 0 24 24"><path d="M5 19 19 5M11.2 5H19v7.8"/></symbol>
+    <symbol id="i-s-ciftok" viewBox="0 0 24 24"><path d="M5 19 19 5M11.2 5H19v7.8M12.8 19H5v-7.8"/></symbol>
+    <symbol id="i-s-yay" viewBox="0 0 24 24"><path d="M4 17a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-s-dikdortgen" viewBox="0 0 24 24"><rect x="4.5" y="6.5" width="15" height="11" rx="0.6"/></symbol>
+    <symbol id="i-s-elips" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></symbol>
+    <symbol id="i-s-ucgen" viewBox="0 0 24 24"><path d="M12 4.6l8.2 14.6H3.8z"/></symbol>
+    <symbol id="i-s-dikucgen" viewBox="0 0 24 24"><path d="M5 4.6v14.6h14.2z"/></symbol>
+    <symbol id="i-s-besgen" viewBox="0 0 24 24"><path d="M12 3.8l8.2 6-3.1 9.6H6.9l-3.1-9.6z"/></symbol>
+    <symbol id="i-s-yildiz" viewBox="0 0 24 24"><path d="M12 3.8l2.5 5.3 5.7.7-4.2 3.9 1.1 5.7L12 16.6l-5.1 2.8 1.1-5.7-4.2-3.9 5.7-.7z"/></symbol>
+    <!-- Uygulamanın kendi simgeleri ve Android'in Material simgeleri: araclar/simgeler_kur.py yazar -->
+    <!-- simgeler:başla -->
+    <symbol id="o-el" viewBox="0 0 256 256"><path d="M56,76a60,60,0,0,1,120,0,8,8,0,0,1-16,0,44,44,0,0,0-88,0,8,8,0,1,1-16,0Zm140,44a27.9,27.9,0,0,0-13.36,3.39A28,28,0,0,0,144,106.7V76a28,28,0,0,0-56,0v80l-3.82-6.13a28,28,0,0,0-48.41,28.17l29.32,50A8,8,0,1,0,78.89,220L49.6,170a12,12,0,1,1,20.78-12l.14.23,18.68,30A8,8,0,0,0,104,184V76a12,12,0,0,1,24,0v68a8,8,0,1,0,16,0V132a12,12,0,0,1,24,0v20a8,8,0,0,0,16,0v-4a12,12,0,0,1,24,0v36c0,21.61-7.1,36.3-7.16,36.42a8,8,0,0,0,3.58,10.73A7.9,7.9,0,0,0,208,232a8,8,0,0,0,7.16-4.42c.37-.73,8.85-18,8.85-43.58V148A28,28,0,0,0,196,120Z"/></symbol>
+    <symbol id="o-kalem" viewBox="0 0 256 256"><path d="M222.33,123.89c-.06-.13-.12-.26-.19-.38L192,69.9V32a16,16,0,0,0-16-16H80A16,16,0,0,0,64,32V69.92L33.86,123.51c-.07.12-.13.25-.2.38a15.94,15.94,0,0,0,1.46,16.57l.11.14,86.44,112.28a8,8,0,0,0,12.67,0L220.77,140.6l.11-.14A15.92,15.92,0,0,0,222.33,123.89ZM176,32V64H80V32ZM128,144a12,12,0,1,1,12-12A12,12,0,0,1,128,144Zm8,80.5V158.83a28,28,0,1,0-16,0v65.66L48,131,76.69,80H179.32L208,131Z"/></symbol>
+    <symbol id="o-silgi" viewBox="0 0 256 256"><path d="M225,80.4,183.6,39a24,24,0,0,0-33.94,0L31,157.66a24,24,0,0,0,0,33.94l30.06,30.06A8,8,0,0,0,66.74,224H216a8,8,0,0,0,0-16h-84.7L225,114.34A24,24,0,0,0,225,80.4ZM108.68,208H70.05L42.33,180.28a8,8,0,0,1,0-11.31L96,115.31,148.69,168Zm105-105L160,156.69,107.31,104,161,50.34a8,8,0,0,1,11.32,0l41.38,41.38a8,8,0,0,1,0,11.31Z"/></symbol>
+    <symbol id="m-more-vert" viewBox="0 0 24 24"><path d="M12 8C13 8 14 7 14 6C14 4.9 13 3.9 12 3.9C10.9 3.9 9.9 4.9 9.9 6C9.9 7 10.9 8 12 8ZM12 9.9C10.9 9.9 9.9 10.9 9.9 12C9.9 13 10.9 14 12 14C13 14 14 13 14 12C14 10.9 13 9.9 12 9.9ZM12 15.9C10.9 15.9 9.9 16.9 9.9 18C9.9 19 10.9 20 12 20C13 20 14 19 14 18C14 16.9 13 15.9 12 15.9Z"/></symbol>
+    <symbol id="m-more-horiz" viewBox="0 0 24 24"><path d="M6 9.9C4.9 9.9 3.9 10.9 3.9 12C3.9 13 4.9 14 6 14C7 14 8 13 8 12C8 10.9 7 9.9 6 9.9ZM18 9.9C16.9 9.9 15.9 10.9 15.9 12C15.9 13 16.9 14 18 14C19 14 20 13 20 12C20 10.9 19 9.9 18 9.9ZM12 9.9C10.9 9.9 9.9 10.9 9.9 12C9.9 13 10.9 14 12 14C13 14 14 13 14 12C14 10.9 13 9.9 12 9.9Z"/></symbol>
+    <symbol id="m-unfold-less" viewBox="0 0 24 24"><path d="M7.4 18.6 8.8 20 12 16.8 15.1 20 16.5 18.6 12 14 7.4 18.6ZM16.5 5.3 15.1 3.9 12 7.1 8.8 3.9 7.4 5.3 12 9.9 16.5 5.3Z"/></symbol>
+    <symbol id="m-unfold-more" viewBox="0 0 24 24"><path d="M12 5.8 15.1 9 16.5 7.5 12 3 7.4 7.5 8.8 9 12 5.8ZM12 18.1 8.8 15 7.4 16.4 12 21 16.5 16.4 15.1 15 12 18.1Z"/></symbol>
+    <symbol id="m-guc" viewBox="0 0 24 24"><path d="M12.9 3H11V12.9H12.9V3ZM17.8 5.1 16.4 6.6C18 7.8 18.9 9.7 18.9 12C18.9 15.8 15.8 18.9 12 18.9C8.1 18.9 5 15.8 5 12C5 9.7 6 7.8 7.5 6.5L6.1 5.1C4.2 6.7 3 9.2 3 12C3 16.9 7 21 12 21C16.9 21 21 16.9 21 12C21 9.2 19.7 6.7 17.8 5.1Z"/></symbol>
+    <symbol id="m-undo" viewBox="0 0 24 24"><path d="M12.5 8C9.8 8 7.4 9 5.5 10.5L2 6.9V15.9H11L7.3 12.3C8.7 11.2 10.5 10.5 12.5 10.5C16 10.5 19 12.7 20.1 15.9L22.4 15.2C21 11 17.1 8 12.5 8Z"/></symbol>
+    <symbol id="m-redo" viewBox="0 0 24 24"><path d="M18.4 10.5C16.5 9 14.1 8 11.4 8C6.8 8 2.9 11 1.5 15.2L3.8 15.9C4.9 12.7 7.9 10.5 11.4 10.5C13.4 10.5 15.2 11.2 16.6 12.3L12.9 15.9H21.9V6.9L18.4 10.5Z"/></symbol>
+    <symbol id="m-goz" viewBox="0 0 24 24"><path d="M12 4.5C6.9 4.5 2.7 7.5 0.9 12C2.7 16.4 6.9 19.5 12 19.5C17 19.5 21.2 16.4 23 12C21.2 7.5 17 4.5 12 4.5ZM12 17C9.2 17 6.9 14.7 6.9 12C6.9 9.2 9.2 6.9 12 6.9C14.7 6.9 17 9.2 17 12C17 14.7 14.7 17 12 17ZM12 9C10.3 9 9 10.3 9 12C9 13.6 10.3 15 12 15C13.6 15 15 13.6 15 12C15 10.3 13.6 9 12 9Z"/></symbol>
+    <symbol id="m-goz-kapali" viewBox="0 0 24 24"><path d="M12 6.9C14.7 6.9 17 9.2 17 12C17 12.6 16.8 13.2 16.6 13.8L19.5 16.7C21 15.4 22.2 13.8 22.9 12C21.2 7.5 16.9 4.5 12 4.5C10.5 4.5 9.2 4.7 8 5.2L10.1 7.3C10.7 7.1 11.3 6.9 12 6.9ZM2 4.2 4.2 6.5 4.7 7C3 8.2 1.7 10 0.9 12C2.7 16.4 6.9 19.5 12 19.5C13.5 19.5 15 19.2 16.3 18.6L16.7 19L19.7 21.9L21 20.7L3.2 3L2 4.2ZM7.5 9.7 9 11.3C9 11.5 9 11.7 9 12C9 13.6 10.3 15 12 15C12.2 15 12.4 14.9 12.6 14.9L14.2 16.4C13.5 16.7 12.7 17 12 17C9.2 17 6.9 14.7 6.9 12C6.9 11.2 7.2 10.4 7.5 9.7ZM11.8 9 15 12.1V12C15 10.3 13.6 9 12 9H11.8Z"/></symbol>
+    <symbol id="m-dondur" viewBox="0 0 24 24"><path d="M16.5 2.5C19.7 4 22 7.2 22.4 11H23.9C23.4 4.8 18.2 0 12 0L11.3 0L15.1 3.8L16.5 2.5ZM10.2 1.7C9.6 1.1 8.6 1.1 8.1 1.7L1.7 8.1C1.1 8.7 1.1 9.6 1.7 10.2L13.7 22.2C14.3 22.8 15.3 22.8 15.8 22.2L22.2 15.8C22.8 15.2 22.8 14.3 22.2 13.7L10.2 1.7ZM14.8 21.1 2.8 9.1 9.1 2.8 21.1 14.8 14.8 21.1ZM7.5 21.4C4.2 19.9 1.9 16.7 1.5 12.9H0C0.5 19.1 5.7 24 12 24L12.6 23.9L8.8 20.1L7.5 21.4Z"/></symbol>
+    <symbol id="m-cop" viewBox="0 0 24 24"><path d="M6 18.9C6 20.1 6.8 21 8 21H15.9C17.1 21 18 20.1 18 18.9V6.9H6V18.9ZM18.9 3.9H15.5L14.4 3H9.5L8.4 3.9H5V6H18.9V3.9Z"/></symbol>
+    <symbol id="m-kamera" viewBox="0 0 24 24"><path d="M8.8 12C8.8 10.2 10.2 8.8 12 8.8C13.7 8.8 15.1 10.2 15.1 12C15.1 13.7 13.7 15.1 12 15.1C10.2 15.1 8.8 13.7 8.8 12ZM9 2 7.1 3.9H3.9C2.9 3.9 2 4.9 2 6V18C2 19 2.9 20 3.9 20H20C21 20 21.9 19 21.9 18V6C21.9 4.9 21 3.9 20 3.9H16.8L15 2H9ZM12 17C9.2 17 6.9 14.7 6.9 12C6.9 9.2 9.2 6.9 12 6.9C14.7 6.9 17 9.2 17 12C17 14.7 14.7 17 12 17Z"/></symbol>
+    <symbol id="m-kapat" viewBox="0 0 24 24"><path d="M18.9 6.4 17.5 5 12 10.5 6.4 5 5 6.4 10.5 12 5 17.5 6.4 18.9 12 13.4 17.5 18.9 18.9 17.5 13.4 12 18.9 6.4Z"/></symbol>
+    <symbol id="m-wifi" viewBox="0 0 24 24"><path d="M0.9 9 3 11C7.9 6 16 6 21 11L23 9C16.9 2.9 7 2.9 0.9 9ZM9 17 12 20 15 17C13.3 15.3 10.6 15.3 9 17ZM5 12.9 6.9 15C9.7 12.2 14.2 12.2 17 15L18.9 12.9C15.1 9.1 8.8 9.1 5 12.9Z"/></symbol>
+    <symbol id="m-sinyal" viewBox="0 0 24 24"><path d="M2 21.9H21.9V2L2 21.9Z"/></symbol>
+    <symbol id="m-geri-ok" viewBox="0 0 24 24"><path d="M20 11H7.8L13.4 5.3L12 3.9L3.9 12L12 20L13.4 18.6L7.8 12.9H20V11Z"/></symbol>
+    <symbol id="m-ara" viewBox="0 0 24 24"><path d="M15.5 14H14.7L14.4 13.7C15.4 12.6 15.9 11.1 15.9 9.5C15.9 5.9 13 3 9.5 3C5.9 3 3 5.9 3 9.5C3 13 5.9 15.9 9.5 15.9C11.1 15.9 12.6 15.4 13.7 14.4L14 14.7V15.5L18.9 20.4L20.4 18.9L15.5 14ZM9.5 14C7 14 5 12 5 9.5C5 7 7 5 9.5 5C12 5 14 7 14 9.5C14 12 12 14 9.5 14Z"/></symbol>
+    <symbol id="m-menu" viewBox="0 0 24 24"><path d="M3 18H21V15.9H3V18ZM3 12.9H21V11H3V12.9ZM3 6V8H21V6H3Z"/></symbol>
+    <symbol id="m-mikrofon" viewBox="0 0 24 24"><path d="M12 14C13.6 14 15 12.6 15 11V5C15 3.3 13.6 2 12 2C10.3 2 9 3.3 9 5V11C9 12.6 10.3 14 12 14ZM17.2 11C17.2 14 14.7 16 12 16C9.2 16 6.7 14 6.7 11H5C5 14.3 7.7 17.2 11 17.7V21H12.9V17.7C16.2 17.2 18.9 14.4 18.9 11H17.2Z"/></symbol>
+    <symbol id="m-begen" viewBox="0 0 24 24"><path d="M0.9 21H5V9H0.9V21ZM23 9.9C23 8.9 22 8 21 8H14.6L15.6 3.4V3C15.6 2.7 15.5 2.2 15.2 2L14.1 0.9L7.5 7.5C7.2 7.9 6.9 8.4 6.9 9V18.9C6.9 20.1 7.9 21 9 21H18C18.8 21 19.5 20.4 19.8 19.7L22.8 12.7C22.9 12.5 23 12.2 23 12V9.9Z"/></symbol>
+    <symbol id="m-begenme" viewBox="0 0 24 24"><path d="M15 3H6C5.1 3 4.4 3.5 4.1 4.2L1.1 11.2C1 11.4 0.9 11.7 0.9 12V14C0.9 15 1.9 15.9 3 15.9H9.3L8.3 20.5V20.9C8.3 21.2 8.4 21.7 8.7 21.9L9.8 23L16.4 16.4C16.7 16 17 15.5 17 15V5C17 3.8 16 3 15 3ZM18.9 3V15H23V3H18.9Z"/></symbol>
+    <symbol id="m-paylas" viewBox="0 0 24 24"><path d="M18 16C17.2 16 16.5 16.3 16 16.8L8.9 12.7C8.9 12.4 9 12.2 9 12C9 11.7 8.9 11.5 8.9 11.2L15.9 7.1C16.5 7.6 17.2 8 18 8C19.6 8 21 6.6 21 5C21 3.3 19.6 2 18 2C16.3 2 15 3.3 15 5C15 5.2 15 5.4 15 5.7L8 9.7C7.5 9.3 6.7 9 6 9C4.3 9 3 10.3 3 12C3 13.6 4.3 15 6 15C6.7 15 7.5 14.6 8 14.2L15.1 18.3C15 18.5 15 18.7 15 18.9C15 20.6 16.4 21.9 18 21.9C19.5 21.9 20.9 20.6 20.9 18.9C20.9 17.3 19.5 16 18 16Z"/></symbol>
+    <symbol id="m-indir-m" viewBox="0 0 24 24"><path d="M5 20H18.9V18H5V20ZM18.9 9H15V3H9V9H5L12 15.9L18.9 9Z"/></symbol>
+    <symbol id="m-kaydet-m" viewBox="0 0 24 24"><path d="M17 3H6.9C5.9 3 5 3.8 5 5V21L12 18L18.9 21V5C18.9 3.8 18 3 17 3ZM17 18 12 15.7 6.9 18V5H17V18Z"/></symbol>
+    <symbol id="m-oynat" viewBox="0 0 24 24"><path d="M8 5V18.9L18.9 12L8 5Z"/></symbol>
+    <symbol id="m-duraklat" viewBox="0 0 24 24"><path d="M6 18.9H9.9V5H6V18.9ZM14 5V18.9H18V5H14Z"/></symbol>
+    <symbol id="m-tam-ekran" viewBox="0 0 24 24"><path d="M6.9 14H5V18.9H9.9V17H6.9V14ZM5 9.9H6.9V6.9H9.9V5H5V9.9ZM17 17H14V18.9H18.9V14H17V17ZM14 5V6.9H17V9.9H18.9V5H14Z"/></symbol>
+    <symbol id="m-yansit" viewBox="0 0 24 24"><path d="M21 3H3C1.9 3 0.9 3.8 0.9 5V8H3V5H21V18.9H14V21H21C22 21 23 20.1 23 18.9V5C23 3.8 22 3 21 3ZM0.9 18V21H3.9C3.9 19.3 2.6 18 0.9 18ZM0.9 14V15.9C3.7 15.9 6 18.2 6 21H8C8 17.1 4.8 14 0.9 14ZM0.9 9.9V12C5.9 12 9.9 16 9.9 21H12C12 14.9 7 9.9 0.9 9.9Z"/></symbol>
+    <symbol id="m-yol" viewBox="0 0 24 24"><path d="M21.4 10.5 13.4 2.5C12.6 1.8 11.3 1.8 10.5 2.5L2.5 10.5C1.7 11.3 1.7 12.6 2.5 13.4L10.5 21.4C11.3 22.2 12.6 22.2 13.4 21.4L21.4 13.4C22.2 12.6 22.2 11.3 21.4 10.5ZM13.5 14.4V12H9.9V15H8V11C8 10.4 8.4 9.9 9 9.9H13.5V7.5L17 11L13.5 14.4Z"/></symbol>
+    <symbol id="m-baslat" viewBox="0 0 24 24"><path d="M12 2 4.5 20.2 5.2 21 12 18 18.7 21 19.5 20.2 12 2Z"/></symbol>
+    <symbol id="m-konum" viewBox="0 0 24 24"><path d="M12 8C9.7 8 8 9.7 8 12C8 14.2 9.7 15.9 12 15.9C14.2 15.9 15.9 14.2 15.9 12C15.9 9.7 14.2 8 12 8ZM20.9 11C20.4 6.8 17.1 3.5 12.9 3V0.9H11V3C6.8 3.5 3.5 6.8 3 11H0.9V12.9H3C3.5 17.1 6.8 20.4 11 20.9V23H12.9V20.9C17.1 20.4 20.4 17.1 20.9 12.9H23V11H20.9ZM12 18.9C8.1 18.9 5 15.8 5 12C5 8.1 8.1 5 12 5C15.8 5 18.9 8.1 18.9 12C18.9 15.8 15.8 18.9 12 18.9Z"/></symbol>
+    <symbol id="m-yuru" viewBox="0 0 24 24"><path d="M13.5 5.4C14.5 5.4 15.5 4.5 15.5 3.5C15.5 2.3 14.5 1.5 13.5 1.5C12.4 1.5 11.4 2.3 11.4 3.5C11.4 4.5 12.4 5.4 13.5 5.4ZM9.7 8.9 6.9 23H9L10.9 15L12.9 17V23H15V15.5L12.8 13.5L13.5 10.5C14.8 12 16.7 12.9 18.9 12.9V11C17.1 11 15.5 9.9 14.7 8.5L13.6 6.9C13.3 6.4 12.7 6 12 6C11.7 6 11.4 6 11.2 6L6 8.2V12.9H8V9.6L9.7 8.9Z"/></symbol>
+    <symbol id="m-pin" viewBox="0 0 24 24"><path d="M12 2C8.1 2 5 5.1 5 9C5 14.2 12 21.9 12 21.9C12 21.9 18.9 14.2 18.9 9C18.9 5.1 15.8 2 12 2ZM12 11.4C10.6 11.4 9.5 10.3 9.5 9C9.5 7.6 10.6 6.5 12 6.5C13.3 6.5 14.4 7.6 14.4 9C14.4 10.3 13.3 11.4 12 11.4Z"/></symbol>
+    <symbol id="m-yildiz-m" viewBox="0 0 24 24"><path d="M12 17.2 18.1 21 16.5 13.9 21.9 9.2 14.8 8.6 12 2 9.1 8.6 2 9.2 7.4 13.9 5.8 21 12 17.2Z"/></symbol>
+    <symbol id="m-katman" viewBox="0 0 24 24"><path d="M12 18.5 4.6 12.7 3 14 12 21 21 14 19.3 12.7 12 18.5ZM12 15.9 19.3 10.2 21 9 12 2 3 9 4.6 10.2 12 15.9Z"/></symbol>
+    <symbol id="m-telefon" viewBox="0 0 24 24"><path d="M20 15.3C18.7 15.3 17.5 15.1 16.5 14.8C16.1 14.7 15.7 14.8 15.4 15L13.9 17C11 15.7 8.4 13.1 7 10.2L8.9 8.5C9.2 8.2 9.3 7.8 9.1 7.5C8.8 6.4 8.6 5.2 8.6 3.9C8.6 3.4 8.2 3 7.6 3H4.1C3.6 3 3 3.2 3 3.9C3 13.2 10.7 21 20 21C20.7 21 21 20.3 21 19.8V16.3C21 15.8 20.5 15.3 20 15.3Z"/></symbol>
+    <symbol id="m-video" viewBox="0 0 24 24"><path d="M17 10.5V6.9C17 6.4 16.5 6 15.9 6H3.9C3.4 6 3 6.4 3 6.9V17C3 17.5 3.4 18 3.9 18H15.9C16.5 18 17 17.5 17 17V13.5L21 17.4V6.5L17 10.5Z"/></symbol>
+    <symbol id="m-emoji" viewBox="0 0 24 24"><path d="M14 9.5C14 8.6 14.6 8 15.5 8C16.3 8 17 8.6 17 9.5C17 10.3 16.3 11 15.5 11C14.6 11 14 10.3 14 9.5ZM6.9 9.5C6.9 8.6 7.6 8 8.4 8C9.3 8 9.9 8.6 9.9 9.5C9.9 10.3 9.3 11 8.4 11C7.6 11 6.9 10.3 6.9 9.5ZM14 9.5C14 8.6 14.6 8 15.5 8C16.3 8 17 8.6 17 9.5C17 10.3 16.3 11 15.5 11C14.6 11 14 10.3 14 9.5ZM6.9 9.5C6.9 8.6 7.6 8 8.4 8C9.3 8 9.9 8.6 9.9 9.5C9.9 10.3 9.3 11 8.4 11C7.6 11 6.9 10.3 6.9 9.5ZM12 2C6.4 2 2 6.4 2 12C2 17.5 6.4 21.9 12 21.9C17.5 21.9 21.9 17.5 21.9 12C21.9 6.4 17.5 2 12 2ZM12 20C7.5 20 3.9 16.4 3.9 12C3.9 7.5 7.5 3.9 12 3.9C16.4 3.9 20 7.5 20 12C20 16.4 16.4 20 12 20ZM12 17.4C14.3 17.4 16.3 16 17.1 14H15.4C14.7 15.1 13.5 15.9 12 15.9C10.5 15.9 9.2 15.1 8.5 14H6.8C7.6 16 9.6 17.4 12 17.4Z"/></symbol>
+    <symbol id="m-ek" viewBox="0 0 24 24"><path d="M16.5 6V17.4C16.5 19.6 14.7 21.5 12.5 21.5C10.3 21.5 8.4 19.6 8.4 17.4V5C8.4 3.6 9.6 2.4 11 2.4C12.3 2.4 13.5 3.6 13.5 5V15.5C13.5 16 13 16.5 12.5 16.5C11.9 16.5 11.4 16 11.4 15.5V6H9.9V15.5C9.9 16.8 11.1 18 12.5 18C13.8 18 15 16.8 15 15.5V5C15 2.8 13.2 0.9 11 0.9C8.8 0.9 6.9 2.8 6.9 5V17.4C6.9 20.5 9.4 23 12.5 23C15.5 23 18 20.5 18 17.4V6H16.5Z"/></symbol>
+    <symbol id="m-cift-tik" viewBox="0 0 24 24"><path d="M18 6.9 16.5 5.5 10.2 11.9 11.6 13.3 18 6.9ZM22.2 5.5 11.6 16.1 7.5 12 6 13.4 11.6 18.9 23.6 6.9 22.2 5.5ZM0.4 13.4 6 18.9 7.4 17.5 1.8 12 0.4 13.4Z"/></symbol>
+    <symbol id="m-tik-m" viewBox="0 0 24 24"><path d="M9 16.1 4.8 12 3.4 13.4 9 18.9 21 6.9 19.5 5.5 9 16.1Z"/></symbol>
+    <symbol id="m-kitap" viewBox="0 0 24 24"><path d="M12 11.5C9.6 9.3 6.4 8 3 8V18.9C6.4 18.9 9.6 20.3 12 22.5C14.3 20.3 17.5 18.9 21 18.9V8C17.5 8 14.3 9.3 12 11.5ZM12 8C13.6 8 15 6.6 15 5C15 3.3 13.6 2 12 2C10.3 2 9 3.3 9 5C9 6.6 10.3 8 12 8Z"/></symbol>
+    <symbol id="m-kafe" viewBox="0 0 24 24"><path d="M20 3H3.9V12.9C3.9 15.1 5.8 17 8 17H14C16.2 17 18 15.1 18 12.9V9.9H20C21 9.9 21.9 9 21.9 8V5C21.9 3.8 21 3 20 3ZM20 8H18V5H20V8ZM3.9 18.9H20V21H3.9V18.9Z"/></symbol>
+    <symbol id="m-okul" viewBox="0 0 24 24"><path d="M5 13.1V17.2L12 21L18.9 17.2V13.1L12 17L5 13.1ZM12 3 0.9 9 12 15 21 10V17H23V9L12 3Z"/></symbol>
+    <symbol id="m-otobus" viewBox="0 0 24 24"><path d="M3.9 15.9C3.9 16.8 4.4 17.6 5 18.2V20C5 20.5 5.4 21 6 21H6.9C7.5 21 8 20.5 8 20V18.9H15.9V20C15.9 20.5 16.4 21 17 21H18C18.5 21 18.9 20.5 18.9 20V18.2C19.5 17.6 20 16.8 20 15.9V6C20 2.4 16.4 2 12 2C7.5 2 3.9 2.4 3.9 6V15.9ZM7.5 17C6.6 17 6 16.3 6 15.5C6 14.6 6.6 14 7.5 14C8.3 14 9 14.6 9 15.5C9 16.3 8.3 17 7.5 17ZM16.5 17C15.6 17 15 16.3 15 15.5C15 14.6 15.6 14 16.5 14C17.3 14 18 14.6 18 15.5C18 16.3 17.3 17 16.5 17ZM18 11H6V6H18V11Z"/></symbol>
+    <symbol id="m-bildirim" viewBox="0 0 24 24"><path d="M12 21.9C13 21.9 14 21 14 20H9.9C9.9 21 10.9 21.9 12 21.9ZM18 15.9V11C18 7.9 16.3 5.3 13.5 4.6V3.9C13.5 3.1 12.8 2.4 12 2.4C11.1 2.4 10.5 3.1 10.5 3.9V4.6C7.6 5.3 6 7.9 6 11V15.9L3.9 18V18.9H20V18L18 15.9ZM15.9 17H8V11C8 8.5 9.5 6.5 12 6.5C14.4 6.5 15.9 8.5 15.9 11V17Z"/></symbol>
+    <symbol id="m-saat" viewBox="0 0 24 24"><path d="M12 2C6.4 2 2 6.4 2 12C2 17.5 6.4 21.9 12 21.9C17.5 21.9 21.9 17.5 21.9 12C21.9 6.4 17.5 2 12 2ZM12 20C7.5 20 3.9 16.4 3.9 12C3.9 7.5 7.5 3.9 12 3.9C16.4 3.9 20 7.5 20 12C20 16.4 16.4 20 12 20ZM12.5 6.9H11V12.9L16.2 16.1L17 14.9L12.5 12.2V6.9Z"/></symbol>
+    <symbol id="m-yenile-m" viewBox="0 0 24 24"><path d="M12 5V0.9L6.9 6L12 11V6.9C15.3 6.9 18 9.7 18 12.9C18 16.3 15.3 18.9 12 18.9C8.6 18.9 6 16.3 6 12.9H3.9C3.9 17.4 7.5 21 12 21C16.4 21 20 17.4 20 12.9C20 8.5 16.4 5 12 5Z"/></symbol>
+    <symbol id="m-sonraki" viewBox="0 0 24 24"><path d="M6 18 14.4 12 6 6V18ZM15.9 6V18H18V6H15.9Z"/></symbol>
+    <symbol id="m-bulut" viewBox="0 0 24 24"><path d="M19.3 10C18.6 6.6 15.6 3.9 12 3.9C9 3.9 6.6 5.6 5.3 8C2.3 8.3 0 10.9 0 14C0 17.2 2.6 20 6 20H18.9C21.7 20 24 17.7 24 15C24 12.3 21.9 10.2 19.3 10Z"/></symbol>
+    <symbol id="m-gunes" viewBox="0 0 24 24"><path d="M6.7 4.8 4.9 3 3.5 4.4 5.3 6.2 6.7 4.8ZM3.9 10.5H0.9V12.5H3.9V10.5ZM12.9 0.5H11V3.5H12.9V0.5ZM20.4 4.4 19 3 17.2 4.8 18.6 6.2 20.4 4.4ZM17.2 18.1 19 19.9 20.4 18.5 18.6 16.7 17.2 18.1ZM20 10.5V12.5H23V10.5H20ZM12 5.4C8.6 5.4 6 8.2 6 11.4C6 14.8 8.6 17.4 12 17.4C15.3 17.4 18 14.8 18 11.4C18 8.2 15.3 5.4 12 5.4ZM11 22.4H12.9V19.5H11V22.4ZM3.5 18.5 4.9 19.9 6.7 18.1 5.3 16.7 3.5 18.5Z"/></symbol>
+    <symbol id="m-parcali" viewBox="0 0 24 24"><path d="M19.3 10C18.6 6.6 15.6 3.9 12 3.9C9 3.9 6.6 5.6 5.3 8C2.3 8.3 0 10.9 0 14C0 17.2 2.6 20 6 20H18.9C21.7 20 24 17.7 24 15C24 12.3 21.9 10.2 19.3 10Z"/></symbol>
+    <symbol id="m-damla" viewBox="0 0 24 24"><path d="M12 2C6.6 6.5 3.9 10.5 3.9 13.7C3.9 18.7 7.7 21.9 12 21.9C16.2 21.9 20 18.7 20 13.7C20 10.5 17.3 6.5 12 2ZM7.8 14C8.2 14 8.4 14.2 8.5 14.6C9 16.8 10.8 17.5 12.1 17.4C12.6 17.4 12.9 17.8 12.9 18.2C12.9 18.6 12.7 18.9 12.2 18.9C10.1 19.1 7.6 17.9 7 14.8C7 14.4 7.3 14 7.8 14Z"/></symbol>
+    <symbol id="m-semsiye" viewBox="0 0 24 24"><path d="M14.4 6.9 12.9 5.7V3.4C12.9 3.1 13.2 2.9 13.5 2.9C13.7 2.9 14 3.1 14 3.4V3.9H15.9V3.4C15.9 2 14.8 0.9 13.5 0.9C12.1 0.9 11 2 11 3.4V5.7L9.5 6.9L6 6L11 21.3C11.2 21.7 11.5 21.9 12 21.9C12.4 21.9 12.7 21.7 12.9 21.3L18 6L14.4 6.9ZM13.2 8.4 14 9 14.9 8.8 12.9 14.8V8.2L13.2 8.4ZM9.9 9 10.7 8.5 11 8.2V14.8L9 8.8L9.9 9Z"/></symbol>
+    <symbol id="m-bugun" viewBox="0 0 24 24"><path d="M18.9 3H18V0.9H15.9V3H8V0.9H6V3H5C3.8 3 3 3.8 3 5V18.9C3 20.1 3.8 21 5 21H18.9C20.1 21 21 20.1 21 18.9V5C21 3.8 20.1 3 18.9 3ZM18.9 18.9H5V8H18.9V18.9ZM6.9 9.9H12V15H6.9V9.9Z"/></symbol>
+    <symbol id="m-ekle" viewBox="0 0 24 24"><path d="M18.9 12.9H12.9V18.9H11V12.9H5V11H11V5H12.9V11H18.9V12.9Z"/></symbol>
+    <symbol id="m-asagi" viewBox="0 0 24 24"><path d="M16.5 8.5 12 13.1 7.4 8.5 6 9.9 12 15.9 18 9.9 16.5 8.5Z"/></symbol>
+    <symbol id="m-ruzgar" viewBox="0 0 24 24"><path d="M14.4 17C14.4 18.6 13.1 20 11.4 20C9.8 20 8.4 18.6 8.4 17H10.5C10.5 17.5 10.9 18 11.4 18C12 18 12.5 17.5 12.5 17C12.5 16.4 12 15.9 11.4 15.9H2V14H11.4C13.1 14 14.4 15.3 14.4 17ZM18.9 6.5C18.9 4.5 17.4 3 15.5 3C13.5 3 12 4.5 12 6.5H14C14 5.6 14.6 5 15.5 5C16.3 5 17 5.6 17 6.5C17 7.3 16.3 8 15.5 8H2V9.9H15.5C17.4 9.9 18.9 8.4 18.9 6.5ZM18.5 11H2V12.9H18.5C19.3 12.9 20 13.6 20 14.4C20 15.3 19.3 15.9 18.5 15.9V18C20.4 18 21.9 16.4 21.9 14.4C21.9 12.5 20.4 11 18.5 11Z"/></symbol>
+    <symbol id="m-konum-pin" viewBox="0 0 24 24"><path d="M12 2C8.1 2 5 5.1 5 9C5 14.2 12 21.9 12 21.9C12 21.9 18.9 14.2 18.9 9C18.9 5.1 15.8 2 12 2ZM12 11.4C10.6 11.4 9.5 10.3 9.5 9C9.5 7.6 10.6 6.5 12 6.5C13.3 6.5 14.4 7.6 14.4 9C14.4 10.3 13.3 11.4 12 11.4Z"/></symbol>
+    <symbol id="m-bolum" viewBox="0 0 24 24"><path d="M3 12.9H5V11H3V12.9ZM3 17H5V15H3V17ZM3 9H5V6.9H3V9ZM6.9 12.9H21V11H6.9V12.9ZM6.9 17H21V15H6.9V17ZM6.9 6.9V9H21V6.9H6.9Z"/></symbol>
+    <symbol id="m-ileri-ok" viewBox="0 0 24 24"><path d="M12 3.9 10.5 5.3 16.1 11H3.9V12.9H16.1L10.5 18.6L12 20L20 12L12 3.9Z"/></symbol>
+    <!-- simgeler:bitti -->
+    <!-- Uygulamadaki taç, şekiller ve sayfa simgeleri (PremiumToolbar.kt'de Canvas ile çizilir) -->
+    <symbol id="o-tac" viewBox="0 0 20 20"><path fill="#FFC107" d="M2 6.8 6.4 12 10 3.2 13.6 12 18 6.8 16.6 16.4H3.4Z"/><path fill="#FFA000" d="M3.4 14.8h13.2v2H3.4z"/></symbol>
+    <symbol id="o-sekiller" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2 2h9.2v9.2H2z"/><circle cx="13.2" cy="13.2" r="5"/></g></symbol>
+    <symbol id="o-sayfa" viewBox="0 0 20 20"><g fill="none" stroke="currentColor" stroke-linecap="round"><rect x="3" y="1" width="14" height="18" rx="1.6" stroke-width="1.5"/><path d="M5.6 6h8.8M5.6 10h8.8M5.6 14h8.8" stroke-width="1" stroke-opacity=".6"/></g></symbol>
+    <!-- kalem ucu (stylus): titanyum gri bir Android kalemi; gövde silindir gibi gölgelenir, ucu açık renk plastik,
+         yanında düğmesi var; gölge uçtan arkaya doğru silikleşir -->
+    <linearGradient id="ku-govde" gradientUnits="userSpaceOnUse" x1="0" y1="-15" x2="0" y2="15"><stop offset="0" stop-color="#2A2D32"/><stop offset=".12" stop-color="#4E535A"/><stop offset=".27" stop-color="#A9AEB6"/><stop offset=".38" stop-color="#848991"/><stop offset=".62" stop-color="#5C6168"/><stop offset=".86" stop-color="#40444A"/><stop offset="1" stop-color="#26282C"/></linearGradient>
+    <linearGradient id="ku-sivri" gradientUnits="userSpaceOnUse" x1="0" y1="-15" x2="0" y2="15"><stop offset="0" stop-color="#2C2F34"/><stop offset=".2" stop-color="#575C63"/><stop offset=".36" stop-color="#B3B8BF"/><stop offset=".52" stop-color="#8A8F97"/><stop offset=".8" stop-color="#474B51"/><stop offset="1" stop-color="#292B2F"/></linearGradient>
+    <linearGradient id="ku-uc" gradientUnits="userSpaceOnUse" x1="0" y1="-4" x2="0" y2="4"><stop offset="0" stop-color="#8A8E95"/><stop offset=".35" stop-color="#E6E8EB"/><stop offset=".7" stop-color="#C6C9CE"/><stop offset="1" stop-color="#80848B"/></linearGradient>
+    <linearGradient id="ku-kapak" gradientUnits="userSpaceOnUse" x1="0" y1="-15" x2="0" y2="15"><stop offset="0" stop-color="#25272B"/><stop offset=".3" stop-color="#5A5E65"/><stop offset=".6" stop-color="#44474D"/><stop offset="1" stop-color="#1F2124"/></linearGradient>
+    <linearGradient id="ku-dugme" gradientUnits="userSpaceOnUse" x1="0" y1="-5" x2="0" y2="5"><stop offset="0" stop-color="#1E2024"/><stop offset=".45" stop-color="#383B41"/><stop offset="1" stop-color="#17181B"/></linearGradient>
+    <linearGradient id="ku-golge" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="640" y2="0"><stop offset="0" stop-color="#101318"/><stop offset=".55" stop-color="#101318" stop-opacity=".8"/><stop offset="1" stop-color="#101318" stop-opacity=".45"/></linearGradient>
+    <symbol id="o-yagmur" viewBox="0 0 24 24"><path d="M17.6 7.6A5.6 5.6 0 0 0 6.9 6.1 4.4 4.4 0 0 0 7.4 14.8h10.1a3.6 3.6 0 0 0 .1-7.2Z"/><path d="M8.3 17.2 7 20.6h1.6l1.3-3.4ZM12.3 17.2 11 20.6h1.6l1.3-3.4ZM16.3 17.2 15 20.6h1.6l1.3-3.4Z"/></symbol>
+  </defs>
+</svg>
 
-  <header class="pbar">
-    <a class="brand" href="/tr" aria-label="217 Products ana sayfa"><img src="/assets/logo-217.svg?w=1" alt="217 Products" width="75" height="40"></a>
-    <nav class="pbar-links" aria-label="OSNote">
-      <a class="pbar-alt" href="/osnote/" hreflang="en" lang="en" data-lang="en" aria-label="EN — English">EN</a>
-      <a class="pbar-cta" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener">Google Play<span class="pbar-cta-more">’den indir</span> <span aria-hidden="true">↗</span></a>
-    </nav>
-  </header>
+<a class="atla" href="#icerik">İçeriğe geç</a>
 
-  <main id="main">
-    <section class="phero" aria-labelledby="app-name">
-      <div class="phero-in">
-        <div class="plabel">
-          <p class="pnum">01 / 03 · RAFTA</p>
-          <h1 class="pname" id="app-name">OSNote</h1>
-          <span class="prule" aria-hidden="true"></span>
-          <p class="plead">Ekranınızda ne açıksa üstüne yazın ve çizin; notlarınızı çizgili, kareli ya da noktalı sayfalı defterlerde saklayın.</p>
-          <div class="pcta">
-            <!-- noopener only, no noreferrer: the referrer is how Play Console
-                 attributes an install back to this site, and the page-level
-                 referrer policy already trims it to the bare origin. -->
-            <a class="btn primary" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" target="_blank" rel="noopener">Google Play’den indir <span aria-hidden="true">↗</span></a>
-          </div>
-          <dl class="pfacts">
-            <div><dt>Fiyat</dt><dd>Ücretsiz indirilir</dd></div>
-            <div><dt>Pro</dt><dd>Aylık ya da ömür boyu</dd></div>
-            <div><dt>Dil</dt><dd>Türkçe, İngilizce</dd></div>
-            <div><dt>Android</dt><dd>8.0 ve üzeri</dd></div>
-          </dl>
-        </div>
-        <figure class="print">
-          <img src="/assets/osnote-card.webp?s=100bdcba" alt="Karanlıkta, yazılı ve aydınlık bir kâğıt levhanın üstüne vermilyon bir çizgi çeken el." width="900" height="1206" fetchpriority="high" decoding="async">
-          <span class="seal" lang="ja" aria-hidden="true">壱</span>
-        </figure>
+<!-- ============================================================ ÜST -->
+<header class="ust">
+  <a class="marka" href="#basa" aria-label="OSNote, sayfanın başı"><picture><source type="image/webp" srcset="assets/img/simge-192.webp"><img class="marka__simge" src="assets/img/simge-192.png" width="192" height="192" alt=""></picture>OSNote</a>
+  <nav class="kapsul" id="kapsul" aria-label="Sayfa bölümleri">
+    <ul class="kapsul__baglar" id="kapsul-baglar">
+      <li><a href="#el-modu">Nasıl çalışır</a></li>
+      <li><a href="#cubuk">Araçlar</a></li>
+      <li><a href="#defterler">Defter</a></li>
+      <li><a href="#dene">Dene</a></li>
+      <li><a href="./" hreflang="en" lang="en" data-lang="en" aria-label="English">EN</a></li>
+    </ul>
+    <button class="kapsul__kalem" type="button" data-kalem-ac aria-label="Kalem: bu sayfanın üstüne yaz" title="Bu sayfanın üstüne yaz"><svg class="simge" aria-hidden="true"><use href="#i-uc"/></svg><span class="kapsul__kalem-yazi" aria-hidden="true">Sayfaya yaz</span></button>
+    <a class="kapsul__indir" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" rel="noopener">İndir<span class="gorunmez"> (Google Play)</span></a>
+    <button class="kapsul__menu" type="button" aria-expanded="false" aria-controls="kapsul-baglar"><span class="kapsul__menu-cizgi" aria-hidden="true"></span><span class="gorunmez">Menü</span></button>
+  </nav>
+</header>
+
+<!-- ============================================================ SAYFANIN EKRAN KALEMİ
+     Sol kenarda yüzen çubuk. Açılınca sayfanın üstüne saydam bir katman gelir (kalem.js). -->
+<div class="kalem" id="kalem" data-kalem-arac="kalem">
+  <button class="kalem__sekme" id="kalem-ac" type="button" aria-expanded="false" aria-controls="kalem-cubuk">
+    <svg class="kalem__sekme-uc" aria-hidden="true"><use href="#o-kalem"/></svg><span class="kalem__sekme-yazi">Kalem</span><span class="gorunmez"> — bu sayfanın üstüne yaz</span>
+  </button>
+  <div class="kalem__cubuk oc" id="kalem-cubuk" role="toolbar" aria-label="Ekran kalemi" aria-orientation="vertical" hidden></div>
+  <div class="kalem__panel op" id="kalem-panel" hidden></div>
+</div>
+<p class="duyuru" id="duyuru" role="status" aria-live="polite"></p>
+
+<main id="icerik">
+
+<!-- ============================================================ GİRİŞ
+     Bölünmüş ekran: iki ayrı uygulama yan yana (telefonda üst üste), iki pencere arasında Android'in
+     ayırıcısı. OSNote'un (ücretsiz, normal) çubuğu videonun üstünde; yazı ayırıcıyı geçip iki uygulamanın
+     üstüne uzanır. Kalem tabletin üst kenarındaki yuvasından kalkar, işi bitince oraya döner.
+     Videodaki tahta dizgi (el yazısı yalnız OSNote'un mürekkebinde).
+     Geniş ekranda tablet, dar ekranda telefon gösterilir (ekranlar.js › girisKur). -->
+<section class="giris" id="basa" aria-labelledby="giris-baslik">
+  <div class="giris__ic">
+    <h1 class="giris__baslik" id="giris-baslik">Her uygulamanın üstüne yaz.</h1>
+    <div class="giris__yazi">
+      <p class="giris__on">Video, PDF, mesaj ya da harita fark etmez. Telefonunda ya da tabletinde hangi uygulama açıksa, OSNote’un kalemiyle üstüne yazarsın.</p>
+      <div class="giris__eylem">
+        <a class="play" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" rel="noopener">
+          <picture><source type="image/webp" srcset="assets/img/google-play-tr.webp"><img src="assets/img/google-play-tr.png" width="646" height="192" alt="Google Play’den indirin"></picture>
+        </a>
+        <button class="dugme dugme--cizgi" type="button" data-kalem-ac><svg class="simge" aria-hidden="true"><use href="#i-uc"/></svg>Bu sayfaya yaz</button>
       </div>
-    </section>
-
-    <section class="pwall" aria-labelledby="what-h">
-      <i class="bleed" aria-hidden="true"></i>
-      <div class="pwall-in">
-        <h2 class="phead" id="what-h">Ekranın üstünde ya da <em>sayfanın</em> içinde.</h2>
-        <div class="tools two">
-          <article class="tool">
-            <h3>Ekran Kalemi</h3>
-            <p>Yüzen bir araç çubuğu, açık olan her şeyin üstüne çizer: kalem, silgi, renkler, geri al ve yinele, bir de dokunuşlarınızın alttaki uygulamaya geçtiği el modu. Gelişmiş araç çubuğu şekiller, kâğıt zemini ve yakalamayı ekler; yakalama da yazdığınızı, tek başına ya da arkasındaki ekranla birlikte, uygulamanın kitaplığına kaydeder.</p>
-          </article>
-          <article class="tool">
-            <h3>Hızlı Notlar</h3>
-            <p>Boş, çizgili, kareli ya da noktalı sayfalı defterler; A4 ya da ekran boyutunda, dikey ya da yatay. Kalem, fosforlu kalem, silgi, kement, on şekil ve görsel. Klasörler ve favoriler düzeni korur; defter PDF, sayfa PNG olarak dışa aktarılır.</p>
-          </article>
-        </div>
-        <p class="pnote">Kalemle yazarken avuç reddi sayesinde elinizi ekrana dayayabilirsiniz; yalnız kalem yazar. Defterlerde kalemin silgi ucu ya da düğmesi siler.</p>
-      </div>
-    </section>
-
-    <section class="pband" aria-labelledby="free-h">
-      <div class="pband-in">
-        <h2 class="phead" id="free-h">Ücretsiz olan, Pro’yla gelen.</h2>
-        <div class="cols two">
-          <div>
-            <h3>Ücretsiz</h3>
-            <p>Ekran Kalemi ve Hızlı Notlar ücretsiz indirilir. Başlangıçta iki defter, ardından en fazla üç tane daha.</p>
-          </div>
-          <div>
-            <h3>Pro</h3>
-            <p>Reklam yok, sınırsız defter, önce izlenecek bir şey olmadan gelişmiş araç çubuğu. Aylık ya da tek seferlik ödemeyle ömür boyu; satın aldığınız Google hesabına bağlıdır.</p>
-          </div>
-        </div>
-        <p class="pfine">Fiyatlar Google Play’de gösterilir. Aylık aboneliği Google Play → Ödemeler ve abonelikler bölümünden istediğiniz an iptal edebilirsiniz.</p>
-      </div>
-    </section>
-
-    <section class="pfaq" aria-labelledby="faq-h">
-      <div class="pfaq-in">
-        <h2 class="phead" id="faq-h">Sık sorulanlar</h2>
-        <div class="faq">
-          <details>
-            <summary>Notlarım nerede saklanıyor?</summary>
-            <div class="a"><p>Telefonunuzda. Sunucularımıza gönderilmez, biz göremeyiz. Android yedeklemesi açıksa Google hesabınızın size ait şifreli cihaz yedeğine dahil edilebilir.</p></div>
-          </details>
-          <details>
-            <summary>Hesap açmam gerekiyor mu?</summary>
-            <div class="a"><p>Hayır. Google ile giriş isteğe bağlıdır; yalnızca Pro satın almak ya da geri yüklemek için gerekir.</p></div>
-          </details>
-          <details>
-            <summary>Yeni telefonda Pro’yu nasıl geri alırım?</summary>
-            <div class="a"><p>Satın aldığınız Google hesabıyla giriş yapın, sonra Satın alımları geri yükle’ye dokunun.</p></div>
-          </details>
-          <details>
-            <summary>Aylık aboneliği nasıl iptal ederim?</summary>
-            <div class="a"><p>Google Play → Ödemeler ve abonelikler → Abonelikler’den. Pro, ödediğiniz dönemin sonuna kadar açık kalır. Uygulamada hesabınızı silmek aboneliği iptal etmez.</p></div>
-          </details>
-          <details>
-            <summary>Neden diğer uygulamaların üzerinde gösterme izni istiyor?</summary>
-            <div class="a"><p>Kalemin açık olan her şeyin üstüne çizebilmesini bu izin sağlar. OSNote ekranınızı okumaz ya da kaydetmez; yakalama yalnızca siz istediğinizde olur ve telefonunuza kaydedilir.</p></div>
-          </details>
-          <details>
-            <summary>Hesabımı nasıl silerim?</summary>
-            <div class="a"><p>Uygulamada Ayarlar → Hesap → Hesabı sil. Giriş kaydınız silinir, notlarınız cihazınızda kalır. Adım adım anlatım ve e-postayla silme yolu <a href="/osnote/hesap-silme.html">hesap silme</a> sayfasında.</p></div>
-          </details>
-        </div>
-        <p class="pfine">Ayrıntılar: <a href="/osnote/privacy.html">gizlilik politikası</a> · <a href="/osnote/hesap-silme.html">hesap silme</a> · <a href="/kosullar">kullanım koşulları</a> · <a href="mailto:destek217product@gmail.com">destek217product@gmail.com</a></p>
-      </div>
-    </section>
-  </main>
-
-  <footer class="pfoot">
-    <i class="bleed" aria-hidden="true"></i>
-    <div class="pfoot-in">
-      <a href="/tr" aria-label="217 Products ana sayfa"><img class="pfoot-mark" src="/assets/logo-217.svg?w=1" alt="" width="75" height="40" loading="lazy" decoding="async"></a>
-      <nav aria-label="Alt bilgi">
-        <a href="/tr#products">Raftaki her şey</a>
-        <a href="/osnote/privacy.html">Gizlilik politikası</a>
-        <a href="/osnote/hesap-silme.html">Hesap silme</a>
-        <a href="/kosullar">Kullanım koşulları</a>
-        <a href="mailto:destek217product@gmail.com">İletişim</a>
-      </nav>
-      <div class="pfoot-meta">
-        <span>Bağımsız Ürün Stüdyosu</span>
-        <span>Ankara, Türkiye</span>
-        <span>© 2026 217 Products</span>
-        <span class="seal-sm" lang="ja" aria-hidden="true">二一七</span>
+      <p class="giris__meta">Ücretsiz · <span lang="en">Android</span> 8.0 ve üzeri · Türkçe ve İngilizce</p>
+      <div class="giris__akis" data-giris-akis>
+        <p class="giris__akis-bas" id="giris-akis-bas">Tablette şimdi</p>
+        <ol aria-labelledby="giris-akis-bas">
+          <li>Solda ders videosu oynuyor</li>
+          <li>El: dokunuş videoya gider, video durur</li>
+          <li>Kalem ve sarı: tepe noktası</li>
+          <li>Ok, iki uygulamanın arasından geçer</li>
+          <li>Mavi: çözüm sağdaki PDF’e, doğru şık</li>
+          <li>Kalem yuvasına döner</li>
+        </ol>
+        <p class="giris__akis-simdi" data-giris-akis-simdi aria-hidden="true"></p>
+        <button class="tekrar" type="button" data-giris-oynat><svg class="simge" aria-hidden="true"><use href="#i-yenile"/></svg>Tekrar oynat</button>
       </div>
     </div>
-  </footer>
 
-  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "d9107c4dfead4c3daf2514b746a87726"}'></script>
+    <figure class="giris__sahne" data-giris aria-describedby="giris-anlat">
+      <p class="gorunmez" id="giris-anlat">Ekranı ikiye bölünmüş bir cihaz. Bir yanda eğik atışı anlatan bir ders videosu oynuyor, öbür yanda ödevin PDF’i açık. OSNote’un kalem çubuğu iki uygulamanın arasındaki çizginin üstünde. Bir kalem ucu önce videoya dokunup onu top tepe noktasındayken durduruyor. Sonra çubukta Kalem’e ve sarıya dokunuyor, tepe noktasını daire içine alıyor, bir okla iki uygulamanın arasındaki çizgiyi geçip PDF’teki boşluğu gösteriyor. Maviye geçip PDF’e çözümü yazıyor: v y eşittir 50 çarpı 0,8 eşittir 40, h eşittir 40 kare bölü 20 eşittir 80 metre. Doğru şık C’yi daire içine alıyor.</p>
+
+      <!-- tablet: yatay, yan yana iki uygulama -->
+      <div class="tablet tablet--giris" data-giris-cihaz="tablet" aria-hidden="true">
+        <div class="tablet__govde"><div class="tablet__ekran">
+          <div class="bol">
+            <div class="bol__uyg uyg uyg--ders">
+              <div class="d-kare"><canvas class="d-video" data-ders></canvas></div>
+              <div class="d-bilgi">
+                <p class="d-baslik">Eğik atış: tepe noktası ve menzil</p>
+                <p class="d-meta">Fizik 11 · 3. ders · 31 dk</p>
+                <p class="d-ara">Bölümler</p>
+                <ol class="d-bolumler">
+                  <li><time>0:00</time><span>Hız ve atış açısı</span></li>
+                  <li><time>5:20</time><span>Hızı bileşenlerine ayırmak</span></li>
+                  <li class="d-simdi"><time>12:10</time><span>Tepe noktası</span></li>
+                  <li><time>19:45</time><span>Menzil</span></li>
+                </ol>
+              </div>
+            </div>
+            <div class="bol__ayrac"><i></i></div>
+            <div class="bol__uyg uyg uyg--pdf">
+              <div class="p-ust"><svg><use href="#m-geri-ok"/></svg><span><b>fizik-odev-3.pdf</b></span><svg><use href="#m-ara"/></svg><svg><use href="#m-more-vert"/></svg></div>
+              <div class="p-alan">
+                <div class="p-sayfa">
+                  <p class="p-bas"><span>Fizik · 11. sınıf</span><span>Ödev 3 — Eğik atış</span></p>
+                  <div class="p-soru">
+                    <svg class="p-sekil" viewBox="0 0 150 84" aria-hidden="true"><path class="p-sekil__yer" d="M4 74H146"/><path class="p-sekil__yol" d="M14 74C44 -6 104 -6 134 74"/><path class="p-sekil__ok" d="M14 74 33.5 48"/><path class="p-sekil__uc" d="M33.5 48l-7.2 2.6 5.4 4z"/><path class="p-sekil__aci" d="M30 74A16 16 0 0 0 23.6 61.2"/><text x="36" y="70">53°</text><text x="36.5" y="43" class="p-sekil__v">v<tspan dy="2.4" font-size="7">0</tspan></text></svg>
+                    <p><b>4.</b> Yerden 50 m/s hızla, yatayla 53° açı yapacak biçimde atılan bir cisim en fazla kaç metre yükselir?</p>
+                    <p class="p-k">(g = 10 m/s², sin 53° = 0,8)</p>
+                    <ol class="p-sik"><li><b>A)</b> 45</li><li><b>B)</b> 60</li><li data-p-dogru><b>C)</b> 80</li><li><b>D)</b> 100</li><li><b>E)</b> 125</li></ol>
+                  </div>
+                  <div class="p-bosluk"></div>
+                  <div class="p-soru">
+                    <p><b>5.</b> Aynı cisim atıldığı noktadan kaç metre uzağa düşer?</p>
+                    <ol class="p-sik"><li><b>A)</b> 120</li><li><b>B)</b> 180</li><li><b>C)</b> 240</li><li><b>D)</b> 300</li><li><b>E)</b> 360</li></ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="durum durum--acik"><b>16:12</b><span class="durum__sag"><svg><use href="#m-wifi"/></svg><i class="pil"></i></span></div>
+          <canvas class="tablet__murekkep" data-murekkep></canvas>
+          <div class="oc oc--yatay oc--el oc--normal">
+            <span class="oc__a oc__a--el" data-a="el"><svg><use href="#o-el"/></svg></span>
+            <i class="oc__ara"></i>
+            <span class="oc__grup">
+              <span class="oc__a oc__a--kalem" data-a="kalem"><svg><use href="#o-kalem"/></svg></span>
+              <span class="oc__a oc__a--silgi" data-a="silgi"><svg><use href="#o-silgi"/></svg></span>
+            </span>
+            <i class="oc__ara"></i>
+            <span class="oc__renkler"><i data-r="0"></i><i data-r="1"></i><i data-r="2"></i><i data-r="3"></i><i data-r="4"></i><i data-r="5"></i></span>
+            <i class="oc__ara"></i>
+            <span class="oc__kapat"><svg><use href="#m-guc"/></svg><b>KAPAT</b></span>
+            <span class="oc__k oc__k--dolu"><svg class="oc__dikey"><use href="#m-more-vert"/></svg><svg class="oc__yatay"><use href="#m-more-horiz"/></svg></span>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- telefon: dikey, üst üste iki uygulama -->
+      <div class="tel tel--giris" data-giris-cihaz="telefon" aria-hidden="true">
+        <div class="tel__govde"><div class="tel__ekran">
+          <div class="bol bol--ust">
+            <div class="bol__uyg uyg uyg--ders">
+              <div class="d-kare"><canvas class="d-video" data-ders></canvas></div>
+              <div class="d-bilgi">
+                <p class="d-baslik">Eğik atış: tepe noktası ve menzil</p>
+                <p class="d-meta">Fizik 11 · 3. ders · 31 dk</p>
+                <ol class="d-bolumler">
+                  <li class="d-simdi"><time>12:10</time><span>Tepe noktası</span></li>
+                  <li><time>19:45</time><span>Menzil</span></li>
+                </ol>
+              </div>
+            </div>
+            <div class="bol__ayrac"><i></i></div>
+            <div class="bol__uyg uyg uyg--pdf">
+              <div class="p-ust"><svg><use href="#m-geri-ok"/></svg><span><b>fizik-odev-3.pdf</b></span><svg><use href="#m-more-vert"/></svg></div>
+              <div class="p-alan">
+                <div class="p-sayfa">
+                  <div class="p-soru">
+                    <p><b>4.</b> Yerden 50 m/s hızla, yatayla 53° açı yapacak biçimde atılan bir cisim en fazla kaç metre yükselir?</p>
+                    <p class="p-k">(g = 10 m/s², sin 53° = 0,8)</p>
+                    <ol class="p-sik"><li><b>A)</b> 45</li><li><b>B)</b> 60</li><li data-p-dogru><b>C)</b> 80</li><li><b>D)</b> 100</li><li><b>E)</b> 125</li></ol>
+                  </div>
+                  <div class="p-bosluk"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="durum durum--acik"><b>16:12</b><span class="durum__sag"><svg><use href="#m-sinyal"/></svg><svg><use href="#m-wifi"/></svg><i class="pil"></i></span></div>
+          <canvas class="tel__murekkep" data-murekkep></canvas>
+          <div class="oc oc--kucuk oc--el oc--normal">
+            <span class="oc__a oc__a--el" data-a="el"><svg><use href="#o-el"/></svg></span>
+            <i class="oc__ara"></i>
+            <span class="oc__grup">
+              <span class="oc__a oc__a--kalem" data-a="kalem"><svg><use href="#o-kalem"/></svg></span>
+              <span class="oc__a oc__a--silgi" data-a="silgi"><svg><use href="#o-silgi"/></svg></span>
+            </span>
+            <i class="oc__ara"></i>
+            <span class="oc__renkler"><i data-r="0"></i><i data-r="1"></i><i data-r="2"></i><i data-r="3"></i><i data-r="4"></i><i data-r="5"></i></span>
+            <i class="oc__ara"></i>
+            <span class="oc__kapat"><svg><use href="#m-guc"/></svg><b>KAPAT</b></span>
+            <span class="oc__k oc__k--dolu"><svg class="oc__dikey"><use href="#m-more-vert"/></svg><svg class="oc__yatay"><use href="#m-more-horiz"/></svg></span>
+          </div>
+          <i class="tel__tutamac"></i>
+        </div></div>
+      </div>
+      <figcaption class="giris__not">
+        <p id="giris-alt-yazi"><span class="yalniz-tablet">Solda ders videosu, sağda ödevin PDF’i: iki ayrı uygulama.</span><span class="yalniz-telefon">Üstte ders videosu, altta ödevin PDF’i: iki ayrı uygulama.</span> Kalem ikisinin de üstünde.</p>
+        <button class="tekrar" type="button" data-giris-oynat><svg class="simge" aria-hidden="true"><use href="#i-yenile"/></svg>Tekrar oynat</button>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================================================ UYGULAMALAR: KATMAN
+     Tek telefon. Kaydırdıkça önce mesajlardaki bir satır daire içine alınır; sonra telefon yan yatıp
+     katmanlarına ayrılır: altta uygulama, üstünde OSNote'un saydam katmanı (yazı orada), en üstte çubuk.
+     Katmanlar ayrıkken alttaki uygulama değişir (harita, takvim), çubuk aynı kalır. Sonunda katmanlar
+     yeniden birleşir. Kaydırmayla sürülür (ekranlar.js › katmanKur); hareket azaltılmışsa ayrık hâli durur. -->
+<section class="katman" id="uygulamalar" aria-labelledby="katman-baslik">
+  <div class="katman__kap" data-katman>
+    <div class="katman__metin">
+      <h2 class="katman__baslik" id="katman-baslik">Mesajda, haritada, takvimde de aynı kalem</h2>
+      <p class="katman__on">Kalem ayrı bir katmanda durur, alttaki uygulama bunu fark etmez. Açık olan uygulamaların hemen hepsinde çalışır. İzin pencereleri gibi bazı Android sistem ekranları ise istisna. Android bunların üstünde başka bir uygulama göstermez.</p>
+      <ol class="katman__sira" aria-hidden="true">
+        <li data-k-sira="sohbet"><b>Mesajlar</b><span>Paylaşılan siparişte bir satırı işaretle.</span></li>
+        <li data-k-sira="harita"><b>Harita</b><span>Kütüphanenin arka kapısına giden yolu çiz.</span></li>
+        <li data-k-sira="takvim"><b>Takvim</b><span>Sunumun altına kendine not düş.</span></li>
+      </ol>
+    </div>
+    <div class="katman__sahne" data-katman-sahne>
+      <figure class="katman__uzay" data-katman-uzay aria-describedby="katman-anlat">
+        <p class="gorunmez" id="katman-anlat">Bir telefon. Önce bir mesajlaşma uygulaması açık: ev arkadaşlarının grubunda paylaşılan bir sipariş özetinde deterjan satırı kırmızıyla daire içine alınmış, altına “benim değil” yazılmış. Sonra telefon yan yatıp üç katmana ayrılıyor: altta uygulama, onun üstünde OSNote’un saydam katmanı (yazılar burada), en üstte kalem çubuğu. Katmanlar ayrıkken alttaki uygulama önce haritaya dönüyor (mavi noktadan kütüphanenin arka kapısına pembe bir yol ve “arka kapı” notu), sonra takvime (14 Ekim’deki sunumun altı maviyle çizilmiş; akşamki sporun üstü çizilip yanına “slaytları bitir” yazılmış). Çubuk hep aynı. Sonunda katmanlar yeniden birleşiyor.</p>
+        <div class="k3" data-k3 aria-hidden="true">
+          <i class="k3__kat k3__kat--1"></i><i class="k3__kat k3__kat--2"></i><i class="k3__kat k3__kat--3"></i><i class="k3__kat k3__kat--4"></i>
+          <div class="tel k3__tel">
+            <div class="tel__govde"><div class="tel__ekran">
+              <div class="k-uyglar">
+                <div class="uyg uyg--sohbet" data-k-uyg="sohbet">
+                  <div class="s-ust"><svg><use href="#m-geri-ok"/></svg><i class="s-av">EV</i><span><b>Ev</b><small>Mert, Can, sen</small></span><svg><use href="#m-video"/></svg><svg><use href="#m-more-vert"/></svg></div>
+                  <div class="s-akis">
+                    <p class="s-gun">Bugün</p>
+                    <div class="s-m s-m--resim">
+                      <b class="s-ad s-ad--2">Mert</b>
+                      <div class="s-ekran">
+                        <div class="s-ekran__ust"><i></i><b>Sipariş özeti</b><span>Teslim edildi</span></div>
+                        <p class="s-ekran__alt">27 Eylül, 19:42 · 5 ürün</p>
+                        <ul class="s-fis">
+                          <li><span>Süt 1 L × 2</span><b>69,80</b></li>
+                          <li><span>Ekmek × 2</span><b>20,00</b></li>
+                          <li data-fis-hedef><span>Deterjan 3 L</span><b>189,90</b></li>
+                          <li><span>Çikolata × 4</span><b>96,00</b></li>
+                          <li><span>Beyaz peynir</span><b>142,50</b></li>
+                        </ul>
+                        <p class="s-fis__top"><span>Toplam</span><b>518,20 TL</b></p>
+                      </div>
+                      <p>Dünkü market, üçe bölelim mi?</p><time>20:38</time>
+                    </div>
+                    <div class="s-m" data-s-son><b class="s-ad s-ad--1">Can</b><p>Olur, kim neyi aldı?</p><time>20:39</time></div>
+                  </div>
+                  <div class="s-yaz"><span><svg><use href="#m-emoji"/></svg><em>Mesaj</em><svg><use href="#m-ek"/></svg><svg><use href="#m-kamera"/></svg></span><i><svg><use href="#m-mikrofon"/></svg></i></div>
+                </div>
+                <div class="uyg uyg--harita" data-k-uyg="harita">
+                  <svg class="h-harita" viewBox="0 0 360 780" preserveAspectRatio="xMidYMin slice">
+                <!-- harita:başla -->
+                <rect width="360" height="780" fill="#F2EFE9"/>
+                <path fill="#AAD3EE" d="M176.0 -20.0L400.0 -20.0L400.0 108.0L356.0 102.0L318.0 90.0L284.0 70.0L252.0 44.0L222.0 18.0L196.0 -2.0Z"/>
+                <path fill="none" stroke="#9CC7E4" stroke-width="1" d="M400.0 108.0 356.0 102.0 318.0 90.0 284.0 70.0 252.0 44.0 222.0 18.0 196.0 -2.0 176.0 -20.0"/>
+                <path fill="#CFE6C2" d="M52.0 364.0L121.0 361.0L123.0 443.0L54.0 446.0Z"/>
+                <path fill="none" stroke="#E6F1DC" stroke-width="2.4" stroke-linecap="round" d="M56 432C72 414 84 400 100 396S116 380 119 368M62 368C76 384 92 396 116 438"/>
+                <path fill="#B7D9A8" d="M112.6 418.6a2.2 2.2 0 1 0 0.01 0ZM105.6 375.1a2.2 2.2 0 1 0 0.01 0ZM78.1 416.2a2.2 2.2 0 1 0 0.01 0ZM57.1 385.5a2.2 2.2 0 1 0 0.01 0ZM57.8 428.3a2.2 2.2 0 1 0 0.01 0ZM104.0 432.6a2.2 2.2 0 1 0 0.01 0ZM64.4 406.3a2.2 2.2 0 1 0 0.01 0ZM65.4 371.8a2.2 2.2 0 1 0 0.01 0ZM115.3 402.5a2.2 2.2 0 1 0 0.01 0ZM102.4 395.1a2.2 2.2 0 1 0 0.01 0ZM61.8 424.7a2.2 2.2 0 1 0 0.01 0ZM66.7 417.6a2.2 2.2 0 1 0 0.01 0ZM62.6 410.1a2.2 2.2 0 1 0 0.01 0ZM79.3 382.8a2.2 2.2 0 1 0 0.01 0ZM93.4 371.0a2.2 2.2 0 1 0 0.01 0ZM103.7 370.1a2.2 2.2 0 1 0 0.01 0ZM109.0 383.8a2.2 2.2 0 1 0 0.01 0ZM107.8 403.2a2.2 2.2 0 1 0 0.01 0ZM80.0 431.4a2.2 2.2 0 1 0 0.01 0ZM75.8 417.2a2.2 2.2 0 1 0 0.01 0ZM62.9 405.5a2.2 2.2 0 1 0 0.01 0ZM105.8 403.1a2.2 2.2 0 1 0 0.01 0ZM90.2 371.5a2.2 2.2 0 1 0 0.01 0ZM105.9 430.2a2.2 2.2 0 1 0 0.01 0Z"/>
+                <path fill="#E6E1D8" stroke="#D9D3C8" stroke-width=".6" d="M363.7 158.1L377.7 157.6L378.4 174.0L364.4 174.6ZM139.5 459.1L160.9 457.9L161.7 470.8L140.3 472.1ZM-10.6 423.3L13.1 422.6L13.8 444.7L-9.9 445.4ZM329.2 109.4L346.9 108.5L347.8 126.1L330.1 127.0ZM246.2 298.6L247.3 317.8L227.9 318.9L226.8 299.7ZM101.3 108.9L101.4 122.9L80.9 123.0L80.8 109.0ZM120.2 302.4L120.4 315.7L97.0 316.1L96.8 302.8ZM249.6 380.3L250.3 399.4L229.8 400.2L229.0 381.1ZM223.1 758.3L223.6 783.1L203.6 783.5L203.1 758.7ZM-17.3 227.8L3.0 226.1L4.8 247.8L-15.5 249.5ZM220.8 719.9L221.2 737.0L206.0 737.4L205.5 720.3ZM35.4 468.6L35.1 484.5L12.5 484.0L12.9 468.0ZM70.9 462.0L92.9 461.3L93.7 485.2L71.6 485.8ZM241.9 109.2L265.8 107.7L267.2 131.6L243.3 133.0ZM340.8 543.2L340.8 561.0L324.1 561.0L324.2 543.2ZM373.0 352.4L394.8 351.4L395.4 364.2L373.6 365.3ZM71.6 519.3L85.2 521.6L82.5 537.8L68.8 535.5ZM235.2 89.6L235.1 108.3L222.6 108.2L222.8 89.5ZM303.1 296.5L303.7 321.4L281.8 321.9L281.2 297.1ZM-12.2 487.2L9.0 487.1L9.2 501.0L-12.1 501.2ZM159.5 646.6L159.7 669.4L140.5 669.6L140.3 646.8ZM218.1 610.1L219.0 632.1L198.2 632.9L197.3 611.0ZM335.1 147.8L335.5 163.8L320.4 164.2L320.0 148.2ZM345.7 527.7L365.9 518.0L377.1 541.3L356.9 551.0ZM153.9 501.9L153.9 521.0L140.2 521.0L140.2 501.9ZM290.5 691.7L290.8 715.3L264.7 715.8L264.3 692.1ZM332.6 278.9L332.5 301.5L321.4 301.4L321.6 278.9ZM347.2 739.5L347.2 762.7L323.9 762.6L324.0 739.5ZM155.4 110.9L155.3 130.0L137.7 129.9L137.7 110.8ZM333.3 263.5L333.4 276.5L321.7 276.6L321.6 263.5ZM121.6 567.0L121.8 586.9L109.1 587.1L108.9 567.1ZM195.3 626.7L194.8 652.1L166.3 651.6L166.8 626.1ZM374.6 308.9L385.0 308.8L385.1 322.5L374.7 322.6ZM173.5 457.3L183.5 457.1L184.0 473.0L173.9 473.3ZM90.0 228.3L107.7 227.6L108.4 242.6L90.6 243.3ZM120.8 181.1L121.0 198.2L98.2 198.4L98.0 181.4ZM180.0 93.0L180.4 105.9L152.1 106.7L151.7 93.8ZM341.5 613.5L341.2 637.8L323.5 637.7L323.7 613.3ZM337.6 577.7L338.3 599.8L324.4 600.2L323.8 578.1ZM305.7 747.0L305.9 759.2L292.7 759.4L292.5 747.1ZM301.8 89.6L302.4 114.8L291.2 115.0L290.6 89.8ZM260.9 723.5L261.0 742.9L240.7 743.0L240.6 723.5ZM36.8 604.2L36.6 617.0L14.3 616.6L14.6 603.8ZM371.1 143.1L385.4 142.6L385.8 155.2L371.6 155.8ZM69.6 691.2L69.7 703.8L55.4 704.0L55.2 691.4ZM155.4 361.0L166.9 360.8L167.3 376.8L155.8 377.0ZM336.4 461.4L346.9 456.1L354.9 472.0L344.5 477.3ZM139.6 155.9L152.5 155.1L153.7 174.3L140.9 175.1ZM173.8 790.3L174.0 803.5L155.8 803.7L155.6 790.6ZM236.0 207.7L236.0 223.8L224.8 223.7L224.8 207.7ZM8.3 273.8L18.3 272.9L20.3 293.3L10.3 294.2ZM348.3 775.1L348.4 799.5L325.7 799.5L325.6 775.2ZM155.5 527.0L155.7 542.7L140.9 542.9L140.7 527.2ZM5.1 235.8L17.4 234.6L18.8 247.9L6.4 249.2ZM-19.7 276.5L3.3 274.9L4.6 293.0L-18.4 294.6ZM30.6 98.2L30.6 110.1L17.1 110.2L17.0 98.2ZM258.6 707.3L258.6 722.1L240.5 722.2L240.4 707.4ZM284.0 772.3L283.8 797.0L255.8 796.8L256.0 772.0ZM123.8 778.9L123.9 789.5L105.0 789.7L104.9 779.1ZM-24.5 604.5L-5.0 595.8L4.0 616.0L-15.4 624.7ZM153.2 631.0L153.4 644.2L140.4 644.5L140.1 631.3ZM276.9 419.9L301.1 418.8L301.9 435.5L277.7 436.6ZM68.5 268.6L86.0 268.0L86.6 286.0L69.1 286.6ZM353.5 459.3L376.3 447.9L382.0 459.4L359.2 470.8ZM171.9 224.6L196.4 222.9L197.3 235.7L172.8 237.4ZM290.7 662.9L291.2 679.2L271.4 679.9L270.9 663.6ZM221.5 687.4L221.7 699.6L201.0 700.0L200.8 687.8ZM331.9 180.8L331.7 192.3L320.9 192.1L321.1 180.6ZM287.7 631.9L287.4 648.0L271.5 647.7L271.8 631.6ZM5.5 93.1L5.9 116.3L-9.6 116.5L-10.0 93.3ZM364.3 114.6L374.3 113.7L375.3 124.9L365.3 125.8ZM343.5 398.2L343.4 419.9L323.1 419.9L323.1 398.2ZM35.4 540.4L35.2 550.7L19.9 550.4L20.1 540.0ZM354.4 263.8L369.9 262.9L371.3 284.7L355.8 285.7ZM69.5 116.9L69.9 129.0L49.4 129.6L49.1 117.5ZM10.7 548.5L10.5 571.6L-3.2 571.5L-3.0 548.4ZM31.2 169.7L31.2 183.6L16.1 183.6L16.1 169.7ZM256.1 259.2L273.9 257.8L274.8 268.9L257.0 270.3ZM35.5 518.1L35.7 535.3L23.3 535.4L23.0 518.3ZM68.3 191.4L68.7 215.1L50.5 215.3L50.1 191.6ZM241.9 358.1L261.8 357.6L262.2 375.0L242.3 375.5ZM32.9 222.9L32.8 233.4L15.1 233.2L15.3 222.7ZM31.7 192.7L31.5 214.9L10.5 214.7L10.7 192.6ZM55.4 603.3L71.3 596.5L77.5 611.1L61.6 617.9ZM286.7 574.3L286.9 586.9L262.6 587.2L262.4 574.6ZM122.5 653.4L122.0 678.6L105.5 678.2L106.1 653.0ZM182.7 676.1L182.9 694.0L159.5 694.2L159.3 676.3ZM256.0 664.1L256.8 689.5L239.3 690.0L238.5 664.6ZM345.4 500.5L355.5 495.4L360.8 505.9L350.7 511.0ZM180.6 359.5L200.7 358.4L201.7 374.6L181.5 375.8ZM157.2 206.8L157.1 217.9L138.5 217.8L138.5 206.7ZM72.4 226.5L87.6 225.9L88.2 243.1L73.0 243.7ZM142.3 227.2L158.5 226.4L159.2 239.1L142.9 240.0ZM157.0 708.9L157.1 719.9L141.7 720.1L141.5 709.1ZM36.2 753.9L36.0 779.2L20.3 779.1L20.5 753.8ZM-31.5 431.9L-14.3 431.6L-14.1 444.9L-31.2 445.3ZM159.2 753.3L159.4 777.4L141.9 777.6L141.7 753.4ZM-35.6 367.6L-16.1 367.0L-15.7 381.4L-35.2 381.9ZM177.7 154.9L200.2 153.7L201.1 171.3L178.5 172.4ZM166.6 395.9L166.2 416.6L152.6 416.3L153.0 395.7ZM343.4 359.4L344.1 382.8L322.8 383.5L322.1 360.0ZM280.5 534.6L298.1 526.2L304.6 539.8L287.0 548.2ZM305.8 732.6L305.7 746.2L295.4 746.1L295.6 732.5ZM305.2 636.7L305.2 654.5L291.6 654.5L291.5 636.7ZM250.3 600.6L251.5 625.2L237.4 625.9L236.2 601.3ZM238.0 509.8L247.5 504.6L256.6 521.2L247.2 526.4ZM36.7 582.8L36.3 601.8L25.8 601.6L26.2 582.6ZM368.0 586.1L368.1 606.6L339.7 606.7L339.7 586.2ZM119.7 159.5L120.3 179.0L100.3 179.6L99.8 160.1ZM202.8 456.4L213.4 456.0L213.9 469.0L203.3 469.4ZM34.0 308.0L33.9 331.7L19.8 331.6L20.0 307.9ZM253.5 785.4L253.8 804.4L241.3 804.6L240.9 785.6ZM360.5 429.7L360.4 446.6L337.7 446.4L337.8 429.5ZM332.2 422.4L332.7 436.6L322.1 436.9L321.6 422.8ZM221.7 739.5L222.1 750.2L204.7 750.8L204.3 740.1ZM357.2 494.7L374.7 486.0L380.4 497.5L362.9 506.2ZM306.3 769.3L306.1 792.6L286.7 792.4L287.0 769.1ZM-25.9 678.7L-10.2 672.2L-1.9 692.3L-17.6 698.7ZM78.1 82.5L77.9 105.4L60.3 105.2L60.5 82.4ZM214.8 508.3L215.8 524.2L202.0 525.0L201.1 509.1ZM261.1 222.7L282.1 221.4L282.7 232.1L261.8 233.4ZM1.5 366.3L22.8 365.6L23.5 387.1L2.3 387.8ZM206.5 195.9L206.3 215.5L191.7 215.4L191.8 195.8ZM-17.9 328.3L1.2 327.5L2.0 348.5L-17.0 349.2ZM249.9 555.6L250.0 579.4L237.0 579.4L236.9 555.6ZM77.1 158.6L88.0 158.1L88.5 168.3L77.6 168.8ZM370.7 367.9L396.6 367.7L396.8 387.0L370.8 387.2ZM20.3 272.2L30.8 271.2L32.4 289.1L21.9 290.1ZM204.8 104.1L204.6 129.3L190.9 129.2L191.1 104.0ZM180.4 585.1L195.2 577.4L200.9 588.5L186.1 596.2ZM366.1 206.6L388.7 205.2L389.9 224.0L367.3 225.5ZM340.0 693.9L340.3 705.3L324.5 705.7L324.3 694.2ZM214.8 483.7L216.2 505.8L204.7 506.6L203.2 484.4ZM120.5 201.6L120.4 220.4L105.0 220.4L105.0 201.5ZM250.8 418.0L265.9 411.9L274.0 431.6L258.8 437.8ZM230.3 328.8L254.4 327.3L255.1 338.6L231.0 340.1ZM162.1 724.5L162.1 740.3L142.3 740.2L142.4 724.5ZM211.9 400.9L212.1 417.2L195.4 417.4L195.2 401.1ZM36.5 789.9L36.4 800.3L16.7 800.1L16.8 789.7ZM121.7 483.2L121.8 507.6L98.2 507.8L98.0 483.4ZM99.0 784.5L99.3 796.1L76.1 796.6L75.9 785.0ZM70.3 492.8L70.1 504.5L52.9 504.2L53.1 492.5ZM103.0 721.2L102.9 744.9L78.3 744.8L78.4 721.0ZM55.0 160.0L68.9 159.0L69.9 172.5L56.0 173.5ZM34.6 333.9L34.3 347.1L10.8 346.7L11.1 333.5ZM340.3 314.8L353.5 314.4L354.1 335.4L340.9 335.8ZM121.6 521.2L121.6 539.0L106.5 539.0L106.6 521.2ZM365.7 620.1L365.2 642.2L349.8 641.9L350.2 619.8ZM-22.6 463.0L-5.1 462.3L-4.5 477.1L-22.0 477.8ZM166.4 508.8L185.8 499.1L197.6 522.8L178.3 532.5ZM200.2 735.0L200.8 749.7L188.0 750.3L187.4 735.5ZM218.1 586.9L218.4 601.7L204.9 602.0L204.6 587.2ZM12.3 298.0L12.0 314.3L-0.9 314.1L-0.6 297.8ZM304.7 599.4L304.9 625.0L282.8 625.2L282.6 599.6ZM166.6 115.4L188.1 113.9L189.6 135.7L168.1 137.2ZM67.0 675.8L67.3 689.2L54.4 689.4L54.2 676.0ZM69.7 637.2L91.3 628.6L99.9 649.9L78.2 658.6ZM22.3 579.8L21.9 598.9L-2.5 598.4L-2.1 579.3ZM36.9 680.8L36.5 698.8L18.7 698.5L19.1 680.5ZM124.2 790.7L124.0 810.2L101.4 810.0L101.6 790.5ZM167.8 547.0L180.5 540.6L188.2 555.9L175.5 562.2ZM93.2 626.3L110.8 619.4L118.4 638.6L100.8 645.6ZM234.8 455.0L251.5 454.9L251.6 473.2L234.9 473.3ZM285.2 356.3L297.1 356.1L297.3 372.3L285.4 372.4ZM35.3 490.0L35.6 502.4L25.2 502.7L24.9 490.3ZM264.3 87.2L264.4 98.4L240.6 98.4L240.6 87.2ZM64.7 568.0L64.9 585.8L54.4 585.9L54.3 568.1ZM122.3 693.4L122.7 713.5L103.5 713.9L103.1 693.8ZM304.2 469.7L303.9 487.1L289.1 486.9L289.4 469.5ZM220.0 665.8L220.4 675.9L203.0 676.7L202.5 666.6ZM325.6 470.2L337.4 464.6L343.8 478.1L332.0 483.7ZM89.2 332.8L108.8 331.7L109.6 345.8L90.0 346.8ZM284.4 92.5L284.8 106.4L267.2 106.9L266.8 93.0ZM270.3 326.1L293.0 325.5L293.3 337.6L270.6 338.2ZM94.0 460.2L116.2 459.6L116.6 471.1L94.3 471.7ZM67.4 736.3L67.5 748.9L55.1 749.0L55.0 736.4ZM155.0 597.7L167.2 591.0L173.4 602.4L161.2 609.1ZM123.6 754.5L123.4 767.1L112.3 766.9L112.4 754.3ZM304.8 577.7L305.1 595.5L289.2 595.7L288.9 577.9ZM257.2 377.1L273.7 376.1L274.9 394.8L258.4 395.9ZM359.6 176.3L380.4 175.3L381.7 203.4L360.9 204.4ZM249.5 479.9L267.0 479.3L267.8 503.7L250.4 504.3ZM73.6 712.3L74.2 732.1L54.8 732.7L54.2 712.9ZM76.3 759.6L76.1 776.5L54.1 776.2L54.3 759.4ZM303.9 259.6L303.7 273.3L290.0 273.1L290.3 259.4ZM349.0 209.2L359.1 208.3L360.6 226.7L350.5 227.5ZM88.1 593.4L104.2 586.0L109.3 597.0L93.1 604.5ZM346.4 663.0L346.0 682.1L323.9 681.6L324.3 662.5ZM155.1 604.6L155.3 626.2L141.6 626.3L141.5 604.7ZM157.6 179.0L157.2 201.8L138.0 201.4L138.4 178.7ZM337.7 706.8L338.0 730.5L323.8 730.6L323.5 707.0ZM36.4 735.0L36.7 745.2L21.8 745.6L21.6 735.4ZM239.8 223.0L254.2 222.5L254.6 234.0L240.2 234.4ZM-28.0 400.7L-11.6 400.7L-11.6 427.2L-28.0 427.2ZM69.8 321.6L70.1 332.0L52.1 332.5L51.8 322.1ZM102.5 661.6L103.1 685.3L75.6 685.9L75.0 662.2ZM203.8 86.5L204.3 100.9L188.3 101.4L187.8 87.0ZM-34.6 277.1L-23.5 276.5L-22.8 289.3L-33.9 290.0ZM119.5 104.1L119.8 130.1L103.6 130.3L103.3 104.3ZM281.7 613.0L281.4 629.4L253.7 628.8L254.0 612.4ZM178.7 745.6L178.9 758.0L164.9 758.2L164.8 745.8ZM36.5 702.8L36.9 723.3L25.9 723.5L25.4 703.0ZM252.0 547.5L275.1 536.0L280.1 546.1L257.0 557.6ZM89.6 557.2L100.5 558.4L99.0 571.0L88.1 569.8ZM157.3 420.5L171.3 419.8L172.3 439.6L158.3 440.4ZM-5.0 669.1L10.6 662.2L15.5 673.5L-0.0 680.4ZM123.4 718.6L123.5 733.2L106.5 733.4L106.3 718.8ZM259.6 280.6L260.4 298.2L244.6 299.0L243.7 281.3ZM237.3 287.4L237.3 297.5L226.3 297.5L226.2 287.4ZM366.7 710.8L366.3 729.5L346.0 729.1L346.4 710.3ZM204.3 788.8L205.2 806.9L186.3 807.8L185.4 789.6ZM198.5 710.9L198.8 724.8L176.4 725.4L176.1 711.4ZM35.4 565.1L35.7 577.7L24.4 577.9L24.1 565.4ZM189.1 183.7L189.3 194.9L159.8 195.4L159.6 184.2ZM342.3 145.5L362.1 144.5L362.6 155.4L342.9 156.4ZM-37.2 238.6L-18.8 237.7L-18.2 250.2L-36.6 251.1ZM337.4 208.4L336.9 229.6L320.0 229.2L320.5 208.0ZM17.5 744.0L18.2 763.5L-7.7 764.4L-8.3 744.9ZM219.7 632.9L220.5 652.0L199.8 652.8L199.1 633.7ZM58.2 230.1L69.1 229.6L69.9 244.3L59.0 244.9ZM94.3 492.6L94.7 513.0L75.9 513.4L75.5 493.0ZM17.9 422.1L35.8 421.6L36.4 443.7L18.5 444.2ZM212.2 424.0L213.0 439.1L197.4 439.9L196.6 424.8ZM141.3 560.9L161.4 550.9L169.3 567.0L149.2 576.9ZM11.4 625.8L29.7 617.4L34.6 628.1L16.3 636.5ZM149.9 386.6L150.1 402.6L139.4 402.7L139.2 386.7ZM32.0 121.6L32.0 134.9L15.8 134.9L15.9 121.6ZM336.1 518.8L336.5 530.7L324.4 531.1L324.0 519.2ZM214.1 470.1L214.4 480.8L190.4 481.5L190.1 470.8ZM-22.5 636.1L-4.9 628.4L1.7 643.5L-15.8 651.2ZM64.1 506.2L63.9 519.5L53.7 519.3L53.9 506.1ZM333.4 644.7L333.6 654.8L323.6 655.0L323.4 644.9ZM226.1 260.7L241.5 259.7L242.4 273.8L227.1 274.9ZM62.8 301.5L63.0 313.7L51.7 313.8L51.6 301.7ZM252.9 644.4L253.8 662.3L238.7 663.1L237.8 645.2ZM354.1 353.4L367.2 353.2L367.4 370.2L354.3 370.4ZM15.8 400.1L16.5 422.3L1.9 422.7L1.2 400.5ZM305.0 548.4L305.2 561.8L288.1 562.1L287.9 548.6ZM372.6 562.5L372.9 575.3L346.0 575.9L345.7 563.2ZM270.0 454.6L282.6 454.3L282.9 466.9L270.3 467.2ZM19.6 237.0L31.4 236.0L32.3 246.4L20.5 247.4ZM96.1 266.6L118.4 265.4L119.0 276.1L96.6 277.2ZM180.3 769.0L180.5 780.1L166.7 780.4L166.5 769.3ZM367.4 515.8L390.7 504.5L397.5 518.3L374.1 529.7ZM306.5 706.6L306.7 729.9L293.9 730.0L293.7 706.7ZM152.3 426.6L152.1 438.2L139.5 437.9L139.7 426.4ZM254.4 761.4L254.5 782.1L241.0 782.2L240.9 761.5ZM338.6 304.3L339.1 319.5L322.4 320.1L321.9 304.9ZM72.5 785.5L72.1 807.4L55.3 807.1L55.7 785.2ZM157.8 685.8L157.8 706.9L141.6 706.9L141.6 685.8ZM34.3 392.9L35.0 412.5L22.8 413.0L22.1 393.3ZM182.5 331.0L195.5 330.7L195.8 341.8L182.8 342.1ZM30.8 145.8L31.1 161.4L19.2 161.6L19.0 146.0ZM217.4 529.4L217.5 539.8L206.6 539.9L206.5 529.6ZM365.8 423.2L387.8 412.4L397.8 433.0L375.9 443.7ZM287.3 217.5L299.8 216.8L300.6 230.7L288.2 231.5ZM169.5 383.0L192.4 381.5L193.5 396.8L170.5 398.3ZM271.3 109.4L288.5 108.7L289.5 130.3L272.2 131.1ZM284.7 719.7L284.7 745.2L265.1 745.1L265.2 719.7ZM372.5 251.4L393.0 250.3L394.4 274.0L373.9 275.2ZM258.8 304.6L270.6 304.5L270.8 323.5L259.0 323.6ZM-12.6 366.9L-2.1 366.8L-2.0 379.1L-12.4 379.2ZM155.8 472.9L156.3 486.8L140.3 487.3L139.8 473.5ZM12.7 170.6L12.7 190.2L-14.0 190.3L-14.1 170.7ZM278.3 380.2L302.3 378.4L303.3 391.9L279.3 393.6ZM-14.1 699.8L-2.3 694.5L4.7 710.0L-7.1 715.3ZM351.9 378.8L368.1 377.9L369.0 395.4L352.8 396.3ZM96.5 196.7L96.2 211.1L82.5 210.9L82.8 196.4ZM285.9 279.5L286.0 292.3L266.9 292.4L266.8 279.7ZM17.8 502.5L18.6 527.6L-0.1 528.2L-0.8 503.1ZM156.2 154.9L171.3 154.6L171.6 172.0L156.5 172.3ZM306.9 684.5L307.0 699.8L292.9 699.8L292.9 684.5ZM336.3 439.7L336.3 452.5L323.7 452.5L323.7 439.7ZM59.0 87.3L60.0 111.9L49.0 112.3L48.0 87.7ZM349.0 252.9L369.4 251.2L370.3 261.8L349.8 263.5ZM368.2 751.6L368.2 775.5L349.1 775.5L349.1 751.6ZM360.4 399.3L360.5 413.8L346.2 413.9L346.1 399.5ZM124.0 735.0L124.2 747.2L111.2 747.4L111.0 735.2ZM255.0 745.0L255.2 760.2L240.9 760.4L240.7 745.2ZM146.2 333.2L167.8 332.2L168.3 343.4L146.7 344.4ZM223.1 787.3L223.4 805.7L209.2 806.0L208.8 787.5ZM199.7 751.1L199.7 766.4L184.3 766.4L184.3 751.1ZM347.3 268.3L347.0 294.3L334.7 294.2L334.9 268.2ZM183.0 542.7L192.9 537.3L200.1 550.5L190.2 555.9ZM74.9 599.3L85.7 595.0L89.7 605.0L78.9 609.3ZM238.1 422.4L247.7 418.8L253.7 434.6L244.0 438.2ZM192.4 610.0L192.8 625.5L171.2 626.0L170.9 610.5ZM379.8 668.5L379.6 693.8L349.7 693.6L349.8 668.3ZM70.3 553.5L84.9 555.6L81.6 578.9L67.0 576.8ZM357.5 298.4L370.5 297.8L371.5 321.2L358.5 321.7ZM274.7 499.1L291.7 490.7L296.8 500.8L279.8 509.3ZM236.1 109.7L236.1 122.5L223.6 122.5L223.7 109.7ZM-24.4 300.8L-6.9 299.5L-5.5 318.7L-22.9 320.0ZM67.5 653.8L67.8 671.9L55.0 672.1L54.7 654.0ZM210.5 381.6L210.6 391.6L200.4 391.8L200.3 381.7ZM15.9 779.9L15.7 803.0L1.9 802.9L2.1 779.8ZM375.5 112.5L394.5 111.3L395.3 123.7L376.3 124.9ZM8.3 196.7L8.5 210.0L-15.6 210.3L-15.8 197.0ZM151.9 783.6L152.2 796.3L141.4 796.6L141.1 783.9ZM71.0 334.9L85.9 334.8L86.0 346.1L71.0 346.2ZM305.9 671.5L305.9 682.0L292.7 682.0L292.6 671.5ZM360.3 644.6L360.0 660.2L347.5 659.9L347.9 644.4ZM12.3 728.0L12.8 742.4L-2.7 743.0L-3.2 728.5ZM93.3 294.7L93.6 309.2L70.0 309.7L69.7 295.2ZM89.2 528.0L103.7 529.7L102.4 541.2L87.8 539.5ZM63.4 466.6L63.6 491.9L53.2 491.9L53.1 466.6ZM172.8 701.6L172.5 719.9L160.3 719.7L160.6 701.5ZM243.0 474.9L243.6 485.8L233.6 486.4L232.9 475.5ZM121.0 285.6L121.5 300.5L102.5 301.0L102.1 286.2ZM-38.6 487.2L-20.9 486.9L-20.5 503.6L-38.3 503.9ZM356.2 170.3L356.2 187.4L338.2 187.4L338.2 170.2ZM36.6 661.2L37.1 675.7L23.5 676.2L23.0 661.6ZM243.8 487.0L244.8 505.5L234.0 506.1L233.0 487.5ZM206.7 178.2L207.2 191.3L196.3 191.8L195.8 178.7ZM11.2 764.7L11.2 777.3L-10.9 777.3L-10.9 764.8ZM49.5 132.5L74.6 131.6L75.0 141.7L49.9 142.6ZM379.3 442.0L390.4 436.8L397.6 452.1L386.6 457.3ZM364.2 323.6L382.7 323.1L383.0 333.7L364.5 334.2ZM-32.9 339.3L-19.7 339.0L-19.5 349.5L-32.6 349.8ZM335.0 96.5L335.4 106.5L320.9 107.0L320.6 97.0ZM254.2 455.2L265.0 455.1L265.3 475.2L254.5 475.3ZM62.7 174.9L62.8 190.4L50.5 190.5L50.4 175.0ZM362.5 782.5L362.8 797.7L349.8 798.0L349.4 782.8ZM98.2 756.3L98.3 780.6L85.5 780.6L85.4 756.3ZM251.0 580.6L251.4 597.1L237.6 597.5L237.2 580.9ZM-35.7 215.1L-22.1 214.0L-20.1 237.0L-33.7 238.2ZM303.3 275.2L303.6 290.9L290.5 291.2L290.2 275.5ZM81.9 130.3L96.9 129.8L97.3 139.9L82.3 140.5ZM35.9 552.2L36.1 563.7L16.7 564.0L16.6 552.5ZM207.8 216.4L207.8 228.2L197.6 228.3L197.6 216.5ZM76.1 177.1L90.8 176.5L91.5 195.2L76.8 195.8ZM65.0 270.6L65.8 295.4L52.1 295.9L51.2 271.1ZM-0.7 462.8L10.2 462.8L10.3 483.8L-0.6 483.9ZM304.5 562.8L304.8 576.0L289.4 576.4L289.0 563.2ZM257.0 327.2L267.9 327.0L268.2 338.9L257.2 339.1ZM121.8 319.7L121.3 344.6L111.1 344.4L111.6 319.5ZM175.1 419.3L190.7 418.2L192.2 438.7L176.5 439.8ZM346.1 764.5L345.9 774.6L325.1 774.3L325.3 764.2ZM153.5 487.6L153.3 501.0L140.8 500.9L141.0 487.4ZM193.5 654.4L194.2 668.2L172.3 669.3L171.6 655.5ZM222.1 704.2L222.2 714.4L207.0 714.4L207.0 704.3ZM338.7 193.2L338.7 203.9L320.7 203.9L320.7 193.2ZM281.0 753.8L281.0 764.8L257.4 764.9L257.3 753.9ZM381.7 483.9L391.5 479.4L396.8 490.9L387.0 495.4ZM98.7 691.4L99.4 713.0L83.3 713.5L82.6 692.0ZM185.0 457.1L200.6 456.0L201.4 467.8L185.9 469.0ZM337.2 601.1L337.1 612.0L323.8 611.9L323.9 600.9ZM122.6 680.2L122.8 692.7L112.6 692.9L112.5 680.4ZM263.8 357.7L283.7 356.6L284.5 370.9L264.6 371.9ZM169.2 518.3L169.8 535.9L157.0 536.3L156.5 518.7ZM339.8 563.1L339.8 574.9L324.0 574.9L324.0 563.1ZM260.3 629.7L260.5 643.1L237.5 643.5L237.3 630.1ZM164.7 201.2L183.8 200.0L185.0 218.7L165.9 219.9ZM-38.7 636.7L-29.1 632.4L-20.4 651.6L-30.0 655.9ZM20.6 700.1L21.0 713.5L7.4 713.9L7.0 700.6ZM269.8 591.7L270.6 607.6L255.7 608.3L254.9 592.4ZM332.3 507.0L342.9 502.0L350.5 518.1L339.9 523.1ZM349.1 104.9L362.4 104.4L363.2 126.7L349.9 127.2ZM150.0 368.7L150.2 384.1L139.8 384.2L139.6 368.8ZM174.9 486.2L175.2 499.2L159.5 499.4L159.3 486.5ZM33.3 294.3L33.5 304.8L20.2 305.0L20.1 294.6ZM285.2 455.2L306.4 455.1L306.5 466.5L285.3 466.6ZM233.9 174.4L234.7 195.8L224.6 196.2L223.8 174.8ZM261.9 507.2L271.7 502.5L276.1 511.7L266.3 516.4ZM338.9 321.6L339.2 336.9L321.9 337.3L321.5 322.0ZM199.1 694.6L199.0 704.8L186.4 704.8L186.4 694.6ZM73.4 315.6L89.5 315.6L89.6 331.9L73.5 331.9ZM342.4 385.3L342.1 397.9L323.0 397.5L323.3 384.9ZM13.1 120.6L13.4 140.4L-6.3 140.7L-6.6 120.9ZM220.4 652.5L220.7 663.8L203.7 664.3L203.4 653.0ZM121.3 222.7L121.4 233.9L110.8 234.0L110.7 222.8ZM197.4 767.3L197.4 786.1L183.6 786.0L183.7 767.3ZM369.9 740.4L370.0 751.2L349.6 751.4L349.4 740.6ZM35.0 503.2L35.3 516.4L23.4 516.7L23.1 503.5ZM257.5 689.6L258.0 701.9L240.4 702.6L239.9 690.3ZM331.7 165.6L331.7 177.2L320.0 177.2L320.0 165.6ZM305.0 656.4L305.3 669.1L292.5 669.3L292.2 656.7ZM-22.7 382.2L-7.1 381.9L-6.9 399.6L-22.4 399.8ZM123.1 767.6L123.1 778.0L106.7 778.0L106.7 767.6ZM372.5 694.2L372.9 707.1L348.7 707.8L348.3 694.9ZM210.1 330.3L210.2 340.5L198.7 340.6L198.6 330.4ZM277.5 256.7L288.4 255.9L289.3 268.1L278.3 268.9ZM234.2 124.5L234.7 135.5L223.5 136.0L223.0 125.0ZM307.0 797.6L307.2 807.7L290.7 808.1L290.4 798.0ZM-35.6 463.3L-24.3 462.9L-23.6 483.0L-34.8 483.4ZM245.1 258.5L255.3 257.9L255.9 268.2L245.7 268.8ZM197.4 678.8L197.7 693.0L184.7 693.2L184.4 679.1Z"/>
+                <path fill="#EFE3CF" stroke="#DCCDB4" stroke-width=".7" d="M238.0 160.0L296.0 158.0L298.0 214.0L240.0 216.0Z"/>
+                <path fill="#E9E1EF" stroke="#D8CDE0" stroke-width=".7" d="M148.0 272.0L202.0 270.0L204.0 326.0L150.0 328.0Z"/>
+                <path fill="none" stroke="#E9C46A" stroke-width="17.0" stroke-linecap="round" stroke-linejoin="round" d="M-30.0 264.0 60.0 257.0 180.0 250.0 300.0 243.0 400.0 237.0"/>
+                <path fill="none" stroke="#D6D0C4" stroke-width="13.5" stroke-linecap="round" stroke-linejoin="round" d="M-30.0 668.0 120.0 604.0 260.0 532.0 400.0 462.0"/>
+                <path fill="none" stroke="#DDD7CC" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round" d="M214.0 96.0 217.0 250.0 221.0 420.0 227.0 560.0 233.0 820.0"/>
+                <path fill="none" stroke="#DDD7CC" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round" d="M34.0 152.0 140.0 147.0 262.0 141.0 400.0 133.0"/>
+                <path fill="none" stroke="#DDD7CC" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round" d="M40.0 96.0 42.0 262.0 44.0 424.0 46.0 820.0"/>
+                <path fill="none" stroke="#DDD7CC" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round" d="M129.0 118.0 130.0 262.0 131.0 452.0 133.0 820.0"/>
+                <path fill="none" stroke="#DDD7CC" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round" d="M311.0 100.0 312.0 243.0 314.0 474.0 316.0 820.0"/>
+                <path fill="none" stroke="#DDD7CC" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round" d="M-30.0 358.0 122.0 354.0 221.0 349.0 400.0 343.0"/>
+                <path fill="none" stroke="#DDD7CC" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round" d="M-30.0 454.0 131.0 451.0 221.0 447.0 313.0 445.0"/>
+                <path fill="none" stroke="#DDD7CC" stroke-width="8.6" stroke-linecap="round" stroke-linejoin="round" d="M221.0 420.0 262.0 404.0 312.0 400.0"/>
+                <path fill="none" stroke="#DDD7CC" stroke-width="8.6" stroke-linecap="round" stroke-linejoin="round" d="M44.0 540.0 90.0 548.0 131.0 552.0"/>
+                <path fill="none" stroke="#FCE7A8" stroke-width="15.0" stroke-linecap="round" stroke-linejoin="round" d="M-30.0 264.0 60.0 257.0 180.0 250.0 300.0 243.0 400.0 237.0"/>
+                <path fill="none" stroke="#FFFFFF" stroke-width="11.5" stroke-linecap="round" stroke-linejoin="round" d="M-30.0 668.0 120.0 604.0 260.0 532.0 400.0 462.0"/>
+                <path fill="none" stroke="#FFFFFF" stroke-width="8.0" stroke-linecap="round" stroke-linejoin="round" d="M214.0 96.0 217.0 250.0 221.0 420.0 227.0 560.0 233.0 820.0"/>
+                <path fill="none" stroke="#FFFFFF" stroke-width="8.0" stroke-linecap="round" stroke-linejoin="round" d="M34.0 152.0 140.0 147.0 262.0 141.0 400.0 133.0"/>
+                <path fill="none" stroke="#FFFFFF" stroke-width="8.0" stroke-linecap="round" stroke-linejoin="round" d="M40.0 96.0 42.0 262.0 44.0 424.0 46.0 820.0"/>
+                <path fill="none" stroke="#FFFFFF" stroke-width="8.0" stroke-linecap="round" stroke-linejoin="round" d="M129.0 118.0 130.0 262.0 131.0 452.0 133.0 820.0"/>
+                <path fill="none" stroke="#FFFFFF" stroke-width="8.0" stroke-linecap="round" stroke-linejoin="round" d="M311.0 100.0 312.0 243.0 314.0 474.0 316.0 820.0"/>
+                <path fill="none" stroke="#FFFFFF" stroke-width="8.0" stroke-linecap="round" stroke-linejoin="round" d="M-30.0 358.0 122.0 354.0 221.0 349.0 400.0 343.0"/>
+                <path fill="none" stroke="#FFFFFF" stroke-width="8.0" stroke-linecap="round" stroke-linejoin="round" d="M-30.0 454.0 131.0 451.0 221.0 447.0 313.0 445.0"/>
+                <path fill="none" stroke="#FFFFFF" stroke-width="7.0" stroke-linecap="round" stroke-linejoin="round" d="M221.0 420.0 262.0 404.0 312.0 400.0"/>
+                <path fill="none" stroke="#FFFFFF" stroke-width="7.0" stroke-linecap="round" stroke-linejoin="round" d="M44.0 540.0 90.0 548.0 131.0 552.0"/>
+                <!-- harita:bitti -->
+                    <g class="h-yazi">
+                      <text transform="translate(272 247.6) rotate(-3.2)" text-anchor="middle" class="h-yazi--ana">Cumhuriyet Cd.</text>
+                      <text transform="translate(192 569) rotate(-27.2)" text-anchor="middle">İstasyon Cd.</text>
+                      <text transform="translate(224.2 372) rotate(-88.7)" text-anchor="middle">Okul Sk.</text>
+                      <text transform="translate(190 142.4) rotate(-2.8)" text-anchor="middle">Menekşe Sk.</text>
+                      <text transform="translate(262 347.6) rotate(-1.6)" text-anchor="middle">Lale Sk.</text>
+                      <text transform="translate(262 448.6) rotate(-1)" text-anchor="middle">Gül Sk.</text>
+                    </g>
+                    <text x="88" y="408" text-anchor="middle" class="h-park">Çınar Parkı</text>
+                    <g class="h-poi">
+                      <circle cx="176" cy="291" r="8.5" fill="#7B8794"/><path fill="#fff" d="M176 286.2 170.4 289.2 176 292.2 181.6 289.2Zm-3.4 4.2v2.4l3.4 1.8 3.4-1.8v-2.4L176 292.2Z"/>
+                      <text x="176" y="316" text-anchor="middle">Anadolu Lisesi</text>
+                      <circle cx="274" cy="384" r="8.5" fill="#E8710A"/><path fill="#fff" d="M269.6 380.4h7.2v4.2a2.6 2.6 0 0 1-2.6 2.6h-2a2.6 2.6 0 0 1-2.6-2.6Zm7.2 1h1.4a1.3 1.3 0 0 1 0 2.6h-1.4"/>
+                      <text x="286" y="388">Kafe</text>
+                      <circle cx="86" cy="506" r="8.5" fill="#D81B60"/><path fill="#fff" d="M84.6 501.6h2.8v3h3v2.8h-3v3h-2.8v-3h-3v-2.8h3Z"/>
+                      <text x="86" y="530" text-anchor="middle">Eczane</text>
+                      <circle cx="170" cy="602" r="8" fill="#1A73E8"/><path fill="#fff" d="M166.4 597.6h7.2a1 1 0 0 1 1 1v5.4a1 1 0 0 1-1 1h-7.2a1 1 0 0 1-1-1v-5.4a1 1 0 0 1 1-1Zm.4 1.2v2.6h6.4v-2.6Zm.4 5a.8.8 0 1 0 0 .01Zm5.6 0a.8.8 0 1 0 0 .01Z"/>
+                    </g>
+                    <circle cx="131.5" cy="500" r="24" fill="#1A73E8" fill-opacity=".14"/>
+                    <circle cx="131.5" cy="500" r="7.5" fill="#1A73E8" stroke="#FFFFFF" stroke-width="3"/>
+                    <path fill="#D93025" stroke="#A52714" stroke-width=".8" d="M267 199.5c-3.4-5.8-10.6-12.6-10.6-19.4a10.6 10.6 0 0 1 21.2 0c0 6.8-7.2 13.6-10.6 19.4Z"/>
+                    <circle cx="267" cy="180" r="3.8" fill="#8C1B12"/>
+                    <text x="267" y="230" text-anchor="middle" class="h-hedef">Merkez Kütüphane</text>
+                  </svg>
+                  <div class="h-ara"><svg><use href="#m-geri-ok"/></svg><span>Merkez Kütüphane</span><svg><use href="#m-mikrofon"/></svg></div>
+                  <span class="h-yuvar h-yuvar--konum"><svg><use href="#m-konum"/></svg></span>
+                  <div class="h-kart">
+                    <i class="h-tutamac"></i>
+                    <p class="h-ad">Merkez Kütüphane</p>
+                    <p class="h-acik">Halk kütüphanesi · 22.00’ye kadar açık · 650 m</p>
+                    <div class="h-eylem"><span class="h-eylem__ana"><svg><use href="#m-ileri-ok"/></svg>Yol tarifi</span><span><svg><use href="#m-paylas"/></svg>Paylaş</span></div>
+                  </div>
+                </div>
+                <div class="uyg uyg--takvim" data-k-uyg="takvim">
+                  <div class="k-ust"><svg><use href="#m-menu"/></svg><span>Ekim<svg><use href="#m-asagi"/></svg></span><svg><use href="#m-ara"/></svg><svg><use href="#m-bugun"/></svg></div>
+                  <div class="k-gunler"><span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span></div>
+                  <div class="k-ay">
+                    <i class="k-bos"></i><i class="k-bos"></i><i class="k-bos"></i>
+                    <i><b>1</b></i><i><b>2</b><em class="k-n k-n--2"></em></i><i><b>3</b></i><i><b>4</b></i>
+                    <i><b>5</b></i><i><b>6</b><em class="k-n k-n--4"></em></i><i><b>7</b><em class="k-n"></em></i><i><b>8</b></i><i><b>9</b><em class="k-n k-n--2"></em></i><i><b>10</b></i><i><b>11</b></i>
+                    <i><b>12</b></i><i><b>13</b></i><i class="k-sec"><b>14</b><em class="k-n k-n--3"></em></i><i><b>15</b><em class="k-n k-n--6"></em></i><i><b>16</b><em class="k-n k-n--2"></em></i><i><b>17</b></i><i><b>18</b></i>
+                    <i><b>19</b></i><i><b>20</b></i><i><b>21</b><em class="k-n"></em></i><i><b>22</b></i><i><b>23</b><em class="k-n k-n--2"></em></i><i><b>24</b></i><i><b>25</b></i>
+                    <i><b>26</b></i><i><b>27</b></i><i><b>28</b></i><i><b>29</b><em class="k-n k-n--5"></em></i><i><b>30</b><em class="k-n k-n--2"></em></i><i><b>31</b></i><i class="k-bos"></i>
+                  </div>
+                  <div class="k-liste">
+                    <p class="k-liste__gun">14 Ekim Çarşamba</p>
+                    <div class="k-etk k-etk--3" data-k-sunum><b>Sunum</b><span>14:00 – 15:00 · Toplantı odası 2</span></div>
+                    <div class="k-etk k-etk--2" data-k-spor><b>Spor</b><span>19:00 – 20:00</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="durum"><b>20:41</b><span class="durum__sag"><svg><use href="#m-sinyal"/></svg><svg><use href="#m-wifi"/></svg><i class="pil"></i></span></div>
+              <i class="tel__tutamac"></i>
+            </div></div>
+          </div>
+          <div class="k3__cam" data-k3-cam><canvas class="k3__murekkep" data-murekkep></canvas></div>
+          <div class="k3__cubuk" data-k3-cubuk>
+            <div class="oc oc--kucuk oc--normal">
+              <span class="oc__a oc__a--el" data-a="el"><svg><use href="#o-el"/></svg></span>
+              <i class="oc__ara"></i>
+              <span class="oc__grup">
+                <span class="oc__a oc__a--kalem oc__a--sec" data-a="kalem"><svg><use href="#o-kalem"/></svg></span>
+                <span class="oc__a oc__a--silgi" data-a="silgi"><svg><use href="#o-silgi"/></svg></span>
+              </span>
+              <i class="oc__ara"></i>
+              <span class="oc__renkler"><i data-r="0"></i><i data-r="1" class="sec"></i><i data-r="2"></i><i data-r="3"></i><i data-r="4"></i><i data-r="5"></i></span>
+              <i class="oc__ara"></i>
+              <span class="oc__kapat"><svg><use href="#m-guc"/></svg><b>KAPAT</b></span>
+              <span class="oc__k oc__k--dolu"><svg class="oc__dikey"><use href="#m-more-vert"/></svg><svg class="oc__yatay"><use href="#m-more-horiz"/></svg></span>
+            </div>
+          </div>
+        </div>
+        <div class="katman__etiketler" aria-hidden="true">
+          <svg class="katman__cizgiler"><path data-cizgi="iz"/><circle data-nokta="iz" r="3.2"/><path data-cizgi="cubuk"/><path data-cizgi="cam"/><path data-cizgi="uyg"/><circle data-nokta="cubuk" r="2.6"/><circle data-nokta="cam" r="2.6"/><circle data-nokta="uyg" r="2.6"/></svg>
+          <p class="k-etiket" data-etiket="cubuk"><b>Çubuk</b><span>Her uygulamada aynı</span></p>
+          <p class="k-etiket" data-etiket="cam"><b>OSNote’un katmanı</b><span>Yazdığın burada durur</span></p>
+          <p class="k-etiket" data-etiket="uyg"><b>Uygulama</b><span>Altta, olduğu gibi çalışır</span></p>
+          <p class="k-aciklama" data-k-aciklama>Altta uygulama, üstünde OSNote’un saydam katmanı, en üstte çubuk.</p>
+        </div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ NASIL ÇALIŞIR: KALEM VE EL
+     Koyu sahne (gece maçı): solda tablette taktik analiz videosu, sağda başlık, açıklama, üç adım, ipucu ve
+     düğmeler. Dar ekranda: başlık ve açıklama, tablet (telefonda dikey), büyük düğmeler, adımlar. -->
+<section class="bolum bolum--el" id="el-modu" aria-labelledby="el-baslik">
+  <div class="kap kap--genis el-sahne" data-el-sahne>
+    <div class="el-sahne__cihaz">
+      <div class="tablet" data-tablet>
+        <div class="tablet__govde"><div class="tablet__ekran" data-el-ekran>
+          <div class="uyg uyg--oynatici">
+            <canvas class="o-sim" data-sim aria-hidden="true"></canvas>
+            <div class="o-ust" aria-hidden="true"><svg><use href="#m-geri-ok"/></svg><span><b>Ara pas</b> · taktik analiz</span><svg><use href="#m-yansit"/></svg><svg><use href="#m-more-vert"/></svg></div>
+            <div class="o-alt">
+              <button class="o-oynat" type="button" data-video-oynat aria-label="Videoyu oynat"><svg class="o-oynat__oynat" aria-hidden="true"><use href="#m-oynat"/></svg><svg class="o-oynat__dur" aria-hidden="true"><use href="#m-duraklat"/></svg><svg class="o-oynat__yeniden" aria-hidden="true"><use href="#m-yenile-m"/></svg></button>
+              <span data-video-sure aria-hidden="true">0:00 / 0:04</span><span class="o-cubuk" aria-hidden="true"><i data-video-ilerleme></i></span><svg aria-hidden="true"><use href="#m-tam-ekran"/></svg>
+            </div>
+          </div>
+          <canvas class="tablet__murekkep" data-murekkep aria-hidden="true"></canvas>
+          <div class="oc oc--yatay oc--el oc--canli" role="toolbar" aria-label="OSNote çubuğu (prova)" data-el-cubuk>
+            <svg class="oc__tac" aria-hidden="true"><use href="#o-tac"/></svg>
+            <button type="button" class="oc__a oc__a--el" data-a="el" aria-pressed="true" aria-label="El: dokunuşlar videoya geçer"><svg aria-hidden="true"><use href="#o-el"/></svg></button>
+            <i class="oc__ara"></i>
+            <span class="oc__grup">
+              <button type="button" class="oc__a oc__a--kalem" data-a="kalem" aria-pressed="false" aria-label="Kalem"><svg aria-hidden="true"><use href="#o-kalem"/></svg></button>
+              <button type="button" class="oc__a oc__a--silgi" data-a="silgi" aria-pressed="false" aria-label="Silgi"><svg aria-hidden="true"><use href="#o-silgi"/></svg></button>
+              <button type="button" class="oc__a oc__a--sekil" data-a="sekil" aria-pressed="false" aria-label="Şekiller (bu provada kapalı)" aria-disabled="true"><svg aria-hidden="true"><use href="#o-sekiller"/></svg></button>
+            </span>
+            <i class="oc__ara"></i>
+            <span class="oc__renkler" role="group" aria-label="Renkler">
+              <button type="button" data-r="0" aria-label="Siyah" aria-pressed="false"></button><button type="button" data-r="1" aria-label="Kırmızı" aria-pressed="false"></button><button type="button" data-r="2" aria-label="Mavi" aria-pressed="false"></button><button type="button" data-r="3" aria-label="Yeşil" aria-pressed="false"></button><button type="button" data-r="4" aria-label="Pembe" aria-pressed="false"></button><button type="button" data-r="5" aria-label="Sarı" aria-pressed="false"></button>
+            </span>
+            <i class="oc__ara"></i>
+            <span class="oc__k" data-a="sayfa"><svg aria-hidden="true"><use href="#o-sayfa"/></svg></span>
+            <i class="oc__ara oc__ara--dikey"></i>
+            <span class="oc__kapat" aria-hidden="true"><svg><use href="#m-guc"/></svg><b>KAPAT</b></span>
+            <span class="oc__k oc__k--dolu oc__k--kucult" aria-hidden="true"><svg><use href="#m-unfold-less"/></svg></span>
+            <span class="oc__k oc__k--dolu" aria-hidden="true"><svg class="oc__dikey"><use href="#m-more-vert"/></svg><svg class="oc__yatay"><use href="#m-more-horiz"/></svg></span>
+          </div>
+        </div></div>
+      </div>
+    </div>
+    <div class="el-sahne__yazi">
+      <p class="etiket">Nasıl çalışır</p>
+      <h2 class="baslik" id="el-baslik">Kalem ve El</h2>
+      <p class="bolum__on"><b>Kalem</b> seçiliyken dokunduğun yere yazı çıkar. <b>El</b> seçiliyken dokunuşların alttaki uygulamaya gider: videoyu oynatır, sayfayı kaydırırsın. Yazdıkların ikisinde de ekranda kalır.</p>
+      <div class="el-sahne__kontrol" role="group" aria-label="Tabletin çubuğu, büyük düğmelerle">
+        <button type="button" class="dugme dugme--kucuk dugme--cizgi" data-el-kontrol="kalem" aria-pressed="false"><svg class="simge simge--dolu" aria-hidden="true"><use href="#o-kalem"/></svg>Kalem</button>
+        <button type="button" class="dugme dugme--kucuk dugme--cizgi" data-el-kontrol="el" aria-pressed="true"><svg class="simge simge--dolu" aria-hidden="true"><use href="#o-el"/></svg>El</button>
+        <button type="button" class="dugme dugme--kucuk dugme--cizgi" data-el-kontrol="oynat"><svg class="simge simge--dolu" aria-hidden="true"><use href="#m-oynat"/></svg><span data-el-oynat-yazi>Oynat</span></button>
+      </div>
+      <ol class="adimlar" data-adimlar>
+        <li data-adim="kalem"><span><b>Kalem</b>’e dokun, pasın gideceği yeri çiz.</span></li>
+        <li data-adim="el"><span><b>El</b>’e dokun.</span></li>
+        <li data-adim="oynat"><span>Videoyu <b>oynat</b>: oyun altta akar, çizdiğin üstte kalır.</span></li>
+      </ol>
+      <p class="el-sahne__ipucu" data-el-ipucu aria-live="polite">Kalem her açıldığında El’de başlar, ilk dokunuşun uygulamaya gider.</p>
+      <span class="el-sahne__dugmeler">
+        <button class="dugme dugme--kucuk dugme--cizgi" type="button" data-el-ornek><svg class="simge" aria-hidden="true"><use href="#i-yenile"/></svg>Örneği izle</button>
+        <button class="dugme dugme--kucuk dugme--cizgi" type="button" data-el-temizle>Baştan</button>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ ARAÇ ÇUBUĞU
+     Solda başlık, liste ve iki çubuğun farkı; sağda (yapışık) çubuk ve seçilen düğmenin paneli (geniş ekranda
+     yatay çubuk, altında panel), altında kısa açıklama. -->
+<section class="bolum bolum--cubuk" id="cubuk" aria-labelledby="cubuk-baslik">
+  <div class="kap kap--genis">
+    <div class="anatomi" data-anatomi>
+      <div class="anatomi__yazi">
+        <p class="etiket">Araçlar</p>
+        <h2 class="baslik" id="cubuk-baslik">Çubukta ne var?</h2>
+        <p class="bolum__on">Çubuğu istediğin yere sürüklersin; telefonu dik ve yan tutarken yerini ayrı ayrı hatırlar. Listeden bir düğme seç, çubuktaki yeri ve paneli görünsün.</p>
+        <div class="anatomi__liste" role="group" aria-label="Çubuğun düğmeleri: birini seç, yandaki çubukta yeri ve paneli görünsün" data-anatomi-liste>
+          <button type="button" aria-pressed="false" tabindex="-1" data-p="el"><b>El</b><span>Dokunuşların alttaki uygulamaya geçer. Yazı ekranda kalır.</span></button>
+          <button type="button" aria-pressed="true" tabindex="0" data-p="kalem"><b>Kalem</b><span>1–25 px. Seçiliyken bir daha dokununca boyut açılır.</span></button>
+          <button type="button" aria-pressed="false" tabindex="-1" data-p="silgi"><b>Silgi</b><span>Yalnız üstünden geçtiği yeri siler. 8–80 px.</span></button>
+          <button type="button" aria-pressed="false" tabindex="-1" data-p="sekil"><b>Şekiller</b><span>Çizgi, ok, dikdörtgen, elips, üçgen, yıldız.</span></button>
+          <button type="button" aria-pressed="false" tabindex="-1" data-p="renk"><b>Renkler</b><span>Altı renk. Bir renge dokununca kalem seçilir, El’den çıkılır.</span></button>
+          <button type="button" aria-pressed="false" tabindex="-1" data-p="sayfa"><b>Sayfa</b><span>Ekranın üstüne kâğıt serer. Aşağıda deneyebilirsin.</span></button>
+          <button type="button" aria-pressed="false" tabindex="-1" data-p="kapat"><b>Kapat</b><span>Kalemi kapatır. Çizimler silineceği için önce sorar.</span></button>
+          <button type="button" aria-pressed="false" tabindex="-1" data-p="kucult"><b>Küçült</b><span>Dört düğmelik mini çubuk. Genişlet, Kalem, El ve Silgi.</span></button>
+          <button type="button" aria-pressed="false" tabindex="-1" data-p="daha"><b>⋯ Araçlar</b><span>Geri al, Yinele, Gizle, Döndür (tablette), Temizle, Yakala.</span></button>
+        </div>
+      </div>
+      <div class="anatomi__sahne">
+        <div class="anatomi__ekran" aria-hidden="true">
+          <div class="oc oc--anatomi oc--yatay" data-anatomi-cubuk>
+            <svg class="oc__tac"><use href="#o-tac"/></svg>
+            <span class="oc__a oc__a--el" data-a="el" data-p="el"><svg><use href="#o-el"/></svg></span>
+            <i class="oc__ara"></i>
+            <span class="oc__grup">
+              <span class="oc__a oc__a--kalem oc__a--sec" data-a="kalem" data-p="kalem"><svg><use href="#o-kalem"/></svg></span>
+              <span class="oc__a oc__a--silgi" data-a="silgi" data-p="silgi"><svg><use href="#o-silgi"/></svg></span>
+              <span class="oc__a oc__a--sekil" data-a="sekil" data-p="sekil"><svg><use href="#o-sekiller"/></svg></span>
+            </span>
+            <i class="oc__ara"></i>
+            <span class="oc__renkler" data-p="renk"><i data-r="0"></i><i data-r="1" class="sec"></i><i data-r="2"></i><i data-r="3"></i><i data-r="4"></i><i data-r="5"></i></span>
+            <i class="oc__ara"></i>
+            <span class="oc__k" data-a="sayfa" data-p="sayfa"><svg><use href="#o-sayfa"/></svg></span>
+            <i class="oc__ara oc__ara--dikey"></i>
+            <span class="oc__kapat" data-p="kapat"><svg><use href="#m-guc"/></svg><b>KAPAT</b></span>
+            <span class="oc__k oc__k--dolu oc__k--kucult" data-p="kucult"><svg><use href="#m-unfold-less"/></svg></span>
+            <span class="oc__k oc__k--dolu" data-p="daha"><svg class="oc__dikey"><use href="#m-more-vert"/></svg><svg class="oc__yatay"><use href="#m-more-horiz"/></svg></span>
+          </div>
+          <div class="anatomi__panel" data-anatomi-panel></div>
+        </div>
+        <p class="anatomi__aciklama" data-anatomi-aciklama aria-live="polite"></p>
+        <p class="cubuk__not">İki çubuk var. <b>Standart</b> çubukta El, Kalem, Silgi, altı renk, Kapat ve ⋯ (geri al, yinele, gizle, tablette döndür, temizle) bulunur. <b>Gelişmiş</b> çubuğa şekiller, sayfa, küçült ve yakala eklenir. Gelişmiş çubuk ücretsiz sürümde de var. Ücretsizde açılırken reklam gösterebilir, Pro’da göstermez.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ ŞEKİLLER VE AÇILAR -->
+<section class="bolum bolum--sekil" id="sekiller" aria-labelledby="sekil-baslik">
+  <div class="kap kap--genis sekil">
+    <figure class="sekil__sahne">
+      <div class="tablet tablet--dikey" data-sekil-tablet>
+        <div class="tablet__govde"><div class="tablet__ekran">
+          <div class="uyg uyg--test" aria-hidden="true">
+            <div class="p-ust"><svg><use href="#m-geri-ok"/></svg><span><b>geometri-deneme-2.pdf</b></span><svg><use href="#m-ara"/></svg><svg><use href="#m-more-vert"/></svg></div>
+            <div class="t-sayfa">
+              <p class="p-bas"><span>TYT Geometri · Deneme 2</span><span>Sayfa 3</span></p>
+              <div class="t-soru">
+                <p><b>7.</b> Şekildeki ABC üçgeninde [AB] ⊥ [BC] ve |AC| = 2·|AB| dir.</p>
+                <p>Buna göre ACB açısının ölçüsü kaç derecedir?</p>
+                <svg class="t-cizim" viewBox="0 0 400 260"><path d="M70 40V220H382Z" fill="none" stroke="#202124" stroke-width="2" stroke-linejoin="round"/><path d="M70 204h16v16" fill="none" stroke="#202124" stroke-width="1.5"/><text x="52" y="38">A</text><text x="50" y="238">B</text><text x="388" y="238">C</text></svg>
+                <ol class="p-sik p-sik--yan"><li><b>A)</b> 15</li><li><b>B)</b> 30</li><li><b>C)</b> 45</li><li><b>D)</b> 60</li><li><b>E)</b> 75</li></ol>
+              </div>
+              <div class="t-soru"><p><b>8.</b> Bir dikdörtgenin kısa kenarı 6 cm, köşegeni 10 cm’dir. Alanı kaç cm²’dir?</p></div>
+            </div>
+          </div>
+          <div class="durum" aria-hidden="true"><b>21:03</b><span class="durum__sag"><svg><use href="#m-wifi"/></svg><i class="pil"></i></span></div>
+          <canvas class="tablet__murekkep" data-sekil-tuval role="img" aria-label="Soru şeklinin üstüne çizilmiş bir üçgen. Köşeleri sürüklenebilir; her köşede açısı derece olarak yazıyor."></canvas>
+          <div class="oc oc--sekil" aria-hidden="true">
+            <svg class="oc__tac"><use href="#o-tac"/></svg>
+            <span class="oc__a oc__a--el" data-a="el"><svg><use href="#o-el"/></svg></span>
+            <i class="oc__ara"></i>
+            <span class="oc__grup">
+              <span class="oc__a oc__a--kalem" data-a="kalem"><svg><use href="#o-kalem"/></svg></span>
+              <span class="oc__a oc__a--silgi" data-a="silgi"><svg><use href="#o-silgi"/></svg></span>
+              <span class="oc__a oc__a--sekil oc__a--sec" data-a="sekil"><svg><use href="#o-sekiller"/></svg></span>
+            </span>
+            <i class="oc__ara"></i>
+            <span class="oc__renkler"><i data-r="0"></i><i data-r="1" class="sec"></i><i data-r="2"></i><i data-r="3"></i><i data-r="4"></i><i data-r="5"></i></span>
+            <i class="oc__ara"></i>
+            <span class="oc__k" data-a="sayfa"><svg><use href="#o-sayfa"/></svg></span>
+            <i class="oc__ara oc__ara--dikey"></i>
+            <span class="oc__kapat"><svg><use href="#m-guc"/></svg><b>KAPAT</b></span>
+            <span class="oc__k oc__k--dolu oc__k--kucult"><svg><use href="#m-unfold-less"/></svg></span>
+            <span class="oc__k oc__k--dolu"><svg class="oc__dikey"><use href="#m-more-vert"/></svg><svg class="oc__yatay"><use href="#m-more-horiz"/></svg></span>
+          </div>
+        </div></div>
+      </div>
+    </figure>
+    <div class="sekil__metin">
+      <p class="etiket">Gelişmiş çubuk</p>
+      <h2 class="baslik" id="sekil-baslik">Şekiller ve açılar</h2>
+      <p class="bolum__on">Dikdörtgenin, üçgenin ve yıldızın köşelerini tek tek sürüklersin; düzenlerken her köşenin açısı yazılır. Açılar çizime işlenmez, yalnız düzenlerken görünür.</p>
+      <p class="acilar"><span class="acilar__ad">Sarıya dönenler</span><span>30°</span><span>45°</span><span>60°</span><span>90°</span><span>120°</span><span>135°</span><span>150°</span></p>
+      <dl class="olgular">
+        <div><dt>Şekil</dt><dd>Çizgi, ok, dikdörtgen, elips, üçgen, yıldız</dd></div>
+        <div><dt>Köşeler</dt><dd>Tek tek sürüklenir</dd></div>
+      </dl>
+      <p class="sekil__deneme"><svg class="simge" aria-hidden="true"><use href="#i-sag"/></svg><span data-sekil-ipucu aria-live="polite">Tabletteki üçgenin beyaz köşelerini sürükle.</span></p>
+      <button class="dugme dugme--kucuk dugme--cizgi" type="button" data-sekil-yeniden><svg class="simge" aria-hidden="true"><use href="#i-yenile"/></svg>Baştan</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ SAYFA VE YAKALA
+     Solda başlık, açıklama, bilgiler ve Yakala; sağda telefon: ders videosunun üstüne kâğıt serilmiş (uygulamanın
+     varsayılanı %95), yanında Sayfa paneli telefonun kenarına biner. -->
+<section class="bolum bolum--sayfa" id="sayfa" aria-labelledby="sayfa-baslik">
+  <div class="kap kap--genis">
+    <div class="sayfa" data-sayfa-sahne>
+      <div class="sayfa__yazi">
+        <p class="etiket">Sayfa ve Yakala</p>
+        <h2 class="baslik" id="sayfa-baslik">Ekranın üstüne kâğıt</h2>
+        <p class="bolum__on">Sayfa, açık uygulamanın üstüne bir kâğıt serer. Opaklığını indirirsen alttaki uygulama görünür; karalamaya devam edersin.</p>
+        <dl class="olgular">
+          <div><dt>Desen</dt><dd>Boş, kareli, çizgili, noktalı</dd></div>
+          <div><dt>Kâğıt rengi</dt><dd>6</dd></div>
+          <div><dt>Opaklık</dt><dd>%40–100</dd></div>
+        </dl>
+        <div class="yakala" aria-labelledby="yakala-baslik">
+          <h3 class="yakala__baslik" id="yakala-baslik">Yakala</h3>
+          <p class="yakala__metin">Saklamak istediğinde ⋯ menüsünden Yakala’ya dokunursun. Kayıt yalnız OSNote’un kütüphanesine gider.</p>
+          <div class="op op--yakala">
+            <p class="op__soru">Ekran görüntüsü kaydedilsin mi?</p>
+            <div class="op__secenek">
+              <button type="button" class="op__birincil" data-sp-yakala="yazi">Sadece yazı</button>
+              <button type="button" data-sp-yakala="ekran">Arka plan dahil yazı</button>
+            </div>
+          </div>
+          <p class="yakala__not" data-sp-yakala-not aria-live="polite">Yakaladıkların aşağıdaki deneme bölümünün kütüphanesine düşer.</p>
+        </div>
+      </div>
+      <div class="sayfa__sahne">
+        <div class="sayfa__tel">
+          <div class="tel tel--koyu tel--buyuk" data-tel="sayfa">
+            <div class="tel__govde"><div class="tel__ekran" data-sayfa-ekran>
+              <div class="uyg uyg--ders" aria-hidden="true">
+                <div class="d-kare"><canvas class="d-video" data-ders></canvas></div>
+                <div class="d-bilgi">
+                  <p class="d-baslik">Eğik atış: tepe noktası ve menzil</p>
+                  <p class="d-meta">11. sınıf fizik · 3. ders · 31 dk</p>
+                  <p class="d-ara">Bölümler</p>
+                  <ol class="d-bolumler">
+                    <li><time>0:00</time><span>Hız ve atış açısı</span></li>
+                    <li><time>5:20</time><span>Hızı bileşenlerine ayırmak</span></li>
+                    <li class="d-simdi"><time>12:10</time><span>Tepe noktası</span></li>
+                    <li><time>19:45</time><span>Menzil</span></li>
+                    <li><time>26:30</time><span>Örnek sorular</span></li>
+                    <li><time>29:50</time><span>Özet</span></li>
+                  </ol>
+                </div>
+              </div>
+              <div class="durum" aria-hidden="true"><b>15:31</b><span class="durum__sag"><svg><use href="#m-sinyal"/></svg><svg><use href="#m-wifi"/></svg><i class="pil"></i></span></div>
+              <div class="tel__kagit" data-kagit aria-hidden="true"></div>
+              <canvas class="tel__murekkep" data-murekkep aria-hidden="true"></canvas>
+              <div class="oc oc--kucuk" aria-hidden="true">
+                <svg class="oc__tac"><use href="#o-tac"/></svg>
+                <span class="oc__a oc__a--el" data-a="el"><svg><use href="#o-el"/></svg></span>
+                <i class="oc__ara"></i>
+                <span class="oc__grup">
+                  <span class="oc__a oc__a--kalem oc__a--sec" data-a="kalem"><svg><use href="#o-kalem"/></svg></span>
+                  <span class="oc__a oc__a--silgi" data-a="silgi"><svg><use href="#o-silgi"/></svg></span>
+                  <span class="oc__a oc__a--sekil" data-a="sekil"><svg><use href="#o-sekiller"/></svg></span>
+                </span>
+                <i class="oc__ara"></i>
+                <span class="oc__renkler"><i data-r="0"></i><i data-r="1"></i><i data-r="2" class="sec"></i><i data-r="3"></i><i data-r="4"></i><i data-r="5"></i></span>
+                <i class="oc__ara"></i>
+                <span class="oc__k oc__k--acik" data-a="sayfa"><svg><use href="#o-sayfa"/></svg></span>
+                <i class="oc__ara oc__ara--dikey"></i>
+                <span class="oc__kapat"><svg><use href="#m-guc"/></svg><b>KAPAT</b></span>
+                <span class="oc__k oc__k--dolu oc__k--kucult"><svg><use href="#m-unfold-less"/></svg></span>
+                <span class="oc__k oc__k--dolu"><svg class="oc__dikey"><use href="#m-more-vert"/></svg><svg class="oc__yatay"><use href="#m-more-horiz"/></svg></span>
+              </div>
+              <i class="tel__tutamac" aria-hidden="true"></i>
+            </div></div>
+          </div>
+        </div>
+          <div class="op op--sayfa" role="group" aria-labelledby="sp-baslik">
+            <div class="op__bas">
+              <span class="op__onizleme" aria-hidden="true"><i class="op__kagit-onizleme" data-sp-onizleme data-desen="kareli"></i></span>
+              <p class="op__ad" id="sp-baslik">Sayfa<small>Ayarları</small></p>
+              <span class="op__kapat" aria-hidden="true"><svg><use href="#m-kapat"/></svg></span>
+            </div>
+            <label class="op__anahtar"><span>Sayfayı aç</span><input type="checkbox" data-sp-ac checked><i aria-hidden="true"></i></label>
+            <p class="op__alt" id="sp-renk">Kâğıt rengi</p>
+            <div class="op__kagitlar" role="radiogroup" aria-labelledby="sp-renk" data-sp-renk>
+              <button type="button" role="radio" aria-checked="true" data-deger="#FAFAFA" aria-label="Beyaz"></button>
+              <button type="button" role="radio" aria-checked="false" data-deger="#FDF6E3" aria-label="Krem"></button>
+              <button type="button" role="radio" aria-checked="false" data-deger="#FDFBF7" aria-label="Kâğıt"></button>
+              <button type="button" role="radio" aria-checked="false" data-deger="#E9EEF5" aria-label="Gri"></button>
+              <button type="button" role="radio" aria-checked="false" data-deger="#1E1E2E" aria-label="Gece"></button>
+              <button type="button" role="radio" aria-checked="false" data-deger="#282C34" aria-label="Koyu"></button>
+            </div>
+            <p class="op__alt" id="sp-desen">Desen</p>
+            <div class="op__desenler" role="radiogroup" aria-labelledby="sp-desen" data-sp-desen>
+              <button type="button" role="radio" aria-checked="false" data-deger="bos">Boş</button>
+              <button type="button" role="radio" aria-checked="true" data-deger="kareli">Kareli</button>
+              <button type="button" role="radio" aria-checked="false" data-deger="cizgili">Çizgili</button>
+              <button type="button" role="radio" aria-checked="false" data-deger="noktali">Noktalı</button>
+            </div>
+            <label class="op__kaydir"><span class="op__alt">Opaklık</span><output data-sp-opak-yazi>%95</output><input type="range" min="40" max="100" step="1" value="95" data-sp-opak></label>
+          </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ DEFTERLER
+     Solda uygulamanın gerçek ekranları dikey bir tablette; sağda başlık, açıklama, bilgiler ve ekranların listesi. -->
+<section class="bolum bolum--defter" id="defterler" aria-labelledby="defterler-baslik">
+  <div class="kap kap--genis">
+    <div class="ekranlar" data-ekranlar>
+      <div class="ekranlar__cihaz">
+        <div class="tablet tablet--dikey ekranlar__tablet">
+          <div class="tablet__govde"><div class="tablet__ekran">
+            <picture class="defter-ekran defter-ekran--acik" data-ekran="0">
+              <source type="image/avif" srcset="assets/img/ekran/defter-480.avif 480w, assets/img/ekran/defter-720.avif 720w" sizes="(max-width: 700px) 64vw, 340px">
+              <source type="image/webp" srcset="assets/img/ekran/defter-480.webp 480w, assets/img/ekran/defter-720.webp 720w" sizes="(max-width: 700px) 64vw, 340px">
+              <img src="assets/img/ekran/defter-720.jpg" width="984" height="1538" loading="lazy" decoding="async" alt="Defterde yeşil tahtaya çevrilmiş noktalı bir sayfa; mavi kalemle üçgenler ve bir yıldız; üstte defterin araç çubuğu, şekil aracı seçili.">
+            </picture>
+            <picture class="defter-ekran" data-ekran="1">
+              <source type="image/avif" srcset="assets/img/ekran/yeni-defter-480.avif 480w, assets/img/ekran/yeni-defter-720.avif 720w" sizes="(max-width: 700px) 64vw, 340px">
+              <source type="image/webp" srcset="assets/img/ekran/yeni-defter-480.webp 480w, assets/img/ekran/yeni-defter-720.webp 720w" sizes="(max-width: 700px) 64vw, 340px">
+              <img src="assets/img/ekran/yeni-defter-720.jpg" width="984" height="1538" loading="lazy" decoding="async" alt="Kütüphanede yeni defter: kapak ve kâğıt seçimi, boş, çizgili, kareli ve noktalı sayfalar.">
+            </picture>
+            <picture class="defter-ekran" data-ekran="2">
+              <source type="image/avif" srcset="assets/img/ekran/disa-aktar-480.avif 480w, assets/img/ekran/disa-aktar-720.avif 720w" sizes="(max-width: 700px) 64vw, 340px">
+              <source type="image/webp" srcset="assets/img/ekran/disa-aktar-480.webp 480w, assets/img/ekran/disa-aktar-720.webp 720w" sizes="(max-width: 700px) 64vw, 340px">
+              <img src="assets/img/ekran/disa-aktar-720.jpg" width="984" height="1538" loading="lazy" decoding="async" alt="Dışa aktarma: PDF bütün defteri, PNG bu sayfayı verir; altta Paylaş ve Kaydet düğmeleri.">
+            </picture>
+            <picture class="defter-ekran" data-ekran="3">
+              <source type="image/avif" srcset="assets/img/ekran/anasayfa-480.avif 480w, assets/img/ekran/anasayfa-720.avif 720w" sizes="(max-width: 700px) 64vw, 340px">
+              <source type="image/webp" srcset="assets/img/ekran/anasayfa-480.webp 480w, assets/img/ekran/anasayfa-720.webp 720w" sizes="(max-width: 700px) 64vw, 340px">
+              <img src="assets/img/ekran/anasayfa-720.jpg" width="984" height="1538" loading="lazy" decoding="async" alt="OSNote’un ana ekranı: büyük bir On-Screen Pen başlığı, altında Başlat düğmesi, yakalamalar ve üç mod.">
+            </picture>
+          </div></div>
+        </div>
+      </div>
+      <div class="ekranlar__yazi">
+        <p class="etiket">Hızlı Notlar</p>
+        <h2 class="baslik" id="defterler-baslik">Bir de defteri var</h2>
+        <p class="bolum__on">Kalıcı notlar için uygulamanın içinde Hızlı Notlar defterleri var. Kaldığın sayfadan açılır; bitince PDF ya da PNG olarak alırsın.</p>
+        <dl class="olgular">
+          <div><dt>Kapak</dt><dd>10</dd></div>
+          <div><dt>Kâğıt</dt><dd>4 desen, 3 sıklık</dd></div>
+          <div><dt>Sayfa</dt><dd>En çok 50</dd></div>
+        </dl>
+        <div class="ekranlar__liste" role="group" aria-label="Uygulamadan gerçek ekranlar: birini seç, tablette görünsün">
+          <button type="button" aria-pressed="true" data-ekran-sec="0"><b>Defterde</b><span>Kalem, fosforlu, silgi, kement ve on şekil. Kâğıt yeşil tahta bile olur.</span></button>
+          <button type="button" aria-pressed="false" data-ekran-sec="1"><b>Yeni defter</b><span>On kapak; boş, çizgili, kareli ya da noktalı kâğıt, üç sıklıkta.</span></button>
+          <button type="button" aria-pressed="false" data-ekran-sec="2"><b>Dışa aktar</b><span>Bütün defter PDF, o sayfa PNG.</span></button>
+          <button type="button" aria-pressed="false" data-ekran-sec="3"><b>Ana ekran</b><span>Ekran kalemi, Hızlı Notlar ve kütüphane buradan açılır.</span></button>
+        </div>
+        <p class="ekranlar__not">Ekranlar uygulamanın tanıtım videosundan; arayüz İngilizce. Telefonunun dili Türkçeyse uygulama Türkçe açılır.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ DENE -->
+<section class="dene" id="dene" aria-labelledby="dene-baslik">
+  <div class="kap kap--genis">
+    <div class="defter" id="defter">
+      <div class="dene__bas">
+        <p class="etiket">Dene</p>
+        <h2 id="dene-baslik" class="baslik">Tarayıcıda dene</h2>
+        <p class="bolum__on">Hızlı Notlar’ın tarayıcıda çalışan küçük bir provası: kalemle, parmakla ya da fareyle yaz; fosforlu, kement ve şekiller de var. Bitince PDF ya da PNG olarak indir.</p>
+      </div>
+      <div class="defter__sol">
+        <div class="defter__cubuk" role="toolbar" aria-label="Defter araçları">
+          <div class="defter__grup" role="radiogroup" aria-label="Araç" data-araclar>
+            <button type="button" role="radio" aria-checked="true" data-arac="kalem" title="Kalem"><svg class="simge" aria-hidden="true"><use href="#i-kalem"/></svg><span>Kalem</span></button>
+            <button type="button" role="radio" aria-checked="false" data-arac="fosforlu" title="Fosforlu"><svg class="simge" aria-hidden="true"><use href="#i-fosforlu"/></svg><span>Fosforlu</span></button>
+            <button type="button" role="radio" aria-checked="false" data-arac="silgi" title="Silgi: dokunduğu çizgiyi siler"><svg class="simge" aria-hidden="true"><use href="#i-silgi"/></svg><span>Silgi</span></button>
+            <button type="button" role="radio" aria-checked="false" data-arac="kement" title="Kement: seç, taşı, sil"><svg class="simge" aria-hidden="true"><use href="#i-kement"/></svg><span>Kement</span></button>
+            <button type="button" role="radio" aria-checked="false" data-arac="sekil" title="Şekiller" aria-haspopup="true"><svg class="simge" aria-hidden="true"><use href="#i-sekiller"/></svg><span>Şekiller</span></button>
+          </div>
+          <div class="defter__grup defter__renkler" role="radiogroup" aria-label="Mürekkep rengi" data-renkler></div>
+          <div class="defter__grup defter__boylar" role="radiogroup" aria-label="Kalınlık" data-boylar></div>
+          <div class="defter__grup">
+            <button type="button" class="defter__secim-sil" data-is="secim-sil" hidden><svg class="simge" aria-hidden="true"><use href="#i-temizle"/></svg><span>Seçimi sil</span></button>
+            <button type="button" data-is="geri" title="Geri al" aria-label="Geri al" disabled><svg class="simge" aria-hidden="true"><use href="#i-geri"/></svg></button>
+            <button type="button" data-is="ileri" title="İleri al" aria-label="İleri al" disabled><svg class="simge" aria-hidden="true"><use href="#i-ileri"/></svg></button>
+          </div>
+          <div class="defter__grup defter__sag">
+            <button type="button" data-is="kagit" aria-expanded="false" aria-controls="defter-kagit" title="Kâğıt: desen, sıklık, renk"><svg class="simge" aria-hidden="true"><use href="#i-kagit"/></svg><span>Kâğıt</span></button>
+            <button type="button" data-is="aktar" aria-expanded="false" aria-controls="defter-aktar" title="Dışa aktar: PDF ya da PNG"><svg class="simge" aria-hidden="true"><use href="#i-disa"/></svg><span>Dışa aktar</span></button>
+          </div>
+          <div class="defter__acilir defter__acilir--sekil" id="defter-sekil" hidden>
+            <p class="defter__acilir-baslik">Şekil</p>
+            <div class="defter__sekiller" role="radiogroup" aria-label="Şekil" data-sekiller></div>
+            <p class="defter__acilir-not">Çizdikten sonra köşelerini tek tek sürükle. Köşeli şekillerde açılar derece olarak yazılır.</p>
+          </div>
+          <div class="defter__acilir defter__acilir--renk" id="defter-renk" hidden>
+            <p class="defter__acilir-baslik">Renk tonu</p>
+            <div class="defter__klasik" role="radiogroup" aria-label="Klasik renkler" data-klasik></div>
+          </div>
+          <div class="defter__acilir defter__acilir--boy" id="defter-boy" hidden>
+            <label class="defter__boy"><span>Kalınlık</span><output data-boy-yazi>4</output><input type="range" min="1" max="12" step="1" value="4" data-boy-aralik></label>
+          </div>
+          <div class="defter__acilir" id="defter-kagit" hidden>
+            <p class="defter__acilir-baslik">Kâğıt</p>
+            <div class="secici" role="radiogroup" aria-label="Desen" data-defter-desen>
+              <button type="button" role="radio" aria-checked="false" data-deger="bos">Boş</button>
+              <button type="button" role="radio" aria-checked="false" data-deger="cizgili">Çizgili</button>
+              <button type="button" role="radio" aria-checked="true" data-deger="kareli">Kareli</button>
+              <button type="button" role="radio" aria-checked="false" data-deger="noktali">Noktalı</button>
+            </div>
+            <div class="secici secici--kucuk" role="radiogroup" aria-label="Sıklık" data-defter-aralik>
+              <button type="button" role="radio" aria-checked="false" data-deger="sik">Sık</button>
+              <button type="button" role="radio" aria-checked="true" data-deger="orta">Orta</button>
+              <button type="button" role="radio" aria-checked="false" data-deger="genis">Geniş</button>
+            </div>
+            <div class="renkler" role="radiogroup" aria-label="Kâğıt rengi" data-defter-zemin>
+              <button type="button" role="radio" aria-checked="true" data-deger="#FFFFFF" aria-label="Beyaz"></button>
+              <button type="button" role="radio" aria-checked="false" data-deger="#F7F0DD" aria-label="Krem"></button>
+              <button type="button" role="radio" aria-checked="false" data-deger="#202124" aria-label="Koyu"></button>
+              <button type="button" role="radio" aria-checked="false" data-deger="#14331F" aria-label="Koyu yeşil"></button>
+            </div>
+            <p class="defter__acilir-not">Kâğıdı değiştirince yazdıkların yerinde kalır. Uygulamada tek bir sayfanın kâğıdını da ayrıca değiştirebilirsin.</p>
+          </div>
+          <div class="defter__acilir" id="defter-aktar" hidden>
+            <p class="defter__acilir-baslik">Dışa aktar</p>
+            <div class="aktar">
+              <button type="button" data-is="pdf"><strong>PDF</strong><span data-pdf-alt>Tüm defter • 1 sayfa</span></button>
+              <button type="button" data-is="png"><strong>PNG</strong><span>Bu sayfa</span></button>
+            </div>
+            <p class="defter__acilir-not">Dosya bu cihaza iner. Uygulamada “Paylaş” ile gönderir ya da “Konuma indir” ile klasörünü seçersin.</p>
+          </div>
+        </div>
+
+        <div class="defter__masa">
+          <div class="defter__sayfa" data-sayfa role="img" aria-label="Defter sayfası. Kalemle, parmakla ya da fareyle üstüne yaz.">
+            <canvas class="defter__kagit" aria-hidden="true"></canvas>
+            <canvas class="defter__murekkep" aria-hidden="true"></canvas>
+            <noscript><p class="defter__noscript">Denemek için tarayıcında JavaScript açık olmalı.</p></noscript>
+          </div>
+          <div class="defter__alt">
+            <div class="defter__sayfalar">
+              <button type="button" data-is="onceki" aria-label="Önceki sayfa" disabled><svg class="simge" aria-hidden="true"><use href="#i-sol"/></svg></button>
+              <span data-sayfa-no aria-live="polite">Sayfa 1 / 1</span>
+              <button type="button" data-is="sonraki" aria-label="Sonraki sayfa" disabled><svg class="simge" aria-hidden="true"><use href="#i-sag"/></svg></button>
+              <button type="button" class="defter__ekle" data-is="ekle"><svg class="simge" aria-hidden="true"><use href="#i-arti"/></svg>Sayfa ekle</button>
+            </div>
+            <p class="defter__ipucu" data-defter-ipucu aria-live="polite">Kalem, parmak ya da fare yazar. Kalem (stylus) algılanınca parmak ve avuç yazmaz.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="kutuphane" id="kutuphane" aria-labelledby="kutuphane-baslik">
+        <div class="kutuphane__bas">
+          <h3 id="kutuphane-baslik">Kütüphane</h3>
+          <span class="kutuphane__sayi" data-kutuphane-sayi></span>
+        </div>
+        <div class="kutuphane__sekmeler" role="tablist" aria-label="Kütüphane">
+          <button type="button" role="tab" aria-selected="true" data-sekme="tumu" id="ks-tumu" aria-controls="kutuphane-liste">Tümü</button>
+          <button type="button" role="tab" aria-selected="false" data-sekme="defter" id="ks-defter" aria-controls="kutuphane-liste" tabindex="-1">Defterler</button>
+          <button type="button" role="tab" aria-selected="false" data-sekme="goruntu" id="ks-goruntu" aria-controls="kutuphane-liste" tabindex="-1">Görüntüler</button>
+        </div>
+        <ul class="kutuphane__liste" id="kutuphane-liste" role="tabpanel" aria-labelledby="ks-tumu" data-kutuphane-liste></ul>
+        <p class="kutuphane__bos" data-kutuphane-bos hidden>Henüz görüntü yok. Yukarıdaki “Yakala” düğmelerine dokun ya da sayfanın kalemiyle buraya yazıp ⋯ menüsünden yakala.</p>
+      </aside>
+    </div>
+    <p class="dene__not">Bu provada hiçbir şey saklanmaz. Sekmeyi kapatınca defter de kütüphane de silinir. Sayfadaki ekran kalemi açıksa, deftere yazmadan önce onu kapat ya da El’e geç.</p>
+  </div>
+</section>
+
+<!-- ============================================================ GİZLİLİK -->
+<section class="gizlilik" id="gizlilik" aria-labelledby="gizlilik-baslik">
+  <div class="kap kap--genis gizlilik__ic">
+    <div>
+      <h2 class="gizlilik__baslik" id="gizlilik-baslik">Defterlerin telefonunda kalır</h2>
+    </div>
+    <div>
+      <p class="gizlilik__metin">OSNote defterlerini ve yakaladıklarını telefonunda saklar. Sunucularımıza göndermez, biz göremeyiz. Hesap açman gerekmez, Google ile giriş yalnız Pro almak ya da geri yüklemek için. Ekran kalemi ekranını okumaz. Ekran görüntüsü yalnız sen “Yakala” dediğinde alınır.</p>
+      <dl class="gizlilik__olgular">
+        <div><dt>Notlar</dt><dd>Telefonunda</dd></div>
+        <div><dt>Hesap</dt><dd>Gerekmez</dd></div>
+        <div><dt>Ekran</dt><dd>Yalnız yakalayınca</dd></div>
+        <div><dt>Analitik</dt><dd>Ayarlardan kapanır</dd></div>
+      </dl>
+      <p class="gizlilik__not">Kullanım analitiğini ve çökme raporlarını Ayarlar → Gizlilik’ten kapatabilirsin. Android yedeklemen açıksa defterlerin, Google hesabının sana ait şifreli yedeğine girebilir. Bulutla eşitleme yok. <a href="https://217products.com/osnote/privacy.html" rel="noopener">Gizlilik politikasının tamamı</a></p>
+      <p class="gizlilik__not">Bu sitede çerez ve takip kodu yok, dışarıdan hiçbir şey yüklenmez. Deneme defterine yazdıkların yalnız bu sekmede durur.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ İNDİR
+     Kapanış: solda başlık, kısa bilgi ve Play düğmesi; sağda uygulamanın kartı (simge, ad, karekod). Altında
+     ücretsiz ve Pro yan yana, madde madde. Sonra sık sorulanlar. -->
+<section class="indir" id="indir" aria-labelledby="indir-baslik">
+  <div class="kap kap--genis">
+    <div class="indir__ic">
+      <div class="indir__metin">
+        <p class="etiket">İndir</p>
+        <h2 id="indir-baslik" class="baslik indir__baslik">Google Play’de, ücretsiz.</h2>
+        <p class="indir__on">OSNote <span lang="en">Android</span> 8.0 ve üzeri telefon ve tabletlerde çalışır. Uygulama Türkçe ve İngilizce; telefonunun dili Türkçeyse Türkçe açılır.</p>
+        <div class="indir__eylem">
+          <a class="play play--buyuk" href="https://play.google.com/store/apps/details?id=com.kurapika.onscreennote" rel="noopener">
+            <picture><source type="image/webp" srcset="assets/img/google-play-tr.webp"><img src="assets/img/google-play-tr.png" width="646" height="192" alt="Google Play’den indirin" loading="lazy"></picture>
+          </a>
+        </div>
+      </div>
+      <figure class="uygulama-kart">
+        <div class="uygulama-kart__ust">
+          <picture><source type="image/webp" srcset="assets/img/simge-192.webp"><img class="uygulama-kart__simge" src="assets/img/simge-192.png" width="192" height="192" alt="OSNote’un uygulama simgesi: siyah zeminde gümüş bir dolma kalem ucu" loading="lazy"></picture>
+          <p><b>OSNote</b><span>217 Products · <span lang="en">Android</span></span></p>
+        </div>
+        <img class="uygulama-kart__kod" src="assets/img/karekod-google-play.svg" width="148" height="148" alt="OSNote’un Google Play sayfasına giden karekod" loading="lazy">
+        <figcaption>Bilgisayardaysan telefonunla tara, mağazada açılsın.</figcaption>
+      </figure>
+    </div>
+
+    <div class="pro" aria-labelledby="pro-baslik">
+      <h3 class="pro__baslik" id="pro-baslik">Ücretsiz olan, Pro’yla gelen</h3>
+      <div class="pro__iki">
+        <div class="pro__kart">
+          <h4>Ücretsiz</h4>
+          <ul>
+            <li>Ekran kalemi: her uygulamanın üstüne yaz</li>
+            <li>Gelişmiş çubuk (şekiller, sayfa, yakala); açılırken reklam gösterebilir</li>
+            <li>Hızlı Notlar: iki defter, ardından en fazla üç tane daha</li>
+          </ul>
+        </div>
+        <div class="pro__kart pro__kart--pro">
+          <h4>Pro</h4>
+          <ul>
+            <li>Reklam yok</li>
+            <li>Sınırsız defter</li>
+            <li>Gelişmiş çubuk önce bir şey izlemeden açılır</li>
+            <li>Aylık ya da tek ödemeyle ömür boyu; satın aldığın Google hesabına bağlı</li>
+          </ul>
+        </div>
+      </div>
+      <p class="pro__not">Fiyatlar Google Play’de gösterilir. Aylık aboneliği Google Play → Ödemeler ve abonelikler’den istediğin an iptal edersin. Uygulamada hesabını silmek aboneliği iptal etmez.</p>
+    </div>
+
+    <div class="sorular" aria-labelledby="sorular-baslik">
+      <h3 class="sorular__baslik" id="sorular-baslik">Sık sorulanlar</h3>
+      <dl>
+        <div><dt>Hangi uygulamaların üstüne yazabilirim?</dt><dd>Açık olan uygulamaların hemen hepsinin. Video, PDF, tarayıcı, harita, mesajlar, ana ekran. Kalem ayrı bir katmanda durur, uygulamanın kendisine bir şey yazmaz. İzin pencereleri gibi bazı Android sistem ekranları ise istisna. Android bunların üstünde başka bir uygulama göstermez.</dd></div>
+        <div><dt>Neden diğer uygulamaların üzerinde gösterme izni istiyor?</dt><dd>Kalemin açık olan her şeyin üstünde durabilmesi için. OSNote ekranını okumaz. Ekran görüntüsü yalnız sen yakaladığında alınır.</dd></div>
+        <div><dt>Uygulama değişince yazdıklarım gider mi?</dt><dd>Gitmez. Yazı uygulamanın değil ekranın üstünde. Sen silene ya da kalemi kapatana kadar yerinde kalır. Kapatırken çizimler silineceği için önce sorar.</dd></div>
+        <div><dt>Hesap açmam gerekir mi?</dt><dd>Hayır. Google ile giriş isteğe bağlı, yalnız Pro almak ya da geri yüklemek için.</dd></div>
+        <div><dt>Defterlerim yeni telefona geçer mi?</dt><dd>Bulutla eşitleme yok, defterler telefonunda durur. Android’in cihaz aktarımı ve şifreli yedeği (destekleyen cihazlarda) onları da taşır.</dd></div>
+        <div><dt>Kalem bastırınca kalınlaşıyor mu?</dt><dd>Hayır, basınç algılanmaz. Kalem tek kalınlıkta yazar, kalınlığı sen seçersin.</dd></div>
+        <div><dt>Yeni telefonda Pro’yu nasıl geri alırım?</dt><dd>Satın aldığın Google hesabıyla giriş yap, sonra Satın alımları geri yükle’ye dokun.</dd></div>
+        <div><dt>iPhone’da var mı?</dt><dd>Şimdilik yalnız <span lang="en">Android</span>’de, Google Play’de.</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================================ ALT BİLGİ -->
+<footer class="alt">
+  <div class="kap kap--genis alt__ic">
+    <div class="alt__marka">
+      <a class="alt__217" href="https://217products.com/tr" rel="noopener" aria-label="217 Products"><img src="assets/img/marka/logo-217.svg" width="120" height="64" alt="" loading="lazy" decoding="async"></a>
+      <p>OSNote bir 217 Products uygulamasıdır.</p>
+    </div>
+    <nav class="alt__baglar" aria-label="Alt bilgi">
+      <a href="https://217products.com/osnote/privacy.html" rel="noopener">Gizlilik politikası</a>
+      <a href="https://217products.com/osnote/hesap-silme.html" rel="noopener">Hesap silme</a>
+      <a href="https://217products.com/kosullar" rel="noopener">Kullanım koşulları</a>
+      <a href="mailto:destek217product@gmail.com">İletişim</a>
+      <a href="https://217products.com/tr" rel="noopener">217products.com</a>
+      <a href="./" hreflang="en" lang="en" data-lang="en">English</a>
+    </nav>
+    <div class="alt__kaynak">
+      <p>Yazı tipleri: <a href="assets/lisans/OFL-ShipporiMincho.txt">Shippori Mincho</a> ve <a href="assets/lisans/OFL-Manrope.txt">Manrope</a> (SIL Open Font License 1.1), <a href="assets/lisans/LICENSE-Roboto.txt">Roboto</a> (Apache 2.0). Cihazlardaki PDF’lerin yazısı <a href="assets/lisans/OFL-Lora.txt">Lora</a>’dan “Belge” adıyla alt kümelendi (SIL Open Font License 1.1). Cihaz ekranlarındaki simgeler Google’ın <a href="assets/lisans/LICENSE-MaterialIcons.txt">Material Icons</a>’ı (CC BY 4.0) ve uygulamanın kendi çizimleri (<a href="assets/lisans/LICENSE-Phosphor.txt">Phosphor</a>, MIT). El yazıları <a href="assets/lisans/OFL-Kalam.txt">Kalam</a>’dan kalem çizgisine çevrildi. <a href="assets/lisans/KAYNAKLAR.txt">Tüm kaynaklar</a></p>
+      <p>Cihaz ekranlarındaki uygulamalar (ders videosu, ödev ve test PDF’leri, mesajlar, harita, takvim, taktik analiz videosu) bu site için hazırlandı; içlerindeki adlar, yerler, kişiler ve bilgiler gerçek değil. Defter bölümündeki ekranlar OSNote’un kendi ekranlarıdır. Google Play ve Google Play logosu, Google LLC’nin ticari markalarıdır. <span lang="en">Android</span>, Google LLC’nin ticari markasıdır.</p>
+    </div>
+    <div class="alt__meta">
+      <span>© <span data-yil>2026</span> 217 Products</span>
+      <span class="muhur muhur--alt" lang="ja" aria-hidden="true">二一七</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/murekkep.js" defer></script>
+<script src="assets/js/el-yazisi.js" defer></script>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/kalem.js" defer></script>
+<script src="assets/js/sahne.js" defer></script>
+<script src="assets/js/videolar.js" defer></script>
+<script src="assets/js/ekranlar.js" defer></script>
+<script src="assets/js/defter.js" defer></script>
 </body>
 </html>

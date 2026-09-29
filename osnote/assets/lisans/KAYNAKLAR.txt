@@ -1,0 +1,99 @@
+OSNOTE TANITIM SİTESİ — KAYNAKLAR VE LİSANSLAR
+==============================================
+
+Bu sitede kullanılan her dosyanın nereden geldiği, lisansı ve üzerinde
+yapılan işlemler aşağıda. Site hiçbir dış sunucudan yazı tipi, betik,
+görsel ya da ses yüklemez; her şey bu klasörün içindedir.
+
+
+1. UYGULAMANIN VE MARKANIN KENDİ VARLIKLARI (yayıncının malzemesi)
+-------------------------------------------------------------------
+- Uygulama ekranları (assets/img/ekran/): OSNote'un Play önizleme
+  videosundan (osnote-tanitim-tr.mp4, 27 Eylül 2026) alınan kareler.
+  Video, Honor tabletin gerçek ekran kaydından kişisel içerik ayıklanarak
+  hazırlanmıştı. Yalnız ekran kartının içi kırpıldı; üçüncü taraf uygulama
+  simgelerinin göründüğü kareler kullanılmadı. 480 ve 720 px; AVIF, WebP,
+  JPEG yedeği.
+- Uygulama simgesi (favicon, apple-touch-icon, icon-192/512, simge-192):
+  OSNote'un Play simgesi.
+- Defter kapağı (assets/img/kapak-ucak.webp): uygulamanın on kapağından
+  biri (res/drawable-nodpi/cover_ink_plane.webp), değiştirilmeden.
+- Kalem çubuğunun El, Kalem ve Silgi simgeleri: uygulamanın kendi vektör
+  çizimleri (res/drawable/ic_custom_hand, ic_custom_pen, ic_custom_eraser;
+  Phosphor Icons çizimleri, MIT lisansı: LICENSE-Phosphor.txt). Taç,
+  şekiller ve sayfa simgeleri
+  uygulamanın kodundaki çizimlerin (PremiumToolbar.kt) SVG karşılığı.
+- 217 fırça logosu (assets/img/marka/logo-217.svg): 217products.com.
+
+2. YAZI TİPLERİ
+---------------
+- Shippori Mincho (500, 700, 800) — Copyright 2021 The Shippori Mincho
+  Project Authors. SIL Open Font License 1.1. Taban, 217products.com'daki
+  alt kümeler (Ş ş Ğ ğ İ elle kurulmuş). Eksik boşluk, bölünmez boşluk,
+  â Â “ ” ‘ işaretleri aynı yazı tipinin önceki alt kümesinden eklendi;
+  700 kesimine alt bilgideki mühür için 二一七 özgün Shippori Mincho
+  Bold'dan kopyalandı. Lisans: OFL-ShipporiMincho.txt
+- Manrope (değişken, 200–800) — Copyright 2019 The Manrope Project
+  Authors. SIL Open Font License 1.1. Latin ve Türkçe karakterlere
+  indirildi. Lisans: OFL-Manrope.txt
+- Roboto (400, 500) — Google, Apache License 2.0. Cihaz ekranlarının
+  içindeki Android arayüzü için; Flutter SDK'daki kopyasından Latin,
+  Türkçe karakterlere ve formüllerdeki birkaç Yunan harfine (α θ π Δ)
+  indirildi. Lisans: LICENSE-Roboto.txt
+- Belge (500, 600) — Lora 3.008'in alt kümesi. Copyright 2011 The Lora
+  Project Authors, SIL Open Font License 1.1, Ayrılmış Yazı Tipi Adı
+  "Lora". Cihazlardaki PDF'lerin (ödev ve test sayfaları) metni için;
+  OSNote uygulamasının kendi yazı tipi klasöründeki Lora Medium ve
+  SemiBold'dan Latin ve Türkçe karakterlere indirildi. Alt küme
+  değiştirilmiş sürüm sayıldığından ayrılmış ad kullanılmadı, yazı
+  tipinin adı "Belge" yapıldı. Lisans: OFL-Lora.txt
+Alt kümeleme OFL'ye göre değiştirilmiş sürümdür; Shippori Mincho ile
+Manrope'un lisansında "Ayrılmış Yazı Tipi Adı" beyanı yoktur, Lora'nınkinde
+vardır (yukarıda: adı Belge).
+
+3. SİMGELER VE EL YAZISI
+------------------------
+- Cihaz ekranlarındaki Android simgeleri (geri oku, arama, paylaş, konum,
+  wi-fi, sinyal…): Google'ın Material Icons yazı tipinden (Flutter SDK'daki
+  kopyası; bu kopya Creative Commons Attribution 4.0 International
+  lisansıyla gelir). Değişiklik: glifler SVG yollarına çevrildi ve
+  koordinatları yuvarlandı (araclar/simgeler_kur.py).
+  Lisans: LICENSE-MaterialIcons.txt
+- El yazıları (assets/js/el-yazisi.js): Kalam yazı tipinden (Copyright
+  (c) 2014 Indian Type Foundry, SIL Open Font License 1.1) üretildi.
+  Harfler büyük boyda çizilip inceltildi, tek kalınlıkta kalem
+  çizgilerine çevrildi ve her harf biraz döndürülüp kaydırıldı
+  (araclar/el_yazisi.py); sayfada yazı tipi olarak değil, çizgi olarak
+  kullanılır. Lisans: OFL-Kalam.txt
+
+4. GOOGLE PLAY ROZETİ
+---------------------
+- assets/img/google-play-tr.png / .webp: Google'ın resmi Türkçe
+  "Google Play'den indirin" rozeti, kenar boşluğu kırpılmış, değiştirilmeden.
+- assets/img/google-play-en.png / .webp (İngilizce sayfa): Google'ın resmi
+  İngilizce "Get it on Google Play" rozeti (en_badge_web_generic.png,
+  play.google.com, 29 Eyl 2026), kenar boşluğu kırpılmış, değiştirilmeden.
+  Google Play ve Google Play logosu Google LLC'nin ticari markalarıdır.
+
+5. SİTEDE ÜRETİLENLER
+---------------------
+- Karekod (assets/img/karekod-google-play.svg): OSNote'un Play adresinden
+  yerelde üretildi (OpenCV QRCodeEncoder, hata düzeltme M) ve geri
+  okunarak doğrulandı.
+- Cihazların içindeki uygulamalar (ders videosu, ödev ve geometri testi
+  PDF'leri, mesajlar ve içindeki sipariş özeti, harita, takvim, taktik
+  analiz videosu) bu site için HTML, SVG ve tuvalle hazırlandı; gerçek bir
+  uygulamanın, kanalın, kişinin, maçın ya da yerin kopyası değildir,
+  içlerindeki bilgiler uydurmadır. Videoların kareleri tuvalde çizilir
+  (assets/js/videolar.js). Haritadaki mahalle uydurmadır: sokaklar elle
+  çizildi, binalar sokak cephelerine tohumlu rastgele dizildi
+  (araclar/harita_kur.py). Girişteki bölünmüş ekran Android'in iki
+  uygulamayı yan yana açma özelliğini canlandırır. Dış görsel kullanılmaz.
+- Cihaz çerçeveleri ve kalem ucu (stylus): CSS ve SVG ile çizildi; belirli
+  bir markanın ürününü taklit etmez.
+- Kalem ve defter provası (assets/js/murekkep.js, kalem.js, ekranlar.js,
+  defter.js): uygulamanın davranışını tarayıcıda taklit eden özgün kod.
+  Dışa aktarılan PDF, sayfaları JPEG görüntü olarak içeren küçük bir
+  PDF'tir (uygulamanın kendi PDF'i vektördür).
+- Paylaşım görseli (assets/img/paylasim.jpg): sitenin kendi girişindeki
+  bölünmüş ekranlı tabletten (araclar/og.html) üretildi.

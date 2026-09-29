@@ -1,0 +1,16 @@
+{
+  "name": "OSNote: screen pen and notebooks",
+  "short_name": "OSNote",
+  "description": "Write on top of any app on Android, and keep notes in notebooks.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "browser",
+  "background_color": "#F0F0F3",
+  "theme_color": "#F0F0F3",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
