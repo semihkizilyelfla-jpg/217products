@@ -5,7 +5,7 @@
   <!-- Güvenlik: sayfa yalnız kendi dosyalarını yükler (dış istek, form, eklenti, çerçeve yok);
        satır içi betik yalnız özetiyle çalışır (araclar/csp.mjs), HTML'e metin basan yöntemler
        Trusted Types ile kapalı. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-BMJ8HRcHUpH1uiogtN508seKBLhxVkq7rqwj+noIgbM='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types decidora">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-vGG7hSK7prH6thXmGrmKSlw5GPly/QSp4qX/2ckza58='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests; require-trusted-types-for 'script'; trusted-types decidora">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Decidora: zar, yazı tura, çark ve parmak seçici · Android</title>
@@ -45,7 +45,7 @@
       h.classList.replace('js-yok', 'js');
       h.classList.add('acilis');
       if (location.protocol === 'file:') return;
-      [['preload', 'assets/fonts/shippori-800.woff2'], ['preload', 'assets/fonts/manrope-var.woff2'], ['preload', 'assets/fonts/shippori-500.woff2'], ['preload', 'assets/fonts/shippori-700.woff2'], ['manifest', h.lang === 'en' ? 'site-en.webmanifest' : 'site.webmanifest']].forEach(function (b) {
+      [['preload', 'assets/fonts/shippori-800.woff2?v=5c931b24'], ['preload', 'assets/fonts/manrope-var.woff2?v=c76aa78f'], ['preload', 'assets/fonts/shippori-500.woff2?v=14358315'], ['preload', 'assets/fonts/shippori-700.woff2?v=da01e49e'], ['manifest', h.lang === 'en' ? 'site-en.webmanifest' : 'site.webmanifest']].forEach(function (b) {
         var l = document.createElement('link');
         l.rel = b[0];
         l.href = b[1];
@@ -54,7 +54,7 @@
       });
     })();
   </script>
-  <link rel="stylesheet" href="assets/css/site.css">
+  <link rel="stylesheet" href="assets/css/site.css?v=b33133bc">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -559,7 +559,7 @@
 </footer>
 
 <!-- zar3d.js, ses.js ve masa.js'i site.js, o bölümlere yaklaşınca yükler -->
-<script src="assets/js/cark.js" defer></script>
-<script src="assets/js/site.js" defer></script>
+<script src="assets/js/cark.js?v=4d685d81" defer></script>
+<script src="assets/js/site.js?v=777161a5" defer></script>
 </body>
 </html>

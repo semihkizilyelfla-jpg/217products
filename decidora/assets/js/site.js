@@ -180,18 +180,21 @@
     const tt = window.trustedTypes;
     const p = tt && tt.createPolicy ? tt.createPolicy('decidora', {
       createScriptURL: (u) => {
-        if (/^assets\/js\/[a-z0-9]+\.js$/.test(u)) return u;
+        if (/^assets\/js\/[a-z0-9]+\.js(\?v=[0-9a-f]{8})?$/.test(u)) return u;
         throw new TypeError('izinsiz betik adresi: ' + u);
       },
     }) : null;
     return (u) => (p ? p.createScriptURL(u) : u);
   })();
+  // Betiklerin sürümü (içeriğinin özeti): burada boş, yayındaki kopyada araclar/yayinla.mjs doldurur.
+  // Adres içerikle değişir; yayından sonra önbellekteki eski betik yeni sayfayla karışmaz.
+  const SURUM = {"cark":"4d685d81","masa":"15847dbe","ses":"86f69a03","zar3d":"a149120c"};
   const yuklenen = {};
   function yukle(ad) {
     if (!yuklenen[ad]) {
       yuklenen[ad] = new Promise((coz) => {
         const b = document.createElement('script');
-        b.src = betikAdresi('assets/js/' + ad + '.js');
+        b.src = betikAdresi('assets/js/' + ad + '.js' + (SURUM[ad] ? '?v=' + SURUM[ad] : ''));
         b.onload = () => coz(true);
         b.onerror = () => coz(false);
         document.head.appendChild(b);

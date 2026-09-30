@@ -7,10 +7,10 @@
    Sayfanın tek fikri: sonuç çıkınca kararı kırmızı bir mühür basar.
    ============================================================ */
 
-@font-face { font-family: "Shippori Mincho"; src: url("../fonts/shippori-500.woff2") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "Shippori Mincho"; src: url("../fonts/shippori-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
-@font-face { font-family: "Shippori Mincho"; src: url("../fonts/shippori-800.woff2") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
-@font-face { font-family: "Manrope"; src: url("../fonts/manrope-var.woff2") format("woff2"); font-weight: 400 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("../fonts/shippori-500.woff2?v=14358315") format("woff2"); font-weight: 400 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("../fonts/shippori-700.woff2?v=da01e49e") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Shippori Mincho"; src: url("../fonts/shippori-800.woff2?v=5c931b24") format("woff2"); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Manrope"; src: url("../fonts/manrope-var.woff2?v=c76aa78f") format("woff2"); font-weight: 400 800; font-style: normal; font-display: swap; }
 
 :root {
   color-scheme: only light;
